@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <style>
+        p {
+            text-align: center;
+        }
+
+        .center {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey">
+
+<div th:replace="fragments/menu-staff :: #menustaff"></div>
+
+<div class="container">
+    <p>Категории</p>
+
+    <div class="center col-6">
+        <div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
+
+        <table class="table border center">
+            <tr style="text-align: center">
+                <th>Категория</th>
+                <th>Действия</th>
+            </tr>
+
+            <!--/*@thymesVar id="categories" type="java.util.List<ru.spbu.distolymp.dto.entity.lists.CategoryDto>"*/-->
+            <tr th:each="category : ${categories}">
+                <td th:text="${category.name}"></td>
+                <td style="text-align: center">
+                    <a href="#" class="abutton" data-toggle="modal" data-target=".update-category"
+                        th:attr="data-id=${category.id}, data-name=${category.name}">переименовать</a>
+                    <a th:href="@{/categories/delete/{id}(id=${category.id})}"
+                       class="abutton" onclick="return window.confirm('Вы уверены?')">удалить</a>
+                </td>
+            </tr>
+
+        </table>
+
+        <div style="text-align:center; margin:0.5em;">
+            <button type="button" class="btn btn-light border border-dark"
+                    data-toggle="modal" data-target=".new-category">Добавить новую категорию
+            </button>
+        </div>
+    </div>
+
+
+    <div class="modal fade new-category" id="new-category-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Новая категория</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!--/*@thymesVar id="newCategory" type="ru.spbu.distolymp.dto.entity.lists.CategoryDto"*/-->
+                    <form id="new-category-form" th:object="${category}"
+                          th:action="@{/categories/add}" method="post">
+                        <div class="form-group">
+                            <label for="new-category-name">Имя категории</label>
+                            <input th:field="*{name}" placeholder="Новая категория"
+                                   type="text" class="form-control" id="new-category-name"
+                                   aria-describedby="categoryHelp">
+                            <small id="categoryHelp" class="form-text text-muted">Если имя будет пустым, новая
+                                категория не будет создана.
+                            </small>
+                            <input hidden type="number" th:value="*{divisionId}" th:field="*{divisionId}">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn  btn-light border border-dark" data-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-light border border-dark" form="new-category-form">Ок
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade update-category" id="update-category-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Изменение категории</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!--/*@thymesVar id="newCategory" type="ru.spbu.distolymp.dto.entity.lists.CategoryDto"*/-->
+                    <form id="update-category-form" th:object="${category}"
+                          th:action="@{/categories/update}" method="post">
+                        <div class="form-group">
+                            <label for="update-category-name">Имя категории</label>
+                            <input th:field="*{name}" placeholder="Новое имя категории"
+                                   type="text" class="form-control" id="update-category-name"
+                                   aria-describedby="updateCategoryHelp">
+                            <small id="updateCategoryHelp" class="form-text text-muted">Если имя будет пустым, категория
+                                не будет переименована.
+                            </small>
+                            <input hidden type="number" th:value="*{id}" th:field="*{id}" id="category-id">
+                            <input hidden type="number" th:value="*{divisionId}" th:field="*{divisionId}">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn  btn-light border border-dark" data-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-light border border-dark" form="update-category-form">Ок
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div th:replace="fragments/footer :: #footer"></div>
+</body>
+
+<script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+<script type="text/javascript">
+    $('#new-category-modal').on('show.bs.modal', function (event) {
+        $('#new-category-name').val("");
+    });
+
+    $('#update-category-modal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var id = button.data('id')
+        var name = button.data('name')
+
+        var modal = $(this)
+        modal.find('.modal-body #update-category-name').val(name)
+        modal.find('.modal-body #category-id').val(id)
+    })
+</script>
+
+</html>

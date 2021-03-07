@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <style>
+        p {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey">
+
+<div th:replace="fragments/menu-staff :: #menustaff"></div>
+
+<p>
+    <a href="#" class="abutton">
+        Справочник стран
+    </a>
+</p>
+
+<p>
+    <a href="#" class="abutton">
+        Справочник регионов РФ
+    </a>
+</p>
+
+<p>
+    <a href="#" class="abutton">
+        Справочник городов
+    </a>
+</p>
+
+<p>
+    <a href="#" class="abutton">
+        Справочник районов
+    </a>
+</p>
+
+<p>
+    <a href="#" class="abutton">
+        Справочник учбеных заведений
+    </a>
+</p>
+
+<p>
+    <a href="#" class="abutton">
+        Справочник классов
+    </a>
+</p>
+
+<p>
+    <a th:href="@{/categories/list}" class="abutton">
+        Справочник категорий
+    </a>
+</p>
+
+<p>
+    <a href="#" class="abutton">
+        Справочник дипломов
+    </a>
+</p>
+
+<p>
+    <a href="#" class="abutton">
+        Справочник предпочитаемых вузов
+    </a>
+</p>
+
+<p>
+    <a href="#" class="abutton">
+        Справочник площадок очного тура
+    </a>
+</p>
+
+<p>
+    <a href="#" class="abutton">
+        Справочник награждений
+    </a>
+</p>
+
+<p>
+    <a href="#" class="abutton">
+        Справочник типов учебных заведений
+    </a>
+</p>
+
+<div th:replace="fragments/footer :: #footer"></div>
+
+</body>
+</html>

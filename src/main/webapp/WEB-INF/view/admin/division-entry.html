@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey">
+
+<h3>Выберите один из доступных разделов</h3>
+
+<ul>
+    <!--/*@thymesVar id="divisions" type="java.util.List<ru.spbu.distolymp.dto.entity.lists.DivisionDto>"*/-->
+<li th:each="division : ${divisions}">
+    <a th:href="@{/division/entry/choose/{id}(id=${division.id})}"
+       th:text="${division.name}"></a>
+</li>
+</ul>
+
+<div th:replace="fragments/footer :: #footer"></div>
+
+</body>
+</html>
