@@ -11,7 +11,7 @@ public interface CategoryCrudService {
 
     List<CategoryDto> getCategoriesByDivisionId(Long id);
 
-    void addNewCategory(CategoryDto categoryDto);
+    void saveNewCategory(CategoryDto categoryDto);
 
     void deleteCategoryById(Long id);
 

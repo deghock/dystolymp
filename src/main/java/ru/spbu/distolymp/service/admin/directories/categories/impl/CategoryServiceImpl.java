@@ -27,7 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void addNewCategory(CategoryDto categoryDto) {
-        categoryCrudService.addNewCategory(categoryDto);
+        categoryCrudService.saveNewCategory(categoryDto);
     }
 
     @Override
