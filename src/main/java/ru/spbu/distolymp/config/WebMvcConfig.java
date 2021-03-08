@@ -20,12 +20,13 @@ import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 
-@Configuration
 @EnableWebMvc
+@Configuration
 @ComponentScan(basePackages = {"ru.spbu.distolymp"})
 public class WebMvcConfig implements WebMvcConfigurer, ApplicationContextAware  {
 
     private ApplicationContext applicationContext;
+    private static final String ENCODING = "UTF-8";
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
@@ -52,7 +53,7 @@ public class WebMvcConfig implements WebMvcConfigurer, ApplicationContextAware  
         ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
         viewResolver.setTemplateEngine(templateEngine());
         viewResolver.setContentType("text/html");
-        viewResolver.setCharacterEncoding("UTF-8");
+        viewResolver.setCharacterEncoding(ENCODING);
         return viewResolver;
     }
 
@@ -73,7 +74,7 @@ public class WebMvcConfig implements WebMvcConfigurer, ApplicationContextAware  
         templateResolver.setSuffix(".html");
         templateResolver.setCacheable(false);
         templateResolver.setTemplateMode(TemplateMode.HTML);
-        templateResolver.setCharacterEncoding("UTF-8");
+        templateResolver.setCharacterEncoding(ENCODING);
         return templateResolver;
     }
 
@@ -81,7 +82,7 @@ public class WebMvcConfig implements WebMvcConfigurer, ApplicationContextAware  
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:messages");
-        messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setDefaultEncoding(ENCODING);
         return messageSource;
     }
 
