@@ -45,7 +45,7 @@ public class CategoryCrudServiceImpl implements CategoryCrudService {
 
     @Override
     @Transactional
-    public void addNewCategory(CategoryDto categoryDto) {
+    public void saveNewCategory(CategoryDto categoryDto) {
         try {
             tryToAddNewCategory(categoryDto);
         } catch (DataAccessException | EntityNotFoundException e) {
