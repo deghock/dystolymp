@@ -1,4 +1,4 @@
-package ru.spbu.distolymp.exception.lists.category;
+package ru.spbu.distolymp.exception.crud.lists.category;
 
 /**
  * @author Daria Usova
@@ -6,6 +6,10 @@ package ru.spbu.distolymp.exception.lists.category;
 public class UpdateCategoryNameException extends RuntimeException {
 
     public UpdateCategoryNameException() {
+    }
+
+    public UpdateCategoryNameException(String message) {
+        super(message);
     }
 
 }
