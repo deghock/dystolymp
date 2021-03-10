@@ -7,8 +7,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.spbu.distolymp.dto.entity.lists.CategoryDto;
-import ru.spbu.distolymp.exception.lists.category.AddNewCategoryException;
-import ru.spbu.distolymp.exception.lists.category.UpdateCategoryNameException;
+import ru.spbu.distolymp.exception.crud.lists.category.AddNewCategoryException;
+import ru.spbu.distolymp.exception.crud.lists.category.UpdateCategoryNameException;
 import ru.spbu.distolymp.service.admin.directories.categories.api.CategoryService;
 
 import javax.validation.Valid;
@@ -22,7 +22,7 @@ import javax.validation.Valid;
 public class CategoriesController {
 
     private final CategoryService categoryService;
-    private final String REDIRECT_CATEGORY_LIST = "redirect:/categories/list";
+    private static final String REDIRECT_CATEGORY_LIST = "redirect:/categories/list";
 
     @GetMapping("/list")
     public String showAllCategories(ModelMap modelMap,

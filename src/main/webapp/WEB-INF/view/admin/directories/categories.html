@@ -27,15 +27,15 @@
 <div th:replace="fragments/menu-staff :: #menustaff"></div>
 
 <div class="container">
-    <p>Категории</p>
+    <p id="title">Категории</p>
 
     <div class="center col-6">
         <div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
 
-        <table class="table border center">
+        <table class="table border center" aria-describedby="title">
             <tr style="text-align: center">
-                <th>Категория</th>
-                <th>Действия</th>
+                <th id="category">Категория</th>
+                <th id="actions">Действия</th>
             </tr>
 
             <!--/*@thymesVar id="categories" type="java.util.List<ru.spbu.distolymp.dto.entity.lists.CategoryDto>"*/-->
@@ -43,7 +43,7 @@
                 <td th:text="${category.name}"></td>
                 <td style="text-align: center">
                     <a href="#" class="abutton" data-toggle="modal" data-target=".update-category"
-                        th:attr="data-id=${category.id}, data-name=${category.name}">переименовать</a>
+                       th:attr="data-id=${category.id}, data-name=${category.name}">переименовать</a>
                     <a th:href="@{/categories/delete/{id}(id=${category.id})}"
                        class="abutton" onclick="return window.confirm('Вы уверены?')">удалить</a>
                 </td>
@@ -69,7 +69,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!--/*@thymesVar id="newCategory" type="ru.spbu.distolymp.dto.entity.lists.CategoryDto"*/-->
+                    <!--/*@thymesVar id="category" type="ru.spbu.distolymp.dto.entity.lists.CategoryDto"*/-->
                     <form id="new-category-form" th:object="${category}"
                           th:action="@{/categories/add}" method="post">
                         <div class="form-group">
@@ -80,7 +80,9 @@
                             <small id="categoryHelp" class="form-text text-muted">Если имя будет пустым, новая
                                 категория не будет создана.
                             </small>
-                            <input hidden type="number" th:value="*{divisionId}" th:field="*{divisionId}">
+                            <label>
+                                <input hidden type="number" th:value="*{divisionId}" th:field="*{divisionId}">
+                            </label>
                         </div>
                     </form>
                 </div>
@@ -103,7 +105,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!--/*@thymesVar id="newCategory" type="ru.spbu.distolymp.dto.entity.lists.CategoryDto"*/-->
+                    <!--/*@thymesVar id="category" type="ru.spbu.distolymp.dto.entity.lists.CategoryDto"*/-->
                     <form id="update-category-form" th:object="${category}"
                           th:action="@{/categories/update}" method="post">
                         <div class="form-group">

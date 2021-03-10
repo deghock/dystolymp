@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/")
-public class DemoController {
+public class HomeController {
 
     @GetMapping
     public String home() {
-        return "home";
+        return "redirect:/division/entry";
     }
 
 }

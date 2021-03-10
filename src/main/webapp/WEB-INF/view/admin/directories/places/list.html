@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <style>
+        p {
+            text-align: center;
+        }
+
+        .center {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+    <script type="text/javascript">
+        function checkAll(check) {
+            var places = document.getElementById("places");
+            var ids = places["ids"];
+            if (ids.name != undefined) {
+                ids = [ids];
+            }
+
+            for (var i = 0; i < ids.length; ++i) {
+                ids[i].checked = check;
+            }
+        }
+
+        function areSure() {
+            return window.confirm("Вы уверены?");
+        }
+
+        function delPlace() {
+            if (areSure()) {
+                var places = document.getElementById("places");
+                places.submit();
+            }
+            return false;
+        }
+    </script>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey">
+
+<div th:replace="fragments/menu-staff :: #menustaff"></div>
+
+<p id="title">Справочник площадок очного тура</p>
+
+<div class="container">
+    <div class="alert alert-danger col-6 ml-auto mr-auto" role="alert" th:text="${error}" th:if="${error}"></div>
+
+    <form th:action="@{/places/delete}" method="post" id="places">
+        <table class="border center" aria-describedby="title">
+            <tr style="text-align: center">
+                <th id="index">№</th>
+                <th id="check-column">
+                    <input type="checkbox" onclick="checkAll(this.checked);"/>
+                </th>
+                <th id="name">Название</th>
+                <th id="actions">Действия</th>
+            </tr>
+
+            <!--/*@thymesVar id="places" type="java.util.List<ru.spbu.distolymp.dto.entity.education.PlaceDto>"*/-->
+            <tr th:each="place, iter : ${places}">
+                <td th:text="${iter.index + 1}"></td>
+                <td>
+                    <input type="checkbox" name="ids" th:value="${place.id}"/>
+                </td>
+                <td>
+                    <a th:href="@{/places/edit/{id}(id=${place.id})}" th:text="${place.name}" class="stealth"></a>
+                </td>
+                <td>
+                    <a th:if="${iter.index != 0}" th:href="@{/places/order/up/{id}(id=${place.id})}" class="stealth">
+                        ▲
+                    </a>
+                    <a th:if="${iter.index != places.size() - 1}" th:href="@{/places/order/down/{id}(id=${place.id})}"
+                       class="stealth">
+                        ▼
+                    </a>
+                    <strong th:if="${not place.visible}">---</strong>
+                </td>
+            </tr>
+
+        </table>
+    </form>
+
+    <ul class="actions">
+        <li>
+            <a th:href="@{/places/add}" class="abutton">Задать новую площадку</a>
+        </li>
+        <li>
+            <a class="abutton" onclick="return delPlace()">Удалить выбранные площадки</a>
+        </li>
+    </ul>
+</div>
+
+<div th:replace="fragments/footer :: #footer"></div>
+</body>
+
+</html>
