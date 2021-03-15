@@ -10,3 +10,6 @@
 
 # Log files
 *.log
+
+# README file
+README.md
