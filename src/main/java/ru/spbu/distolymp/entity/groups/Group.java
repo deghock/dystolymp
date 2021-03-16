@@ -47,7 +47,6 @@ public class Group {
     @Column(name = "show_stat", columnDefinition = "ENUM('yes', 'no')", nullable = false)
     private ShowStat showStat;
 
-    @Size(max = 11)
     @Column(name = "priority")
     private Integer priority;
 
@@ -61,7 +60,6 @@ public class Group {
     private Date registrationDate;
 
     @NotNull
-    @Size(max = 11)
     @Column(name = "diplom_type")
     private Integer diplomaType;
 
