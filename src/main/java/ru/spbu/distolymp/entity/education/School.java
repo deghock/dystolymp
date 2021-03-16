@@ -44,7 +44,6 @@ public class School {
     @Column(name = "visible", columnDefinition = "ENUM('yes', 'no')", nullable = false)
     private Visible visible;
 
-    @NotNull
     @Column(name = "editing", columnDefinition = "TINYINT")
     private boolean editing;
 
