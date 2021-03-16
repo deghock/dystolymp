@@ -26,7 +26,6 @@ public class School {
     private Long id;
 
     @NotNull
-    @Size(max = 11)
     @Column(name = "number")
     private Integer number;
 

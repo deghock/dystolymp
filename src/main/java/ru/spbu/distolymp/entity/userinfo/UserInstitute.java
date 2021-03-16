@@ -7,7 +7,6 @@ import ru.spbu.distolymp.entity.users.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /**
  * @author Vladislav Konovalov
@@ -32,7 +31,6 @@ public class UserInstitute {
     private Institute institute;
 
     @NotNull
-    @Size(max = 11)
     @Column(name = "`order`")
     private Integer order;
 

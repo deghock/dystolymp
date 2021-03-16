@@ -26,7 +26,7 @@ public class Information {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "residence", columnDefinition = "ENUM('town', 'village')", nullable = false)
+    @Column(name = "residence", columnDefinition = "ENUM('town', 'village')")
     private Residence residence;
 
     @NotNull
@@ -34,7 +34,6 @@ public class Information {
     @Column(name = "ability", columnDefinition = "ENUM('usual', 'limited')", nullable = false)
     private AbilityStatus abilityStatus;
 
-    @Size(max = 20)
     @Column(name = "id_school_curator")
     private Long schoolCuratorId;
 
