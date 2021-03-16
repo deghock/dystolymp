@@ -64,4 +64,8 @@ public class Passport {
     @Column(name = "`when`")
     private String when;
 
+    @Size(max = 255)
+    @Column(name = "code")
+    private String code;
+
 }
