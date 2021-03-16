@@ -32,7 +32,7 @@ public class CategoriesController {
         }
 
         categoryService.fillShowAllCategoriesModelMap(modelMap, id);
-        return "admin/directories/categories";
+        return "admin/directories/categories/list";
     }
 
     @PostMapping("/add")

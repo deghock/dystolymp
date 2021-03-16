@@ -77,10 +77,12 @@
                     <a th:href="@{/places/edit/{id}(id=${place.id})}" th:text="${place.name}" class="stealth"></a>
                 </td>
                 <td>
-                    <a th:if="${iter.index != 0}" th:href="@{/places/order/up/{id}(id=${place.id})}" class="stealth">
+                    <a th:if="${places.size() > 1 and iter.index != 0}"
+                       th:href="@{/places/order/up/{id}(id=${place.id})}" class="stealth">
                         ▲
                     </a>
-                    <a th:if="${iter.index != places.size() - 1}" th:href="@{/places/order/down/{id}(id=${place.id})}"
+                    <a th:if="${places.size() > 1 and iter.index != places.size() - 1}"
+                       th:href="@{/places/order/down/{id}(id=${place.id})}"
                        class="stealth">
                         ▼
                     </a>
