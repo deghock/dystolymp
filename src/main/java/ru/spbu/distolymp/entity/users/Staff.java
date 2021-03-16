@@ -4,13 +4,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import ru.spbu.distolymp.entity.groups.Group;
 import ru.spbu.distolymp.entity.lists.Division;
-import ru.spbu.distolymp.entity.lists.List;
+import ru.spbu.distolymp.entity.lists.Listing;
 import ru.spbu.distolymp.entity.userinfo.Contacts;
 import ru.spbu.distolymp.entity.userinfo.Passport;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * @author Vladislav Konovalov
@@ -51,16 +52,16 @@ public class Staff {
     @ManyToMany
     @JoinTable(name = "staff_divisions", joinColumns = @JoinColumn(name = "id_staff"),
                                          inverseJoinColumns = @JoinColumn(name = "id_division"))
-    private java.util.List<Division> divisionList;
+    private List<Division> divisionList;
 
     @ManyToMany
     @JoinTable(name = "staff_groups", joinColumns = @JoinColumn(name = "id_staff"),
                                       inverseJoinColumns = @JoinColumn(name = "id_group"))
-    private java.util.List<Group> groupList;
+    private List<Group> groupList;
 
     @ManyToMany
     @JoinTable(name = "staff_lists", joinColumns = @JoinColumn(name = "id_staff"),
                                      inverseJoinColumns = @JoinColumn(name = "id_list"))
-    private java.util.List<List> listList;
+    private List<Listing> listingList;
 
 }

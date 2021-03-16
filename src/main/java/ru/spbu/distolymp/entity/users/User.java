@@ -8,13 +8,14 @@ import ru.spbu.distolymp.entity.groups.Group;
 import ru.spbu.distolymp.entity.groups.UserManagingGroup;
 import ru.spbu.distolymp.entity.lists.Division;
 import ru.spbu.distolymp.entity.lists.Grade;
-import ru.spbu.distolymp.entity.logs.UserLogList;
+import ru.spbu.distolymp.entity.logs.UserLogListing;
 import ru.spbu.distolymp.entity.userinfo.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Vladislav Konovalov
@@ -42,7 +43,7 @@ public class User {
 
     @Size(max = 50)
     @Column(name = "mainpass")
-    private String confirmPassword;
+    private String mainPassword;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -60,7 +61,6 @@ public class User {
     private String registrationIp;
 
     @NotNull
-    @Size(max = 11)
     @Column(name = "award_id")
     private Integer awardId;
 
@@ -92,18 +92,18 @@ public class User {
     @ManyToMany
     @JoinTable(name = "user_groups", joinColumns = @JoinColumn(name = "id_user"),
                                      inverseJoinColumns = @JoinColumn(name = "id_group"))
-    private java.util.List<Group> groupList;
+    private List<Group> groupList;
 
     @OneToMany(mappedBy = "user")
-    private java.util.List<UserInstitute> instituteList;
+    private List<UserInstitute> instituteList;
 
     @OneToMany(mappedBy = "user")
-    private java.util.List<UserLogList> listList;
+    private List<UserLogListing> listingList;
 
     @OneToMany(mappedBy = "user")
-    private java.util.List<UserPlace> placeList;
+    private List<UserPlace> placeList;
 
     @OneToMany(mappedBy = "user")
-    private java.util.List<UserManagingGroup> mGroupList;
+    private List<UserManagingGroup> mGroupList;
 
 }

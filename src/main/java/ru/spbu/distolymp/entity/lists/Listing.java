@@ -4,12 +4,13 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Type;
 import ru.spbu.distolymp.entity.groups.Constraint;
-import ru.spbu.distolymp.entity.logs.UserLogList;
+import ru.spbu.distolymp.entity.logs.UserLogListing;
 import ru.spbu.distolymp.entity.users.Staff;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * @author Vladislav Konovalov
@@ -18,7 +19,7 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode(of = {"id"})
 @Entity
 @Table(name = "lists")
-public class List {
+public class Listing {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,10 +51,10 @@ public class List {
     @ManyToMany
     @JoinTable(name = "staff_lists", joinColumns = @JoinColumn(name = "id_list"),
                                      inverseJoinColumns = @JoinColumn(name = "id_staff"))
-    private java.util.List<Staff> staffList;
+    private List<Staff> staffList;
 
-    @OneToMany(mappedBy = "list")
-    private java.util.List<UserLogList> userList;
+    @OneToMany(mappedBy = "listing")
+    private List<UserLogListing> userList;
 
     // TODO: Add many-to-many support via list_problems.table
 

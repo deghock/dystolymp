@@ -9,7 +9,7 @@ import ru.spbu.distolymp.entity.enumeration.ShowStat;
 import ru.spbu.distolymp.entity.lists.Category;
 import ru.spbu.distolymp.entity.lists.Grade;
 import ru.spbu.distolymp.entity.lists.Division;
-import ru.spbu.distolymp.entity.lists.List;
+import ru.spbu.distolymp.entity.lists.Listing;
 import ru.spbu.distolymp.entity.users.Staff;
 import ru.spbu.distolymp.entity.users.User;
 
@@ -17,6 +17,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Vladislav Konovalov
@@ -70,7 +71,7 @@ public class Group {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_list", referencedColumnName = "id_list")
-    private List list;
+    private Listing listing;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "id_constraint", referencedColumnName = "id_constraint")
@@ -91,11 +92,11 @@ public class Group {
     @ManyToMany
     @JoinTable(name = "staff_groups", joinColumns = @JoinColumn(name = "id_group"),
                                      inverseJoinColumns = @JoinColumn(name = "id_staff"))
-    private java.util.List<Staff> staffList;
+    private List<Staff> staffList;
 
     @ManyToMany
     @JoinTable(name = "user_groups", joinColumns = @JoinColumn(name = "id_group"),
                                      inverseJoinColumns = @JoinColumn(name = "id_user"))
-    private java.util.List<User> userList;
+    private List<User> userList;
 
 }

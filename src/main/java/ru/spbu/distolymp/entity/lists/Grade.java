@@ -65,7 +65,7 @@ public class Grade {
 
     @ManyToOne
     @JoinColumn(name = "id_list", referencedColumnName = "id_list")
-    private List list;
+    private Listing listing;
 
     @ManyToOne
     @JoinColumn(name = "id_staff", referencedColumnName = "id_staff")

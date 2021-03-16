@@ -11,14 +11,14 @@ import java.io.Serializable;
  * @author Vladislav Konovalov
  */
 @Data
-@EqualsAndHashCode(of = {"userId", "listId"})
+@EqualsAndHashCode(of = {"userId", "listingId"})
 @Embeddable
-public class UserLogListId implements Serializable {
+public class UserLogListingId implements Serializable {
 
     @Column(name = "id_user")
     private Long userId;
 
     @Column(name = "id_list")
-    private Long listId;
+    private Long listingId;
 
 }

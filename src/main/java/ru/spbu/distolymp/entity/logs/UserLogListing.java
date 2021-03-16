@@ -2,7 +2,7 @@ package ru.spbu.distolymp.entity.logs;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import ru.spbu.distolymp.entity.lists.List;
+import ru.spbu.distolymp.entity.lists.Listing;
 import ru.spbu.distolymp.entity.users.User;
 
 import javax.persistence.*;
@@ -16,10 +16,10 @@ import java.util.Date;
 @EqualsAndHashCode(of = {"id"})
 @Entity
 @Table(name = "user_log_list")
-public class UserLogList {
+public class UserLogListing {
 
     @EmbeddedId
-    private UserLogListId id;
+    private UserLogListingId id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
@@ -28,8 +28,8 @@ public class UserLogList {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId(value = "listId")
-    private List list;
+    @MapsId(value = "listingId")
+    private Listing listing;
 
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)

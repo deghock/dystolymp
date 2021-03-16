@@ -3,7 +3,7 @@ package ru.spbu.distolymp.entity.others;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Type;
-import ru.spbu.distolymp.entity.lists.List;
+import ru.spbu.distolymp.entity.lists.Listing;
 import ru.spbu.distolymp.entity.users.Staff;
 import ru.spbu.distolymp.entity.users.User;
 
@@ -47,7 +47,7 @@ public class UserExtraTime {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_list", referencedColumnName = "id_list")
-    private List list;
+    private Listing listing;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
