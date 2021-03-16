@@ -7,7 +7,7 @@ import ru.spbu.distolymp.entity.userinfo.UserInstitute;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * @author Vladislav Konovalov
@@ -29,11 +29,10 @@ public class Institute {
     private String name;
 
     @NotNull
-    @Size(max = 11)
     @Column(name = "`order`")
     private Integer order;
 
     @OneToMany(mappedBy = "institute")
-    private java.util.List<UserInstitute> userList;
+    private List<UserInstitute> userList;
 
 }
