@@ -37,8 +37,7 @@ public class Country {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "country",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY)
+            cascade = CascadeType.ALL)
     private List<Region> regions;
 
 }
