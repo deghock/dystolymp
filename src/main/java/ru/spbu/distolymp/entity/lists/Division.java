@@ -2,10 +2,12 @@ package ru.spbu.distolymp.entity.lists;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import ru.spbu.distolymp.entity.users.Staff;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * @author Daria Usova
@@ -30,5 +32,10 @@ public class Division {
     @Size(min = 1, max = 32)
     @Column(name = "prefix")
     private String prefix;
+
+    @ManyToMany
+    @JoinTable(name = "staff_divisions", joinColumns = @JoinColumn(name = "id_division"),
+                                         inverseJoinColumns = @JoinColumn(name = "id_staff"))
+    private List<Staff> staffList;
 
 }
