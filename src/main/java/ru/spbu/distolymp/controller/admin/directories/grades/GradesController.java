@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author Vladislav Konovalov
  */
 @Controller
-@RequestMapping("/classes")
+@RequestMapping("/grades")
 public class GradesController {
 
     @GetMapping("/list")
