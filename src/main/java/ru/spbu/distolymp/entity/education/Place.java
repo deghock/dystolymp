@@ -1,9 +1,11 @@
 package ru.spbu.distolymp.entity.education;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Type;
 import ru.spbu.distolymp.entity.enumeration.Visible;
 import ru.spbu.distolymp.entity.lists.Division;
+import ru.spbu.distolymp.entity.userinfo.UserPlace;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -12,6 +14,7 @@ import javax.validation.constraints.NotNull;
  * @author Daria Usova
  */
 @Data
+@EqualsAndHashCode(of = {"id"})
 @Entity
 @Table(name = "places")
 public class Place {
@@ -39,5 +42,8 @@ public class Place {
     @NotNull
     @Column(name = "`order`")
     private Integer order;
+
+    @OneToMany(mappedBy = "place")
+    private java.util.List<UserPlace> userList;
 
 }
