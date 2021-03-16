@@ -22,11 +22,13 @@ public class UserManagingGroup {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId(value = "userId")
+    @JoinColumn(name = "id_user", referencedColumnName = "id_user")
     private User user;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId(value = "mGroupId")
+    @JoinColumn(name = "id_mgroup", referencedColumnName = "id_mgroup")
     private ManagingGroup mGroup;
 
     @Column(name = "`order`")

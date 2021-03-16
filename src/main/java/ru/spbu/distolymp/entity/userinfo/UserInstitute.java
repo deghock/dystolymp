@@ -23,11 +23,13 @@ public class UserInstitute {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId(value = "userId")
+    @JoinColumn(name = "id_user", referencedColumnName = "id_user")
     private User user;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId(value = "instituteId")
+    @JoinColumn(name = "id_inst", referencedColumnName = "id_inst")
     private Institute institute;
 
     @NotNull

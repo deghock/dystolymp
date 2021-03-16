@@ -24,11 +24,13 @@ public class UserLogListing {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId(value = "userId")
+    @JoinColumn(name = "id_user", referencedColumnName = "id_user")
     private User user;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId(value = "listingId")
+    @JoinColumn(name = "id_list", referencedColumnName = "id_list")
     private Listing listing;
 
     @NotNull

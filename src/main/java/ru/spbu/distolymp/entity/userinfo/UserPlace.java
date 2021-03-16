@@ -23,11 +23,13 @@ public class UserPlace {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId(value = "userId")
+    @JoinColumn(name = "id_user", referencedColumnName = "id_user")
     private User user;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId(value = "placeId")
+    @JoinColumn(name = "id_place", referencedColumnName = "id_place")
     private Place place;
 
     @NotNull
