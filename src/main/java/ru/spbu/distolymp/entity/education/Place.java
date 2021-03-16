@@ -9,6 +9,7 @@ import ru.spbu.distolymp.entity.userinfo.UserPlace;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * @author Daria Usova
@@ -44,6 +45,6 @@ public class Place {
     private Integer order;
 
     @OneToMany(mappedBy = "place")
-    private java.util.List<UserPlace> userList;
+    private List<UserPlace> userList;
 
 }

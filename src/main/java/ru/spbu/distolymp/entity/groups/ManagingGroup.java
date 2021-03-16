@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * @author Vladislav Konovalov
@@ -31,6 +32,6 @@ public class ManagingGroup {
     private String year;
 
     @OneToMany(mappedBy = "mGroup")
-    private java.util.List<UserManagingGroup> userList;
+    private List<UserManagingGroup> userList;
 
 }
