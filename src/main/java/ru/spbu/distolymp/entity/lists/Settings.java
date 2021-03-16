@@ -19,15 +19,6 @@ public class Settings {
     @EmbeddedId
     private SettingsId id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_division", referencedColumnName = "id_division")
-    private Division division;
-
-    @NotNull
-    @Size(max = 255)
-    @Column(name = "`key`")
-    private String key;
-
     @NotNull
     @Size(max = 255)
     @Column(name = "`value`")
