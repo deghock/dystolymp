@@ -42,7 +42,7 @@ public class PlaceServiceImpl extends PlaceCrudServiceImpl implements PlaceServi
 
     @Override
     @Transactional
-    public void saveOrEdit(PlaceDto placeDto) {
+    public void saveOrEditPlace(PlaceDto placeDto) {
         saveOrUpdatePlace(placeDto);
     }
 

@@ -10,7 +10,7 @@ public interface PlaceService {
 
     void fillShowAllPlacesModelMap(ModelMap modelMap, Long divisionId);
 
-    void saveOrEdit(PlaceDto placeDto);
+    void saveOrEditPlace(PlaceDto placeDto);
 
     PlaceDto getNewPlaceDto(Long divisionId);
 

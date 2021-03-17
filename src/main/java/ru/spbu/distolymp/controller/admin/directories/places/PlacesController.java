@@ -58,7 +58,7 @@ public class PlacesController {
             return EDIT_PAGE;
         }
 
-        placeService.saveOrEdit(placeDto);
+        placeService.saveOrEditPlace(placeDto);
         return LIST_REDIRECT_PAGE;
     }
 
