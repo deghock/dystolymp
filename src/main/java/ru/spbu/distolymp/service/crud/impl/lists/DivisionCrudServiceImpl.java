@@ -21,7 +21,7 @@ import java.util.List;
 @Log4j
 @Service
 @RequiredArgsConstructor
-public class DivisionCrudCrudServiceImpl implements DivisionCrudService {
+public class DivisionCrudServiceImpl implements DivisionCrudService {
 
     private final DivisionRepository divisionRepository;
     private final DivisionMapper divisionMapper;
