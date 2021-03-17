@@ -36,8 +36,14 @@
         }
 
         function delPlace() {
-            if (areSure()) {
-                var places = document.getElementById("places");
+            var places = document.getElementById("places");
+            var flag = false;
+            places.elements["ids"].forEach(function (item){
+                if(item.checked){
+                    flag = true;
+                }
+            });
+            if (flag && areSure()) {
                 places.submit();
             }
             return false;
