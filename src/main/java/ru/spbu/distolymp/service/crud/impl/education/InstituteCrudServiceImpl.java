@@ -48,9 +48,8 @@ public class InstituteCrudServiceImpl implements InstituteCrudService {
                 setOrder(institute);
             }
 
-            institute = instituteRepository.save(institute);
+            instituteRepository.save(institute);
 
-            instituteMapper.toDto(institute);
         } catch (DataAccessException e) {
             log.error("An error occurred while saving or updating an institute", e);
             throw new InstituteCrudException();
