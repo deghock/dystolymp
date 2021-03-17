@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <style>
+        p {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey">
+
+<div th:replace="fragments/menu-staff :: #menustaff"></div>
+
+<h3>
+    <a th:href="@{/institutes/list}" class="stealth">
+        Справочник предпочитаемых вузов
+    </a>
+</h3>
+
+<form th:action="@{/institutes/save-or-edit}" th:object="${institute}" method="post">
+    <div class="infoForm">
+        <input type="hidden" th:field="*{id}"/>
+        <fieldset>
+            <legend>Предпочитаемый ВУЗ</legend>
+            <label for="order">№:</label>
+            <input type="number" th:field="*{order}" id="order" readonly/>
+            <br/>
+
+            <label for="name">ВУЗ:</label>
+            <input type="text" th:field="*{name}" id="name" size="50"/>
+            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Institute name error</span>
+            <br/>
+
+        </fieldset>
+    </div>
+    <div style="text-align:center">
+        <button type="submit">Сохранить</button>
+    </div>
+</form>
+
+<br/>
+
+<div th:replace="fragments/footer :: #footer"></div>
+</body>
+
+</html>

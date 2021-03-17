@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <style>
+        p {
+            text-align: center;
+        }
+
+        .center {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+    <script type="text/javascript">
+        function checkAll(check) {
+            var institutes = document.getElementById("institutes");
+            var ids = institutes["ids"];
+            if (ids.name != undefined) {
+                ids = [ids];
+            }
+
+            for (var i = 0; i < ids.length; ++i) {
+                ids[i].checked = check;
+            }
+        }
+
+        function areSure() {
+            return window.confirm("Вы уверены?");
+        }
+
+        function delInstitute() {
+            var institutes = document.getElementById("institutes");
+            var flag = false;
+            institutes.elements["ids"].forEach(function (item){
+                if(item.checked){
+                    flag = true;
+                }
+            });
+            if (flag && areSure()) {
+                institutes.submit();
+            }
+            return false;
+        }
+    </script>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey">
+
+<div th:replace="fragments/menu-staff :: #menustaff"></div>
+
+<p id="title">Справочник предпочитаемых вузов</p>
+
+<div class="container">
+    <div class="alert alert-danger col-6 ml-auto mr-auto" role="alert" th:text="${error}" th:if="${error}"></div>
+
+    <form th:action="@{/institutes/delete}" method="post" id="institutes">
+        <table class="border center" aria-describedby="title">
+            <tr style="text-align: center">
+                <th id="index">№</th>
+                <th id="check-column">
+                    <input type="checkbox" onclick="checkAll(this.checked);"/>
+                </th>
+                <th id="name">Название</th>
+                <th id="actions">Действия</th>
+            </tr>
+
+            <!--/*@thymesVar id="institutes" type="java.util.List<ru.spbu.distolymp.dto.entity.education.InstituteDto>"*/-->
+            <tr th:each="institute, iter : ${institutes}">
+                <td th:text="${iter.index + 1}"></td>
+                <td>
+                    <input type="checkbox" name="ids" th:value="${institute.id}"/>
+                </td>
+                <td>
+                    <a th:href="@{/institutes/edit/{id}(id=${institute.id})}" th:text="${institute.name}" class="stealth"></a>
+                </td>
+                <td>
+                    <a th:if="${institutes.size() > 1 and iter.index != 0}"
+                       th:href="@{/institutes/order/up/{id}(id=${institute.id})}" class="stealth">
+                        ▲
+                    </a>
+                    <a th:if="${institutes.size() > 1 and iter.index != institutes.size() - 1}"
+                       th:href="@{/institutes/order/down/{id}(id=${institute.id})}"
+                       class="stealth">
+                        ▼
+                    </a>
+                </td>
+            </tr>
+
+        </table>
+    </form>
+    <ul class="actions">
+        <li>
+            <a th:href="@{/institutes/add}" class="abutton">Задать новый вуз...</a>
+        </li>
+        <li>
+            <a class="abutton" onclick="return delInstitute()">Удалить выбранные вузы...</a>
+        </li>
+    </ul>
+</div>
+
+<div th:replace="fragments/footer :: #footer"></div>
+</body>
+
+</html>
