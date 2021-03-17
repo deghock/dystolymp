@@ -77,8 +77,13 @@ public class InstituteCrudServiceImpl implements InstituteCrudService {
     @Override
     @Transactional
     public void deleteInstitutesById(List<Long> idList) {
-        instituteRepository.deleteInstitutesByIdIn(idList);
-        updateInstituteOrder();
+        try {
+            instituteRepository.deleteInstitutesByIdIn(idList);
+            updateInstituteOrder();
+        } catch (DataAccessException e) {
+            log.error("An error occurred while deleting institutes by id list", e);
+            throw new InstituteCrudException();
+        }
     }
 
     private void updateInstituteOrder() {
