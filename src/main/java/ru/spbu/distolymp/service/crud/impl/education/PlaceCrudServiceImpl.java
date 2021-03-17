@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.dto.entity.education.PlaceDto;
 import ru.spbu.distolymp.entity.education.Place;
-import ru.spbu.distolymp.exception.crud.education.PlaceCrudException;
+import ru.spbu.distolymp.exception.crud.education.PlaceCrudServiceException;
 import ru.spbu.distolymp.mapper.entity.education.PlaceMapper;
 import ru.spbu.distolymp.repository.education.PlaceRepository;
 import ru.spbu.distolymp.service.crud.api.education.PlaceCrudService;
