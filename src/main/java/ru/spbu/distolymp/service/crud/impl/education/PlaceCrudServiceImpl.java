@@ -51,9 +51,7 @@ public class PlaceCrudServiceImpl implements PlaceCrudService {
                 setOrder(place);
             }
 
-            place = placeRepository.save(place);
-
-            placeMapper.toDto(place);
+            placeRepository.save(place);
         } catch (DataAccessException e) {
             log.error("An error occurred while saving or updating a place", e);
             throw new PlaceCrudException();
