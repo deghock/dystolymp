@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <style>
+        p {
+            text-align: center;
+        }
+        .center {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+    <script type="text/javascript">
+        function areSure() {
+            return window.confirm("Вы уверены?");
+        }
+
+        function rename(id, str) {
+            var title = prompt("Введите новое имя класса.\n" +
+                "Если имя будет пустым переименовывания не произойдёт", str);
+            if ((title != null) && (title != "")) {
+                var renamel = document.getElementById('renamel');
+                renamel.name.value = title;
+                renamel.id.value = id;
+                renamel.submit();
+            }
+            return false;
+        }
+
+        function create(str) {
+            var title = prompt("Введите имя нового класса.\n" +
+                "Если имя будет пустым класс не будет создан", str);
+            if ((title != null) && (title != "")) {
+                var newl = document.getElementById('newl');
+                newl.name.value = title;
+                return true;
+            }
+            return false;
+        }
+    </script>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+<body class="bgGrey">
+<div th:replace="fragments/menu-staff :: #menustaff"></div>
+
+<div class="container">
+    <p id="title">Списки и преподаватели, автоматически назначаемые группам при регистрации</p>
+    <div class="center col-6">
+        <div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
+
+        <table class="table border center" aria-describedby="title">
+            <tr style="text-align: center">
+                <th id="grade">Класс</th>
+                <th id="list">Cписок</th>
+                <th id="teacher">Преподаватель</th>
+                <th id="registration">Регистрация</th>
+                <th id="codePhrase">Кодовая фраза</th>
+                <th id="replyName">Письмо участнику от имени (email)</th>
+                <th id="serviceMail">Служебная почта</th>
+                <th id="actions">Действия</th>
+            </tr>
+
+            <tr th:each="grade : ${grades}">
+                <td th:text="${grade.name}"></td>
+                <td th:text="${grade.list}"></td>
+                <td th:text="${grade.teacher}"></td>
+                <td th:text="${grade.registration}"></td>
+                <td th:text="${grade.codePhrase}"></td>
+                <td th:text="${grade.replyName}"></td>
+                <td th:text="${grade.serviceMail}"></td>
+                <td style="text-align: center">
+                    <a href="#" class="abutton" data-toggle="modal" data-target=".rename-grade"
+                       th:attr="grade-id=${grade.id}, grade-name=${grade.name}">переименовать</a>
+                    <a th:href="@{/grades/update/{id}(gradeId=${grade.id})}" class="abutton">изменить</a>
+                    <a th:href="@{/grades/delete/{id}(gradeId=${grade.id})}" class="abutton"
+                       onclick="return window.confirm('Вы уверены?')">удалить</a>
+                </td>
+            </tr>
+        </table>
+
+        <div style="text-align:center; margin:0.5em;">
+            <button type="button" class="btn btn-light border border-dark"
+                    data-toggle="modal" data-target=".new-grade">Добавить новый класс
+            </button>
+        </div>
+
+    </div>
+
+    <div class="modal fade rename-grade" id="rename-grade-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Переименовать класс</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="rename-grade-form" th:object="${grade}"
+                          th:action="@{/grades/rename}" method="post">
+                        <div class="form-group">
+                            <label for="update-grade-name">Имя класса</label>
+                            <input th:field="*{name}" placeholder="Новое имя класса"
+                                   type="text" class="form-control" id="update-grade-name"
+                                   aria-describedby="updateClassHelp">
+                            <small id="updateClassHelp" class="form-text text-muted">Если имя будет пустым, класс
+                                не будет переименован.
+                            </small>
+                            <input hidden type="number" th:value="*{id}" th:field="*{id}" id="grade-id">
+                            <input hidden type="number" th:value="*{divisionId}" th:field="*{divisionId}">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn  btn-light border border-dark" data-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-light border border-dark" form="rename-grade-form">Ок
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: #footer"></div>
+</body>
+
+<script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+<script type="text/javascript">
+    $('#rename-grade-modal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var id = button.data('id')
+        var name = button.data('name')
+
+        var modal = $(this)
+        modal.find('.modal-body #update-grade-name').val(name)
+        modal.find('.modal-body #grade-id').val(id)
+    })
+</script>
+
+</html>

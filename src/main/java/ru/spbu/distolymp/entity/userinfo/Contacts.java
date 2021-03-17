@@ -1,6 +1,7 @@
 package ru.spbu.distolymp.entity.userinfo;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -9,6 +10,7 @@ import javax.validation.constraints.Size;
  * @author Daria Usova
  */
 @Data
+@EqualsAndHashCode(of = {"id"})
 @Entity
 @Table(name = "contacts")
 public class Contacts {

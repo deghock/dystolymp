@@ -1,34 +1,35 @@
-package ru.spbu.distolymp.entity.lists;
+package ru.spbu.distolymp.entity.geography;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * @author Daria Usova
+ * @author Vladislav Konovalov
  */
 @Data
 @EqualsAndHashCode(of = {"id"})
 @Entity
-@Table(name = "categories")
-public class Category {
+@Table(name = "federals")
+public class Federals {
 
     @Id
-    @Column(name = "id_category")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_federal")
     private Long id;
 
     @NotNull
+    @Size(max = 255)
     @Column(name = "name")
-    @Size(min = 1, max = 50)
     private String name;
 
     @NotNull
-    @ManyToOne
-    @JoinColumn(name = "id_division", referencedColumnName = "id_division")
-    private Division division;
+    @Type(type = "text")
+    @Column(name = "region_ids")
+    private String regionIds;
 
 }
