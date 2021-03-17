@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.spbu.distolymp.dto.entity.education.PlaceDto;
 import ru.spbu.distolymp.exception.admin.directories.places.PlaceServiceException;
-import ru.spbu.distolymp.exception.crud.education.PlaceCrudException;
+import ru.spbu.distolymp.exception.crud.education.PlaceCrudServiceException;
 import ru.spbu.distolymp.service.admin.directories.places.api.PlaceService;
 
 import javax.validation.Valid;
@@ -58,7 +58,7 @@ public class PlacesController {
             return EDIT_PAGE;
         }
 
-        placeService.saveOrEdit(placeDto);
+        placeService.saveOrEditPlace(placeDto);
         return LIST_REDIRECT_PAGE;
     }
 
@@ -91,7 +91,7 @@ public class PlacesController {
         return LIST_REDIRECT_PAGE;
     }
 
-    @ExceptionHandler({PlaceServiceException.class, PlaceCrudException.class})
+    @ExceptionHandler({PlaceServiceException.class, PlaceCrudServiceException.class})
     public String handlePlaceCrudException(RedirectAttributes ra) {
         ra.addFlashAttribute("error", "Произошла ошибка. Пожалуйста, попробуйте повторить операцию позже.");
         return LIST_REDIRECT_PAGE;

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.dto.entity.education.PlaceDto;
 import ru.spbu.distolymp.entity.education.Place;
-import ru.spbu.distolymp.exception.crud.education.PlaceCrudException;
+import ru.spbu.distolymp.exception.crud.education.PlaceCrudServiceException;
 import ru.spbu.distolymp.mapper.entity.education.PlaceMapper;
 import ru.spbu.distolymp.repository.education.PlaceRepository;
 import ru.spbu.distolymp.service.crud.api.education.PlaceCrudService;
@@ -51,12 +51,10 @@ public class PlaceCrudServiceImpl implements PlaceCrudService {
                 setOrder(place);
             }
 
-            place = placeRepository.save(place);
-
-            placeMapper.toDto(place);
+            placeRepository.save(place);
         } catch (DataAccessException e) {
             log.error("An error occurred while saving or updating a place", e);
-            throw new PlaceCrudException();
+            throw new PlaceCrudServiceException();
         }
     }
 
@@ -74,7 +72,7 @@ public class PlaceCrudServiceImpl implements PlaceCrudService {
             return placeMapper.toDto(place);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting place by id=" + id, e);
-            throw new PlaceCrudException();
+            throw new PlaceCrudServiceException();
         }
     }
 
@@ -86,7 +84,7 @@ public class PlaceCrudServiceImpl implements PlaceCrudService {
             updatePlaceOrder(divisionId);
         } catch (DataAccessException e) {
             log.error("An error occurred while deleting places by id list", e);
-            throw new PlaceCrudException();
+            throw new PlaceCrudServiceException();
         }
     }
 
