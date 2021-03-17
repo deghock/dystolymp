@@ -54,7 +54,7 @@ public class PlaceCrudServiceImpl implements PlaceCrudService {
             placeRepository.save(place);
         } catch (DataAccessException e) {
             log.error("An error occurred while saving or updating a place", e);
-            throw new PlaceCrudException();
+            throw new PlaceCrudServiceException();
         }
     }
 
@@ -72,7 +72,7 @@ public class PlaceCrudServiceImpl implements PlaceCrudService {
             return placeMapper.toDto(place);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting place by id=" + id, e);
-            throw new PlaceCrudException();
+            throw new PlaceCrudServiceException();
         }
     }
 
@@ -84,7 +84,7 @@ public class PlaceCrudServiceImpl implements PlaceCrudService {
             updatePlaceOrder(divisionId);
         } catch (DataAccessException e) {
             log.error("An error occurred while deleting places by id list", e);
-            throw new PlaceCrudException();
+            throw new PlaceCrudServiceException();
         }
     }
 
