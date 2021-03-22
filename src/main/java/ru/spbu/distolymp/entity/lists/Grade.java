@@ -34,7 +34,7 @@ public class Grade {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "registration", columnDefinition = "ENUM('open', 'close')", nullable = false)
-    private RegistrationStatus registrationStatus;
+    private RegistrationStatus registrationStatus = RegistrationStatus.close;
 
     @Size(max = 255)
     @Column(name = "codephrase")
