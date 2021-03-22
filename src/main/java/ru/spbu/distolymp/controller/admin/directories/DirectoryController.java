@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/directories/list")
-public class DirectoriesController {
+public class DirectoryController {
 
     @GetMapping
     public String showDirectoriesPage() {

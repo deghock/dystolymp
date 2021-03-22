@@ -19,7 +19,7 @@ import javax.validation.Valid;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/categories")
-public class CategoriesController {
+public class CategoryController {
 
     private final CategoryService categoryService;
     private static final String REDIRECT_CATEGORY_LIST = "redirect:/categories/list";
