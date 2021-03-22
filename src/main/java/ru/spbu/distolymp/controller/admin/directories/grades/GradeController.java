@@ -3,11 +3,14 @@ package ru.spbu.distolymp.controller.admin.directories.grades;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.spbu.distolymp.dto.admin.directories.lists.grades.GradeNameDto;
+import ru.spbu.distolymp.exception.crud.lists.grade.AddNewGradeException;
 import ru.spbu.distolymp.service.admin.directories.grades.api.GradeService;
+
+import javax.validation.Valid;
 
 /**
  * @author Vladislav Konovalov
@@ -38,6 +41,20 @@ public class GradeController {
                               @SessionAttribute(value = "idDivision", required = false)
                                       Long divisionId) {
         gradeService.deleteGradeById(id, divisionId);
+        return REDIRECT_GRADE_LIST;
+    }
+
+    @PostMapping("/add")
+    public String addNewGrade(@Valid GradeNameDto gradeNameDto, BindingResult bindingResult,
+                              RedirectAttributes ra) {
+        if (bindingResult.hasErrors()) { return handleAddNewGradeException(ra); }
+        gradeService.addNewGrade(gradeNameDto);
+        return REDIRECT_GRADE_LIST;
+    }
+
+    @ExceptionHandler(AddNewGradeException.class)
+    public String handleAddNewGradeException(RedirectAttributes ra) {
+        ra.addFlashAttribute("error", "Новый класс не был добавлен");
         return REDIRECT_GRADE_LIST;
     }
 
