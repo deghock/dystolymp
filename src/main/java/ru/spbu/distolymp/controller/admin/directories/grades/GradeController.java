@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.spbu.distolymp.dto.admin.directories.lists.grades.GradeNameDto;
 import ru.spbu.distolymp.exception.crud.lists.grade.AddNewGradeException;
+import ru.spbu.distolymp.exception.crud.lists.grade.RenameGradeException;
 import ru.spbu.distolymp.service.admin.directories.grades.api.GradeService;
 
 import javax.validation.Valid;
@@ -55,6 +56,20 @@ public class GradeController {
     @ExceptionHandler(AddNewGradeException.class)
     public String handleAddNewGradeException(RedirectAttributes ra) {
         ra.addFlashAttribute("error", "Новый класс не был добавлен");
+        return REDIRECT_GRADE_LIST;
+    }
+
+    @PostMapping("/rename")
+    public String renameGrade(@Valid GradeNameDto gradeNameDto, BindingResult bindingResult,
+                              RedirectAttributes ra) {
+        if (bindingResult.hasErrors()) { return handleRenameGradeException(ra); }
+        gradeService.renameGrade(gradeNameDto);
+        return REDIRECT_GRADE_LIST;
+    }
+
+    @ExceptionHandler(RenameGradeException.class)
+    public String handleRenameGradeException(RedirectAttributes ra) {
+        ra.addFlashAttribute("error", "Имя класса не было изменено");
         return REDIRECT_GRADE_LIST;
     }
 
