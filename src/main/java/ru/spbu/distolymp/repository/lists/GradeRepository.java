@@ -12,4 +12,6 @@ public interface GradeRepository extends CrudRepository<Grade, Long> {
 
     List<Grade> findAllByDivisionId(Long divisionId);
 
+    void deleteGradeByIdAndDivisionId(Long id, Long divisionId);
+
 }
