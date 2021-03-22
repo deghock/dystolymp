@@ -73,7 +73,7 @@
                 </td>
                 <td style="text-align: center">
                     <a href="#" class="abutton" data-toggle="modal" data-target=".rename-grade"
-                       th:attr="grade-id=${grade.id}, grade-name=${grade.name}">переименовать</a>
+                       th:attr="data-id=${grade.id}, data-name=${grade.name}">переименовать</a>
                     <a th:href="@{/grades/update/{id}(id=${grade.id})}" class="abutton">изменить</a>
                     <a th:href="@{/grades/delete/{id}(id=${grade.id})}" class="abutton"
                        onclick="return window.confirm('Вы уверены?')">удалить</a>
@@ -142,8 +142,8 @@
                             <label for="update-grade-name">Имя класса</label>
                             <input th:field="*{name}" placeholder="Новое имя класса"
                                    type="text" class="form-control" id="update-grade-name"
-                                   aria-describedby="updateClassHelp">
-                            <small id="updateClassHelp" class="form-text text-muted">Если имя будет пустым, класс
+                                   aria-describedby="updateGradeHelp">
+                            <small id="updateGradeHelp" class="form-text text-muted">Если имя будет пустым, класс
                                 не будет переименован.
                             </small>
                             <input hidden type="number" th:value="*{id}" th:field="*{id}" id="grade-id">
