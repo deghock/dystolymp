@@ -17,34 +17,6 @@
             margin-right: auto;
         }
     </style>
-    <script type="text/javascript">
-        function areSure() {
-            return window.confirm("Вы уверены?");
-        }
-
-        function rename(id, str) {
-            var title = prompt("Введите новое имя класса.\n" +
-                "Если имя будет пустым переименовывания не произойдёт", str);
-            if ((title != null) && (title != "")) {
-                var renamel = document.getElementById('renamel');
-                renamel.name.value = title;
-                renamel.id.value = id;
-                renamel.submit();
-            }
-            return false;
-        }
-
-        function create(str) {
-            var title = prompt("Введите имя нового класса.\n" +
-                "Если имя будет пустым класс не будет создан", str);
-            if ((title != null) && (title != "")) {
-                var newl = document.getElementById('newl');
-                newl.name.value = title;
-                return true;
-            }
-            return false;
-        }
-    </script>
 </head>
 
 <div th:replace="fragments/header :: #header"></div>
@@ -64,18 +36,35 @@
                 <th id="registration">Регистрация</th>
                 <th id="codePhrase">Кодовая фраза</th>
                 <th id="replyName">Письмо участнику от имени (email)</th>
-                <th id="serviceMail">Служебная почта</th>
+                <th id="serviceEmail">Служебная почта</th>
                 <th id="actions">Действия</th>
             </tr>
 
+            <!--/*@thymesVar id="grades" type="java.util.List<ru.spbu.distolymp.dto.admin.directories.lists.grades.GradeListDto>"*/-->
             <tr th:each="grade : ${grades}">
                 <td th:text="${grade.name}"></td>
-                <td th:text="${grade.list}"></td>
-                <td th:text="${grade.teacher}"></td>
-                <td th:text="${grade.registration}"></td>
-                <td th:text="${grade.codePhrase}"></td>
-                <td th:text="${grade.replyName}"></td>
-                <td th:text="${grade.serviceMail}"></td>
+                <td>
+                    <span th:if="${grade.listingName} != null">
+                        <a href="#" th:text="${grade.listingName}" class="stealth"></a>
+                    </span>
+                    <span th:unless="${grade.listingName} != null" style="color: red">Не назначен</span>
+                </td>
+                <td>
+                    <span th:if="${grade.staffLogin} != null">
+                        <a href="#" th:text="${grade.staffLogin}" class="stealth"></a>
+                    </span>
+                    <span th:unless="${grade.staffLogin} != null" style="color: red">Не назначен</span>
+                </td>
+                <td>
+                    <span th:if="${grade.registrationStatus} == 'open'">доступна</span>
+                    <span th:unless="${grade.registrationStatus} == 'open'" style="color: red">закрыта</span>
+                </td>
+                <td>
+                    <span th:if="${grade.codePhrase} != null" th:text="${grade.codePhrase}"></span>
+                    <span th:unless="${grade.codePhrase} != null" style="color: red">Не назначена</span>
+                </td>
+                <td th:text="${grade.replyTo}"></td>
+                <td th:text="${grade.serviceEmail}"></td>
                 <td style="text-align: center">
                     <a href="#" class="abutton" data-toggle="modal" data-target=".rename-grade"
                        th:attr="grade-id=${grade.id}, grade-name=${grade.name}">переименовать</a>
@@ -94,6 +83,42 @@
 
     </div>
 
+    <div class="modal fade new-grade" id="new-grade-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Новый класс</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!--/*@thymesVar id="grade" type="ru.spbu.distolymp.dto.admin.directories.lists.grades.GradeListDto"*/-->
+                    <form id="new-grade-form" th:object="${grade}"
+                          th:action="@{/grades/add}" method="post">
+                        <div class="form-group">
+                            <label for="new-grade-name">Имя класса</label>
+                            <input th:field="*{name}" placeholder="Новый класс"
+                                   type="text" class="form-control" id="new-grade-name"
+                                   aria-describedby="categoryHelp">
+                            <small id="gradeHelp" class="form-text text-muted">Если имя будет пустым, новый
+                                класс не будет создан.
+                            </small>
+                            <label>
+                                <input hidden type="number" th:value="*{divisionId}" th:field="*{divisionId}">
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn  btn-light border border-dark" data-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-light border border-dark" form="new-grade-form">Ок
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade rename-grade" id="rename-grade-modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -104,6 +129,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <!--/*@thymesVar id="grade" type="ru.spbu.distolymp.dto.admin.directories.lists.grades.GradeListDto"*/-->
                     <form id="rename-grade-form" th:object="${grade}"
                           th:action="@{/grades/rename}" method="post">
                         <div class="form-group">
@@ -135,6 +161,10 @@
 <script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
 <script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
 <script type="text/javascript">
+    $('#new-grade-modal').on('show.bs.modal', function (event) {
+        $('#new-grade-name').val("");
+    });
+
     $('#rename-grade-modal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget)
         var id = button.data('id')
