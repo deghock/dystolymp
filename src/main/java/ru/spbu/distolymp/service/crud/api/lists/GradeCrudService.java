@@ -11,4 +11,6 @@ public interface GradeCrudService {
 
     List<GradeListDto> getAllGradesByDivisionId(Long divisionId);
 
+    void deleteGradeByIdAndDivisionId(Long id, Long divisionId);
+
 }

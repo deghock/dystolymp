@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.dto.admin.directories.lists.grades.GradeListDto;
 import ru.spbu.distolymp.entity.lists.Grade;
+import ru.spbu.distolymp.exception.crud.lists.grade.GradeCrudServiceException;
 import ru.spbu.distolymp.mapper.admin.directories.lists.grades.GradeListMapper;
 import ru.spbu.distolymp.repository.lists.GradeRepository;
 import ru.spbu.distolymp.service.crud.api.lists.GradeCrudService;
@@ -37,4 +38,16 @@ public class GradeCrudServiceImpl implements GradeCrudService {
         }
         return gradeListDtoList;
     }
+
+    @Override
+    @Transactional
+    public void deleteGradeByIdAndDivisionId(Long id, Long divisionId) {
+        try {
+            gradeRepository.deleteGradeByIdAndDivisionId(id, divisionId);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while deleting grades by id", e);
+            throw new GradeCrudServiceException();
+        }
+    }
+
 }
