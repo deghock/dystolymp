@@ -14,4 +14,6 @@ public interface GradeService {
 
     void addNewGrade(GradeNameDto gradeNameDto);
 
+    void renameGrade(GradeNameDto gradeNameDto);
+
 }

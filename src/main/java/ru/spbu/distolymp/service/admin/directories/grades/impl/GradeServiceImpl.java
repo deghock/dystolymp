@@ -46,4 +46,10 @@ public class GradeServiceImpl extends GradeCrudServiceImpl implements GradeServi
         saveNewGrade(gradeNameDto);
     }
 
+    @Override
+    @Transactional
+    public void renameGrade(GradeNameDto gradeNameDto) {
+        super.renameGrade(gradeNameDto);
+    }
+
 }
