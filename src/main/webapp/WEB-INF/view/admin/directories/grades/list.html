@@ -68,8 +68,8 @@
                 <td style="text-align: center">
                     <a href="#" class="abutton" data-toggle="modal" data-target=".rename-grade"
                        th:attr="grade-id=${grade.id}, grade-name=${grade.name}">переименовать</a>
-                    <a th:href="@{/grades/update/{id}(gradeId=${grade.id})}" class="abutton">изменить</a>
-                    <a th:href="@{/grades/delete/{id}(gradeId=${grade.id})}" class="abutton"
+                    <a th:href="@{/grades/update/{id}(id=${grade.id})}" class="abutton">изменить</a>
+                    <a th:href="@{/grades/delete/{id}(id=${grade.id})}" class="abutton"
                        onclick="return window.confirm('Вы уверены?')">удалить</a>
                 </td>
             </tr>
