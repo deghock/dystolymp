@@ -16,4 +16,6 @@ public interface GradeCrudService {
 
     void saveNewGrade(GradeNameDto gradeNameDto);
 
+    void renameGrade(GradeNameDto gradeNameDto);
+
 }

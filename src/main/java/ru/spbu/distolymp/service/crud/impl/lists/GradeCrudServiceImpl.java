@@ -11,6 +11,7 @@ import ru.spbu.distolymp.entity.lists.Division;
 import ru.spbu.distolymp.entity.lists.Grade;
 import ru.spbu.distolymp.exception.crud.lists.grade.AddNewGradeException;
 import ru.spbu.distolymp.exception.crud.lists.grade.GradeCrudServiceException;
+import ru.spbu.distolymp.exception.crud.lists.grade.RenameGradeException;
 import ru.spbu.distolymp.mapper.admin.directories.lists.grades.GradeListMapper;
 import ru.spbu.distolymp.mapper.admin.directories.lists.grades.GradeNameMapper;
 import ru.spbu.distolymp.repository.lists.GradeRepository;
@@ -74,6 +75,20 @@ public class GradeCrudServiceImpl implements GradeCrudService {
         Division division = divisionCrudService.getDivisionById(gradeNameDto.getDivisionId());
         grade.setDivision(division);
         gradeRepository.save(grade);
+    }
+
+    @Override
+    public void renameGrade(GradeNameDto gradeNameDto) {
+        try {
+            Long id = gradeNameDto.getId();
+            Grade grade = gradeRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Grade with id=" + id + " not found"));
+            grade.setName(gradeNameDto.getName());
+            gradeRepository.save(grade);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while updating grade with id=" + gradeNameDto.getId(), e);
+            throw new RenameGradeException();
+        }
     }
 
 }
