@@ -9,4 +9,6 @@ public interface GradeService {
 
     void fillShowAllGradesModelMap(ModelMap modelMap, Long divisionId);
 
+    void deleteGradeById(Long id, Long divisionId);
+
 }

@@ -28,4 +28,10 @@ public class GradeServiceImpl extends GradeCrudServiceImpl implements GradeServi
         modelMap.put("grades", grades);
     }
 
+    @Override
+    @Transactional
+    public void deleteGradeById(Long id, Long divisionId) {
+        deleteGradeByIdAndDivisionId(id, divisionId);
+    }
+
 }
