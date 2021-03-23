@@ -21,7 +21,7 @@ import javax.validation.Valid;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/places")
-public class PlacesController {
+public class PlaceController {
 
     private static final String ROOT_DIR = "admin/directories/places/";
     private static final String LIST_PAGE = ROOT_DIR + "list";

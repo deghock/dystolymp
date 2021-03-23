@@ -2,6 +2,8 @@ package ru.spbu.distolymp.entity.lists;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 import ru.spbu.distolymp.entity.enumeration.RegistrationStatus;
 import ru.spbu.distolymp.entity.users.Staff;
@@ -63,11 +65,13 @@ public class Grade {
     @JoinColumn(name = "id_division", referencedColumnName = "id_division")
     private Division division;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(name = "id_list", referencedColumnName = "id_list")
     private Listing listing;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(name = "id_staff", referencedColumnName = "id_staff")
     private Staff staff;
 
