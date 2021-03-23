@@ -7,13 +7,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.dto.admin.directories.lists.grades.GradeListDto;
 import ru.spbu.distolymp.dto.admin.directories.lists.grades.GradeNameDto;
+import ru.spbu.distolymp.dto.entity.lists.GradeEditDto;
 import ru.spbu.distolymp.entity.lists.Division;
 import ru.spbu.distolymp.entity.lists.Grade;
+import ru.spbu.distolymp.exception.crud.education.PlaceCrudServiceException;
 import ru.spbu.distolymp.exception.crud.lists.grade.AddNewGradeException;
 import ru.spbu.distolymp.exception.crud.lists.grade.GradeCrudServiceException;
 import ru.spbu.distolymp.exception.crud.lists.grade.RenameGradeException;
 import ru.spbu.distolymp.mapper.admin.directories.lists.grades.GradeListMapper;
 import ru.spbu.distolymp.mapper.admin.directories.lists.grades.GradeNameMapper;
+import ru.spbu.distolymp.mapper.entity.lists.GradeEditMapper;
 import ru.spbu.distolymp.repository.lists.GradeRepository;
 import ru.spbu.distolymp.service.crud.api.lists.DivisionCrudService;
 import ru.spbu.distolymp.service.crud.api.lists.GradeCrudService;
@@ -32,20 +35,34 @@ public class GradeCrudServiceImpl implements GradeCrudService {
 
     private final GradeListMapper gradeListMapper;
     private final GradeNameMapper gradeNameMapper;
+    private final GradeEditMapper gradeEditMapper;
     private final DivisionCrudService divisionCrudService;
     protected final GradeRepository gradeRepository;
 
     @Override
     @Transactional(readOnly = true)
-    public List<GradeListDto> getAllGradesByDivisionId(Long divisionId) {
-        List<GradeListDto> gradeListDtoList = new ArrayList<>();
+    public List<GradeListDto> getShowAllGradesByDivisionId(Long divisionId) {
+        List<GradeListDto> gradeDtoList = new ArrayList<>();
         try {
-            List<Grade> grades = gradeRepository.findAllByDivisionId(divisionId);
-            gradeListDtoList = gradeListMapper.toDtoList(grades);
+            List<Grade> gradeList = gradeRepository.findAllByDivisionId(divisionId);
+            gradeDtoList = gradeListMapper.toDtoList(gradeList);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting all grades", e);
         }
-        return gradeListDtoList;
+        return gradeDtoList;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public GradeEditDto getGradeByIdAndDivisionId(Long id, Long divisionId) {
+        try {
+            Grade grade = gradeRepository.findByIdAndDivisionId(id, divisionId);
+            if (grade == null) { throw new EntityNotFoundException(); }
+            return gradeEditMapper.toDto(grade);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while getting grade by id=" + id, e);
+            throw new PlaceCrudServiceException();
+        }
     }
 
     @Override
@@ -78,6 +95,7 @@ public class GradeCrudServiceImpl implements GradeCrudService {
     }
 
     @Override
+    @Transactional
     public void renameGrade(GradeNameDto gradeNameDto) {
         try {
             Long id = gradeNameDto.getId();
@@ -88,6 +106,18 @@ public class GradeCrudServiceImpl implements GradeCrudService {
         } catch (DataAccessException e) {
             log.error("An error occurred while updating grade with id=" + gradeNameDto.getId(), e);
             throw new RenameGradeException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public void updateGrade(GradeEditDto gradeEditDto) {
+        try {
+            Grade grade = gradeEditMapper.toEntity(gradeEditDto);
+            gradeRepository.save(grade);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while updating a grade", e);
+            throw new GradeCrudServiceException();
         }
     }
 
