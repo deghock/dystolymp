@@ -33,7 +33,8 @@
         <fieldset>
             <legend>Площадка очного тура</legend>
             <label for="order">№:</label>
-            <input type="number" th:field="*{order}" id="order" readonly/>
+            <input type="number" th:field="*{order}" id="order" min="1" th:max="${maxOrder}"/>
+            <span th:if="${#fields.hasErrors('order')}" th:errors="*{order}">Place order error</span>
             <br/>
 
             <label for="name">Площадка:</label>
