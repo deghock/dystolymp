@@ -10,7 +10,6 @@ import ru.spbu.distolymp.dto.admin.directories.lists.grades.GradeNameDto;
 import ru.spbu.distolymp.dto.entity.lists.GradeEditDto;
 import ru.spbu.distolymp.entity.lists.Division;
 import ru.spbu.distolymp.entity.lists.Grade;
-import ru.spbu.distolymp.exception.crud.education.PlaceCrudServiceException;
 import ru.spbu.distolymp.exception.crud.lists.grade.AddNewGradeException;
 import ru.spbu.distolymp.exception.crud.lists.grade.GradeCrudServiceException;
 import ru.spbu.distolymp.exception.crud.lists.grade.RenameGradeException;
@@ -22,7 +21,6 @@ import ru.spbu.distolymp.service.crud.api.lists.DivisionCrudService;
 import ru.spbu.distolymp.service.crud.api.lists.GradeCrudService;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,12 +40,13 @@ public class GradeCrudServiceImpl implements GradeCrudService {
     @Override
     @Transactional(readOnly = true)
     public List<GradeListDto> getShowAllGradesByDivisionId(Long divisionId) {
-        List<GradeListDto> gradeDtoList = new ArrayList<>();
+        List<GradeListDto> gradeDtoList;
         try {
             List<Grade> gradeList = gradeRepository.findAllByDivisionId(divisionId);
             gradeDtoList = gradeListMapper.toDtoList(gradeList);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting all grades", e);
+            throw new GradeCrudServiceException();
         }
         return gradeDtoList;
     }
@@ -61,7 +60,7 @@ public class GradeCrudServiceImpl implements GradeCrudService {
             return gradeEditMapper.toDto(grade);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting grade by id=" + id, e);
-            throw new PlaceCrudServiceException();
+            throw new GradeCrudServiceException();
         }
     }
 
@@ -70,8 +69,8 @@ public class GradeCrudServiceImpl implements GradeCrudService {
     public void deleteGradeByIdAndDivisionId(Long id, Long divisionId) {
         try {
             gradeRepository.deleteGradeByIdAndDivisionId(id, divisionId);
-        } catch (DataAccessException e) {
-            log.error("An error occurred while deleting grades by id", e);
+        } catch (DataAccessException | EntityNotFoundException e) {
+            log.error("An error occurred while deleting grades by id=" + id, e);
             throw new GradeCrudServiceException();
         }
     }
