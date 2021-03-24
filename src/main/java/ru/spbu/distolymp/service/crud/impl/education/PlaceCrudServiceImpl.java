@@ -46,21 +46,43 @@ public class PlaceCrudServiceImpl implements PlaceCrudService {
     @Transactional
     public void saveOrUpdatePlace(PlaceDto placeDto) {
         try {
-            Place place = placeMapper.toEntity(placeDto);
-            if (place.getId() == null) {
-                setOrder(place);
+            Integer oldOrder;
+            if (placeDto.getId() == null) {
+                oldOrder = placeRepository.findMaxOrderByDivisionId(placeDto.getDivisionId()) + 1;
+            }else{
+                oldOrder = placeRepository.findById(placeDto.getId()).get().getOrder();
             }
-
-            placeRepository.save(place);
+            Place place = placeMapper.toEntity(placeDto);
+            setNewOrder(place, oldOrder, place.getOrder());
         } catch (DataAccessException e) {
             log.error("An error occurred while saving or updating a place", e);
             throw new PlaceCrudServiceException();
         }
     }
 
-    private void setOrder(Place place) {
+    protected void setNewOrder(Place place, Integer oldOrder, Integer newOrder) {
         Long divisionId = place.getDivision().getId();
-        place.setOrder(placeRepository.findMaxOrderByDivisionId(divisionId) + 1);
+        ArrayList<Place> placeToSave = new ArrayList<>();
+        Place plc;
+        if(oldOrder > newOrder) {
+            for (int i = newOrder; i < oldOrder; i++) {
+                plc = placeRepository.findByDivisionIdAndOrder(divisionId,i).get();
+                placeToSave.add(plc);
+            }
+            for(Place p: placeToSave) {
+                p.setOrder(p.getOrder() + 1);
+            }
+        } else if(oldOrder < newOrder) {
+            for(int i = oldOrder+1; i <= newOrder; i++){
+                plc = placeRepository.findByDivisionIdAndOrder(divisionId,i).get();
+                placeToSave.add(plc);
+            }
+            for(Place p: placeToSave) {
+                p.setOrder(p.getOrder() - 1);
+            }
+        }
+        place.setOrder(newOrder);
+        placeRepository.save(place);
     }
 
     @Override
