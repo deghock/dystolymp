@@ -43,21 +43,42 @@ public class InstituteCrudServiceImpl implements InstituteCrudService {
     @Transactional
     public void saveOrUpdateInstitute(InstituteDto instituteDto) {
         try {
-            Institute institute = instituteMapper.toEntity(instituteDto);
-            if (institute.getId() == null) {
-                setOrder(institute);
+            Integer oldOrder;
+            if (instituteDto.getId() == null) {
+                oldOrder = instituteRepository.findMaxOrder() + 1;
+            }else{
+                oldOrder = instituteRepository.findById(instituteDto.getId()).get().getOrder();
             }
-
-            instituteRepository.save(institute);
-
+            Institute institute = instituteMapper.toEntity(instituteDto);
+            setNewOrder(institute, oldOrder, institute.getOrder());
         } catch (DataAccessException e) {
             log.error("An error occurred while saving or updating an institute", e);
             throw new InstituteCrudException();
         }
     }
 
-    private void setOrder(Institute institute) {
-        institute.setOrder(instituteRepository.findMaxOrder() + 1);
+    protected void setNewOrder(Institute institute, Integer oldOrder, Integer newOrder) {
+        ArrayList<Institute> instToSave = new ArrayList<>();
+        Institute inst;
+        if(oldOrder > newOrder) {
+            for (int i = newOrder; i < oldOrder; i++) {
+                inst = instituteRepository.findByOrder(i).get();
+                instToSave.add(inst);
+            }
+            for(Institute i: instToSave) {
+                i.setOrder(i.getOrder() + 1);
+            }
+        } else if(oldOrder < newOrder) {
+            for(int i = oldOrder+1; i <= newOrder; i++){
+                inst = instituteRepository.findByOrder(i).get();
+                instToSave.add(inst);
+            }
+            for(Institute i: instToSave) {
+                i.setOrder(i.getOrder() - 1);
+            }
+        }
+        institute.setOrder(newOrder);
+        instituteRepository.save(institute);
     }
 
     @Override

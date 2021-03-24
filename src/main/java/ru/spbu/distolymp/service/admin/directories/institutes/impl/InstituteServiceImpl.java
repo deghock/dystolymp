@@ -67,7 +67,7 @@ public class InstituteServiceImpl extends InstituteCrudServiceImpl implements In
         try {
             Institute institute = instituteRepository.findById(id)
                     .orElseThrow(EntityNotFoundException::new);
-            setNewOrder(institute, institute.getOrder() - 1);
+            setNewOrder(institute, institute.getOrder(), institute.getOrder() - 1);
         } catch (DataAccessException e) {
             log.error("An error occurred while updating institute order", e);
             throw new InstituteServiceException();
@@ -80,30 +80,13 @@ public class InstituteServiceImpl extends InstituteCrudServiceImpl implements In
         try {
             Institute institute = instituteRepository.findById(id)
                     .orElseThrow(EntityNotFoundException::new);
-            setNewOrder(institute, institute.getOrder() + 1);
+            setNewOrder(institute, institute.getOrder(), institute.getOrder() + 1);
         } catch (DataAccessException e) {
             log.error("An error occurred while updating institute order", e);
             throw new InstituteServiceException();
         }
     }
 
-
-    private void setNewOrder(Institute institute, Integer newOrder) {
-        Integer order = institute.getOrder();
-
-        Optional<Institute> newOrderInstituteOpt = instituteRepository.findByOrder(newOrder);
-        if (!newOrderInstituteOpt.isPresent()) {
-            return;
-        }
-
-        Institute newOrderInstitute = newOrderInstituteOpt.get();
-
-        newOrderInstitute.setOrder(order);
-        institute.setOrder(newOrder);
-
-        instituteRepository.save(newOrderInstitute);
-        instituteRepository.save(institute);
-    }
 
     @Override
     @Transactional
