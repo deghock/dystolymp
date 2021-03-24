@@ -17,7 +17,6 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Daria Usova
@@ -38,6 +37,21 @@ public class PlaceServiceImpl extends PlaceCrudServiceImpl implements PlaceServi
 
         modelMap.put("places", places);
         modelMap.put("idList", placeIdList);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void fillAddNewPlaceModelMap(ModelMap modelMap, Long divisionId) {
+        modelMap.put("place", getNewPlaceDto(divisionId));
+        modelMap.put("maxOrder", placeRepository.findMaxOrderByDivisionId(divisionId)+1);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void fillShowEditPageModelMap(ModelMap modelMap, Long id) {
+        modelMap.put("place", getPlaceDtoById(id));
+        Long divId = placeRepository.findById(id).get().getDivision().getId();
+        modelMap.put("maxOrder", placeRepository.findMaxOrderByDivisionId(divId));
     }
 
     @Override
