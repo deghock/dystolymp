@@ -25,7 +25,6 @@ public class InstituteController {
     private static final String LIST_REDIRECT_PAGE = "redirect:/institutes/list";
 
     private final InstituteService instituteService;
-    private final InstituteRepository instituteRepository;
 
     @GetMapping("/list")
     public String showAllInstitutes(ModelMap modelMap) {
@@ -35,8 +34,7 @@ public class InstituteController {
 
     @GetMapping("/add")
     public String addNewInstitute(ModelMap modelMap) {
-        modelMap.put("institute", instituteService.getNewInstituteDto());
-        modelMap.put("maxOrder", instituteRepository.findMaxOrder()+1);
+        instituteService.fillAddNewInstituteModelMap(modelMap);
         return EDIT_PAGE;
     }
 
@@ -51,8 +49,7 @@ public class InstituteController {
 
     @GetMapping("/edit/{id}")
     public String showEditPage(@PathVariable("id") Long id, ModelMap modelMap) {
-        modelMap.put("institute", instituteService.getInstituteDtoById(id));
-        modelMap.put("maxOrder", instituteRepository.findMaxOrder());
+        instituteService.fillShowEditPageModelMap(modelMap, id);
         return EDIT_PAGE;
     }
 
