@@ -10,9 +10,7 @@ import ru.spbu.distolymp.dto.admin.directories.lists.grades.GradeNameDto;
 import ru.spbu.distolymp.dto.entity.lists.GradeEditDto;
 import ru.spbu.distolymp.entity.lists.Division;
 import ru.spbu.distolymp.entity.lists.Grade;
-import ru.spbu.distolymp.exception.crud.lists.grade.AddNewGradeException;
 import ru.spbu.distolymp.exception.crud.lists.grade.GradeCrudServiceException;
-import ru.spbu.distolymp.exception.crud.lists.grade.RenameGradeException;
 import ru.spbu.distolymp.mapper.admin.directories.lists.grades.GradeListMapper;
 import ru.spbu.distolymp.mapper.admin.directories.lists.grades.GradeNameMapper;
 import ru.spbu.distolymp.mapper.entity.lists.GradeEditMapper;
@@ -82,7 +80,7 @@ public class GradeCrudServiceImpl implements GradeCrudService {
             tryToAddNewGrade(gradeNameDto);
         } catch (DataAccessException | EntityNotFoundException e) {
             log.error("An error occurred while adding a new grade", e);
-            throw new AddNewGradeException();
+            throw new GradeCrudServiceException();
         }
     }
 
@@ -104,7 +102,7 @@ public class GradeCrudServiceImpl implements GradeCrudService {
             gradeRepository.save(grade);
         } catch (DataAccessException e) {
             log.error("An error occurred while updating grade with id=" + gradeNameDto.getId(), e);
-            throw new RenameGradeException();
+            throw new GradeCrudServiceException();
         }
     }
 
