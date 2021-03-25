@@ -40,7 +40,7 @@ public class GradeCrudServiceImpl implements GradeCrudService {
     public List<GradeListDto> getAllGradesByDivisionId(Long divisionId) {
         List<GradeListDto> gradeDtoList;
         try {
-            List<Grade> gradeList = gradeRepository.findAllByDivisionId(divisionId);
+            List<Grade> gradeList = gradeRepository.findAllByDivisionIdOrderById(divisionId);
             gradeDtoList = gradeListMapper.toDtoList(gradeList);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting all grades", e);
