@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import ru.spbu.distolymp.dto.entity.education.InstituteDto;
 import ru.spbu.distolymp.entity.education.Institute;
-import ru.spbu.distolymp.entity.education.Place;
 import ru.spbu.distolymp.exception.admin.directories.institutes.InstituteServiceException;
 import ru.spbu.distolymp.mapper.entity.education.InstituteMapper;
 import ru.spbu.distolymp.repository.education.InstituteRepository;
@@ -18,7 +17,6 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Log4j
 @Service
@@ -36,6 +34,20 @@ public class InstituteServiceImpl extends InstituteCrudServiceImpl implements In
 
         modelMap.put("institutes", institutes);
         modelMap.put("idList", instituteIdList);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void fillAddNewInstituteModelMap(ModelMap modelMap) {
+        modelMap.put("institute", getNewInstituteDto());
+        modelMap.put("maxOrder", instituteRepository.findMaxOrder()+1);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void fillShowEditPageModelMap(ModelMap modelMap, Long id) {
+        modelMap.put("institute", getInstituteDtoById(id));
+        modelMap.put("maxOrder", instituteRepository.findMaxOrder());
     }
 
     @Override
@@ -67,7 +79,7 @@ public class InstituteServiceImpl extends InstituteCrudServiceImpl implements In
         try {
             Institute institute = instituteRepository.findById(id)
                     .orElseThrow(EntityNotFoundException::new);
-            setNewOrder(institute, institute.getOrder() - 1);
+            setNewOrder(institute, institute.getOrder(), institute.getOrder() - 1);
         } catch (DataAccessException e) {
             log.error("An error occurred while updating institute order", e);
             throw new InstituteServiceException();
@@ -80,30 +92,13 @@ public class InstituteServiceImpl extends InstituteCrudServiceImpl implements In
         try {
             Institute institute = instituteRepository.findById(id)
                     .orElseThrow(EntityNotFoundException::new);
-            setNewOrder(institute, institute.getOrder() + 1);
+            setNewOrder(institute, institute.getOrder(), institute.getOrder() + 1);
         } catch (DataAccessException e) {
             log.error("An error occurred while updating institute order", e);
             throw new InstituteServiceException();
         }
     }
 
-
-    private void setNewOrder(Institute institute, Integer newOrder) {
-        Integer order = institute.getOrder();
-
-        Optional<Institute> newOrderInstituteOpt = instituteRepository.findByOrder(newOrder);
-        if (!newOrderInstituteOpt.isPresent()) {
-            return;
-        }
-
-        Institute newOrderInstitute = newOrderInstituteOpt.get();
-
-        newOrderInstitute.setOrder(order);
-        institute.setOrder(newOrder);
-
-        instituteRepository.save(newOrderInstitute);
-        instituteRepository.save(institute);
-    }
 
     @Override
     @Transactional

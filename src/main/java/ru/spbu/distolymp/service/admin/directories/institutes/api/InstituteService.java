@@ -7,6 +7,10 @@ public interface InstituteService {
 
     void fillShowAllInstitutesModelMap(ModelMap modelMap);
 
+    void fillAddNewInstituteModelMap(ModelMap modelMap);
+
+    void fillShowEditPageModelMap(ModelMap modelMap, Long id);
+
     void saveOrEdit(InstituteDto instituteDto);
 
     InstituteDto getNewInstituteDto();
