@@ -10,6 +10,10 @@ import java.util.List;
  */
 public interface GradeRepository extends CrudRepository<Grade, Long> {
 
-    List<Grade> findAllByDivisionId(Long divisionId);
+    List<Grade> findAllByDivisionIdOrderById(Long divisionId);
+
+    void deleteGradeByIdAndDivisionId(Long id, Long divisionId);
+
+    Grade findByIdAndDivisionId(Long id, Long divisionId);
 
 }

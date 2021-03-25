@@ -25,7 +25,7 @@
 
 <div class="container">
     <p id="title">Списки и преподаватели, автоматически назначаемые группам при регистрации</p>
-    <div class="center col-6">
+    <div class="center">
         <div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
 
         <table class="table border center" aria-describedby="title">
@@ -40,7 +40,7 @@
                 <th id="actions">Действия</th>
             </tr>
 
-            <!--/*@thymesVar id="grades" type="java.util.List<ru.spbu.distolymp.dto.admin.directories.lists.grades.GradeListDto>"*/-->
+            <!--/*@thymesVar id="grades" type="java.util.List<ru.spbu.distolymp.dto.admin.directories.grades.GradeListDto>"*/-->
             <tr th:each="grade : ${grades}">
                 <td th:text="${grade.name}"></td>
                 <td>
@@ -63,13 +63,19 @@
                     <span th:if="${grade.codePhrase} != null" th:text="${grade.codePhrase}"></span>
                     <span th:unless="${grade.codePhrase} != null" style="color: red">Не назначена</span>
                 </td>
-                <td th:text="${grade.replyTo}"></td>
-                <td th:text="${grade.serviceEmail}"></td>
+                <td>
+                    <span th:if="${grade.replyTo} != null" th:text="${grade.replyTo}"></span>
+                    <span th:unless="${grade.replyTo} != null" style="color: red">Не назначен</span>
+                </td>
+                <td>
+                    <span th:if="${grade.serviceEmail} != null" th:text="${grade.serviceEmail}"></span>
+                    <span th:unless="${grade.serviceEmail} != null" style="color: red">Не назначен</span>
+                </td>
                 <td style="text-align: center">
                     <a href="#" class="abutton" data-toggle="modal" data-target=".rename-grade"
-                       th:attr="grade-id=${grade.id}, grade-name=${grade.name}">переименовать</a>
-                    <a th:href="@{/grades/update/{id}(gradeId=${grade.id})}" class="abutton">изменить</a>
-                    <a th:href="@{/grades/delete/{id}(gradeId=${grade.id})}" class="abutton"
+                       th:attr="data-id=${grade.id}, data-name=${grade.name}">переименовать</a>
+                    <a th:href="@{/grades/edit/{id}(id=${grade.id})}" class="abutton">изменить</a>
+                    <a th:href="@{/grades/delete/{id}(id=${grade.id})}" class="abutton"
                        onclick="return window.confirm('Вы уверены?')">удалить</a>
                 </td>
             </tr>
@@ -77,7 +83,7 @@
 
         <div style="text-align:center; margin:0.5em;">
             <button type="button" class="btn btn-light border border-dark"
-                    data-toggle="modal" data-target=".new-grade">Добавить новый класс
+                    data-toggle="modal" data-target=".new-grade">Добавить новый класс...
             </button>
         </div>
 
@@ -87,13 +93,13 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Новый класс</h5>
+                    <h5 class="modal-title">Добавление нового класса</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!--/*@thymesVar id="grade" type="ru.spbu.distolymp.dto.admin.directories.lists.grades.GradeListDto"*/-->
+                    <!--/*@thymesVar id="grade" type="ru.spbu.distolymp.dto.admin.directories.grades.GradeNameDto"*/-->
                     <form id="new-grade-form" th:object="${grade}"
                           th:action="@{/grades/add}" method="post">
                         <div class="form-group">
@@ -129,15 +135,15 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!--/*@thymesVar id="grade" type="ru.spbu.distolymp.dto.admin.directories.lists.grades.GradeListDto"*/-->
+                    <!--/*@thymesVar id="grade" type="ru.spbu.distolymp.dto.admin.directories.grades.GradeNameDto"*/-->
                     <form id="rename-grade-form" th:object="${grade}"
                           th:action="@{/grades/rename}" method="post">
                         <div class="form-group">
                             <label for="update-grade-name">Имя класса</label>
                             <input th:field="*{name}" placeholder="Новое имя класса"
                                    type="text" class="form-control" id="update-grade-name"
-                                   aria-describedby="updateClassHelp">
-                            <small id="updateClassHelp" class="form-text text-muted">Если имя будет пустым, класс
+                                   aria-describedby="updateGradeHelp">
+                            <small id="updateGradeHelp" class="form-text text-muted">Если имя будет пустым, класс
                                 не будет переименован.
                             </small>
                             <input hidden type="number" th:value="*{id}" th:field="*{id}" id="grade-id">

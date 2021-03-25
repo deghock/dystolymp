@@ -1,9 +1,6 @@
-package ru.spbu.distolymp.dto.admin.directories.lists.grades;
+package ru.spbu.distolymp.dto.admin.directories.grades;
 
 import lombok.Data;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /**
  * @author Vladislav Konovalov
@@ -13,11 +10,8 @@ public class GradeListDto {
 
     private Long id;
 
-    @Size(max = 65535)
-    @NotNull(message = "{grade.name.required}")
     private String name;
 
-    @NotNull
     private String registrationStatus;
 
     private String codePhrase;
@@ -25,9 +19,6 @@ public class GradeListDto {
     private String replyTo;
 
     private String serviceEmail;
-
-    @NotNull
-    private Long divisionId;
 
     private Long staffId;
 
