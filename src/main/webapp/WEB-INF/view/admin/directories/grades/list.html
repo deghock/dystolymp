@@ -40,7 +40,7 @@
                 <th id="actions">Действия</th>
             </tr>
 
-            <!--/*@thymesVar id="grades" type="java.util.List<ru.spbu.distolymp.dto.admin.directories.lists.grades.GradeListDto>"*/-->
+            <!--/*@thymesVar id="grades" type="java.util.List<ru.spbu.distolymp.dto.admin.directories.grades.GradeListDto>"*/-->
             <tr th:each="grade : ${grades}">
                 <td th:text="${grade.name}"></td>
                 <td>
@@ -99,7 +99,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!--/*@thymesVar id="grade" type="ru.spbu.distolymp.dto.admin.directories.lists.grades.GradeNameDto"*/-->
+                    <!--/*@thymesVar id="grade" type="ru.spbu.distolymp.dto.admin.directories.grades.GradeNameDto"*/-->
                     <form id="new-grade-form" th:object="${grade}"
                           th:action="@{/grades/add}" method="post">
                         <div class="form-group">
@@ -135,7 +135,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!--/*@thymesVar id="grade" type="ru.spbu.distolymp.dto.admin.directories.lists.grades.GradeNameDto"*/-->
+                    <!--/*@thymesVar id="grade" type="ru.spbu.distolymp.dto.admin.directories.grades.GradeNameDto"*/-->
                     <form id="rename-grade-form" th:object="${grade}"
                           th:action="@{/grades/rename}" method="post">
                         <div class="form-group">

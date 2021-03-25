@@ -5,7 +5,7 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.spbu.distolymp.dto.admin.directories.users.staff.StaffLoginDto;
+import ru.spbu.distolymp.dto.admin.directories.staff.StaffLoginDto;
 import ru.spbu.distolymp.entity.lists.Division;
 import ru.spbu.distolymp.entity.users.Staff;
 import ru.spbu.distolymp.exception.crud.users.staff.StaffCrudServiceException;

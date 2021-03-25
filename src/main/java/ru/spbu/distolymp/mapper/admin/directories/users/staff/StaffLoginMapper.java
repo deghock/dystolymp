@@ -1,7 +1,7 @@
 package ru.spbu.distolymp.mapper.admin.directories.users.staff;
 
 import org.mapstruct.Mapper;
-import ru.spbu.distolymp.dto.admin.directories.users.staff.StaffLoginDto;
+import ru.spbu.distolymp.dto.admin.directories.staff.StaffLoginDto;
 import ru.spbu.distolymp.entity.users.Staff;
 
 import java.util.List;

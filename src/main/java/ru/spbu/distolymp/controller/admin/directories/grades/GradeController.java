@@ -6,7 +6,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.spbu.distolymp.dto.admin.directories.lists.grades.GradeNameDto;
+import ru.spbu.distolymp.dto.admin.directories.grades.GradeNameDto;
 import ru.spbu.distolymp.dto.entity.lists.GradeEditDto;
 import ru.spbu.distolymp.exception.crud.lists.grade.AddNewGradeException;
 import ru.spbu.distolymp.exception.crud.lists.grade.RenameGradeException;

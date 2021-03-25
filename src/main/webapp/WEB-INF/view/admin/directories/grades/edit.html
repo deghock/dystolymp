@@ -40,7 +40,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <!--/*@thymesVar id="listingList" type="java.util.List<ru.spbu.distolymp.dto.admin.directories.lists.listing.ListingNameDto>"*/-->
+                    <!--/*@thymesVar id="listingList" type="java.util.List<ru.spbu.distolymp.dto.admin.directories.listing.ListingNameDto>"*/-->
                     <td><label for="listing">Список:</label></td>
                     <td><select id="listing" th:field="*{listingId}">
                         <option th:value="null">Список не назначен</option>
@@ -49,7 +49,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <!--/*@thymesVar id="staffList" type="java.util.List<ru.spbu.distolymp.dto.admin.directories.users.staff.StaffLoginDto>"*/-->
+                    <!--/*@thymesVar id="staffList" type="java.util.List<ru.spbu.distolymp.dto.admin.directories.staff.StaffLoginDto>"*/-->
                     <td><label for="staff">Преподаватель:</label></td>
                     <td><select id="staff" th:field="*{staffId}">
                         <option th:value="null">Преподаватель не назначен</option>

@@ -2,7 +2,7 @@ package ru.spbu.distolymp.mapper.admin.directories.lists.grades;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.spbu.distolymp.dto.admin.directories.lists.grades.GradeNameDto;
+import ru.spbu.distolymp.dto.admin.directories.grades.GradeNameDto;
 import ru.spbu.distolymp.entity.lists.Grade;
 import ru.spbu.distolymp.service.crud.api.lists.DivisionCrudService;
 

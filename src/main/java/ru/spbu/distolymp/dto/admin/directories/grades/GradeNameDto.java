@@ -1,4 +1,4 @@
-package ru.spbu.distolymp.dto.admin.directories.lists.grades;
+package ru.spbu.distolymp.dto.admin.directories.grades;
 
 import lombok.Data;
 

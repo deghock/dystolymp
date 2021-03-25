@@ -1,4 +1,4 @@
-package ru.spbu.distolymp.dto.admin.directories.lists.listing;
+package ru.spbu.distolymp.dto.admin.directories.listing;
 
 import lombok.Data;
 
