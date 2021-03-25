@@ -8,14 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.dto.admin.directories.lists.grades.GradeListDto;
 import ru.spbu.distolymp.dto.admin.directories.lists.grades.GradeNameDto;
 import ru.spbu.distolymp.dto.entity.lists.GradeEditDto;
-import ru.spbu.distolymp.entity.lists.Division;
 import ru.spbu.distolymp.entity.lists.Grade;
+import ru.spbu.distolymp.exception.crud.lists.grade.AddNewGradeException;
 import ru.spbu.distolymp.exception.crud.lists.grade.GradeCrudServiceException;
+import ru.spbu.distolymp.exception.crud.lists.grade.RenameGradeException;
 import ru.spbu.distolymp.mapper.admin.directories.lists.grades.GradeListMapper;
 import ru.spbu.distolymp.mapper.admin.directories.lists.grades.GradeNameMapper;
 import ru.spbu.distolymp.mapper.entity.lists.GradeEditMapper;
 import ru.spbu.distolymp.repository.lists.GradeRepository;
-import ru.spbu.distolymp.service.crud.api.lists.DivisionCrudService;
 import ru.spbu.distolymp.service.crud.api.lists.GradeCrudService;
 
 import javax.persistence.EntityNotFoundException;
@@ -32,7 +32,6 @@ public class GradeCrudServiceImpl implements GradeCrudService {
     private final GradeListMapper gradeListMapper;
     private final GradeNameMapper gradeNameMapper;
     private final GradeEditMapper gradeEditMapper;
-    private final DivisionCrudService divisionCrudService;
     protected final GradeRepository gradeRepository;
 
     @Override
@@ -54,10 +53,12 @@ public class GradeCrudServiceImpl implements GradeCrudService {
     public GradeEditDto getGradeByIdAndDivisionId(Long id, Long divisionId) {
         try {
             Grade grade = gradeRepository.findByIdAndDivisionId(id, divisionId);
-            if (grade == null) { throw new EntityNotFoundException(); }
+            if (grade == null) {
+                throw new EntityNotFoundException("Grade with id=" + id + " not found");
+            }
             return gradeEditMapper.toDto(grade);
-        } catch (DataAccessException e) {
-            log.error("An error occurred while getting grade by id=" + id, e);
+        } catch (DataAccessException | EntityNotFoundException e) {
+            log.error("An error occurred while getting a grade with id=" + id, e);
             throw new GradeCrudServiceException();
         }
     }
@@ -68,7 +69,7 @@ public class GradeCrudServiceImpl implements GradeCrudService {
         try {
             gradeRepository.deleteGradeByIdAndDivisionId(id, divisionId);
         } catch (DataAccessException | EntityNotFoundException e) {
-            log.error("An error occurred while deleting grades by id=" + id, e);
+            log.error("An error occurred while deleting a grade with id=" + id, e);
             throw new GradeCrudServiceException();
         }
     }
@@ -77,18 +78,12 @@ public class GradeCrudServiceImpl implements GradeCrudService {
     @Transactional
     public void saveNewGrade(GradeNameDto gradeNameDto) {
         try {
-            tryToAddNewGrade(gradeNameDto);
-        } catch (DataAccessException | EntityNotFoundException e) {
+            Grade grade = gradeNameMapper.toEntity(gradeNameDto);
+            gradeRepository.save(grade);
+        } catch (DataAccessException e) {
             log.error("An error occurred while adding a new grade", e);
-            throw new GradeCrudServiceException();
+            throw new AddNewGradeException();
         }
-    }
-
-    private void tryToAddNewGrade(GradeNameDto gradeNameDto) {
-        Grade grade = gradeNameMapper.toEntity(gradeNameDto);
-        Division division = divisionCrudService.getDivisionById(gradeNameDto.getDivisionId());
-        grade.setDivision(division);
-        gradeRepository.save(grade);
     }
 
     @Override
@@ -96,13 +91,14 @@ public class GradeCrudServiceImpl implements GradeCrudService {
     public void renameGrade(GradeNameDto gradeNameDto) {
         try {
             Long id = gradeNameDto.getId();
-            Grade grade = gradeRepository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException("Grade with id=" + id + " not found"));
+            Grade grade = gradeRepository.findById(id).orElseThrow(() ->
+                    new EntityNotFoundException("Grade with id=" + id + " not found"));
             grade.setName(gradeNameDto.getName());
             gradeRepository.save(grade);
-        } catch (DataAccessException e) {
-            log.error("An error occurred while updating grade with id=" + gradeNameDto.getId(), e);
-            throw new GradeCrudServiceException();
+        } catch (DataAccessException | EntityNotFoundException e) {
+            log.error("An error occurred while renaming a grade with id="
+                    + gradeNameDto.getId(), e);
+            throw new RenameGradeException();
         }
     }
 
@@ -113,7 +109,8 @@ public class GradeCrudServiceImpl implements GradeCrudService {
             Grade grade = gradeEditMapper.toEntity(gradeEditDto);
             gradeRepository.save(grade);
         } catch (DataAccessException e) {
-            log.error("An error occurred while updating a grade", e);
+            log.error("An error occurred while updating a grade with id=" +
+                    gradeEditDto.getId(), e);
             throw new GradeCrudServiceException();
         }
     }
