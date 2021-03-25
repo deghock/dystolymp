@@ -13,7 +13,6 @@ import ru.spbu.distolymp.mapper.admin.directories.lists.grades.GradeNameMapper;
 import ru.spbu.distolymp.mapper.entity.lists.GradeEditMapper;
 import ru.spbu.distolymp.repository.lists.GradeRepository;
 import ru.spbu.distolymp.service.admin.directories.grades.api.GradeService;
-import ru.spbu.distolymp.service.crud.api.lists.DivisionCrudService;
 import ru.spbu.distolymp.service.crud.api.lists.ListingCrudService;
 import ru.spbu.distolymp.service.crud.api.users.StaffCrudService;
 import ru.spbu.distolymp.service.crud.impl.lists.GradeCrudServiceImpl;
@@ -30,10 +29,9 @@ public class GradeServiceImpl extends GradeCrudServiceImpl implements GradeServi
     private final ListingCrudService listingCrudService;
 
     public GradeServiceImpl(GradeListMapper gradeListMapper, GradeNameMapper gradeNameMapper,
-                            GradeEditMapper gradeEditMapper, DivisionCrudService divisionCrudService,
-                            GradeRepository gradeRepository, StaffCrudService staffCrudService,
-                            ListingCrudService listingCrudService) {
-        super(gradeListMapper, gradeNameMapper, gradeEditMapper, divisionCrudService, gradeRepository);
+                            GradeEditMapper gradeEditMapper, GradeRepository gradeRepository,
+                            StaffCrudService staffCrudService, ListingCrudService listingCrudService) {
+        super(gradeListMapper, gradeNameMapper, gradeEditMapper, gradeRepository);
         this.staffCrudService = staffCrudService;
         this.listingCrudService = listingCrudService;
     }
@@ -49,24 +47,6 @@ public class GradeServiceImpl extends GradeCrudServiceImpl implements GradeServi
     }
 
     @Override
-    @Transactional
-    public void deleteGradeById(Long id, Long divisionId) {
-        deleteGradeByIdAndDivisionId(id, divisionId);
-    }
-
-    @Override
-    @Transactional
-    public void addNewGrade(GradeNameDto gradeNameDto) {
-        saveNewGrade(gradeNameDto);
-    }
-
-    @Override
-    @Transactional
-    public void renameGrade(GradeNameDto gradeNameDto) {
-        super.renameGrade(gradeNameDto);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public void fillShowEditPageModelMap(Long id, Long divisionId, ModelMap modelMap) {
         GradeEditDto gradeDto = getGradeByIdAndDivisionId(id, divisionId);
@@ -75,12 +55,6 @@ public class GradeServiceImpl extends GradeCrudServiceImpl implements GradeServi
         modelMap.put("grade", gradeDto);
         modelMap.put("staffList", staffDtoList);
         modelMap.put("listingList", listingDtoList);
-    }
-
-    @Override
-    @Transactional
-    public void updateGrade(GradeEditDto gradeEditDto) {
-        super.updateGrade(gradeEditDto);
     }
 
 }
