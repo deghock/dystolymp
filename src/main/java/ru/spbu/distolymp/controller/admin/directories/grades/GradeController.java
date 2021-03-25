@@ -55,23 +55,11 @@ public class GradeController {
         return REDIRECT_GRADE_LIST;
     }
 
-    @ExceptionHandler(AddNewGradeException.class)
-    public String handleAddNewGradeException(RedirectAttributes ra) {
-        ra.addFlashAttribute("error", "Новый класс не был добавлен");
-        return REDIRECT_GRADE_LIST;
-    }
-
     @PostMapping("/rename")
     public String renameGrade(@Valid GradeNameDto gradeNameDto, BindingResult bindingResult,
                               RedirectAttributes ra) {
         if (bindingResult.hasErrors()) { return handleRenameGradeException(ra); }
         gradeService.renameGrade(gradeNameDto);
-        return REDIRECT_GRADE_LIST;
-    }
-
-    @ExceptionHandler(RenameGradeException.class)
-    public String handleRenameGradeException(RedirectAttributes ra) {
-        ra.addFlashAttribute("error", "Имя класса не было изменено");
         return REDIRECT_GRADE_LIST;
     }
 
@@ -88,6 +76,18 @@ public class GradeController {
                               BindingResult bindingResult) {
         if (bindingResult.hasErrors()) { return EDIT_PAGE; }
         gradeService.updateGrade(gradeEditDto);
+        return REDIRECT_GRADE_LIST;
+    }
+
+    @ExceptionHandler(AddNewGradeException.class)
+    public String handleAddNewGradeException(RedirectAttributes ra) {
+        ra.addFlashAttribute("error", "Новый класс не был добавлен");
+        return REDIRECT_GRADE_LIST;
+    }
+
+    @ExceptionHandler(RenameGradeException.class)
+    public String handleRenameGradeException(RedirectAttributes ra) {
+        ra.addFlashAttribute("error", "Имя класса не было изменено");
         return REDIRECT_GRADE_LIST;
     }
 
