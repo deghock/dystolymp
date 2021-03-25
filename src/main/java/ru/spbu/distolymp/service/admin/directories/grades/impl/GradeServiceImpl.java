@@ -43,7 +43,7 @@ public class GradeServiceImpl extends GradeCrudServiceImpl implements GradeServi
     public void fillShowAllGradesModelMap(ModelMap modelMap, Long divisionId) {
         GradeNameDto newGrade = new GradeNameDto();
         newGrade.setDivisionId(divisionId);
-        List<GradeListDto> grades = getShowAllGradesByDivisionId(divisionId);
+        List<GradeListDto> grades = getAllGradesByDivisionId(divisionId);
         modelMap.put("grade", newGrade);
         modelMap.put("grades", grades);
     }
@@ -68,7 +68,7 @@ public class GradeServiceImpl extends GradeCrudServiceImpl implements GradeServi
 
     @Override
     @Transactional(readOnly = true)
-    public void fillAllGradesByIdModelMap(Long id, Long divisionId, ModelMap modelMap) {
+    public void fillShowEditPageModelMap(Long id, Long divisionId, ModelMap modelMap) {
         GradeEditDto gradeDto = getGradeByIdAndDivisionId(id, divisionId);
         List<StaffLoginDto> staffDtoList = staffCrudService.getAllStaffByDivisionId(divisionId);
         List<ListingNameDto> listingDtoList = listingCrudService.getAllListingByDivisionId(divisionId);

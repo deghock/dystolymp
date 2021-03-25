@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface GradeCrudService {
 
-    List<GradeListDto> getShowAllGradesByDivisionId(Long divisionId);
+    List<GradeListDto> getAllGradesByDivisionId(Long divisionId);
 
     GradeEditDto getGradeByIdAndDivisionId(Long id, Long divisionId);
 

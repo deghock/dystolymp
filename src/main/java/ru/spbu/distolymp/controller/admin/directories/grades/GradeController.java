@@ -43,7 +43,7 @@ public class GradeController {
     public String deleteGrade(@PathVariable("id") Long id,
                               @SessionAttribute(value = "idDivision", required = false)
                                       Long divisionId) {
-        gradeService.deleteGradeById(id, divisionId);
+        gradeService.deleteGradeByIdAndDivisionId(id, divisionId);
         return REDIRECT_GRADE_LIST;
     }
 
@@ -51,7 +51,7 @@ public class GradeController {
     public String addNewGrade(@Valid GradeNameDto gradeNameDto, BindingResult bindingResult,
                               RedirectAttributes ra) {
         if (bindingResult.hasErrors()) { return handleAddNewGradeException(ra); }
-        gradeService.addNewGrade(gradeNameDto);
+        gradeService.saveNewGrade(gradeNameDto);
         return REDIRECT_GRADE_LIST;
     }
 
@@ -79,7 +79,7 @@ public class GradeController {
     public String showEditPage(@PathVariable("id") Long id,
                                @SessionAttribute(value = "idDivision", required = false)
                                        Long divisionId, ModelMap modelMap) {
-        gradeService.fillAllGradesByIdModelMap(id, divisionId, modelMap);
+        gradeService.fillShowEditPageModelMap(id, divisionId, modelMap);
         return EDIT_PAGE;
     }
 

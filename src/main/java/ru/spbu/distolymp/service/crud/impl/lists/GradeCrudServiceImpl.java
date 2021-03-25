@@ -37,7 +37,7 @@ public class GradeCrudServiceImpl implements GradeCrudService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<GradeListDto> getShowAllGradesByDivisionId(Long divisionId) {
+    public List<GradeListDto> getAllGradesByDivisionId(Long divisionId) {
         List<GradeListDto> gradeDtoList;
         try {
             List<Grade> gradeList = gradeRepository.findAllByDivisionId(divisionId);
