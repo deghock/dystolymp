@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.dto.admin.directories.lists.listing.ListingNameDto;
 import ru.spbu.distolymp.entity.lists.Listing;
+import ru.spbu.distolymp.exception.crud.lists.listing.ListingCrudServiceException;
 import ru.spbu.distolymp.mapper.admin.directories.lists.listing.ListingNameMapper;
 import ru.spbu.distolymp.repository.lists.ListingRepository;
 import ru.spbu.distolymp.service.crud.api.lists.ListingCrudService;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,12 +37,13 @@ public class ListingCrudServiceImpl implements ListingCrudService {
     @Override
     @Transactional(readOnly = true)
     public List<ListingNameDto> getAllListingByDivisionId(Long divisionId) {
-        List<ListingNameDto> listingDtoList = new ArrayList<>();
+        List<ListingNameDto> listingDtoList;
         try {
             List<Listing> listingList = listingRepository.findAllByDivisionId(divisionId);
             listingDtoList = listingNameMapper.toDtoList(listingList);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting all listings", e);
+            throw new ListingCrudServiceException();
         }
         return listingDtoList;
     }
