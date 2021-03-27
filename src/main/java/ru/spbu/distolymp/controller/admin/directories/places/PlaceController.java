@@ -92,7 +92,7 @@ public class PlaceController {
     }
 
     @ExceptionHandler({PlaceServiceException.class, PlaceCrudServiceException.class})
-    public String handlePlaceCrudException(RedirectAttributes ra) {
+    public String handlePlaceException(RedirectAttributes ra) {
         ra.addFlashAttribute("error", "Произошла ошибка. Пожалуйста, попробуйте повторить операцию позже.");
         return LIST_REDIRECT_PAGE;
     }
