@@ -138,7 +138,12 @@ public class CountryServiceImpl extends CountryCrudServiceImpl implements Countr
             throw new CountryServiceException();
         }
 
-        return getCountryByIdOrNull(id);
+        CountryDto country = getCountryByIdOrNull(id);
+        if (country == null) {
+            throw new CountryServiceException();
+        }
+
+        return country;
     }
 
     @Override
