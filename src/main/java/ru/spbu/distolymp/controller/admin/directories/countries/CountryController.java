@@ -29,6 +29,8 @@ public class CountryController {
     private static final String ROOT = "admin/directories/countries/";
     private static final String EDIT_PAGE = ROOT + "edit";
     private static final String LIST_PAGE = ROOT + "list";
+    private static final String DETAILS_PAGE = ROOT + "details";
+    private static final String COUNTRIES_TABLE = ROOT + "countries-table :: #countries-table";
     private static final String REDIRECT_LIST = "redirect:/countries/list";
     private static final String REDIRECT_DETAILS = "redirect:/countries/details/";
     private static final String COUNTRY_PARAM = "country";
@@ -42,7 +44,7 @@ public class CountryController {
     @GetMapping("/filter")
     public String getCountries(CountryFilter countryFilter, ModelMap modelMap) {
         modelMap.put("countries", countryService.getCountriesBy(countryFilter));
-        return "admin/directories/countries/countries-table :: #countries-table";
+        return COUNTRIES_TABLE;
     }
 
     @GetMapping("/add")
@@ -77,7 +79,7 @@ public class CountryController {
     @GetMapping("/details/{id}")
     public String getCountryDetails(@PathVariable("id") Long countryId, ModelMap modelMap) {
         modelMap.put(COUNTRY_PARAM, countryService.getCountryDetailsById(countryId));
-        return "admin/directories/countries/detail";
+        return DETAILS_PAGE;
     }
 
     @PostMapping("/delete")
