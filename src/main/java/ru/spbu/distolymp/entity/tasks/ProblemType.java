@@ -2,7 +2,8 @@ package ru.spbu.distolymp.entity.tasks;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import ru.spbu.distolymp.entity.lists.Listing;
+import ru.spbu.distolymp.entity.converter.LongToIntConverter;
+import ru.spbu.distolymp.entity.lists.ListingProblems;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -21,7 +22,8 @@ public class ProblemType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_problem")
+    @Convert(converter = LongToIntConverter.class)
+    @Column(name = "id_problem", columnDefinition = "int(11)")
     private Long id;
 
     @Column(name = "type")
@@ -40,6 +42,6 @@ public class ProblemType {
     private Integer status;
 
     @OneToMany(mappedBy = "problem")
-    private List<Listing> listingList;
+    private List<ListingProblems> listingList;
 
 }

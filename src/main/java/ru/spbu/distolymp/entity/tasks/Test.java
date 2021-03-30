@@ -61,8 +61,8 @@ public class Test extends ProblemType {
     @Column(name = "parfilename")
     private String parFileName;
 
-    @Column(name = "show_res")
-    private boolean isShowResult = true;
+    @Column(name = "show_res", columnDefinition = "TINYINT")
+    private Integer isShowResult = 1;
 
     @Type(type = "text")
     @Column(name = "notes")
