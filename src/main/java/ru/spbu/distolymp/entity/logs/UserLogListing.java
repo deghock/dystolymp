@@ -2,6 +2,7 @@ package ru.spbu.distolymp.entity.logs;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.CreationTimestamp;
 import ru.spbu.distolymp.entity.lists.Listing;
 import ru.spbu.distolymp.entity.users.User;
 
@@ -35,6 +36,7 @@ public class UserLogListing {
 
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     @Column(name = "log_date")
     private Date logDate;
 

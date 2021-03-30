@@ -2,6 +2,7 @@ package ru.spbu.distolymp.entity.users;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.CreationTimestamp;
 import ru.spbu.distolymp.entity.education.School;
 import ru.spbu.distolymp.entity.enumeration.GroupAccess;
 import ru.spbu.distolymp.entity.groups.Group;
@@ -52,6 +53,7 @@ public class User {
 
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     @Column(name = "reg_date")
     private Date registrationDate;
 

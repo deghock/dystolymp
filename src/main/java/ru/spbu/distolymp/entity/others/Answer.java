@@ -2,6 +2,7 @@ package ru.spbu.distolymp.entity.others;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import ru.spbu.distolymp.entity.enumeration.Correctness;
 import ru.spbu.distolymp.entity.tasks.ProblemType;
@@ -28,6 +29,7 @@ public class Answer {
 
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     @Column(name = "ans_date")
     private Date date;
 
