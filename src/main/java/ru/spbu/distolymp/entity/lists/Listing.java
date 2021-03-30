@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Type;
 import ru.spbu.distolymp.entity.groups.Constraint;
 import ru.spbu.distolymp.entity.logs.UserLogListing;
+import ru.spbu.distolymp.entity.tasks.ProblemType;
 import ru.spbu.distolymp.entity.users.Staff;
 
 import javax.persistence.*;
@@ -56,6 +57,7 @@ public class Listing {
     @OneToMany(mappedBy = "listing")
     private List<UserLogListing> userList;
 
-    // TODO: Add many-to-many support via list_problems.table
+    @OneToMany(mappedBy = "listing")
+    private List<ProblemType> problemList;
 
 }
