@@ -60,6 +60,7 @@ public class Group {
     @Column(name = "reg_date")
     private Date registrationDate;
 
+    // TODO: Add 1-1 relationship between diplom_types and groups
     @NotNull
     @Column(name = "diplom_type")
     private Integer diplomaType;
