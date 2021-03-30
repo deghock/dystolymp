@@ -32,7 +32,8 @@
         <fieldset>
             <legend>Предпочитаемый ВУЗ</legend>
             <label for="order">№:</label>
-            <input type="number" th:field="*{order}" id="order" readonly/>
+            <input type="number" th:field="*{order}" id="order" min="1" th:max="${maxOrder}"/>
+            <span th:if="${#fields.hasErrors('order')}" th:errors="*{order}">Institute order error</span>
             <br/>
 
             <label for="name">ВУЗ:</label>

@@ -37,18 +37,17 @@ public class PlaceController {
         if (id == null) {
             return ENTRY_REDIRECT_PAGE;
         }
-
         placeService.fillShowAllPlacesModelMap(modelMap, id);
         return LIST_PAGE;
     }
 
     @GetMapping("/add")
-    public String addNewPlace(ModelMap modelMap, @SessionAttribute(value = "idDivision", required = false) Long id) {
+    public String addNewPlace(ModelMap modelMap,
+                              @SessionAttribute(value = "idDivision", required = false) Long id) {
         if (id == null) {
             return ENTRY_REDIRECT_PAGE;
         }
-
-        modelMap.put("place", placeService.getNewPlaceDto(id));
+        placeService.fillAddNewPlaceModelMap(modelMap, id);
         return EDIT_PAGE;
     }
 
@@ -57,14 +56,13 @@ public class PlaceController {
         if (bindingResult.hasErrors()) {
             return EDIT_PAGE;
         }
-
         placeService.saveOrEditPlace(placeDto);
         return LIST_REDIRECT_PAGE;
     }
 
     @GetMapping("/edit/{id}")
     public String showEditPage(@PathVariable("id") Long id, ModelMap modelMap) {
-        modelMap.put("place", placeService.getPlaceDtoById(id));
+        placeService.fillShowEditPageModelMap(modelMap, id);
         return EDIT_PAGE;
     }
 

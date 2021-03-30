@@ -7,6 +7,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.spbu.distolymp.dto.entity.education.InstituteDto;
+import ru.spbu.distolymp.repository.education.InstituteRepository;
 import ru.spbu.distolymp.service.admin.directories.institutes.api.InstituteService;
 
 import javax.validation.Valid;
@@ -33,7 +34,7 @@ public class InstituteController {
 
     @GetMapping("/add")
     public String addNewInstitute(ModelMap modelMap) {
-        modelMap.put("institute", instituteService.getNewInstituteDto());
+        instituteService.fillAddNewInstituteModelMap(modelMap);
         return EDIT_PAGE;
     }
 
@@ -42,14 +43,13 @@ public class InstituteController {
         if (bindingResult.hasErrors()) {
             return EDIT_PAGE;
         }
-
         instituteService.saveOrEdit(instituteDto);
         return LIST_REDIRECT_PAGE;
     }
 
     @GetMapping("/edit/{id}")
     public String showEditPage(@PathVariable("id") Long id, ModelMap modelMap) {
-        modelMap.put("institute", instituteService.getInstituteDtoById(id));
+        instituteService.fillShowEditPageModelMap(modelMap, id);
         return EDIT_PAGE;
     }
 

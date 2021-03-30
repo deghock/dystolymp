@@ -17,7 +17,6 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Daria Usova
@@ -38,6 +37,21 @@ public class PlaceServiceImpl extends PlaceCrudServiceImpl implements PlaceServi
 
         modelMap.put("places", places);
         modelMap.put("idList", placeIdList);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void fillAddNewPlaceModelMap(ModelMap modelMap, Long divisionId) {
+        modelMap.put("place", getNewPlaceDto(divisionId));
+        modelMap.put("maxOrder", placeRepository.findMaxOrderByDivisionId(divisionId)+1);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void fillShowEditPageModelMap(ModelMap modelMap, Long id) {
+        modelMap.put("place", getPlaceDtoById(id));
+        Long divId = placeRepository.findById(id).get().getDivision().getId();
+        modelMap.put("maxOrder", placeRepository.findMaxOrderByDivisionId(divId));
     }
 
     @Override
@@ -77,7 +91,7 @@ public class PlaceServiceImpl extends PlaceCrudServiceImpl implements PlaceServi
             Place place = placeRepository.findById(placeId)
                     .orElseThrow(EntityNotFoundException::new);
 
-            setNewOrder(place, place.getOrder() - 1);
+            setNewOrder(place, place.getOrder(), place.getOrder() - 1);
         } catch (DataAccessException e) {
             log.error("An error occurred while updating place order", e);
             throw new PlaceServiceException();
@@ -91,30 +105,13 @@ public class PlaceServiceImpl extends PlaceCrudServiceImpl implements PlaceServi
             Place place = placeRepository.findById(placeId)
                     .orElseThrow(EntityNotFoundException::new);
 
-            setNewOrder(place, place.getOrder() + 1);
+            setNewOrder(place, place.getOrder(), place.getOrder() + 1);
         } catch (DataAccessException e) {
             log.error("An error occurred while updating place order", e);
             throw new PlaceServiceException();
         }
     }
 
-    private void setNewOrder(Place place, Integer newOrder) {
-        Long divisionId = place.getDivision().getId();
-        Integer order = place.getOrder();
-
-        Optional<Place> newOrderPlaceOpt = placeRepository.findByDivisionIdAndOrder(divisionId, newOrder);
-        if (!newOrderPlaceOpt.isPresent()) {
-            return;
-        }
-
-        Place newOrderPlace = newOrderPlaceOpt.get();
-
-        newOrderPlace.setOrder(order);
-        place.setOrder(newOrder);
-
-        placeRepository.save(newOrderPlace);
-        placeRepository.save(place);
-    }
 
     @Override
     @Transactional
