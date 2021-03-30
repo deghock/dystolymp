@@ -38,7 +38,7 @@ public class Passport {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "sex", columnDefinition = "ENUM('male', 'female')", nullable = false)
-    private Sex sex;
+    private Sex sex = Sex.male;
 
     @Size(max = 10)
     @Column(name = "birthday")
