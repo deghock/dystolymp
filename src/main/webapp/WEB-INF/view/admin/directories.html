@@ -20,7 +20,7 @@
 <div th:replace="fragments/menu-staff :: #menustaff"></div>
 
 <p>
-    <a href="#" class="abutton">
+    <a th:href="@{/countries/list}" class="abutton">
         Справочник стран
     </a>
 </p>
@@ -39,13 +39,7 @@
 
 <p>
     <a href="#" class="abutton">
-        Справочник районов
-    </a>
-</p>
-
-<p>
-    <a href="#" class="abutton">
-        Справочник учбеных заведений
+        Справочник учебных заведений
     </a>
 </p>
 
@@ -62,7 +56,7 @@
 </p>
 
 <p>
-    <a href="#" class="abutton">
+    <a th:href="@{/diplomas/list}" class="abutton">
         Справочник дипломов
     </a>
 </p>
@@ -76,18 +70,6 @@
 <p>
     <a th:href="@{/places/list}" class="abutton">
         Справочник площадок очного тура
-    </a>
-</p>
-
-<p>
-    <a href="#" class="abutton">
-        Справочник награждений
-    </a>
-</p>
-
-<p>
-    <a href="#" class="abutton">
-        Справочник типов учебных заведений
     </a>
 </p>
 

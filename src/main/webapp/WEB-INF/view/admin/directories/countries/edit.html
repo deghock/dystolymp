@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <style>
+        p {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey">
+
+<div th:replace="fragments/menu-staff :: #menustaff"></div>
+
+<h3>
+    <a th:href="@{/places/list}" class="stealth">
+        Справочник площадок очного тура
+    </a>
+</h3>
+
+<!--/*@thymesVar id="country" type="ru.spbu.distolymp.dto.entity.geography.country.CountryDto"*/-->
+<form th:action="@{/countries/save-or-edit}" th:object="${country}" method="post">
+    <div class="infoForm">
+        <input type="hidden" th:field="*{id}"/>
+        <fieldset>
+            <legend>Страна</legend>
+            <label for="name">Страна:</label>
+            <input type="text" class="wide" th:field="*{name}" id="name"/>
+            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Country name error</span>
+            <br/>
+
+            <label for="visible">Отображение:</label>
+            <select th:field="*{visible}" id="visible">
+                <option th:value="true" th:text="показывается"></option>
+                <option th:value="false" th:text="скрыта"></option>
+            </select>
+        </fieldset>
+    </div>
+    <div style="text-align:center">
+        <button type="submit">Сохранить</button>
+    </div>
+</form>
+
+<br/>
+
+<div th:replace="fragments/footer :: #footer"></div>
+</body>
+
+</html>
