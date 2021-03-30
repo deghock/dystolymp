@@ -1,6 +1,7 @@
 package ru.spbu.distolymp.entity.geography;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import ru.spbu.distolymp.entity.enumeration.Visible;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import javax.validation.constraints.Size;
  * @author Daria Usova
  */
 @Data
+@EqualsAndHashCode(of = {"id"})
 @Entity
 @Table(name = "regions")
 public class Region {
@@ -38,9 +40,9 @@ public class Region {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "visible", columnDefinition = "ENUM('yes', 'no')", nullable = false)
-    private Visible visible;
+    private Visible visible = Visible.yes;
 
     @Column(name = "editing")
-    private boolean editing;
+    private boolean editing = true;
 
 }

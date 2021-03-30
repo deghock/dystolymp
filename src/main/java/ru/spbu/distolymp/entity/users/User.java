@@ -48,7 +48,7 @@ public class User {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "group_access", columnDefinition = "ENUM('single', 'multiple')", nullable = false)
-    private GroupAccess groupAccess;
+    private GroupAccess groupAccess = GroupAccess.single;
 
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
@@ -62,7 +62,7 @@ public class User {
 
     @NotNull
     @Column(name = "award_id")
-    private Integer awardId;
+    private Integer awardId = 0;
 
     @NotNull
     @ManyToOne
