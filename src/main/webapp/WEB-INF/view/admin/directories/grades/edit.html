@@ -35,8 +35,8 @@
                 <tr><th id="key"></th><th id="value"></th></tr>
                 <tr>
                     <td><label for="name">Класс:</label></td>
-                    <td><select id="name" th:field="*{name}">
-                        <option th:value="${grade.name}" th:text="${grade.name}"></option></select>
+                    <td>
+                        <input id="name" type="text" th:value="${grade.name}" readonly />
                     </td>
                 </tr>
                 <tr>
