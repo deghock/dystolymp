@@ -29,6 +29,7 @@
     <div class="infoForm">
         <input type="hidden" th:field="*{id}"/>
         <input type="hidden" th:field="*{divisionId}"/>
+        <input type="hidden" th:field="*{name}">
         <fieldset>
             <legend>Значения по умолчанию для класса</legend>
             <table class="bgForm" aria-describedby="title">
@@ -36,7 +37,7 @@
                 <tr>
                     <td><label for="name">Класс:</label></td>
                     <td>
-                        <input id="name" type="text" th:value="${grade.name}" readonly />
+                        <input id="name" type="text" th:value="*{name}" readonly />
                     </td>
                 </tr>
                 <tr>
