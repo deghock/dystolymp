@@ -45,9 +45,9 @@ public class Group {
     private Accessible accessible;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "show_stat", columnDefinition = "ENUM('yes', 'no')", nullable = false)
-    private ShowStat showStat;
+    @Convert(converter = BooleanToShowStatConverter.class)
+    @Column(name = "show_stat", columnDefinition = "ENUM('yes', 'no')")
+    private boolean showStat;
 
     @Column(name = "priority")
     private Integer priority;
