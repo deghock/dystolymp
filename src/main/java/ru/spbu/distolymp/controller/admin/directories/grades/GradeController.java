@@ -25,7 +25,7 @@ public class GradeController {
     private static final String ROOT_DIR = "admin/directories/grades/";
     private static final String LIST_PAGE = ROOT_DIR + "list";
     private static final String ENTRY_REDIRECT_PAGE = "redirect:/division/entry";
-    private static final String REDIRECT_GRADE_LIST = "redirect:/grades/list";
+    private static final String REDIRECT_LIST = "redirect:/grades/list";
     private static final String EDIT_PAGE = ROOT_DIR + "edit";
 
     private final GradeService gradeService;
@@ -44,7 +44,7 @@ public class GradeController {
                               @SessionAttribute(value = "idDivision", required = false)
                                       Long divisionId) {
         gradeService.deleteGradeByIdAndDivisionId(id, divisionId);
-        return REDIRECT_GRADE_LIST;
+        return REDIRECT_LIST;
     }
 
     @PostMapping("/add")
@@ -52,7 +52,7 @@ public class GradeController {
                               RedirectAttributes ra) {
         if (bindingResult.hasErrors()) { return handleAddNewGradeException(ra); }
         gradeService.saveNewGrade(gradeNameDto);
-        return REDIRECT_GRADE_LIST;
+        return REDIRECT_LIST;
     }
 
     @PostMapping("/rename")
@@ -60,7 +60,7 @@ public class GradeController {
                               RedirectAttributes ra) {
         if (bindingResult.hasErrors()) { return handleRenameGradeException(ra); }
         gradeService.renameGrade(gradeNameDto);
-        return REDIRECT_GRADE_LIST;
+        return REDIRECT_LIST;
     }
 
     @GetMapping("/edit/{id}")
@@ -76,19 +76,19 @@ public class GradeController {
                               BindingResult bindingResult) {
         if (bindingResult.hasErrors()) { return EDIT_PAGE; }
         gradeService.updateGrade(gradeEditDto);
-        return REDIRECT_GRADE_LIST;
+        return REDIRECT_LIST;
     }
 
     @ExceptionHandler(AddNewGradeException.class)
     public String handleAddNewGradeException(RedirectAttributes ra) {
-        ra.addFlashAttribute("error", "Новый класс не был добавлен");
-        return REDIRECT_GRADE_LIST;
+        ra.addFlashAttribute("error", "Новый класс не был добавлен.");
+        return REDIRECT_LIST;
     }
 
     @ExceptionHandler(RenameGradeException.class)
     public String handleRenameGradeException(RedirectAttributes ra) {
-        ra.addFlashAttribute("error", "Имя класса не было изменено");
-        return REDIRECT_GRADE_LIST;
+        ra.addFlashAttribute("error", "Имя класса не было изменено.");
+        return REDIRECT_LIST;
     }
 
     // TODO: Implement a link to change the listing
