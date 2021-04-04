@@ -3,11 +3,13 @@ package ru.spbu.distolymp.entity.userinfo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Type;
+import ru.spbu.distolymp.entity.converter.DateToStringConverter;
 import ru.spbu.distolymp.entity.enumeration.Sex;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 /**
  * @author Vladislav Konovalov
@@ -41,8 +43,9 @@ public class Passport {
     private Sex sex = Sex.male;
 
     @Size(max = 10)
+    @Convert(converter = DateToStringConverter.class)
     @Column(name = "birthday")
-    private String birthday;
+    private Date birthday;
 
     @Size(max = 255)
     @Column(name = "`where`")
