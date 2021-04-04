@@ -3,6 +3,7 @@ package ru.spbu.distolymp.entity.tasks;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Type;
+import ru.spbu.distolymp.entity.converter.BooleanToIntegerConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -61,8 +62,9 @@ public class Test extends Problem {
     @Column(name = "parfilename")
     private String parFileName;
 
+    @Convert(converter = BooleanToIntegerConverter.class)
     @Column(name = "show_res", columnDefinition = "TINYINT")
-    private Integer isShowResult = 1;
+    private boolean showResult = true;
 
     @Type(type = "text")
     @Column(name = "notes")
