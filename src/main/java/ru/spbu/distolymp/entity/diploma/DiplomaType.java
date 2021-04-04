@@ -36,7 +36,7 @@ public class DiplomaType {
     @NotNull
     @Size(max = 150)
     @Column(name = "sub_title")
-    private String subtitle;
+    private String subtitle = "";
 
     @Column(name = "print_image")
     private boolean printImage = true;
