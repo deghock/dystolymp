@@ -3,7 +3,7 @@ package ru.spbu.distolymp.entity.education;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Type;
-import ru.spbu.distolymp.entity.enumeration.Visible;
+import ru.spbu.distolymp.entity.converter.BooleanToVisibleConverter;
 import ru.spbu.distolymp.entity.lists.Division;
 import ru.spbu.distolymp.entity.geography.Town;
 
@@ -40,9 +40,9 @@ public class School {
     private String address;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "visible", columnDefinition = "ENUM('yes', 'no')", nullable = false)
-    private Visible visible = Visible.yes;
+    @Convert(converter = BooleanToVisibleConverter.class)
+    @Column(name = "visible", columnDefinition = "ENUM('yes', 'no')")
+    private boolean visible = true;
 
     @Column(name = "editing")
     private boolean editing = true;
