@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "p_test")
-public class Test extends ProblemType {
+public class Test extends Problem {
 
     @Type(type = "text")
     @Column(name = "problemtext")

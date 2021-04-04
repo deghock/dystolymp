@@ -18,7 +18,7 @@ import java.util.List;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "p_type")
-public class ProblemType {
+public class Problem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

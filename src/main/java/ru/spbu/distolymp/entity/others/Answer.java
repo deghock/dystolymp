@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import ru.spbu.distolymp.entity.enumeration.Correctness;
-import ru.spbu.distolymp.entity.tasks.ProblemType;
+import ru.spbu.distolymp.entity.tasks.Problem;
 import ru.spbu.distolymp.entity.users.User;
 
 import javax.persistence.*;
@@ -86,6 +86,6 @@ public class Answer {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_problem", referencedColumnName = "id_problem")
-    private ProblemType problem;
+    private Problem problem;
 
 }

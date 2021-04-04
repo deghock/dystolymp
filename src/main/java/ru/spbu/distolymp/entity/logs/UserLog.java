@@ -7,7 +7,7 @@ import ru.spbu.distolymp.entity.enumeration.Action;
 import ru.spbu.distolymp.entity.groups.Group;
 import ru.spbu.distolymp.entity.lists.Listing;
 import ru.spbu.distolymp.entity.others.Answer;
-import ru.spbu.distolymp.entity.tasks.ProblemType;
+import ru.spbu.distolymp.entity.tasks.Problem;
 import ru.spbu.distolymp.entity.users.User;
 
 import javax.persistence.*;
@@ -64,7 +64,7 @@ public class UserLog {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_problem", referencedColumnName = "id_problem")
-    private ProblemType problem;
+    private Problem problem;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)

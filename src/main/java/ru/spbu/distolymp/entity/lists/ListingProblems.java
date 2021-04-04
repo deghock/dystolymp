@@ -2,7 +2,7 @@ package ru.spbu.distolymp.entity.lists;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import ru.spbu.distolymp.entity.tasks.ProblemType;
+import ru.spbu.distolymp.entity.tasks.Problem;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -29,7 +29,7 @@ public class ListingProblems {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_problem", referencedColumnName = "id_problem")
-    private ProblemType problem;
+    private Problem problem;
 
     @Column(name = "`order`")
     private Integer order;
