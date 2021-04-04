@@ -26,7 +26,7 @@ public class DiplomaType {
     @NotNull
     @Size(max = 45)
     @Column(name = "diplom_name")
-    private String name;
+    private String name = "диплом";
 
     @NotNull
     @Column(name = "img")
