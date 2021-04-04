@@ -4,9 +4,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
+import ru.spbu.distolymp.entity.converter.BooleanToAccessibleConverter;
+import ru.spbu.distolymp.entity.converter.BooleanToShowStatConverter;
 import ru.spbu.distolymp.entity.education.School;
-import ru.spbu.distolymp.entity.enumeration.Accessible;
-import ru.spbu.distolymp.entity.enumeration.ShowStat;
 import ru.spbu.distolymp.entity.lists.Category;
 import ru.spbu.distolymp.entity.lists.Grade;
 import ru.spbu.distolymp.entity.lists.Division;
@@ -40,9 +40,9 @@ public class Group {
     private String name;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "accessible", columnDefinition = "ENUM('yes', 'no')", nullable = false)
-    private Accessible accessible;
+    @Convert(converter = BooleanToAccessibleConverter.class)
+    @Column(name = "accessible", columnDefinition = "ENUM('yes', 'no')")
+    private boolean accessible;
 
     @NotNull
     @Convert(converter = BooleanToShowStatConverter.class)
