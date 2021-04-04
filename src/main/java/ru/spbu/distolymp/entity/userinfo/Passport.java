@@ -64,8 +64,9 @@ public class Passport {
     private String who;
 
     @Size(max = 10)
+    @Convert(converter = DateToStringConverter.class)
     @Column(name = "`when`")
-    private String when;
+    private Date when;
 
     @Size(max = 255)
     @Column(name = "code")
