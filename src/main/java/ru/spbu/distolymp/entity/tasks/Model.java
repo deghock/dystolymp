@@ -57,7 +57,7 @@ public class Model extends Problem {
 
     @Size(max = 255)
     @Column(name = "brcfilename")
-    private String brcFileName;
+    private String barsicFileName;
 
     @Type(type = "text")
     @Column(name = "problemform")
