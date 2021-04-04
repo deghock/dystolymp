@@ -43,6 +43,6 @@ public class DiplomaType {
 
     @Column(name = "orientation")
     @Convert(converter = OrientationConverter.class)
-    private Orientation orientation;
+    private Orientation orientation = Orientation.LANDSCAPE;
 
 }
