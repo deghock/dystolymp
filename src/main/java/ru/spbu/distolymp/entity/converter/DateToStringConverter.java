@@ -26,9 +26,9 @@ public class DateToStringConverter implements AttributeConverter<Date, String> {
     }
 
     @Override
-    public Date convertToEntityAttribute(String s) {
+    public Date convertToEntityAttribute(String date) {
         try {
-            return new SimpleDateFormat(DATE_PATTERN).parse(s);
+            return new SimpleDateFormat(DATE_PATTERN).parse(date);
         } catch (ParseException e) {
             log.error("Unable to convert String-format of date to Date-format of date", e);
             return null;
