@@ -39,7 +39,7 @@ public class Staff {
 
     @NotNull
     @Column(name = "level", columnDefinition = "CHAR")
-    private char level;
+    private char level = '0';
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_passport", referencedColumnName = "id_passport")

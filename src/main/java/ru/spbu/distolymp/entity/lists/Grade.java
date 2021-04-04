@@ -42,15 +42,15 @@ public class Grade {
 
     @Size(max = 255)
     @Column(name = "reply_to")
-    private String replyTo;
+    private String replyTo = "distolympinfo@mail.ru";
 
     @Size(max = 255)
     @Column(name = "reply_name")
-    private String replyName;
+    private String replyName = "Оргкомитет Интернет-олимпиады по физике";
 
     @Size(max = 255)
     @Column(name = "service_mail")
-    private String serviceEmail;
+    private String serviceEmail = "olymp2011@mail.ru";
 
     @Type(type = "text")
     @Column(name = "before_text")

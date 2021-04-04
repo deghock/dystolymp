@@ -56,6 +56,7 @@ public class Listing {
     @OneToMany(mappedBy = "listing")
     private List<UserLogListing> userList;
 
-    // TODO: Add many-to-many support via list_problems.table
+    @OneToMany(mappedBy = "listing")
+    private List<ListingProblems> problemList;
 
 }

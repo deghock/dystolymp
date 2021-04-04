@@ -1,6 +1,7 @@
 package ru.spbu.distolymp.entity.geography;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import ru.spbu.distolymp.entity.enumeration.Visible;
 
@@ -13,6 +14,7 @@ import java.util.List;
  * @author Daria Usova
  */
 @Data
+@EqualsAndHashCode(of = {"id"})
 @Entity
 @Table(name = "countries")
 public class Country {
@@ -30,10 +32,10 @@ public class Country {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "visible", columnDefinition = "ENUM('yes', 'no')", nullable = false)
-    private Visible visible;
+    private Visible visible = Visible.yes;
 
     @Column(name = "editing")
-    private boolean editing;
+    private boolean editing = false;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "country",

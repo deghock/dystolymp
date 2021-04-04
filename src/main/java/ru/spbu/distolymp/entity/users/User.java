@@ -2,6 +2,7 @@ package ru.spbu.distolymp.entity.users;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.CreationTimestamp;
 import ru.spbu.distolymp.entity.education.School;
 import ru.spbu.distolymp.entity.enumeration.GroupAccess;
 import ru.spbu.distolymp.entity.groups.Group;
@@ -48,10 +49,11 @@ public class User {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "group_access", columnDefinition = "ENUM('single', 'multiple')", nullable = false)
-    private GroupAccess groupAccess;
+    private GroupAccess groupAccess = GroupAccess.single;
 
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     @Column(name = "reg_date")
     private Date registrationDate;
 
@@ -62,7 +64,7 @@ public class User {
 
     @NotNull
     @Column(name = "award_id")
-    private Integer awardId;
+    private Integer awardId = 0;
 
     @NotNull
     @ManyToOne

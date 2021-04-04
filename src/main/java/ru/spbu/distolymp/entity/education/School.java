@@ -27,7 +27,7 @@ public class School {
 
     @NotNull
     @Column(name = "number")
-    private Integer number;
+    private Integer number = 0;
 
     @NotNull
     @Size(max = 255)
@@ -42,10 +42,10 @@ public class School {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "visible", columnDefinition = "ENUM('yes', 'no')", nullable = false)
-    private Visible visible;
+    private Visible visible = Visible.yes;
 
     @Column(name = "editing")
-    private boolean editing;
+    private boolean editing = true;
 
     @NotNull
     @ManyToOne
