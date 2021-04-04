@@ -1,6 +1,7 @@
 package ru.spbu.distolymp.entity.diploma;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import ru.spbu.distolymp.entity.converter.OrientationConverter;
 import ru.spbu.distolymp.entity.enumeration.Orientation;
 
@@ -13,6 +14,7 @@ import javax.validation.constraints.Size;
  */
 @Data
 @Entity
+@EqualsAndHashCode(of = {"id"})
 @Table(name = "diplom_types")
 public class DiplomaType {
 
