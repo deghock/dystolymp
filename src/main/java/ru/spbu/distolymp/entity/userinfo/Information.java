@@ -32,7 +32,7 @@ public class Information {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "ability", columnDefinition = "ENUM('usual', 'limited')", nullable = false)
-    private AbilityStatus abilityStatus;
+    private AbilityStatus abilityStatus = AbilityStatus.usual;
 
     @Column(name = "id_school_curator")
     private Long schoolCuratorId;
@@ -55,7 +55,7 @@ public class Information {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "family", columnDefinition = "ENUM('usual', 'orphan')", nullable = false)
-    private FamilyStatus familyStatus;
+    private FamilyStatus familyStatus = FamilyStatus.usual;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_mgroup", referencedColumnName = "id_mgroup")

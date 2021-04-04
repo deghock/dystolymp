@@ -33,7 +33,7 @@ public class Place {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "visible", columnDefinition = "ENUM('yes', 'no')", nullable = false)
-    private Visible visible;
+    private Visible visible = Visible.yes;
 
     @NotNull
     @Type(type = "text")

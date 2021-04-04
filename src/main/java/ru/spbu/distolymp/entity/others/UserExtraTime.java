@@ -2,6 +2,7 @@ package ru.spbu.distolymp.entity.others;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import ru.spbu.distolymp.entity.lists.Listing;
 import ru.spbu.distolymp.entity.users.Staff;
@@ -27,6 +28,7 @@ public class UserExtraTime {
 
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     @Column(name = "extra_date")
     private Date extraDate;
 
