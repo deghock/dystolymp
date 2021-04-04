@@ -37,7 +37,7 @@ public class DiplomaType {
     private String subtitle;
 
     @Column(name = "print_image")
-    private boolean printImage;
+    private boolean printImage = true;
 
     @Column(name = "orientation")
     @Convert(converter = OrientationConverter.class)
