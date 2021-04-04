@@ -33,10 +33,10 @@ public class GradeEditDto {
     @Email
     private String serviceEmail;
 
-    @Size(max = 65535, message = "{grade.beforeText.tooLong}")
+    @Size(max = 65535, message = "{grade.text.tooLong}")
     private String beforeText;
 
-    @Size(max = 65535, message = "{grade.afterText.tooLong}")
+    @Size(max = 65535, message = "{grade.text.tooLong}")
     private String afterText;
 
     private Long staffId;
