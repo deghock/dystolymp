@@ -8,11 +8,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.spbu.distolymp.dto.admin.directories.countries.CountryNameDto;
 import ru.spbu.distolymp.dto.entity.geography.country.CountryDto;
 import ru.spbu.distolymp.entity.enumeration.Visible;
 import ru.spbu.distolymp.entity.geography.Country;
 import ru.spbu.distolymp.entity.geography.Region;
 import ru.spbu.distolymp.exception.crud.geography.CountryCrudServiceException;
+import ru.spbu.distolymp.mapper.admin.directories.countries.CountryNameMapper;
 import ru.spbu.distolymp.mapper.entity.geography.CountryMapper;
 import ru.spbu.distolymp.repository.geography.CountryRepository;
 import ru.spbu.distolymp.service.crud.api.geography.CountryCrudService;
@@ -32,6 +34,7 @@ public class CountryCrudServiceImpl implements CountryCrudService {
 
     protected final CountryRepository countryRepository;
     protected final CountryMapper countryMapper;
+    private final CountryNameMapper countryNameMapper;
 
     @Override
     @Transactional
@@ -155,6 +158,18 @@ public class CountryCrudServiceImpl implements CountryCrudService {
         } catch (DataAccessException e) {
             log.error("An error occurred while getting countries", e);
             throw new CountryCrudServiceException();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CountryNameDto> getAllCountries() {
+        try {
+            List<Country> countryList = countryRepository.findAll();
+            return countryNameMapper.toDtoList(countryList);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while getting all countries", e);
+            return new ArrayList<>();
         }
     }
 
