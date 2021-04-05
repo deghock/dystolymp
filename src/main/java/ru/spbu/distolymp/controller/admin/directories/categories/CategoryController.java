@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.spbu.distolymp.dto.entity.lists.CategoryDto;
 import ru.spbu.distolymp.exception.crud.lists.category.AddNewCategoryException;
+import ru.spbu.distolymp.exception.crud.lists.category.DeleteCategoryException;
 import ru.spbu.distolymp.exception.crud.lists.category.UpdateCategoryNameException;
 import ru.spbu.distolymp.service.admin.directories.categories.api.CategoryService;
 
@@ -22,7 +23,10 @@ import javax.validation.Valid;
 public class CategoryController {
 
     private final CategoryService categoryService;
-    private static final String REDIRECT_CATEGORY_LIST = "redirect:/categories/list";
+    private static final String ROOT = "admin/directories/categories/";
+    private static final String LIST = ROOT + "list";
+    private static final String REDIRECT_LIST = "redirect:/categories/list";
+    private static final String ERROR_PARAM = "error";
 
     @GetMapping("/list")
     public String showAllCategories(ModelMap modelMap,
@@ -50,7 +54,7 @@ public class CategoryController {
     @GetMapping("/delete/{id}")
     public String deleteCategory(@PathVariable("id") Long id) {
         categoryService.deleteCategoryById(id);
-        return REDIRECT_CATEGORY_LIST;
+        return REDIRECT_LIST;
     }
 
     @PostMapping("/update")
@@ -61,19 +65,19 @@ public class CategoryController {
         }
 
         categoryService.updateCategoryName(categoryDto);
-        return REDIRECT_CATEGORY_LIST;
+        return REDIRECT_LIST;
     }
 
     @ExceptionHandler(UpdateCategoryNameException.class)
     public String handleUpdateCategoryNameException(RedirectAttributes ra) {
-        ra.addFlashAttribute("error", "Имя категории не было изменено");
-        return REDIRECT_CATEGORY_LIST;
+        ra.addFlashAttribute(ERROR_PARAM, "Имя категории не было изменено");
+        return REDIRECT_LIST;
     }
 
     @ExceptionHandler(AddNewCategoryException.class)
     public String handleAddNewCategoryException(RedirectAttributes ra) {
-        ra.addFlashAttribute("error", "Новая категория не была добавлена");
-        return REDIRECT_CATEGORY_LIST;
+        ra.addFlashAttribute(ERROR_PARAM, "Новая категория не была добавлена");
+        return REDIRECT_LIST;
     }
 
 }
