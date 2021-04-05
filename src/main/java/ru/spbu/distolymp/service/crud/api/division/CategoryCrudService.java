@@ -1,14 +1,15 @@
-package ru.spbu.distolymp.service.admin.directories.categories.api;
+package ru.spbu.distolymp.service.crud.api.division;
 
-import org.springframework.ui.ModelMap;
 import ru.spbu.distolymp.dto.entity.division.CategoryDto;
+
+import java.util.List;
 
 /**
  * @author Daria Usova
  */
-public interface CategoryService {
+public interface CategoryCrudService {
 
-    void fillShowAllCategoriesModelMap(ModelMap modelMap);
+    List<CategoryDto> getCategories();
 
     void saveNewCategory(CategoryDto categoryDto);
 

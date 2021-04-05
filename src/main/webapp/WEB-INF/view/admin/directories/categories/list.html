@@ -38,7 +38,7 @@
                 <th id="actions">Действия</th>
             </tr>
 
-            <!--/*@thymesVar id="categories" type="java.util.List<ru.spbu.distolymp.dto.entity.lists.CategoryDto>"*/-->
+            <!--/*@thymesVar id="categories" type="java.util.List<ru.spbu.distolymp.dto.entity.division.CategoryDto>"*/-->
             <tr th:each="category : ${categories}">
                 <td th:text="${category.name}"></td>
                 <td style="text-align: center">
@@ -69,7 +69,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!--/*@thymesVar id="category" type="ru.spbu.distolymp.dto.entity.lists.CategoryDto"*/-->
+                    <!--/*@thymesVar id="category" type="ru.spbu.distolymp.dto.entity.division.CategoryDto"*/-->
                     <form id="new-category-form" th:object="${category}"
                           th:action="@{/categories/add}" method="post">
                         <div class="form-group">
@@ -102,7 +102,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!--/*@thymesVar id="category" type="ru.spbu.distolymp.dto.entity.lists.CategoryDto"*/-->
+                    <!--/*@thymesVar id="category" type="ru.spbu.distolymp.dto.entity.division.CategoryDto"*/-->
                     <form id="update-category-form" th:object="${category}"
                           th:action="@{/categories/update}" method="post">
                         <div class="form-group">

@@ -5,10 +5,10 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.spbu.distolymp.dto.admin.directories.listing.ListingNameDto;
+import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
 import ru.spbu.distolymp.entity.lists.Listing;
-import ru.spbu.distolymp.exception.crud.lists.listing.ListingCrudServiceException;
-import ru.spbu.distolymp.mapper.admin.directories.lists.listing.ListingNameMapper;
+import ru.spbu.distolymp.exception.crud.lists.ListingCrudServiceException;
+import ru.spbu.distolymp.mapper.entity.lists.listing.ListingNameMapper;
 import ru.spbu.distolymp.repository.lists.ListingRepository;
 import ru.spbu.distolymp.service.crud.api.lists.ListingCrudService;
 

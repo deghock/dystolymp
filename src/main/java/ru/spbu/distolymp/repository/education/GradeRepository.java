@@ -1,7 +1,7 @@
-package ru.spbu.distolymp.repository.lists;
+package ru.spbu.distolymp.repository.education;
 
 import org.springframework.data.repository.CrudRepository;
-import ru.spbu.distolymp.entity.lists.Grade;
+import ru.spbu.distolymp.entity.education.Grade;
 
 import java.util.List;
 

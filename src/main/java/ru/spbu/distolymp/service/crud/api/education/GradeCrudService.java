@@ -1,8 +1,8 @@
-package ru.spbu.distolymp.service.crud.api.lists;
+package ru.spbu.distolymp.service.crud.api.education;
 
 import ru.spbu.distolymp.dto.admin.directories.grades.GradeListDto;
-import ru.spbu.distolymp.dto.admin.directories.grades.GradeNameDto;
-import ru.spbu.distolymp.dto.entity.lists.GradeEditDto;
+import ru.spbu.distolymp.dto.entity.education.grade.GradeNameDto;
+import ru.spbu.distolymp.dto.entity.education.grade.GradeDto;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public interface GradeCrudService {
 
     List<GradeListDto> getAllGrades();
 
-    GradeEditDto getGradeByIdAndDivisionId(Long id, Long divisionId);
+    GradeDto getGradeByIdAndDivisionId(Long id, Long divisionId);
 
     void deleteGradeByIdAndDivisionId(Long id, Long divisionId);
 
@@ -21,6 +21,6 @@ public interface GradeCrudService {
 
     void renameGrade(GradeNameDto gradeNameDto);
 
-    void updateGrade(GradeEditDto gradeEditDto);
+    void updateGrade(GradeDto gradeDto);
 
 }

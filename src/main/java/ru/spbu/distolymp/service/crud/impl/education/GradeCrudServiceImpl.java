@@ -1,4 +1,4 @@
-package ru.spbu.distolymp.service.crud.impl.lists;
+package ru.spbu.distolymp.service.crud.impl.education;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -6,17 +6,17 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.dto.admin.directories.grades.GradeListDto;
-import ru.spbu.distolymp.dto.admin.directories.grades.GradeNameDto;
-import ru.spbu.distolymp.dto.entity.lists.GradeEditDto;
-import ru.spbu.distolymp.entity.lists.Grade;
-import ru.spbu.distolymp.exception.crud.lists.grade.AddNewGradeException;
-import ru.spbu.distolymp.exception.crud.lists.grade.GradeCrudServiceException;
-import ru.spbu.distolymp.exception.crud.lists.grade.RenameGradeException;
+import ru.spbu.distolymp.dto.entity.education.grade.GradeNameDto;
+import ru.spbu.distolymp.dto.entity.education.grade.GradeDto;
+import ru.spbu.distolymp.entity.education.Grade;
+import ru.spbu.distolymp.exception.crud.education.grade.AddNewGradeException;
+import ru.spbu.distolymp.exception.crud.education.grade.GradeCrudServiceException;
+import ru.spbu.distolymp.exception.crud.education.grade.RenameGradeException;
 import ru.spbu.distolymp.mapper.admin.directories.lists.grades.GradeListMapper;
-import ru.spbu.distolymp.mapper.admin.directories.lists.grades.GradeNameMapper;
-import ru.spbu.distolymp.mapper.entity.lists.GradeEditMapper;
-import ru.spbu.distolymp.repository.lists.GradeRepository;
-import ru.spbu.distolymp.service.crud.api.lists.GradeCrudService;
+import ru.spbu.distolymp.mapper.entity.education.grade.GradeNameMapper;
+import ru.spbu.distolymp.mapper.entity.education.grade.GradeMapper;
+import ru.spbu.distolymp.repository.education.GradeRepository;
+import ru.spbu.distolymp.service.crud.api.education.GradeCrudService;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -31,7 +31,7 @@ public class GradeCrudServiceImpl implements GradeCrudService {
 
     private final GradeListMapper gradeListMapper;
     private final GradeNameMapper gradeNameMapper;
-    private final GradeEditMapper gradeEditMapper;
+    private final GradeMapper gradeMapper;
     protected final GradeRepository gradeRepository;
 
     @Override
@@ -50,13 +50,13 @@ public class GradeCrudServiceImpl implements GradeCrudService {
 
     @Override
     @Transactional(readOnly = true)
-    public GradeEditDto getGradeByIdAndDivisionId(Long id, Long divisionId) {
+    public GradeDto getGradeByIdAndDivisionId(Long id, Long divisionId) {
         try {
             Grade grade = gradeRepository.findByIdAndDivisionId(id, divisionId);
             if (grade == null) {
                 throw new EntityNotFoundException("Grade with id=" + id + " not found");
             }
-            return gradeEditMapper.toDto(grade);
+            return gradeMapper.toDto(grade);
         } catch (DataAccessException | EntityNotFoundException e) {
             log.error("An error occurred while getting a grade with id=" + id, e);
             throw new GradeCrudServiceException();
@@ -104,13 +104,13 @@ public class GradeCrudServiceImpl implements GradeCrudService {
 
     @Override
     @Transactional
-    public void updateGrade(GradeEditDto gradeEditDto) {
+    public void updateGrade(GradeDto gradeDto) {
         try {
-            Grade grade = gradeEditMapper.toEntity(gradeEditDto);
+            Grade grade = gradeMapper.toEntity(gradeDto);
             gradeRepository.save(grade);
         } catch (DataAccessException e) {
             log.error("An error occurred while updating a grade with id=" +
-                    gradeEditDto.getId(), e);
+                    gradeDto.getId(), e);
             throw new GradeCrudServiceException();
         }
     }

@@ -3,6 +3,7 @@ package ru.spbu.distolymp.entity.lists;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Type;
+import ru.spbu.distolymp.entity.division.Division;
 import ru.spbu.distolymp.entity.groups.Constraint;
 import ru.spbu.distolymp.entity.logs.UserLogListing;
 import ru.spbu.distolymp.entity.users.Staff;

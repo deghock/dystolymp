@@ -6,10 +6,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.spbu.distolymp.dto.entity.lists.CategoryDto;
-import ru.spbu.distolymp.exception.crud.lists.category.AddNewCategoryException;
-import ru.spbu.distolymp.exception.crud.lists.category.DeleteCategoryException;
-import ru.spbu.distolymp.exception.crud.lists.category.UpdateCategoryNameException;
+import ru.spbu.distolymp.dto.entity.division.CategoryDto;
+import ru.spbu.distolymp.exception.crud.division.category.AddNewCategoryException;
+import ru.spbu.distolymp.exception.crud.division.category.DeleteCategoryException;
+import ru.spbu.distolymp.exception.crud.division.category.UpdateCategoryNameException;
 import ru.spbu.distolymp.service.admin.directories.categories.api.CategoryService;
 
 import javax.validation.Valid;

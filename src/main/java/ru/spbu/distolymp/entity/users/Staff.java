@@ -3,7 +3,7 @@ package ru.spbu.distolymp.entity.users;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import ru.spbu.distolymp.entity.groups.Group;
-import ru.spbu.distolymp.entity.lists.Division;
+import ru.spbu.distolymp.entity.division.Division;
 import ru.spbu.distolymp.entity.lists.Listing;
 import ru.spbu.distolymp.entity.userinfo.Contacts;
 import ru.spbu.distolymp.entity.userinfo.Passport;
@@ -17,8 +17,8 @@ import java.util.List;
  * @author Vladislav Konovalov
  */
 @Data
-@EqualsAndHashCode(of = {"id"})
 @Entity
+@EqualsAndHashCode(of = {"id"})
 @Table(name = "staff")
 public class Staff {
 
