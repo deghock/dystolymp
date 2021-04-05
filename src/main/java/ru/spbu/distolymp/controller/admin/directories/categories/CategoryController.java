@@ -51,8 +51,7 @@ public class CategoryController {
     }
 
     @PostMapping("/update")
-    public String updateCategory(@Valid CategoryDto categoryDto, BindingResult bindingResult,
-                                 RedirectAttributes ra) {
+    public String updateCategory(@Valid CategoryDto categoryDto, BindingResult bindingResult, RedirectAttributes ra) {
         if (bindingResult.hasErrors()) {
             return handleUpdateCategoryNameException(ra);
         }

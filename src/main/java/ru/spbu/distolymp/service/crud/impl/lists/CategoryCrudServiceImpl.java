@@ -79,14 +79,15 @@ public class CategoryCrudServiceImpl implements CategoryCrudService {
         try {
             Long id = categoryDto.getId();
             Category category = categoryRepository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException("Category with id=" + id + " not found"));
+                    .orElseThrow(EntityNotFoundException::new);
 
             category.setName(categoryDto.getName());
 
             categoryRepository.save(category);
-        } catch (DataAccessException e) {
+        } catch (DataAccessException | EntityNotFoundException e) {
             log.error("An error occurred while updating category with id=" + categoryDto.getId(), e);
             throw new UpdateCategoryNameException();
         }
     }
+
 }
