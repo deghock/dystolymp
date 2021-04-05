@@ -28,7 +28,6 @@
 <form th:action="@{/grades/update}" th:object="${grade}" method="post">
     <div class="infoForm">
         <input type="hidden" th:field="*{id}"/>
-        <input type="hidden" th:field="*{divisionId}"/>
         <fieldset>
             <legend>Значения по умолчанию для класса</legend>
             <table class="bgForm" aria-describedby="title">
@@ -40,7 +39,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <!--/*@thymesVar id="listingList" type="java.util.List<ru.spbu.distolymp.dto.admin.directories.listing.ListingNameDto>"*/-->
+                    <!--/*@thymesVar id="listingList" type="java.util.List<ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto>"*/-->
                     <td><label for="listing">Список:</label></td>
                     <td><select id="listing" th:field="*{listingId}">
                         <option th:value="null">Список не назначен</option>
@@ -49,7 +48,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <!--/*@thymesVar id="staffList" type="java.util.List<ru.spbu.distolymp.dto.admin.directories.staff.StaffLoginDto>"*/-->
+                    <!--/*@thymesVar id="staffList" type="java.util.List<ru.spbu.distolymp.dto.entity.users.staff.StaffLoginDto>"*/-->
                     <td><label for="staff">Преподаватель:</label></td>
                     <td><select id="staff" th:field="*{staffId}">
                         <option th:value="null">Преподаватель не назначен</option>

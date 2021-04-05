@@ -1,4 +1,4 @@
-package ru.spbu.distolymp.dto.admin.directories.grades;
+package ru.spbu.distolymp.dto.entity.education.grade;
 
 import lombok.Data;
 
@@ -13,11 +13,8 @@ public class GradeNameDto {
 
     private Long id;
 
+    @NotNull
     @Size(max = 50)
-    @NotNull
     private String name;
-
-    @NotNull
-    private Long divisionId;
 
 }

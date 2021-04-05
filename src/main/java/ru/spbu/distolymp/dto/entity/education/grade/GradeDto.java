@@ -1,4 +1,4 @@
-package ru.spbu.distolymp.dto.entity.lists;
+package ru.spbu.distolymp.dto.entity.education.grade;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Email;
@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
  * @author Vladislav Konovalov
  */
 @Data
-public class GradeEditDto {
+public class GradeDto {
 
     private Long id;
 
@@ -42,8 +42,5 @@ public class GradeEditDto {
     private Long staffId;
 
     private Long listingId;
-
-    @NotNull
-    private Long divisionId;
 
 }
