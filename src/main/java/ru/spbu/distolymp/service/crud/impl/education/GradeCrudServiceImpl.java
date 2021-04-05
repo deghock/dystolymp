@@ -36,10 +36,10 @@ public class GradeCrudServiceImpl implements GradeCrudService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<GradeListDto> getAllGradesByDivisionId(Long divisionId) {
+    public List<GradeListDto> getAllGrades() {
         List<GradeListDto> gradeDtoList;
         try {
-            List<Grade> gradeList = gradeRepository.findAllByDivisionIdOrderById(divisionId);
+            List<Grade> gradeList = gradeRepository.findAllByOrderById();
             gradeDtoList = gradeListMapper.toDtoList(gradeList);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting all grades", e);

@@ -9,7 +9,7 @@ import ru.spbu.distolymp.dto.entity.lists.GradeEditDto;
  */
 public interface GradeService {
 
-    void fillShowAllGradesModelMap(ModelMap modelMap, Long divisionId);
+    void fillShowAllGradesModelMap(ModelMap modelMap);
 
     void deleteGradeByIdAndDivisionId(Long id, Long divisionId);
 

@@ -38,7 +38,7 @@ public class GradeServiceImpl extends GradeCrudServiceImpl implements GradeServi
 
     @Override
     @Transactional(readOnly = true)
-    public void fillShowAllGradesModelMap(ModelMap modelMap, Long divisionId) {
+    public void fillShowAllGradesModelMap(ModelMap modelMap) {
         GradeNameDto newGrade = new GradeNameDto();
         newGrade.setDivisionId(divisionId);
         List<GradeListDto> grades = getAllGradesByDivisionId(divisionId);

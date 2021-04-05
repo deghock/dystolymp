@@ -6,10 +6,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.spbu.distolymp.dto.admin.directories.grades.GradeNameDto;
-import ru.spbu.distolymp.dto.entity.lists.GradeEditDto;
-import ru.spbu.distolymp.exception.crud.lists.grade.AddNewGradeException;
-import ru.spbu.distolymp.exception.crud.lists.grade.RenameGradeException;
+import ru.spbu.distolymp.dto.entity.education.grade.GradeDto;
+import ru.spbu.distolymp.dto.entity.education.grade.GradeNameDto;
+import ru.spbu.distolymp.exception.crud.education.grade.AddNewGradeException;
+import ru.spbu.distolymp.exception.crud.education.grade.RenameGradeException;
 import ru.spbu.distolymp.service.admin.directories.grades.api.GradeService;
 
 import javax.validation.Valid;
@@ -24,18 +24,14 @@ public class GradeController {
 
     private static final String ROOT_DIR = "admin/directories/grades/";
     private static final String LIST_PAGE = ROOT_DIR + "list";
-    private static final String ENTRY_REDIRECT_PAGE = "redirect:/division/entry";
     private static final String REDIRECT_GRADE_LIST = "redirect:/grades/list";
     private static final String EDIT_PAGE = ROOT_DIR + "edit";
 
     private final GradeService gradeService;
 
     @GetMapping("/list")
-    public String showAllGrades(ModelMap modelMap,
-                                 @SessionAttribute(name = "idDivision", required = false)
-                                         Long divisionId) {
-        if (divisionId == null) return ENTRY_REDIRECT_PAGE;
-        gradeService.fillShowAllGradesModelMap(modelMap, divisionId);
+    public String showAllGrades(ModelMap modelMap) {
+        gradeService.fillShowAllGradesModelMap(modelMap);
         return LIST_PAGE;
     }
 
@@ -72,10 +68,10 @@ public class GradeController {
     }
 
     @PostMapping("/update")
-    public String applyChanges(@Valid @ModelAttribute("grade") GradeEditDto gradeEditDto,
+    public String applyChanges(@Valid @ModelAttribute("grade") GradeDto gradeDto,
                               BindingResult bindingResult) {
         if (bindingResult.hasErrors()) { return EDIT_PAGE; }
-        gradeService.updateGrade(gradeEditDto);
+        gradeService.updateGrade(gradeDto);
         return REDIRECT_GRADE_LIST;
     }
 
