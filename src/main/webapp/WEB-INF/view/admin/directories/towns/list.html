@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <style>
+        p {
+            text-align: center;
+        }
+
+        .center {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        legend {
+            display: block;
+            width: auto;
+            padding: 0 5px;
+            margin-bottom: 0;
+            font-size: inherit;
+            line-height: inherit;
+            border-bottom: none;
+        }
+
+        fieldset {
+            border: 2px groove white;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey">
+
+<div th:replace="fragments/menu-staff :: #menustaff"></div>
+
+<p id="title">Города</p>
+
+<div class="container">
+    <div class="alert alert-danger col-6 ml-auto mr-auto" role="alert" th:text="${error}" th:if="${error}"></div>
+
+    <fieldset>
+        <legend>Поиск городов</legend>
+        <div class="searchForm">
+            <label for="town-name">Город:</label>
+            <input type="text" id="town-name" class="wide"/><br/>
+
+            <!--/*@thymesVar id="countries" type="java.util.List<ru.spbu.distolymp.dto.admin.directories.countries.CountryNameDto>"*/-->
+            <label for="country">Страна:</label>
+            <select id="country">
+                <option th:value="null" selected>любая</option>
+                <option th:each="country : ${countries}" th:value="${country.id}"
+                        th:text="${country.name}"></option>
+            </select>
+
+            <div class="input-group" style="align-items: center">
+            <label for="limit">На странице:</label>
+            <select id="limit">
+                <option value="5">5</option>
+                <option value="20" selected>20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="0">все</option>
+            </select>
+            </div>
+
+            <div class="input-group" style="align-items: center">
+                <label for="show-hidden">Показать скрытые:</label>
+                <input type="checkbox" name="show-hidden" id="show-hidden" checked>
+            </div>
+
+            <div class="input-group" style="align-items: center">
+                <label for="show-visible">Показать видимые:</label>
+                <input type="checkbox" name="show-visible" id="show-visible" checked>
+            </div>
+
+        </div>
+
+        <div style="text-align:center">
+            <button type="submit" id="search-button">Найти</button>
+        </div>
+    </fieldset>
+
+    <br/>
+
+    <div id="towns-table" th:replace="admin/directories/towns/towns-table :: #towns-table"></div>
+
+    <ul class="actions">
+        <li>
+            <a th:href="@{/towns/add}" class="abutton">Зарегистрировать новый город</a>
+        </li>
+        <li>
+            <a href="#" data-toggle="modal" data-target=".set-visible" class="abutton">
+                Назначить видимость городу
+            </a>
+        </li>
+        <li>
+            <a href="#" onclick="return delTowns()" class="abutton">Удалить выбранные города</a>
+        </li>
+    </ul>
+
+    <div class="modal fade set-visible" id="set-visible-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Назначить видимость выбранным городам</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="set-visible-form" th:object="${towns}"
+                          th:action="@{/towns/setVisible}" method="post">
+                        <div class="form-group" style="align-items: center">
+                            <input type="radio" id="hidden" name="visibility" value="hidden" checked>
+                            <label for="hidden">Скрытые</label>
+                            <br/>
+                            <input type="radio" id="visible" name="visibility" value="visible">
+                            <label for="visible">Видимые</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light border-dark" data-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-light border-dark" form="set-visible-form">Ок
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: #footer"></div>
+</body>
+
+<script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+<script type="text/javascript">
+    $("#town-name").on("keyup", function (event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            document.getElementById("search-button").click();
+        }
+    })
+
+    $("#search-button").click(function () {
+        if (validSearchInput()) {
+            getTowns();
+        } else {
+            alert("Пожалуйста, выберите видимость городов");
+        }
+    })
+
+    function validSearchInput() {
+        var showVisible = getVisible();
+        var showHidden = getHidden();
+
+        var showNone = !showHidden && !showVisible;
+
+        return !showNone;
+    }
+
+    function getTowns() {
+        var params = encodeQueryData(getParams());
+        var url = "filter?" + params;
+
+        $.get(url).done(function (fragment) {
+            $("#towns-table").replaceWith(fragment);
+        });
+    }
+
+    function encodeQueryData(data) {
+        const result = [];
+        for (var key in data) {
+            result.push(key + '=' + data[key]);
+        }
+
+        return result.join('&');
+    }
+
+    function getParams() {
+        var params = {}
+        params["resultSize"] = getResultSize();
+        params["containsName"] = getName();
+        params["showVisible"] = getVisible();
+        params["showHidden"] = getHidden();
+
+        return params;
+    }
+
+    function getResultSize() {
+        return $("#limit").val();
+    }
+
+    function getName() {
+        return $("#town-name").val();
+    }
+
+    function getHidden() {
+        return $("#show-hidden").is(":checked");
+    }
+
+    function getVisible() {
+        return $("#show-visible").is(":checked");
+    }
+
+    function checkAll(check) {
+        var towns = document.getElementById("towns");
+        var ids = towns["ids"];
+        if (ids.name != undefined) {
+            ids = [ids];
+        }
+
+        for (var i = 0; i < ids.length; ++i) {
+            ids[i].checked = check;
+        }
+    }
+
+    function areSure() {
+        return window.confirm("Вы уверены?");
+    }
+
+    function delTowns() {
+        var places = document.getElementById("towns");
+        var flag = false;
+
+        places.elements["ids"].forEach(function (item) {
+            if (item.checked) {
+                flag = true;
+            }
+        });
+
+        if (flag && areSure()) {
+            places.submit();
+        }
+        return false;
+    }
+</script>
+
+</html>
