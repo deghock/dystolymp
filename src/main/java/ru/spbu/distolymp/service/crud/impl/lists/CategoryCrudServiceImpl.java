@@ -33,12 +33,12 @@ public class CategoryCrudServiceImpl implements CategoryCrudService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CategoryDto> getCategoriesByDivisionId(Long id) {
+    public List<CategoryDto> getCategories() {
         try {
-            List<Category> categoryList = categoryRepository.findByDivisionId(id);
+            List<Category> categoryList = categoryRepository.findAll();
             return categoryMapper.toDtoList(categoryList);
         } catch(DataAccessException e) {
-            log.error("An error occurred while getting categories by division id = " + id, e);
+            log.error("An error occurred while getting categories", e);
             return new ArrayList<>();
         }
     }

@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface CategoryCrudService {
 
-    List<CategoryDto> getCategoriesByDivisionId(Long id);
+    List<CategoryDto> getCategories();
 
     void saveNewCategory(CategoryDto categoryDto);
 
