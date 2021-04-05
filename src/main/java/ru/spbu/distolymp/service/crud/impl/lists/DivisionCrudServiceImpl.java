@@ -7,13 +7,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.dto.entity.lists.DivisionDto;
 import ru.spbu.distolymp.entity.lists.Division;
+import ru.spbu.distolymp.exception.crud.lists.division.DivisionCrudException;
 import ru.spbu.distolymp.mapper.entity.lists.DivisionMapper;
 import ru.spbu.distolymp.repository.lists.DivisionRepository;
 import ru.spbu.distolymp.service.crud.api.lists.DivisionCrudService;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Daria Usova
@@ -39,10 +40,25 @@ public class DivisionCrudServiceImpl implements DivisionCrudService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Division getDivisionById(Long id) {
-        return divisionRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Division with id=" + id + " was not found"));
+    @Transactional
+    public Division getAnyDivision() {
+        Optional<Division> divisionOpt = divisionRepository.findFirstByOrderById();
+        return divisionOpt.orElseGet(this::getNewDivision);
+    }
+
+    private Division getNewDivision() {
+        Division division = new Division();
+        division.setName("Default division");
+        division.setPrefix(" ");
+
+        try {
+            divisionRepository.save(division);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while saving default division", e);
+            throw new DivisionCrudException();
+        }
+
+        return division;
     }
 
 }

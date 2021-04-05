@@ -56,7 +56,7 @@ public class CategoryCrudServiceImpl implements CategoryCrudService {
 
     private void tryToAddNewCategory(CategoryDto categoryDto) {
         Category category = categoryMapper.toEntity(categoryDto);
-        Division division = divisionCrudService.getDivisionById(categoryDto.getDivisionId());
+        Division division = divisionCrudService.getAnyDivision();
 
         category.setDivision(division);
 

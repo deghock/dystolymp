@@ -12,6 +12,6 @@ public interface DivisionCrudService {
 
     List<DivisionDto> getDivisionList();
 
-    Division getDivisionById(Long id);
+    Division getAnyDivision();
 
 }
