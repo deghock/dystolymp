@@ -9,6 +9,7 @@ import ru.spbu.distolymp.dto.entity.lists.CategoryDto;
 import ru.spbu.distolymp.entity.lists.Category;
 import ru.spbu.distolymp.entity.lists.Division;
 import ru.spbu.distolymp.exception.crud.lists.category.AddNewCategoryException;
+import ru.spbu.distolymp.exception.crud.lists.category.DeleteCategoryException;
 import ru.spbu.distolymp.exception.crud.lists.category.UpdateCategoryNameException;
 import ru.spbu.distolymp.mapper.entity.lists.CategoryMapper;
 import ru.spbu.distolymp.repository.lists.CategoryRepository;
@@ -67,9 +68,13 @@ public class CategoryCrudServiceImpl implements CategoryCrudService {
     @Transactional
     public void deleteCategoryById(Long id) {
         try {
-            categoryRepository.deleteById(id);
-        } catch (DataAccessException e) {
+            Category category = categoryRepository.findById(id)
+                    .orElseThrow(EntityNotFoundException::new);
+
+            categoryRepository.delete(category);
+        } catch (DataAccessException | EntityNotFoundException e) {
             log.error("An error occurred while deleting category with id=" + id, e);
+            throw new DeleteCategoryException();
         }
     }
 

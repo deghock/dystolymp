@@ -72,4 +72,10 @@ public class CategoryController {
         return REDIRECT_LIST;
     }
 
+    @ExceptionHandler(DeleteCategoryException.class)
+    public String handleDeleteCategoryException(RedirectAttributes ra) {
+        ra.addFlashAttribute(ERROR_PARAM, "Категория не была удалена");
+        return REDIRECT_LIST;
+    }
+
 }
