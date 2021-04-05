@@ -19,7 +19,11 @@ public class EmailValidator implements ConstraintValidator<Email, String> {
 
     @Override
     public boolean isValid(String email, ConstraintValidatorContext constraintValidatorContext) {
-        return email.matches("\\S+@\\S+\\.\\S+");
+        if (email == null) {
+            return true;
+        } else {
+            return email.matches("\\S+@\\S+\\.\\S+");
+        }
     }
 
 }
