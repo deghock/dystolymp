@@ -17,6 +17,7 @@ import ru.spbu.distolymp.dto.entity.geography.town.TownNameDto;
 import ru.spbu.distolymp.entity.geography.Country;
 import ru.spbu.distolymp.exception.admin.directories.countries.CountryServiceException;
 import ru.spbu.distolymp.mapper.admin.directories.countries.CountryDetailsMapper;
+import ru.spbu.distolymp.mapper.admin.directories.countries.CountryNameMapper;
 import ru.spbu.distolymp.mapper.entity.geography.CountryMapper;
 import ru.spbu.distolymp.repository.geography.CountryRepository;
 import ru.spbu.distolymp.repository.geography.RegionRepository;
@@ -43,9 +44,9 @@ public class CountryServiceImpl extends CountryCrudServiceImpl implements Countr
     private final TownRepository townRepository;
 
     public CountryServiceImpl(CountryRepository countryRepository, CountryMapper countryMapper,
-                              CountryDetailsMapper countryDetailsMapper, RegionRepository regionRepository,
-                              TownRepository townRepository) {
-        super(countryRepository, countryMapper);
+                              CountryNameMapper countryNameMapper, CountryDetailsMapper countryDetailsMapper,
+                              RegionRepository regionRepository, TownRepository townRepository) {
+        super(countryRepository, countryMapper, countryNameMapper);
         this.countryDetailsMapper = countryDetailsMapper;
         this.regionRepository = regionRepository;
         this.townRepository = townRepository;
