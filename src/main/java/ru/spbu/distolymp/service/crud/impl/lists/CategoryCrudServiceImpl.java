@@ -28,8 +28,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryCrudServiceImpl implements CategoryCrudService {
 
-    private final CategoryRepository categoryRepository;
-    private final CategoryMapper categoryMapper;
+    protected final CategoryRepository categoryRepository;
+    protected final CategoryMapper categoryMapper;
     private final DivisionCrudService divisionCrudService;
 
     @Override
