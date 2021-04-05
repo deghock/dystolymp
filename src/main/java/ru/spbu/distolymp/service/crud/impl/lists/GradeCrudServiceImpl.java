@@ -19,6 +19,7 @@ import ru.spbu.distolymp.repository.lists.GradeRepository;
 import ru.spbu.distolymp.service.crud.api.lists.GradeCrudService;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,13 +38,12 @@ public class GradeCrudServiceImpl implements GradeCrudService {
     @Override
     @Transactional(readOnly = true)
     public List<GradeListDto> getAllGradesByDivisionId(Long divisionId) {
-        List<GradeListDto> gradeDtoList;
+        List<GradeListDto> gradeDtoList = new ArrayList<>();
         try {
             List<Grade> gradeList = gradeRepository.findAllByDivisionIdOrderById(divisionId);
             gradeDtoList = gradeListMapper.toDtoList(gradeList);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting all grades", e);
-            throw new GradeCrudServiceException();
         }
         return gradeDtoList;
     }
@@ -68,7 +68,7 @@ public class GradeCrudServiceImpl implements GradeCrudService {
     public void deleteGradeByIdAndDivisionId(Long id, Long divisionId) {
         try {
             gradeRepository.deleteGradeByIdAndDivisionId(id, divisionId);
-        } catch (DataAccessException | EntityNotFoundException e) {
+        } catch (DataAccessException e) {
             log.error("An error occurred while deleting a grade with id=" + id, e);
             throw new GradeCrudServiceException();
         }

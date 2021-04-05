@@ -2,7 +2,7 @@ package ru.spbu.distolymp.entity.education;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import ru.spbu.distolymp.entity.enumeration.Visible;
+import ru.spbu.distolymp.entity.converter.BooleanToVisibleConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -28,8 +28,8 @@ public class SchoolType {
     private String name;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "visible", columnDefinition = "ENUM('yes', 'no')", nullable = false)
-    private Visible visible = Visible.no;
+    @Convert(converter = BooleanToVisibleConverter.class)
+    @Column(name = "visible", columnDefinition = "ENUM('yes', 'no')")
+    private boolean visible = false;
 
 }
