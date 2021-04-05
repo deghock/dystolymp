@@ -29,14 +29,9 @@ public class CategoryController {
     private static final String ERROR_PARAM = "error";
 
     @GetMapping("/list")
-    public String showAllCategories(ModelMap modelMap,
-                                    @SessionAttribute(value = "idDivision", required = false) Long id) {
-        if (id == null) {
-            return "redirect:/division/entry";
-        }
-
-        categoryService.fillShowAllCategoriesModelMap(modelMap, id);
-        return "admin/directories/categories/list";
+    public String showAllCategories(ModelMap modelMap) {
+        categoryService.fillShowAllCategoriesModelMap(modelMap);
+        return LIST;
     }
 
     @PostMapping("/add")

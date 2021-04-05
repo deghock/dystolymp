@@ -8,7 +8,7 @@ import ru.spbu.distolymp.dto.entity.lists.CategoryDto;
  */
 public interface CategoryService {
 
-    void fillShowAllCategoriesModelMap(ModelMap modelMap, Long divisionId);
+    void fillShowAllCategoriesModelMap(ModelMap modelMap);
 
     void addNewCategory(CategoryDto categoryDto);
 
