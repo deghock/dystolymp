@@ -35,15 +35,13 @@ public class CategoryController {
     }
 
     @PostMapping("/add")
-    public String addNewCategory(@Valid CategoryDto categoryDto, BindingResult bindingResult,
-                                 RedirectAttributes ra) {
-
+    public String addNewCategory(@Valid CategoryDto categoryDto, BindingResult bindingResult, RedirectAttributes ra) {
         if (bindingResult.hasErrors()) {
             return handleAddNewCategoryException(ra);
         }
 
-        categoryService.addNewCategory(categoryDto);
-        return REDIRECT_CATEGORY_LIST;
+        categoryService.saveNewCategory(categoryDto);
+        return REDIRECT_LIST;
     }
 
     @GetMapping("/delete/{id}")

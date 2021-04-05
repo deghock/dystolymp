@@ -10,7 +10,7 @@ public interface CategoryService {
 
     void fillShowAllCategoriesModelMap(ModelMap modelMap);
 
-    void addNewCategory(CategoryDto categoryDto);
+    void saveNewCategory(CategoryDto categoryDto);
 
     void deleteCategoryById(Long id);
 
