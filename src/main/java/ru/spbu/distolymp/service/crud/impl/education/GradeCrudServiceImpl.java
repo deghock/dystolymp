@@ -100,13 +100,11 @@ public class GradeCrudServiceImpl implements GradeCrudService {
     public void renameGrade(GradeNameDto gradeNameDto) {
         try {
             Long id = gradeNameDto.getId();
-            Grade grade = gradeRepository.findById(id).orElseThrow(() ->
-                    new EntityNotFoundException("Grade with id=" + id + " not found"));
+            Grade grade = gradeRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+
             grade.setName(gradeNameDto.getName());
-            gradeRepository.save(grade);
         } catch (DataAccessException | EntityNotFoundException e) {
-            log.error("An error occurred while renaming a grade with id="
-                    + gradeNameDto.getId(), e);
+            log.error("An error occurred while renaming a grade with id=" + gradeNameDto.getId(), e);
             throw new RenameGradeException();
         }
     }
