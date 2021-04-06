@@ -60,10 +60,8 @@ public class GradeController {
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditPage(@PathVariable("id") Long id,
-                               @SessionAttribute(value = "idDivision", required = false)
-                                       Long divisionId, ModelMap modelMap) {
-        gradeService.fillShowEditPageModelMap(id, divisionId, modelMap);
+    public String showEditPage(@PathVariable("id") Long id, ModelMap modelMap) {
+        gradeService.fillShowEditPageModelMap(id, modelMap);
         return EDIT_PAGE;
     }
 

@@ -17,7 +17,7 @@ public interface GradeService {
 
     void renameGrade(GradeNameDto gradeNameDto);
 
-    void fillShowEditPageModelMap(Long id, Long divisionId, ModelMap modelMap);
+    void fillShowEditPageModelMap(Long id, ModelMap modelMap);
 
     void updateGrade(GradeDto gradeDto);
 

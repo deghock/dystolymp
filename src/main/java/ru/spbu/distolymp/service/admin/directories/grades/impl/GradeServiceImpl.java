@@ -50,10 +50,10 @@ public class GradeServiceImpl extends GradeCrudServiceImpl implements GradeServi
 
     @Override
     @Transactional(readOnly = true)
-    public void fillShowEditPageModelMap(Long id, Long divisionId, ModelMap modelMap) {
-        GradeDto gradeDto = getGradeByIdAndDivisionId(id, divisionId);
-        List<StaffLoginDto> staffDtoList = staffCrudService.getAllStaffByDivisionId(divisionId);
-        List<ListingNameDto> listingDtoList = listingCrudService.getAllListingByDivisionId(divisionId);
+    public void fillShowEditPageModelMap(Long id, ModelMap modelMap) {
+        GradeDto gradeDto = getGradeById(id);
+        List<StaffLoginDto> staffDtoList = staffCrudService.getAllStaff();
+        List<ListingNameDto> listingDtoList = listingCrudService.getAllListings();
 
         modelMap.put("grade", gradeDto);
         modelMap.put("staffList", staffDtoList);
