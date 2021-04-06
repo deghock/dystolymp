@@ -10,6 +10,7 @@ import ru.spbu.distolymp.dto.entity.education.grade.GradeNameDto;
 import ru.spbu.distolymp.dto.entity.education.grade.GradeDto;
 import ru.spbu.distolymp.entity.education.Grade;
 import ru.spbu.distolymp.exception.crud.education.grade.AddNewGradeException;
+import ru.spbu.distolymp.exception.crud.education.grade.DeleteGradeException;
 import ru.spbu.distolymp.exception.crud.education.grade.GradeCrudServiceException;
 import ru.spbu.distolymp.exception.crud.education.grade.RenameGradeException;
 import ru.spbu.distolymp.mapper.admin.directories.lists.grades.GradeListMapper;
@@ -67,10 +68,12 @@ public class GradeCrudServiceImpl implements GradeCrudService {
     @Transactional
     public void deleteGradeById(Long id) {
         try {
-            gradeRepository.deleteGradeByIdAndDivisionId(id, divisionId);
+            Grade grade = gradeRepository.findById(id)
+                    .orElseThrow(EntityNotFoundException::new);
+            gradeRepository.delete(grade);
         } catch (DataAccessException | EntityNotFoundException e) {
             log.error("An error occurred while deleting a grade with id=" + id, e);
-            throw new GradeCrudServiceException();
+            throw new DeleteGradeException();
         }
     }
 
