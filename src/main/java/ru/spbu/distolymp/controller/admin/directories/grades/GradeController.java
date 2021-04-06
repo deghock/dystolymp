@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.spbu.distolymp.dto.entity.education.grade.GradeDto;
 import ru.spbu.distolymp.dto.entity.education.grade.GradeNameDto;
-import ru.spbu.distolymp.exception.crud.education.grade.AddNewGradeException;
-import ru.spbu.distolymp.exception.crud.education.grade.DeleteGradeException;
-import ru.spbu.distolymp.exception.crud.education.grade.RenameGradeException;
+import ru.spbu.distolymp.exception.crud.education.grade.*;
 import ru.spbu.distolymp.service.admin.directories.grades.api.GradeService;
 
 import javax.validation.Valid;
@@ -88,6 +86,18 @@ public class GradeController {
     @ExceptionHandler(DeleteGradeException.class)
     public String handleDeleteGradeException(RedirectAttributes ra) {
         ra.addFlashAttribute(ERROR_PARAM, "Класс не был удалён");
+        return REDIRECT_GRADE_LIST;
+    }
+
+    @ExceptionHandler(UpdateGradeException.class)
+    public String handleUpdateGradeException(RedirectAttributes ra) {
+        ra.addFlashAttribute(ERROR_PARAM, "Информация не была обновлена");
+        return REDIRECT_GRADE_LIST;
+    }
+
+    @ExceptionHandler(GradeCrudServiceException.class)
+    public String handleGradeCrudServiceException(RedirectAttributes ra) {
+        ra.addFlashAttribute(ERROR_PARAM, "Произошла ошибка. Пожалуйста, повторите операцию позже.");
         return REDIRECT_GRADE_LIST;
     }
 
