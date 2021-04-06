@@ -54,13 +54,11 @@ public class GradeCrudServiceImpl implements GradeCrudService {
 
     @Override
     @Transactional(readOnly = true)
-    public GradeDto getGradeByIdAndDivisionId(Long id, Long divisionId) {
+    public GradeDto getGradeById(Long id) {
         try {
-            Grade grade = gradeRepository.findByIdAndDivisionId(id, divisionId);
-            if (grade == null) {
-                throw new EntityNotFoundException("Grade with id=" + id + " not found");
-            }
-            return gradeMapper.toDto(grade);
+            return gradeRepository.findById(id)
+                    .map(gradeMapper::toDto)
+                    .orElseThrow(EntityNotFoundException::new);
         } catch (DataAccessException | EntityNotFoundException e) {
             log.error("An error occurred while getting a grade with id=" + id, e);
             throw new GradeCrudServiceException();

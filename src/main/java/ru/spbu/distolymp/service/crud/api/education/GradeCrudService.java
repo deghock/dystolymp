@@ -13,7 +13,7 @@ public interface GradeCrudService {
 
     List<GradeListDto> getAllGrades();
 
-    GradeDto getGradeByIdAndDivisionId(Long id, Long divisionId);
+    GradeDto getGradeById(Long id);
 
     void deleteGradeById(Long id);
 
