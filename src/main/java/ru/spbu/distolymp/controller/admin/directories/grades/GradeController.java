@@ -64,9 +64,13 @@ public class GradeController {
     }
 
     @PostMapping("/update")
-    public String applyChanges(@Valid @ModelAttribute("grade") GradeDto gradeDto,
-                              BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) { return EDIT_PAGE; }
+    public String updateGrade(@Valid @ModelAttribute("grade") GradeDto gradeDto,
+                              BindingResult bindingResult, ModelMap modelMap) {
+        if (bindingResult.hasErrors()) {
+            gradeService.fillUpdateFailedModelMap(modelMap);
+            return EDIT_PAGE;
+        }
+
         gradeService.updateGrade(gradeDto);
         return REDIRECT_GRADE_LIST;
     }

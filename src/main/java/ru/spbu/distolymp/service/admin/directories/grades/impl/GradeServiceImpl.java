@@ -60,4 +60,13 @@ public class GradeServiceImpl extends GradeCrudServiceImpl implements GradeServi
         modelMap.put("listingList", listingDtoList);
     }
 
+    @Override
+    public void fillUpdateFailedModelMap(ModelMap modelMap) {
+        List<StaffLoginDto> staffDtoList = staffCrudService.getAllStaff();
+        List<ListingNameDto> listingDtoList = listingCrudService.getAllListings();
+
+        modelMap.put("staffList", staffDtoList);
+        modelMap.put("listingList", listingDtoList);
+    }
+
 }

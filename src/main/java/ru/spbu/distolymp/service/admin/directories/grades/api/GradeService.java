@@ -21,4 +21,6 @@ public interface GradeService {
 
     void updateGrade(GradeDto gradeDto);
 
+    void fillUpdateFailedModelMap(ModelMap modelMap);
+
 }
