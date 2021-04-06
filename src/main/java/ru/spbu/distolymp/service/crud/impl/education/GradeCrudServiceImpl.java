@@ -22,6 +22,7 @@ import ru.spbu.distolymp.service.crud.api.division.DivisionCrudService;
 import ru.spbu.distolymp.service.crud.api.education.GradeCrudService;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,15 +42,13 @@ public class GradeCrudServiceImpl implements GradeCrudService {
     @Override
     @Transactional(readOnly = true)
     public List<GradeListDto> getAllGrades() {
-        List<GradeListDto> gradeDtoList;
         try {
             List<Grade> gradeList = gradeRepository.findAllByOrderById();
-            gradeDtoList = gradeListMapper.toDtoList(gradeList);
+            return gradeListMapper.toDtoList(gradeList);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting all grades", e);
-            throw new GradeCrudServiceException();
+            return new ArrayList<>();
         }
-        return gradeDtoList;
     }
 
     @Override
