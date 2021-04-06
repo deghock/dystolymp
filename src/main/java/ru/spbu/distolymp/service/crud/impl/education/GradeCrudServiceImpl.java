@@ -111,10 +111,12 @@ public class GradeCrudServiceImpl implements GradeCrudService {
     public void updateGrade(GradeDto gradeDto) {
         try {
             Grade grade = gradeMapper.toEntity(gradeDto);
+            Division division = divisionCrudService.getAnyDivision();
+
+            grade.setDivision(division);
             gradeRepository.save(grade);
         } catch (DataAccessException e) {
-            log.error("An error occurred while updating a grade with id=" +
-                    gradeDto.getId(), e);
+            log.error("An error occurred while updating a grade with id=" + gradeDto.getId(), e);
             throw new GradeCrudServiceException();
         }
     }
