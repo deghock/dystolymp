@@ -12,6 +12,6 @@ public interface StaffCrudService {
 
     Staff getStaffById(Long id);
 
-    List<StaffLoginDto> getAllStaffByDivisionId(Long divisionId);
+    List<StaffLoginDto> getAllStaff();
 
 }
