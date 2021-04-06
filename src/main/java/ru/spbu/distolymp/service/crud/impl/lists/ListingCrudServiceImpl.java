@@ -36,16 +36,14 @@ public class ListingCrudServiceImpl implements ListingCrudService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ListingNameDto> getAllListingByDivisionId(Long divisionId) {
-        List<ListingNameDto> listingDtoList;
+    public List<ListingNameDto> getAllListings() {
         try {
-            List<Listing> listingList = listingRepository.findAllByDivisionId(divisionId);
-            listingDtoList = listingNameMapper.toDtoList(listingList);
+            List<Listing> listingList = (List<Listing>) listingRepository.findAll();
+            return listingNameMapper.toDtoList(listingList);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting all listings", e);
             throw new ListingCrudServiceException();
         }
-        return listingDtoList;
     }
 
 }

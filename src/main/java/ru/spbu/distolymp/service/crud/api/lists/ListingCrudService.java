@@ -12,6 +12,6 @@ public interface ListingCrudService {
 
     Listing getListingById(Long id);
 
-    List<ListingNameDto> getAllListingByDivisionId(Long divisionId);
+    List<ListingNameDto> getAllListings();
 
 }
