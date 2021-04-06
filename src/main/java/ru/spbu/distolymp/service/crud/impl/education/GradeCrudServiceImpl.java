@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.dto.admin.directories.grades.GradeListDto;
 import ru.spbu.distolymp.dto.entity.education.grade.GradeNameDto;
 import ru.spbu.distolymp.dto.entity.education.grade.GradeDto;
+import ru.spbu.distolymp.entity.division.Division;
 import ru.spbu.distolymp.entity.education.Grade;
 import ru.spbu.distolymp.exception.crud.education.grade.AddNewGradeException;
 import ru.spbu.distolymp.exception.crud.education.grade.DeleteGradeException;
@@ -17,6 +18,7 @@ import ru.spbu.distolymp.mapper.admin.directories.lists.grades.GradeListMapper;
 import ru.spbu.distolymp.mapper.entity.education.grade.GradeNameMapper;
 import ru.spbu.distolymp.mapper.entity.education.grade.GradeMapper;
 import ru.spbu.distolymp.repository.education.GradeRepository;
+import ru.spbu.distolymp.service.crud.api.division.DivisionCrudService;
 import ru.spbu.distolymp.service.crud.api.education.GradeCrudService;
 
 import javax.persistence.EntityNotFoundException;
@@ -34,6 +36,7 @@ public class GradeCrudServiceImpl implements GradeCrudService {
     private final GradeNameMapper gradeNameMapper;
     private final GradeMapper gradeMapper;
     protected final GradeRepository gradeRepository;
+    private final DivisionCrudService divisionCrudService;
 
     @Override
     @Transactional(readOnly = true)
@@ -82,6 +85,9 @@ public class GradeCrudServiceImpl implements GradeCrudService {
     public void saveNewGrade(GradeNameDto gradeNameDto) {
         try {
             Grade grade = gradeNameMapper.toEntity(gradeNameDto);
+            Division division = divisionCrudService.getAnyDivision();
+
+            grade.setDivision(division);
             gradeRepository.save(grade);
         } catch (DataAccessException e) {
             log.error("An error occurred while adding a new grade", e);

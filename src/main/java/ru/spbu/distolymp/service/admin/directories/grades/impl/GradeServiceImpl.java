@@ -13,6 +13,7 @@ import ru.spbu.distolymp.mapper.entity.education.grade.GradeNameMapper;
 import ru.spbu.distolymp.mapper.entity.education.grade.GradeMapper;
 import ru.spbu.distolymp.repository.education.GradeRepository;
 import ru.spbu.distolymp.service.admin.directories.grades.api.GradeService;
+import ru.spbu.distolymp.service.crud.api.division.DivisionCrudService;
 import ru.spbu.distolymp.service.crud.api.lists.ListingCrudService;
 import ru.spbu.distolymp.service.crud.api.users.StaffCrudService;
 import ru.spbu.distolymp.service.crud.impl.education.GradeCrudServiceImpl;
@@ -30,8 +31,9 @@ public class GradeServiceImpl extends GradeCrudServiceImpl implements GradeServi
 
     public GradeServiceImpl(GradeListMapper gradeListMapper, GradeNameMapper gradeNameMapper,
                             GradeMapper gradeMapper, GradeRepository gradeRepository,
-                            StaffCrudService staffCrudService, ListingCrudService listingCrudService) {
-        super(gradeListMapper, gradeNameMapper, gradeMapper, gradeRepository);
+                            DivisionCrudService divisionCrudService, StaffCrudService staffCrudService,
+                            ListingCrudService listingCrudService) {
+        super(gradeListMapper, gradeNameMapper, gradeMapper, gradeRepository, divisionCrudService);
         this.staffCrudService = staffCrudService;
         this.listingCrudService = listingCrudService;
     }
