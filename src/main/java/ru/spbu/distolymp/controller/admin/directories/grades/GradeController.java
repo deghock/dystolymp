@@ -9,6 +9,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.spbu.distolymp.dto.entity.education.grade.GradeDto;
 import ru.spbu.distolymp.dto.entity.education.grade.GradeNameDto;
 import ru.spbu.distolymp.exception.crud.education.grade.AddNewGradeException;
+import ru.spbu.distolymp.exception.crud.education.grade.DeleteGradeException;
 import ru.spbu.distolymp.exception.crud.education.grade.RenameGradeException;
 import ru.spbu.distolymp.service.admin.directories.grades.api.GradeService;
 
@@ -82,7 +83,13 @@ public class GradeController {
 
     @ExceptionHandler(RenameGradeException.class)
     public String handleRenameGradeException(RedirectAttributes ra) {
-        ra.addFlashAttribute("error", "Имя класса не было изменено");
+        ra.addFlashAttribute(ERROR_PARAM, "Имя класса не было изменено");
+        return REDIRECT_GRADE_LIST;
+    }
+
+    @ExceptionHandler(DeleteGradeException.class)
+    public String handleDeleteGradeException(RedirectAttributes ra) {
+        ra.addFlashAttribute(ERROR_PARAM, "Класс не был удалён");
         return REDIRECT_GRADE_LIST;
     }
 
