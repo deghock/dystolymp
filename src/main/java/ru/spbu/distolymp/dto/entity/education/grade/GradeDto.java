@@ -14,6 +14,8 @@ public class GradeDto {
 
     private Long id;
 
+    @NotNull(message = "{grade.name.null}")
+    @Size(max = 50, message = "{grade.name.tooLong}")
     private String name;
 
     @NotNull
