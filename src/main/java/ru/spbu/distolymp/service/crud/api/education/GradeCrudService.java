@@ -15,7 +15,7 @@ public interface GradeCrudService {
 
     GradeDto getGradeByIdAndDivisionId(Long id, Long divisionId);
 
-    void deleteGradeByIdAndDivisionId(Long id, Long divisionId);
+    void deleteGradeById(Long id);
 
     void saveNewGrade(GradeNameDto gradeNameDto);
 

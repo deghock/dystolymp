@@ -11,7 +11,7 @@ public interface GradeService {
 
     void fillShowAllGradesModelMap(ModelMap modelMap);
 
-    void deleteGradeByIdAndDivisionId(Long id, Long divisionId);
+    void deleteGradeById(Long id);
 
     void saveNewGrade(GradeNameDto gradeNameDto);
 

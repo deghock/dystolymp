@@ -65,7 +65,7 @@ public class GradeCrudServiceImpl implements GradeCrudService {
 
     @Override
     @Transactional
-    public void deleteGradeByIdAndDivisionId(Long id, Long divisionId) {
+    public void deleteGradeById(Long id) {
         try {
             gradeRepository.deleteGradeByIdAndDivisionId(id, divisionId);
         } catch (DataAccessException | EntityNotFoundException e) {

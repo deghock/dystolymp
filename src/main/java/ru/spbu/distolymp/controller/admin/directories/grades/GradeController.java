@@ -37,10 +37,8 @@ public class GradeController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteGrade(@PathVariable("id") Long id,
-                              @SessionAttribute(value = "idDivision", required = false)
-                                      Long divisionId) {
-        gradeService.deleteGradeByIdAndDivisionId(id, divisionId);
+    public String deleteGrade(@PathVariable("id") Long id) {
+        gradeService.deleteGradeById(id);
         return REDIRECT_GRADE_LIST;
     }
 
