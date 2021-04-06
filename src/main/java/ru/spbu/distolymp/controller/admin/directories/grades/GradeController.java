@@ -26,6 +26,7 @@ public class GradeController {
     private static final String LIST_PAGE = ROOT_DIR + "list";
     private static final String REDIRECT_GRADE_LIST = "redirect:/grades/list";
     private static final String EDIT_PAGE = ROOT_DIR + "edit";
+    private static final String ERROR_PARAM = "error";
 
     private final GradeService gradeService;
 
@@ -77,7 +78,7 @@ public class GradeController {
 
     @ExceptionHandler(AddNewGradeException.class)
     public String handleAddNewGradeException(RedirectAttributes ra) {
-        ra.addFlashAttribute("error", "Новый класс не был добавлен");
+        ra.addFlashAttribute(ERROR_PARAM, "Новый класс не был добавлен");
         return REDIRECT_GRADE_LIST;
     }
 
