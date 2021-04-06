@@ -4,12 +4,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
-import ru.spbu.distolymp.entity.converter.BooleanToAccessibleConverter;
-import ru.spbu.distolymp.entity.converter.BooleanToShowStatConverter;
 import ru.spbu.distolymp.entity.education.School;
-import ru.spbu.distolymp.entity.lists.Category;
-import ru.spbu.distolymp.entity.lists.Grade;
-import ru.spbu.distolymp.entity.lists.Division;
+import ru.spbu.distolymp.entity.enumeration.Accessible;
+import ru.spbu.distolymp.entity.enumeration.ShowStat;
+import ru.spbu.distolymp.entity.division.Category;
+import ru.spbu.distolymp.entity.education.Grade;
+import ru.spbu.distolymp.entity.division.Division;
 import ru.spbu.distolymp.entity.lists.Listing;
 import ru.spbu.distolymp.entity.users.Staff;
 import ru.spbu.distolymp.entity.users.User;
@@ -40,14 +40,14 @@ public class Group {
     private String name;
 
     @NotNull
-    @Convert(converter = BooleanToAccessibleConverter.class)
-    @Column(name = "accessible", columnDefinition = "ENUM('yes', 'no')")
-    private boolean accessible;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "accessible", columnDefinition = "ENUM('yes', 'no')", nullable = false)
+    private Accessible accessible;
 
     @NotNull
-    @Convert(converter = BooleanToShowStatConverter.class)
-    @Column(name = "show_stat", columnDefinition = "ENUM('yes', 'no')")
-    private boolean showStat;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "show_stat", columnDefinition = "ENUM('yes', 'no')", nullable = false)
+    private ShowStat showStat;
 
     @Column(name = "priority")
     private Integer priority;

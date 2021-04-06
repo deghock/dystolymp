@@ -3,8 +3,8 @@ package ru.spbu.distolymp.service.admin.entry.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
-import ru.spbu.distolymp.dto.entity.lists.DivisionDto;
-import ru.spbu.distolymp.service.crud.api.lists.DivisionCrudService;
+import ru.spbu.distolymp.dto.entity.division.DivisionDto;
+import ru.spbu.distolymp.service.crud.api.division.DivisionCrudService;
 import ru.spbu.distolymp.service.admin.entry.api.EntryService;
 
 import javax.servlet.http.HttpSession;

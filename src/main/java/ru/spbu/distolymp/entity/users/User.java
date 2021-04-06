@@ -7,8 +7,8 @@ import ru.spbu.distolymp.entity.education.School;
 import ru.spbu.distolymp.entity.enumeration.GroupAccess;
 import ru.spbu.distolymp.entity.groups.Group;
 import ru.spbu.distolymp.entity.groups.UserManagingGroup;
-import ru.spbu.distolymp.entity.lists.Division;
-import ru.spbu.distolymp.entity.lists.Grade;
+import ru.spbu.distolymp.entity.division.Division;
+import ru.spbu.distolymp.entity.education.Grade;
 import ru.spbu.distolymp.entity.logs.UserLogListing;
 import ru.spbu.distolymp.entity.userinfo.*;
 
