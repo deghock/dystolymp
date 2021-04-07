@@ -16,7 +16,7 @@ public interface PlaceRepository extends CrudRepository<Place, Long> {
     @Query("select coalesce(max(p.order), 0) from Place p")
     Integer findMaxOrder();
 
-    List<Place> findByDivisionIdAndOrderBetween(Long divisionId, Integer startOrder, Integer endOrder);
+    List<Place> findByOrderBetween(Integer startOrder, Integer endOrder);
 
     void deletePlacesByIdIn(List<Long> idList);
 
