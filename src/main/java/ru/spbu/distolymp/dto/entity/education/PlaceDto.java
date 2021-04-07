@@ -12,7 +12,6 @@ import javax.validation.constraints.Size;
 public class PlaceDto {
 
     private Long id;
-    private Long divisionId;
     private boolean visible;
 
     @Size(min = 1, max = 65535)

@@ -4,14 +4,13 @@ import org.mapstruct.Mapper;
 import ru.spbu.distolymp.dto.entity.education.PlaceDto;
 import ru.spbu.distolymp.entity.education.Place;
 import ru.spbu.distolymp.entity.enumeration.Visible;
-import ru.spbu.distolymp.service.crud.api.division.DivisionCrudService;
 
 import java.util.List;
 
 /**
  * @author Daria Usova
  */
-@Mapper(uses = {DivisionCrudService.class})
+@Mapper
 public interface PlaceMapper {
 
     PlaceDto toDto(Place place);
