@@ -113,7 +113,6 @@ public class PlaceCrudServiceImpl implements PlaceCrudService {
             }
         }
         place.setOrder(newOrder);
-        placeRepository.save(place);
     }
 
     @Override
@@ -140,12 +139,13 @@ public class PlaceCrudServiceImpl implements PlaceCrudService {
         }
     }
 
-    private void updatePlaceOrder(Long divisionId) {
-        List<Place> places = placeRepository.findAllByDivisionIdOrderByOrder(divisionId);
+    private void updatePlaceOrder() {
+        List<Place> places = placeRepository.findAllByOrderByOrder();
         for (int i = 0; i < places.size(); i++) {
             Place place = places.get(i);
             place.setOrder(i + 1);
         }
+    }
 
     @Override
     @Transactional(readOnly = true)
