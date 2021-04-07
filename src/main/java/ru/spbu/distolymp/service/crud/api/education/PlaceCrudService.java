@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface PlaceCrudService {
 
-    List<PlaceDto> getAllPlacesByDivisionId(Long id);
+    List<PlaceDto> getAllPlaces();
 
     void saveOrUpdatePlace(PlaceDto placeDto);
 

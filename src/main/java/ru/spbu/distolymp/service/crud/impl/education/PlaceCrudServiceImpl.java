@@ -29,11 +29,11 @@ public class PlaceCrudServiceImpl implements PlaceCrudService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PlaceDto> getAllPlacesByDivisionId(Long id) {
+    public List<PlaceDto> getAllPlaces() {
         List<PlaceDto> placeDtoList = new ArrayList<>();
 
         try {
-            List<Place> places = placeRepository.findAllByDivisionIdOrderByOrder(id);
+            List<Place> places = placeRepository.findAllByOrderByOrder();
             placeDtoList = placeMapper.toDtoList(places);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting all places", e);
