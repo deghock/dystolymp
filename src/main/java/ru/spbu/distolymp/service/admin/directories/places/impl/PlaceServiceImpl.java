@@ -11,6 +11,7 @@ import ru.spbu.distolymp.exception.admin.directories.places.PlaceServiceExceptio
 import ru.spbu.distolymp.mapper.entity.education.PlaceMapper;
 import ru.spbu.distolymp.repository.education.PlaceRepository;
 import ru.spbu.distolymp.service.admin.directories.places.api.PlaceService;
+import ru.spbu.distolymp.service.crud.api.division.DivisionCrudService;
 import ru.spbu.distolymp.service.crud.impl.education.PlaceCrudServiceImpl;
 
 import javax.persistence.EntityNotFoundException;
@@ -25,14 +26,15 @@ import java.util.List;
 @Service
 public class PlaceServiceImpl extends PlaceCrudServiceImpl implements PlaceService {
 
-    public PlaceServiceImpl(PlaceMapper placeMapper, PlaceRepository placeRepository) {
-        super(placeMapper, placeRepository);
+    public PlaceServiceImpl(PlaceMapper placeMapper, PlaceRepository placeRepository,
+                            DivisionCrudService divisionCrudService) {
+        super(placeMapper, placeRepository, divisionCrudService);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public void fillShowAllPlacesModelMap(ModelMap modelMap, Long divisionId) {
-        List<PlaceDto> places = getAllPlacesByDivisionId(divisionId);
+    public void fillShowAllPlacesModelMap(ModelMap modelMap) {
+        List<PlaceDto> places = getAllPlaces();
         List<Long> placeIdList = new ArrayList<>();
 
         modelMap.put("places", places);

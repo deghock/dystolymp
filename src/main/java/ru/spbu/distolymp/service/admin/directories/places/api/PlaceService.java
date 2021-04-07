@@ -8,7 +8,7 @@ import ru.spbu.distolymp.dto.entity.education.PlaceDto;
  */
 public interface PlaceService {
 
-    void fillShowAllPlacesModelMap(ModelMap modelMap, Long divisionId);
+    void fillShowAllPlacesModelMap(ModelMap modelMap);
 
     void fillAddNewPlaceModelMap(ModelMap modelMap, Long divisionId);
 
