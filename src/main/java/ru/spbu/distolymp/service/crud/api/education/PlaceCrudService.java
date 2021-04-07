@@ -13,7 +13,9 @@ public interface PlaceCrudService {
 
     void saveOrUpdatePlace(PlaceDto placeDto);
 
-    PlaceDto getPlaceById(Long id);
+    void save(PlaceDto placeDto);
+
+    void update(PlaceDto placeDto);
 
     void deletePlacesByIdAndDivision(List<Long> idList, Long divisionId);
 

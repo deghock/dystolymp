@@ -45,19 +45,53 @@ public class PlaceCrudServiceImpl implements PlaceCrudService {
     @Override
     @Transactional
     public void saveOrUpdatePlace(PlaceDto placeDto) {
+        if (placeDto.getId() == null) {
+            save(placeDto);
+        } else {
+            update(placeDto);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void save(PlaceDto placeDto) {
         try {
-            Integer oldOrder;
-            if (placeDto.getId() == null) {
-                oldOrder = placeRepository.findMaxOrderByDivisionId(placeDto.getDivisionId()) + 1;
-            }else{
-                oldOrder = placeRepository.findById(placeDto.getId()).get().getOrder();
-            }
-            Place place = placeMapper.toEntity(placeDto);
-            setNewOrder(place, oldOrder, place.getOrder());
+            tryToSavePlace(placeDto);
         } catch (DataAccessException e) {
-            log.error("An error occurred while saving or updating a place", e);
+            log.error("An error occurred while saving place", e);
             throw new PlaceCrudServiceException();
         }
+    }
+
+    private void tryToSavePlace(PlaceDto placeDto) {
+        Place place = placeMapper.toEntity(placeDto);
+        Division division = divisionCrudService.getAnyDivision();
+
+        place.setDivision(division);
+
+        setNewOrder(place, placeRepository.findMaxOrder() + 1, place.getOrder());
+        placeRepository.save(place);
+    }
+
+    @Override
+    @Transactional
+    public void update(PlaceDto placeDto) {
+        try {
+            tryToUpdatePlace(placeDto);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while updating place", e);
+            throw new PlaceCrudServiceException();
+        }
+    }
+
+    private void tryToUpdatePlace(PlaceDto placeDto) {
+        Place place = placeRepository.findById(placeDto.getId())
+                .orElseThrow(EntityNotFoundException::new);
+
+        place.setVisible( Visible.getVisible(placeDto.isVisible()) );
+        place.setName( placeDto.getName() );
+
+        setNewOrder(place, place.getOrder(), placeDto.getOrder());
     }
 
     protected void setNewOrder(Place place, Integer oldOrder, Integer newOrder) {
