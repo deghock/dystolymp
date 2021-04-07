@@ -68,12 +68,6 @@ public class PlaceServiceImpl extends PlaceCrudServiceImpl implements PlaceServi
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public PlaceDto getPlaceDtoById(Long id) {
-        return getPlaceById(id);
-    }
-
-    @Override
     @Transactional
     public void orderUp(Long placeId) {
         try {
