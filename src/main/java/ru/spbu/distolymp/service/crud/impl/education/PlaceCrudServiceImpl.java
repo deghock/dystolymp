@@ -6,10 +6,13 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.dto.entity.education.PlaceDto;
+import ru.spbu.distolymp.entity.division.Division;
 import ru.spbu.distolymp.entity.education.Place;
+import ru.spbu.distolymp.entity.enumeration.Visible;
 import ru.spbu.distolymp.exception.crud.education.PlaceCrudServiceException;
 import ru.spbu.distolymp.mapper.entity.education.PlaceMapper;
 import ru.spbu.distolymp.repository.education.PlaceRepository;
+import ru.spbu.distolymp.service.crud.api.division.DivisionCrudService;
 import ru.spbu.distolymp.service.crud.api.education.PlaceCrudService;
 
 import javax.persistence.EntityNotFoundException;
@@ -27,6 +30,7 @@ public class PlaceCrudServiceImpl implements PlaceCrudService {
 
     private final PlaceMapper placeMapper;
     protected final PlaceRepository placeRepository;
+    private final DivisionCrudService divisionCrudService;
 
     @Override
     @Transactional(readOnly = true)
@@ -114,11 +118,10 @@ public class PlaceCrudServiceImpl implements PlaceCrudService {
 
     @Override
     @Transactional(readOnly = true)
-    public PlaceDto getPlaceById(Long id) {
+    public Optional<PlaceDto> findPlaceDtoById(Long id) {
         try {
-            Place place = placeRepository.findById(id)
-                    .orElseThrow(EntityNotFoundException::new);
-            return placeMapper.toDto(place);
+            return placeRepository.findById(id)
+                    .map(placeMapper::toDto);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting place by id=" + id, e);
             throw new PlaceCrudServiceException();
