@@ -22,6 +22,6 @@ public interface PlaceService {
 
     void orderDown(Long placeId);
 
-    void deletePlacesById(Long[] ids, Long divisionId);
+    void deletePlacesById(Long[] ids);
 
 }

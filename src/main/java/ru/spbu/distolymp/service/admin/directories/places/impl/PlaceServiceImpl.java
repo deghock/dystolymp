@@ -117,9 +117,9 @@ public class PlaceServiceImpl extends PlaceCrudServiceImpl implements PlaceServi
 
     @Override
     @Transactional
-    public void deletePlacesById(Long[] ids, Long divisionId) {
+    public void deletePlacesById(Long[] ids) {
         if (ids.length > 0) {
-            deletePlacesByIdAndDivision(Arrays.asList(ids), divisionId);
+            deletePlacesByIdIn(Arrays.asList(ids));
         }
     }
 
