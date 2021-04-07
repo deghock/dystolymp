@@ -14,7 +14,7 @@ public interface PlaceService {
 
     void fillShowEditPageModelMap(ModelMap modelMap, Long id);
 
-    void saveOrEditPlace(PlaceDto placeDto);
+    void saveOrUpdatePlace(PlaceDto placeDto);
 
     PlaceDto getNewPlaceDto(Long divisionId);
 
