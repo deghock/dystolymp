@@ -26,28 +26,19 @@ public class PlaceController {
     private static final String ROOT_DIR = "admin/directories/places/";
     private static final String LIST_PAGE = ROOT_DIR + "list";
     private static final String EDIT_PAGE = ROOT_DIR + "edit";
-    private static final String ENTRY_REDIRECT_PAGE = "redirect:/division/entry";
     private static final String LIST_REDIRECT_PAGE = "redirect:/places/list";
 
     private final PlaceService placeService;
 
     @GetMapping("/list")
-    public String showAllPlaces(ModelMap modelMap,
-                                @SessionAttribute(value = "idDivision", required = false) Long id) {
-        if (id == null) {
-            return ENTRY_REDIRECT_PAGE;
-        }
-        placeService.fillShowAllPlacesModelMap(modelMap, id);
+    public String showAllPlaces(ModelMap modelMap) {
+        placeService.fillShowAllPlacesModelMap(modelMap);
         return LIST_PAGE;
     }
 
     @GetMapping("/add")
-    public String addNewPlace(ModelMap modelMap,
-                              @SessionAttribute(value = "idDivision", required = false) Long id) {
-        if (id == null) {
-            return ENTRY_REDIRECT_PAGE;
-        }
-        placeService.fillAddNewPlaceModelMap(modelMap, id);
+    public String addNewPlace(ModelMap modelMap) {
+        placeService.fillAddNewPlaceModelMap(modelMap);
         return EDIT_PAGE;
     }
 
@@ -79,13 +70,8 @@ public class PlaceController {
     }
 
     @PostMapping("/delete")
-    public String deleteSelectedPlacesById(@RequestParam(value = "ids") Long[] ids,
-                                           @SessionAttribute(value = "idDivision", required = false) Long divisionId) {
-        if (divisionId == null) {
-            return ENTRY_REDIRECT_PAGE;
-        }
-
-        placeService.deletePlacesById(ids, divisionId);
+    public String deleteSelectedPlacesById(@RequestParam(value = "ids") Long[] ids) {
+        placeService.deletePlacesById(ids);
         return LIST_REDIRECT_PAGE;
     }
 
