@@ -12,6 +12,4 @@ public interface GradeRepository extends CrudRepository<Grade, Long> {
 
     List<Grade> findAllByOrderById();
 
-    Grade findByIdAndDivisionId(Long id, Long divisionId);
-
 }
