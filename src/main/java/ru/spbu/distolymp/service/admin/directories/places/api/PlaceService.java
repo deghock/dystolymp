@@ -16,9 +16,7 @@ public interface PlaceService {
 
     void saveOrUpdatePlace(PlaceDto placeDto);
 
-    PlaceDto getNewPlaceDto(Long divisionId);
-
-    PlaceDto getPlaceDtoById(Long id);
+    PlaceDto getNewPlaceDto();
 
     void orderUp(Long placeId);
 
