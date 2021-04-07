@@ -15,6 +15,7 @@ import ru.spbu.distolymp.service.crud.api.education.PlaceCrudService;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Daria Usova
@@ -143,7 +144,14 @@ public class PlaceCrudServiceImpl implements PlaceCrudService {
             place.setOrder(i + 1);
         }
 
-        placeRepository.saveAll(places);
+    @Override
+    @Transactional(readOnly = true)
+    public Integer findMaxOrder() {
+        try {
+            return placeRepository.findMaxOrder();
+        } catch (DataAccessException e) {
+            log.error("An error occurred while getting max place order", e);
+            throw new PlaceCrudServiceException();
+        }
     }
-
 }
