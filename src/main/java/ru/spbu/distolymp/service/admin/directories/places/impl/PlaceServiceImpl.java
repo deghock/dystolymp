@@ -51,15 +51,10 @@ public class PlaceServiceImpl extends PlaceCrudServiceImpl implements PlaceServi
     @Override
     @Transactional(readOnly = true)
     public void fillShowEditPageModelMap(ModelMap modelMap, Long id) {
-        modelMap.put("place", getPlaceDtoById(id));
-        Long divId = placeRepository.findById(id).get().getDivision().getId();
-        modelMap.put("maxOrder", placeRepository.findMaxOrderByDivisionId(divId));
-    }
+        PlaceDto place = findPlaceDtoById(id).orElseThrow(PlaceServiceException::new);
 
-    @Override
-    @Transactional
-    public void saveOrEditPlace(PlaceDto placeDto) {
-        saveOrUpdatePlace(placeDto);
+        modelMap.put("place", place);
+        modelMap.put("maxOrder", findMaxOrder());
     }
 
     @Override
