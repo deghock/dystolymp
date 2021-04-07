@@ -59,18 +59,10 @@ public class PlaceServiceImpl extends PlaceCrudServiceImpl implements PlaceServi
 
     @Override
     @Transactional(readOnly = true)
-    public PlaceDto getNewPlaceDto(Long divisionId) {
+    public PlaceDto getNewPlaceDto() {
         PlaceDto placeDto = new PlaceDto();
         placeDto.setVisible(true);
-        placeDto.setDivisionId(divisionId);
-
-        try {
-            Integer order = placeRepository.findMaxOrderByDivisionId(divisionId) + 1;
-            placeDto.setOrder(order);
-        } catch (DataAccessException e) {
-            log.error("An error occurred while finding max order by division id", e);
-            throw new PlaceServiceException();
-        }
+        placeDto.setOrder(findMaxOrder() + 1);
 
         return placeDto;
     }
