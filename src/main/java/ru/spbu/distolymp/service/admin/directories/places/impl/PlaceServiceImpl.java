@@ -80,8 +80,9 @@ public class PlaceServiceImpl extends PlaceCrudServiceImpl implements PlaceServi
             Place place = placeRepository.findById(placeId)
                     .orElseThrow(EntityNotFoundException::new);
 
+            if (place.getOrder() == 1) return;
             setNewOrder(place, place.getOrder(), place.getOrder() - 1);
-        } catch (DataAccessException e) {
+        } catch (DataAccessException | EntityNotFoundException e) {
             log.error("An error occurred while updating place order", e);
             throw new PlaceServiceException();
         }
@@ -93,14 +94,15 @@ public class PlaceServiceImpl extends PlaceCrudServiceImpl implements PlaceServi
         try {
             Place place = placeRepository.findById(placeId)
                     .orElseThrow(EntityNotFoundException::new);
+            int maxOrder = findMaxOrder();
 
+            if (place.getOrder() == maxOrder) return;
             setNewOrder(place, place.getOrder(), place.getOrder() + 1);
-        } catch (DataAccessException e) {
+        } catch (DataAccessException | EntityNotFoundException e) {
             log.error("An error occurred while updating place order", e);
             throw new PlaceServiceException();
         }
     }
-
 
     @Override
     @Transactional
