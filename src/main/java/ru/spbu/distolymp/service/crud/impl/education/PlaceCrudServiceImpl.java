@@ -62,21 +62,15 @@ public class PlaceCrudServiceImpl implements PlaceCrudService {
 
     protected void setNewOrder(Place place, Integer oldOrder, Integer newOrder) {
         Long divisionId = place.getDivision().getId();
-        ArrayList<Place> placeToSave = new ArrayList<>();
+        List<Place> placeToSave;
         Place plc;
         if(oldOrder > newOrder) {
-            for (int i = newOrder; i < oldOrder; i++) {
-                plc = placeRepository.findByDivisionIdAndOrder(divisionId,i).get();
-                placeToSave.add(plc);
-            }
+            placeToSave = placeRepository.findByDivisionIdAndOrderBetween(divisionId, newOrder, oldOrder);
             for(Place p: placeToSave) {
                 p.setOrder(p.getOrder() + 1);
             }
         } else if(oldOrder < newOrder) {
-            for(int i = oldOrder+1; i <= newOrder; i++){
-                plc = placeRepository.findByDivisionIdAndOrder(divisionId,i).get();
-                placeToSave.add(plc);
-            }
+            placeToSave = placeRepository.findByDivisionIdAndOrderBetween(divisionId, oldOrder, newOrder);
             for(Place p: placeToSave) {
                 p.setOrder(p.getOrder() - 1);
             }

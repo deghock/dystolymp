@@ -58,21 +58,15 @@ public class InstituteCrudServiceImpl implements InstituteCrudService {
     }
 
     protected void setNewOrder(Institute institute, Integer oldOrder, Integer newOrder) {
-        ArrayList<Institute> instToSave = new ArrayList<>();
+        List<Institute> instToSave;
         Institute inst;
         if(oldOrder > newOrder) {
-            for (int i = newOrder; i < oldOrder; i++) {
-                inst = instituteRepository.findByOrder(i).get();
-                instToSave.add(inst);
-            }
+            instToSave = instituteRepository.findByOrderBetween(newOrder, oldOrder);
             for(Institute i: instToSave) {
                 i.setOrder(i.getOrder() + 1);
             }
         } else if(oldOrder < newOrder) {
-            for(int i = oldOrder+1; i <= newOrder; i++){
-                inst = instituteRepository.findByOrder(i).get();
-                instToSave.add(inst);
-            }
+            instToSave = instituteRepository.findByOrderBetween(oldOrder, newOrder);
             for(Institute i: instToSave) {
                 i.setOrder(i.getOrder() - 1);
             }
