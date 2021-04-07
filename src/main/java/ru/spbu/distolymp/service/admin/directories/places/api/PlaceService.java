@@ -10,7 +10,7 @@ public interface PlaceService {
 
     void fillShowAllPlacesModelMap(ModelMap modelMap);
 
-    void fillAddNewPlaceModelMap(ModelMap modelMap, Long divisionId);
+    void fillAddNewPlaceModelMap(ModelMap modelMap);
 
     void fillShowEditPageModelMap(ModelMap modelMap, Long id);
 

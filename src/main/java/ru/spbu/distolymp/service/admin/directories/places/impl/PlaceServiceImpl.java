@@ -43,9 +43,9 @@ public class PlaceServiceImpl extends PlaceCrudServiceImpl implements PlaceServi
 
     @Override
     @Transactional(readOnly = true)
-    public void fillAddNewPlaceModelMap(ModelMap modelMap, Long divisionId) {
-        modelMap.put("place", getNewPlaceDto(divisionId));
-        modelMap.put("maxOrder", placeRepository.findMaxOrderByDivisionId(divisionId)+1);
+    public void fillAddNewPlaceModelMap(ModelMap modelMap) {
+        modelMap.put("place", getNewPlaceDto());
+        modelMap.put("maxOrder", findMaxOrder() + 1);
     }
 
     @Override
