@@ -42,12 +42,13 @@ public class PlaceController {
         return EDIT_PAGE;
     }
 
-    @PostMapping("/save-or-edit")
-    public String saveOrEdit(@Valid @ModelAttribute("place") PlaceDto placeDto, BindingResult bindingResult) {
+    @PostMapping("/save-or-update")
+    public String saveOrUpdate(@Valid @ModelAttribute("place") PlaceDto placeDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return EDIT_PAGE;
         }
-        placeService.saveOrEditPlace(placeDto);
+
+        placeService.saveOrUpdatePlace(placeDto);
         return LIST_REDIRECT_PAGE;
     }
 
