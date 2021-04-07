@@ -127,10 +127,10 @@ public class PlaceCrudServiceImpl implements PlaceCrudService {
 
     @Override
     @Transactional
-    public void deletePlacesByIdAndDivision(List<Long> idList, Long divisionId) {
+    public void deletePlacesByIdIn(List<Long> idList) {
         try {
-            placeRepository.deletePlacesByIdInAndDivisionId(idList, divisionId);
-            updatePlaceOrder(divisionId);
+            placeRepository.deletePlacesByIdIn(idList);
+            updatePlaceOrder();
         } catch (DataAccessException e) {
             log.error("An error occurred while deleting places by id list", e);
             throw new PlaceCrudServiceException();

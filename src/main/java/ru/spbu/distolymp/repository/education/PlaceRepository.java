@@ -18,8 +18,6 @@ public interface PlaceRepository extends CrudRepository<Place, Long> {
 
     List<Place> findByDivisionIdAndOrderBetween(Long divisionId, Integer startOrder, Integer endOrder);
 
-    Optional<Place> findByDivisionIdAndOrder(Long divisionId, Integer order);
-
-    void deletePlacesByIdInAndDivisionId(List<Long> idList, Long divisionId);
+    void deletePlacesByIdIn(List<Long> idList);
 
 }
