@@ -83,7 +83,7 @@ public class PlaceCrudServiceImpl implements PlaceCrudService {
     public void update(PlaceDto placeDto) {
         try {
             tryToUpdatePlace(placeDto);
-        } catch (DataAccessException e) {
+        } catch (DataAccessException | EntityNotFoundException e) {
             log.error("An error occurred while updating place", e);
             throw new PlaceCrudServiceException();
         }
