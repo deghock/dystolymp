@@ -11,6 +11,7 @@ import ru.spbu.distolymp.exception.admin.directories.places.PlaceServiceExceptio
 import ru.spbu.distolymp.mapper.entity.education.PlaceMapper;
 import ru.spbu.distolymp.repository.education.PlaceRepository;
 import ru.spbu.distolymp.service.admin.directories.places.api.PlaceService;
+import ru.spbu.distolymp.service.crud.api.division.DivisionCrudService;
 import ru.spbu.distolymp.service.crud.impl.education.PlaceCrudServiceImpl;
 
 import javax.persistence.EntityNotFoundException;
@@ -25,14 +26,15 @@ import java.util.List;
 @Service
 public class PlaceServiceImpl extends PlaceCrudServiceImpl implements PlaceService {
 
-    public PlaceServiceImpl(PlaceMapper placeMapper, PlaceRepository placeRepository) {
-        super(placeMapper, placeRepository);
+    public PlaceServiceImpl(PlaceMapper placeMapper, PlaceRepository placeRepository,
+                            DivisionCrudService divisionCrudService) {
+        super(placeMapper, placeRepository, divisionCrudService);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public void fillShowAllPlacesModelMap(ModelMap modelMap, Long divisionId) {
-        List<PlaceDto> places = getAllPlacesByDivisionId(divisionId);
+    public void fillShowAllPlacesModelMap(ModelMap modelMap) {
+        List<PlaceDto> places = getAllPlaces();
         List<Long> placeIdList = new ArrayList<>();
 
         modelMap.put("places", places);
@@ -41,47 +43,28 @@ public class PlaceServiceImpl extends PlaceCrudServiceImpl implements PlaceServi
 
     @Override
     @Transactional(readOnly = true)
-    public void fillAddNewPlaceModelMap(ModelMap modelMap, Long divisionId) {
-        modelMap.put("place", getNewPlaceDto(divisionId));
-        modelMap.put("maxOrder", placeRepository.findMaxOrderByDivisionId(divisionId)+1);
+    public void fillAddNewPlaceModelMap(ModelMap modelMap) {
+        modelMap.put("place", getNewPlaceDto());
+        modelMap.put("maxOrder", findMaxOrder() + 1);
     }
 
     @Override
     @Transactional(readOnly = true)
     public void fillShowEditPageModelMap(ModelMap modelMap, Long id) {
-        modelMap.put("place", getPlaceDtoById(id));
-        Long divId = placeRepository.findById(id).get().getDivision().getId();
-        modelMap.put("maxOrder", placeRepository.findMaxOrderByDivisionId(divId));
-    }
+        PlaceDto place = findPlaceDtoById(id).orElseThrow(PlaceServiceException::new);
 
-    @Override
-    @Transactional
-    public void saveOrEditPlace(PlaceDto placeDto) {
-        saveOrUpdatePlace(placeDto);
+        modelMap.put("place", place);
+        modelMap.put("maxOrder", findMaxOrder());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public PlaceDto getNewPlaceDto(Long divisionId) {
+    public PlaceDto getNewPlaceDto() {
         PlaceDto placeDto = new PlaceDto();
         placeDto.setVisible(true);
-        placeDto.setDivisionId(divisionId);
-
-        try {
-            Integer order = placeRepository.findMaxOrderByDivisionId(divisionId) + 1;
-            placeDto.setOrder(order);
-        } catch (DataAccessException e) {
-            log.error("An error occurred while finding max order by division id", e);
-            throw new PlaceServiceException();
-        }
+        placeDto.setOrder(findMaxOrder() + 1);
 
         return placeDto;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public PlaceDto getPlaceDtoById(Long id) {
-        return getPlaceById(id);
     }
 
     @Override
@@ -91,8 +74,9 @@ public class PlaceServiceImpl extends PlaceCrudServiceImpl implements PlaceServi
             Place place = placeRepository.findById(placeId)
                     .orElseThrow(EntityNotFoundException::new);
 
+            if (place.getOrder() == 1) return;
             setNewOrder(place, place.getOrder(), place.getOrder() - 1);
-        } catch (DataAccessException e) {
+        } catch (DataAccessException | EntityNotFoundException e) {
             log.error("An error occurred while updating place order", e);
             throw new PlaceServiceException();
         }
@@ -104,20 +88,21 @@ public class PlaceServiceImpl extends PlaceCrudServiceImpl implements PlaceServi
         try {
             Place place = placeRepository.findById(placeId)
                     .orElseThrow(EntityNotFoundException::new);
+            int maxOrder = findMaxOrder();
 
+            if (place.getOrder() == maxOrder) return;
             setNewOrder(place, place.getOrder(), place.getOrder() + 1);
-        } catch (DataAccessException e) {
+        } catch (DataAccessException | EntityNotFoundException e) {
             log.error("An error occurred while updating place order", e);
             throw new PlaceServiceException();
         }
     }
 
-
     @Override
     @Transactional
-    public void deletePlacesById(Long[] ids, Long divisionId) {
+    public void deletePlacesById(Long[] ids) {
         if (ids.length > 0) {
-            deletePlacesByIdAndDivision(Arrays.asList(ids), divisionId);
+            deletePlacesByIdIn(Arrays.asList(ids));
         }
     }
 
