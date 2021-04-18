@@ -8,22 +8,20 @@ import ru.spbu.distolymp.dto.entity.education.PlaceDto;
  */
 public interface PlaceService {
 
-    void fillShowAllPlacesModelMap(ModelMap modelMap, Long divisionId);
+    void fillShowAllPlacesModelMap(ModelMap modelMap);
 
-    void fillAddNewPlaceModelMap(ModelMap modelMap, Long divisionId);
+    void fillAddNewPlaceModelMap(ModelMap modelMap);
 
     void fillShowEditPageModelMap(ModelMap modelMap, Long id);
 
-    void saveOrEditPlace(PlaceDto placeDto);
+    void saveOrUpdatePlace(PlaceDto placeDto);
 
-    PlaceDto getNewPlaceDto(Long divisionId);
-
-    PlaceDto getPlaceDtoById(Long id);
+    PlaceDto getNewPlaceDto();
 
     void orderUp(Long placeId);
 
     void orderDown(Long placeId);
 
-    void deletePlacesById(Long[] ids, Long divisionId);
+    void deletePlacesById(Long[] ids);
 
 }

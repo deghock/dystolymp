@@ -3,18 +3,25 @@ package ru.spbu.distolymp.service.crud.api.education;
 import ru.spbu.distolymp.dto.entity.education.PlaceDto;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Daria Usova
  */
 public interface PlaceCrudService {
 
-    List<PlaceDto> getAllPlacesByDivisionId(Long id);
+    List<PlaceDto> getAllPlaces();
 
     void saveOrUpdatePlace(PlaceDto placeDto);
 
-    PlaceDto getPlaceById(Long id);
+    void save(PlaceDto placeDto);
 
-    void deletePlacesByIdAndDivision(List<Long> idList, Long divisionId);
+    void update(PlaceDto placeDto);
+
+    Optional<PlaceDto> findPlaceDtoById(Long id);
+
+    void deletePlacesByIdIn(List<Long> idList);
+
+    Integer findMaxOrder();
 
 }

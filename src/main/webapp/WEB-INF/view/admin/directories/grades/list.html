@@ -12,6 +12,7 @@
         p {
             text-align: center;
         }
+
         .center {
             margin-left: auto;
             margin-right: auto;
@@ -83,7 +84,7 @@
 
         <div style="text-align:center; margin:0.5em;">
             <button type="button" class="btn btn-light border border-dark"
-                    data-toggle="modal" data-target=".new-grade">Добавить новый класс...
+                    data-toggle="modal" data-target=".new-grade">Добавить новый класс
             </button>
         </div>
 
@@ -99,7 +100,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!--/*@thymesVar id="grade" type="ru.spbu.distolymp.dto.admin.directories.grades.GradeNameDto"*/-->
+                    <!--/*@thymesVar id="grade" type="ru.spbu.distolymp.dto.entity.education.grade.GradeNameDto"*/-->
                     <form id="new-grade-form" th:object="${grade}"
                           th:action="@{/grades/add}" method="post">
                         <div class="form-group">
@@ -110,9 +111,6 @@
                             <small id="gradeHelp" class="form-text text-muted">Если имя будет пустым, новый
                                 класс не будет создан.
                             </small>
-                            <label>
-                                <input hidden type="number" th:value="*{divisionId}" th:field="*{divisionId}">
-                            </label>
                         </div>
                     </form>
                 </div>
@@ -135,7 +133,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!--/*@thymesVar id="grade" type="ru.spbu.distolymp.dto.admin.directories.grades.GradeNameDto"*/-->
+                    <!--/*@thymesVar id="grade" type="ru.spbu.distolymp.dto.entity.education.grade.GradeNameDto"*/-->
                     <form id="rename-grade-form" th:object="${grade}"
                           th:action="@{/grades/rename}" method="post">
                         <div class="form-group">
@@ -146,8 +144,9 @@
                             <small id="updateGradeHelp" class="form-text text-muted">Если имя будет пустым, класс
                                 не будет переименован.
                             </small>
-                            <input hidden type="number" th:value="*{id}" th:field="*{id}" id="grade-id">
-                            <input hidden type="number" th:value="*{divisionId}" th:field="*{divisionId}">
+                            <label>
+                                <input hidden type="number" th:value="*{id}" th:field="*{id}" id="grade-id">
+                            </label>
                         </div>
                     </form>
                 </div>
