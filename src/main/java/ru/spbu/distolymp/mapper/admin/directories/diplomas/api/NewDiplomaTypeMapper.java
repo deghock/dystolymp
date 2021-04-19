@@ -1,4 +1,4 @@
-package ru.spbu.distolymp.mapper.admin.directories.diplomas;
+package ru.spbu.distolymp.mapper.admin.directories.diplomas.api;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,4 +18,5 @@ public interface NewDiplomaTypeMapper {
     default Orientation toOrientation(boolean portraitOrientation) {
         return portraitOrientation ? Orientation.PORTRAIT : Orientation.LANDSCAPE;
     }
+
 }
