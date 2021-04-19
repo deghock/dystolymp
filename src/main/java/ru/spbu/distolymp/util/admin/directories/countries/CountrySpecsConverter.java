@@ -4,6 +4,10 @@ import org.springframework.data.jpa.domain.Specification;
 import ru.spbu.distolymp.dto.admin.directories.countries.CountryFilter;
 import ru.spbu.distolymp.entity.geography.Country;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import static ru.spbu.distolymp.repository.geography.spec.CountrySpecs.*;
 
 /**
@@ -21,19 +25,14 @@ public class CountrySpecsConverter {
         Specification<Country> nameSpec = nameSpec(countryFilter.getContainsName());
         Specification<Country> visibleSpec = visibleSpec(countryFilter.isShowHidden(), countryFilter.isShowVisible());
 
-        if (nameSpec == null && visibleSpec == null) {
-            return null;
-        }
+        List<Specification<Country>> specs = new ArrayList<>();
+        specs.add(nameSpec);
+        specs.add(visibleSpec);
 
-        if (nameSpec == null) {
-            return visibleSpec;
-        }
-
-        if (visibleSpec == null) {
-            return nameSpec;
-        }
-
-        return nameSpec.and(visibleSpec);
+        return specs.stream()
+                .filter(Objects::nonNull)
+                .reduce(Specification::and)
+                .orElse(null);
     }
 
     private static Specification<Country> nameSpec(String name) {
