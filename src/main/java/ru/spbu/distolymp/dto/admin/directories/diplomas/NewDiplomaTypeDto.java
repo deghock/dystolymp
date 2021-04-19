@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 import ru.spbu.distolymp.validation.admin.directories.diplomas.annotation.ImageMimeType;
+import ru.spbu.distolymp.validation.admin.directories.diplomas.annotation.MultipartFileUploaded;
 import ru.spbu.distolymp.validation.admin.directories.diplomas.annotation.UniqueDiplomaTypeName;
 
 import javax.validation.constraints.NotNull;
@@ -22,6 +23,7 @@ public class NewDiplomaTypeDto {
 
     @ImageMimeType
     @ToString.Exclude
+    @MultipartFileUploaded
     private MultipartFile image;
 
     private boolean portraitOrientation;
