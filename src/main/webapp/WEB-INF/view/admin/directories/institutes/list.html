@@ -20,13 +20,13 @@
     </style>
     <script type="text/javascript">
         function checkAll(check) {
-            var institutes = document.getElementById("institutes");
-            var ids = institutes["ids"];
+            let institutes = document.getElementById("institutes");
+            let ids = institutes["ids"];
             if (ids.name != undefined) {
                 ids = [ids];
             }
 
-            for (var i = 0; i < ids.length; ++i) {
+            for (let i = 0; i < ids.length; ++i) {
                 ids[i].checked = check;
             }
         }
@@ -36,14 +36,12 @@
         }
 
         function delInstitute() {
-            var institutes = document.getElementById("institutes");
-            var flag = false;
-            institutes.elements["ids"].forEach(function (item){
-                if(item.checked){
-                    flag = true;
-                }
-            });
-            if (flag && areSure()) {
+            let institutes = document.getElementById("institutes");
+            let checked = document.querySelectorAll('input[name=ids]:checked');
+            if (checked.length === 0){
+                return false;
+            }
+            if (areSure()) {
                 institutes.submit();
             }
             return false;
@@ -94,7 +92,6 @@
                     </a>
                 </td>
             </tr>
-
         </table>
     </form>
     <ul class="actions">

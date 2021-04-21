@@ -20,13 +20,13 @@
     </style>
     <script type="text/javascript">
         function checkAll(check) {
-            var places = document.getElementById("places");
-            var ids = places["ids"];
+            let places = document.getElementById("places");
+            let ids = places["ids"];
             if (ids.name != undefined) {
                 ids = [ids];
             }
 
-            for (var i = 0; i < ids.length; ++i) {
+            for (let i = 0; i < ids.length; ++i) {
                 ids[i].checked = check;
             }
         }
@@ -36,14 +36,12 @@
         }
 
         function delPlace() {
-            var places = document.getElementById("places");
-            var flag = false;
-            places.elements["ids"].forEach(function (item){
-                if(item.checked){
-                    flag = true;
-                }
-            });
-            if (flag && areSure()) {
+            let places = document.getElementById("places");
+            let checked = document.querySelectorAll('input[name=ids]:checked');
+            if (checked.length === 0){
+                return false;
+            }
+            if (areSure()) {
                 places.submit();
             }
             return false;
