@@ -1,6 +1,7 @@
 package ru.spbu.distolymp.validation.admin.directories.diplomas.annotation;
 
-import ru.spbu.distolymp.validation.admin.directories.diplomas.validator.UniqueDiplomaTypeNameValidator;
+import ru.spbu.distolymp.validation.admin.directories.diplomas.validator.UniqueDiplomaTypeNameClassValidator;
+import ru.spbu.distolymp.validation.admin.directories.diplomas.validator.UniqueDiplomaTypeNameFieldValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -10,8 +11,9 @@ import java.lang.annotation.*;
  * @author Daria Usova
  */
 @Documented
-@Constraint(validatedBy = UniqueDiplomaTypeNameValidator.class)
-@Target( {ElementType.FIELD } )
+@Constraint(validatedBy = {UniqueDiplomaTypeNameFieldValidator.class,
+        UniqueDiplomaTypeNameClassValidator.class})
+@Target( {ElementType.FIELD, ElementType.TYPE} )
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UniqueDiplomaTypeName {
 

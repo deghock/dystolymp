@@ -1,22 +1,28 @@
 package ru.spbu.distolymp.service.admin.directories.diplomas.impl;
 
+import jdk.management.resource.ResourceRequestDeniedException;
 import lombok.extern.log4j.Log4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.multipart.MultipartFile;
+import ru.spbu.distolymp.dto.admin.directories.diplomas.EditDiplomaTypeDto;
 import ru.spbu.distolymp.dto.admin.directories.diplomas.NewDiplomaTypeDto;
 import ru.spbu.distolymp.dto.entity.diploma.DiplomaTypeDto;
 import ru.spbu.distolymp.entity.diploma.DiplomaType;
+import ru.spbu.distolymp.entity.enumeration.Orientation;
 import ru.spbu.distolymp.exception.admin.directories.diplomas.DiplomaTypeServiceException;
-import ru.spbu.distolymp.mapper.admin.directories.diplomas.NewDiplomaTypeMapper;
+import ru.spbu.distolymp.exception.common.ResourceNotFoundException;
+import ru.spbu.distolymp.mapper.admin.directories.diplomas.api.EditDiplomaTypeMapper;
+import ru.spbu.distolymp.mapper.admin.directories.diplomas.api.NewDiplomaTypeMapper;
 import ru.spbu.distolymp.mapper.entity.diploma.DiplomaTypeMapper;
 import ru.spbu.distolymp.repository.diploma.DiplomaTypeRepository;
 import ru.spbu.distolymp.service.admin.directories.diplomas.api.DiplomaTypeService;
+import ru.spbu.distolymp.service.crud.api.diploma.DiplomaImageService;
 import ru.spbu.distolymp.service.crud.impl.diploma.DiplomaTypeCrudServiceImpl;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +37,16 @@ import java.util.concurrent.ThreadLocalRandom;
 public class DiplomaTypeServiceImpl extends DiplomaTypeCrudServiceImpl implements DiplomaTypeService {
 
     private final NewDiplomaTypeMapper newDiplomaTypeMapper;
-    private static final String IMG_DIRECTORY_PATH = "/resources/img/diploms/";
+    private final EditDiplomaTypeMapper editDiplomaTypeMapper;
 
-    public DiplomaTypeServiceImpl(DiplomaTypeRepository diplomaTypeRepository, DiplomaTypeMapper diplomaTypeMapper,
-                                  NewDiplomaTypeMapper newDiplomaTypeMapper) {
-        super(diplomaTypeRepository, diplomaTypeMapper);
+    public DiplomaTypeServiceImpl(DiplomaTypeRepository diplomaTypeRepository,
+                                  DiplomaTypeMapper diplomaTypeMapper,
+                                  DiplomaImageService diplomaImageService,
+                                  NewDiplomaTypeMapper newDiplomaTypeMapper,
+                                  EditDiplomaTypeMapper editDiplomaTypeMapper) {
+        super(diplomaTypeRepository, diplomaTypeMapper, diplomaImageService);
         this.newDiplomaTypeMapper = newDiplomaTypeMapper;
+        this.editDiplomaTypeMapper = editDiplomaTypeMapper;
     }
 
     @Override
@@ -59,12 +69,12 @@ public class DiplomaTypeServiceImpl extends DiplomaTypeCrudServiceImpl implement
 
     @Override
     @Transactional
-    public void addNewDiplomaType(NewDiplomaTypeDto newDiplomaTypeDto, HttpServletRequest httpRequest) {
+    public void addNewDiplomaType(NewDiplomaTypeDto newDiplomaTypeDto) {
         DiplomaType diplomaType = newDiplomaTypeMapper.toEntity(newDiplomaTypeDto);
         MultipartFile image = newDiplomaTypeDto.getImage();
 
         initDiplomaTypeFields(diplomaType, image);
-        saveDiplomaTypeAndImage(diplomaType, image, httpRequest);
+        saveDiplomaTypeAndImage(diplomaType, image);
     }
 
     private void initDiplomaTypeFields(DiplomaType diplomaType, MultipartFile image) {
@@ -109,9 +119,72 @@ public class DiplomaTypeServiceImpl extends DiplomaTypeCrudServiceImpl implement
         }
     }
 
-    private void saveDiplomaTypeAndImage(DiplomaType diplomaType, MultipartFile image, HttpServletRequest httpRequest) {
-        String path = httpRequest.getServletContext().getRealPath(IMG_DIRECTORY_PATH);
-        save(diplomaType, getImageBytes(image), path);
+    private void saveDiplomaTypeAndImage(DiplomaType diplomaType, MultipartFile image) {
+        save(diplomaType, getImageBytes(image));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void fillEditDiplomaModelMap(Integer diplomaTypeId, ModelMap modelMap) {
+        EditDiplomaTypeDto diploma = getEditDiplomaTypeDtoById(diplomaTypeId);
+
+        modelMap.put("diploma", diploma);
+    }
+
+    private EditDiplomaTypeDto getEditDiplomaTypeDtoById(Integer id) {
+        if (id == null) {
+            throw new ResourceNotFoundException();
+        }
+
+        return getDiplomaTypeById(id)
+                .map(editDiplomaTypeMapper::toDto)
+                .orElseThrow(ResourceRequestDeniedException::new);
+    }
+
+    @Override
+    @Transactional
+    public void updateDiplomaType(EditDiplomaTypeDto editDiplomaTypeDto) {
+        DiplomaType diplomaType = getDiplomaTypeById(editDiplomaTypeDto.getId())
+                .orElseThrow(DiplomaTypeServiceException::new);
+
+        diplomaType.setName(editDiplomaTypeDto.getNewName());
+        diplomaType.setOrientation( editDiplomaTypeDto.isPortraitOrientation() ? Orientation.PORTRAIT : Orientation.LANDSCAPE );
+
+        MultipartFile image = editDiplomaTypeDto.getNewImage();
+        boolean newImageUploaded = !MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE.equals(image.getContentType());
+
+        if (newImageUploaded) {
+            String newImageFileName = updateDiplomaTypeImage(diplomaType, image);
+            diplomaType.setImageFileName(newImageFileName);
+            diplomaType.setPrintImage(true);
+        }
+    }
+
+    private String updateDiplomaTypeImage(DiplomaType diplomaType, MultipartFile image) {
+        String newImageFileName = saveNewImage(image);
+        String oldImageFileName = diplomaType.getImageFileName();
+
+        deleteOldImage(oldImageFileName);
+        return newImageFileName;
+    }
+
+    private String saveNewImage(MultipartFile image) {
+        String newImageFileName = getImageFileName(image);
+        boolean newImageSaved = diplomaImageService.saveDiplomaTypeImage(getImageBytes(image), newImageFileName);
+
+        if (!newImageSaved) {
+            throw new DiplomaTypeServiceException();
+        }
+
+        return newImageFileName;
+    }
+
+    private void deleteOldImage(String oldImageFileName) {
+        if (oldImageFileName == null || oldImageFileName.trim().isEmpty()) {
+            return;
+        }
+
+        diplomaImageService.deleteDiplomaTypeImage(oldImageFileName);
     }
 
 }

@@ -4,6 +4,7 @@ import ru.spbu.distolymp.dto.entity.diploma.DiplomaTypeDto;
 import ru.spbu.distolymp.entity.diploma.DiplomaType;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Daria Usova
@@ -14,6 +15,8 @@ public interface DiplomaTypeCrudService {
 
     boolean diplomaTypeWithNameExists(String name);
 
-    void save(DiplomaType diplomaType, byte[] picture, String path);
+    void save(DiplomaType diplomaType, byte[] picture);
+
+    Optional<DiplomaType> getDiplomaTypeById(Integer id);
 
 }

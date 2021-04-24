@@ -50,16 +50,18 @@
 
 <p id="title">Добавить новый диплом</p>
 
-<!--/*@thymesVar id="diploma" type="ru.spbu.distolymp.dto.admin.directories.diplomas.NewDiplomaTypeDto"*/-->
-<form th:action="@{/diplomas/add}" th:object="${diploma}" method="post" enctype="multipart/form-data">
+<!--/*@thymesVar id="diploma" type="ru.spbu.distolymp.dto.admin.directories.diplomas.EditDiplomaTypeDto"*/-->
+<form th:action="@{/diplomas/update}" th:object="${diploma}" method="post" enctype="multipart/form-data">
     <div id="inner">
         <fieldset>
             <legend>Диплом</legend>
 
             <div class="form-group">
+
                 <label for="name">Имя:</label>
-                <input type="text" style="width: 50%" th:field="*{name}" id="name"/>
-                <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Diploma name error</span>
+                <input type="text" style="width: 50%" th:field="*{newName}" id="name"/>
+                <span th:if="${#fields.hasErrors('newName')}" th:errors="*{newName}"> Diploma name error </span>
+                <span th:if="${#fields.hasErrors('${diploma}')}" th:errors="${diploma}"> Diploma name error </span>
 
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" th:field="*{portraitOrientation}"
@@ -70,18 +72,36 @@
 
             <div class="form-inline">
                 <label for="image">Картинка:
-                    <input type="file" class="form-control-file ml-2" id="image" th:field="*{image}"
+                    <input type="file" class="form-control-file ml-2" id="image" th:field="*{newImage}"
                            accept="image/png, image/jpeg"/>
                 </label>
             </div>
-            <span th:if="${#fields.hasErrors('${diploma}')}" th:errors="${diploma}">File mime type exception</span>
-            <span th:if="${#fields.hasErrors('image')}" th:errors="*{image}">File mime type exception</span>
+
+            <div class="mt-2">
+                <img th:src="${'data:image/jpeg;charset=utf-8;base64,' + diploma.oldImage}"
+                     th:onerror="'this.src=\'' + @{/img/diploms/image-not-found.png} + '\';'"
+                     alt="#" style="width: 300px; height: auto;"/>
+            </div>
+
+            <span th:if="${#fields.hasErrors('newImage')}" th:errors="*{newImage}">File mime type exception</span>
+
+            <div hidden>
+                <label>
+                    <input type="number" th:field="*{id}" id="id"/>
+                </label>
+
+                <label>
+                    <input type="text" th:field="*{oldImage}">
+                </label>
+            </div>
+
         </fieldset>
     </div>
 
+
     <div style="text-align:center">
         <button type="submit" class="btn border border-dark mb-2"
-                style="background-color: white">Добавить
+                style="background-color: white">Сохранить
         </button>
     </div>
 </form>
