@@ -1,6 +1,5 @@
 package ru.spbu.distolymp.service.admin.directories.diplomas.impl;
 
-import jdk.management.resource.ResourceRequestDeniedException;
 import lombok.extern.log4j.Log4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -138,7 +137,7 @@ public class DiplomaTypeServiceImpl extends DiplomaTypeCrudServiceImpl implement
 
         return getDiplomaTypeById(id)
                 .map(editDiplomaTypeMapper::toDto)
-                .orElseThrow(ResourceRequestDeniedException::new);
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
