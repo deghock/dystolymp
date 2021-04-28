@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Type;
 import ru.spbu.distolymp.entity.enumeration.Visible;
 import ru.spbu.distolymp.entity.division.Division;
+import ru.spbu.distolymp.entity.geography.District;
 import ru.spbu.distolymp.entity.geography.Town;
 
 import javax.persistence.*;
@@ -60,5 +61,9 @@ public class School {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_type", referencedColumnName = "id_type")
     private SchoolType schoolType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_district", referencedColumnName = "id_district")
+    private District district;
 
 }
