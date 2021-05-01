@@ -149,16 +149,12 @@
     }
 
     function delDiplomas() {
-        var diplomas = document.getElementById("diplomas");
-        var flag = false;
-
-        diplomas.elements["ids"].forEach(function (item){
-            if(item.checked){
-                flag = true;
-            }
-        });
-
-        if (flag && areSure()) {
+        let diplomas = document.getElementById("diplomas");
+        let checked = document.querySelectorAll('input[name=ids]:checked');
+        if (checked.length === 0){
+            return false;
+        }
+        if (areSure()) {
             diplomas.submit();
         }
         return false;
