@@ -6,6 +6,9 @@ import ru.spbu.distolymp.entity.education.Institute;
 
 import java.util.List;
 
+/**
+ * @author Maxim Andreev
+ */
 @Mapper
 public interface InstituteMapper {
 
