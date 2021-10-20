@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <style>
+        p {
+            text-align: center;
+        }
+
+        .center {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        legend {
+            display: block;
+            width: auto;
+            padding: 0 5px;
+            margin-bottom: 0;
+            font-size: inherit;
+            line-height: inherit;
+            border-bottom: none;
+        }
+
+        fieldset {
+            border: 2px groove white;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey">
+
+<div th:replace="fragments/menu-staff :: #menustaff"></div>
+<!--/*@thymesVar id="country" type="ru.spbu.distolymp.dto.admin.directories.schools.SchoolDetailsDto"*/-->
+<h3>Учебное заведение
+    <a href="#" class="stealth"><strong th:text="${school.title}">Школа</strong></a>
+</h3>
+
+<ul class="nav nav-tabs justify-content-center" id="countries-tab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <a class="nav-link text-dark" id="groups-tab" data-toggle="tab" href="#groups" role="tab"
+           aria-controls="groups" aria-selected="true">Группы</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link text-dark" id="users-tab" data-toggle="tab" href="#users" role="tab"
+           aria-controls="users" aria-selected="true">Пользователи</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active text-dark" id="info-tab" data-toggle="tab" href="#info" role="tab"
+           aria-controls="info" aria-selected="false">Информация</a>
+    </li>
+</ul>
+
+<div class="tab-content" id="schoolsTabContent">
+    <div class="tab-pane fade mb-2" id="groups" role="tabpanel" aria-labelledby="groups-tab">
+        <h3 id="region-table-desc" class="mt-2 mb-2">Группы учебного заведения <strong th:text="${school.title}">Школа</strong></h3>
+        <table class="border" style="margin:0.5em auto" aria-describedby="groups-table-desc">
+            <tr style="text-align: center">
+                <th id="group-number">№</th>
+                <th id="group">Группа</th>
+            </tr>
+        </table>
+    </div>
+
+
+    <div class="tab-pane fade mb-2" id="users" role="tabpanel" aria-labelledby="users-tab">
+        <h3 id="town-table-desc" class="mt-2 mb-2">Пользователи из учебного заведения <strong th:text="${school.title}">Школа</strong></h3>
+        <table class="border" style="margin:0.5em auto" aria-describedby="town-table-desc">
+            <tr style="text-align: center">
+                <th id="user-number">№</th>
+                <th id="user">Пользователь</th>
+            </tr>
+        </table>
+    </div>
+
+    <div class="tab-pane show active fade " id="info" role="tabpanel" aria-labelledby="info-tab">
+        <h3 class="mt-2 mb-2">Информация об учебном заведении <strong th:text="${school.title}">Школа</strong></h3>
+        <div class="infoForm">
+            <fieldset>
+                <legend>Учебное заведение</legend>
+                <div class="property">
+                    <label>Страна:</label>
+                    <span th:text="${school.countryName}"></span>
+                </div>
+                <div class="property">
+                    <label>Регион РФ:</label>
+                    <span th:text="${school.regionName}"></span>
+                </div>
+                <div class="property">
+                    <label>Город:</label>
+                    <span th:text="${school.townName}"></span>
+                </div>
+                <div class="property">
+                    <label>Номер:</label>
+                    <span th:text="${school.number}"></span>
+                </div>
+                <div class="property">
+                    <label>Краткое название:</label>
+                    <span th:text="${school.title}"></span>
+                </div>
+                <div class="property">
+                    <label>Адрес:</label>
+                    <span th:text="${school.address}"></span>
+                </div>
+                <div class="property">
+                    <label>Тип учебного заведения:</label>
+                    <span th:text="${school.typeName}"></span>
+                </div>
+                <div class="property">
+                    <label>Отображение:</label>
+                    <span th:text="${school.visible ? 'показывается' : 'скрыта'}"></span>
+                </div>
+                <div class="property">
+                    <label>Изменение:</label>
+                    <span th:text="${school.editing ? 'открыто' : 'закрыто'}"></span>
+                </div>
+            </fieldset>
+        </div>
+        <ul class="actions">
+            <li>
+                <a th:href="@{/schools/edit/{id}(id=${school.schoolId})}" class="abuton">Редактировать</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: #footer"></div>
+</body>
+
+</html>

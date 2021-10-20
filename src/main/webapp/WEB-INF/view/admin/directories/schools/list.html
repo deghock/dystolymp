@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <style>
+        p {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey">
+
+<div th:replace="fragments/menu-staff :: #menustaff"></div>
+
+<p id="title">Учебные заведения</p>
+
+<div class="container">
+    <div class="alert alert-danger col-6 ml-auto mr-auto" role="alert" th:text="${error}" th:if="${error}"></div>
+    <fieldset>
+        <legend>Поиск учебных заведений</legend>
+            <div class="searchForm">
+                <input type="hidden" name="search" value="1"/>
+                <label for="school_number">Номер:</label>
+                <input type="number"
+                       name="school_number"
+                       id="school_number"
+                       class="wide"
+                       value=""/><br/>
+                <label for="school_title">Название:</label>
+                <input type="text"
+                       name="school_title"
+                       id="school_title"
+                       class="wide"
+                       value=""/><br/>
+                <div id="country">
+                    <label for="country_id">Страна:</label>
+                    <select name="country_id" id="country_id" class="wide">
+                        <option value="-1">любая</option>
+                        <th:block th:each="country, iter : ${countries}">
+                            <option th:value="${country.id}" th:text="${country.name}"></option>
+                        </th:block>
+                    </select>
+                </div>
+                <div id="region" style="display:none">
+                    <label for="region_id">Регион РФ:</label>
+                    <select id="region_id" name="region_id" class="wide">
+                        <option value="-1">Любой</option>
+                    </select>
+                </div>
+                <div id="town" style="display:none">
+                    <label for="town_id">Город:</label>
+                    <select id="town_id" name="town_id" class="wide">
+                        <option value="-1">Любой</option>
+                    </select>
+                </div>
+                <div id="district" style="display:none">
+                    <label for="district_id">Район города:</label>
+                    <select id="district_id" name="district_id" class="wide">
+                    </select>
+                </div>
+
+                <label for="limit">На странице:</label>
+                <select name="limit" id="limit">
+                    <option value="10" >10</option>
+                    <option value="20" selected="selected">20</option>
+                    <option value="50" >50</option>
+                    <option value="100" >100</option>
+                    <option value="0" >все</option>
+                </select>
+            </div>
+            <div style="text-align:center">
+                <button id="search-button">Найти</button>
+            </div>
+    </fieldset>
+
+    <br>
+
+    <div id="schools-table" th:replace="admin/directories/schools/schools-table :: #schools-table"></div>
+
+    <ul class="actions">
+        <li>
+            <a th:href="@{/schools/add}" class="abutton" >Зарегистрировать новое учебное заведение...</a>
+        </li>
+        <li>
+            <a class="abutton" onclick="return delSchools()">Удалить выбранные учебные заведения...</a>
+        </li>
+    </ul>
+</div>
+
+<div th:replace="fragments/footer :: #footer"></div>
+
+<script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
+<script type="text/javascript">
+    $("#country_id").change(function (){
+        let id = $("#country_id").val();
+        $("#region").hide();
+        $("#town").hide();
+        //$("#district").hide();
+        //$("#district_id").val("-1");
+        $("#town_id").val("-1");
+        $("#region_id").val("-1");
+        if (id === "-1") {
+            return;
+        } else {
+            updateRegionList();
+        }
+    });
+
+    $("#region_id").change(function (){
+        let id = $("#region_id").val();
+        if (id === "-1"){
+            $("#town").hide();
+            $("#town_id").val("-1");
+        }else{
+            updateTownsList();
+        }
+        //$("#district").hide();
+    });
+
+    function updateRegionList() {
+        let id = $("#country_id").val();
+        getRegionsByCountryId(id);
+    }
+
+    function updateTownsList() {
+        let id = $("#region_id").val();
+        getTownsByRegionId(id);
+    }
+
+    /*function updateDistrictsList() {
+        let id = $("#town_id").val();
+        //getDistrictsByTownId(id);
+    }*/
+
+    function getRegionsByCountryId(id) {
+        let full_path = window.location.pathname;
+        let path = full_path.slice(0,full_path.indexOf('/',1)) + "/regions/" + id;
+        $.ajax({
+            type: 'GET',
+            url: path,
+            dataType: 'json',
+            success: function (regions) {
+                let $region_id = $("#region_id")
+                $region_id.html('')
+                let len = regions.length;
+
+
+                let selected = "", selected_id = 0;
+                for (let i = 0; i < len; i++) {
+                    selected = "";
+                    if (regions[i]['code'] === '78') {
+                        selected = "selected";
+                        selected_id = regions[i]['id'];
+                    }
+                    $region_id.append("<option value='" + regions[i]['id'] + "' "+ selected + ">" + regions[i]['code'] + ". " + regions[i]['name'] + "</option>");
+                }
+                $region_id.append("<option value='-1'>" + "любой</option>");
+                if(id === "1"){
+                    $('#region').show();
+                    getTownsByRegionId(selected_id);
+                }else{
+                    getTownsByRegionId(regions[0]['id']);
+                }
+
+            }
+        });
+    }
+
+    function getTownsByRegionId(id) {
+        let full_path = window.location.pathname;
+        let path = full_path.slice(0,full_path.indexOf('/',1)) + "/towns/" + id;
+        $.ajax({
+            type: 'GET',
+            url: path,
+            dataType: 'json',
+            success: function (towns) {
+                let $town_id = $("#town_id")
+                $town_id.html('')
+                let len = towns.length;
+
+                if(len === 0) {
+                    $town_id.append("<option value='-1' selected>" + "любой</option>");
+                } else {
+                    $town_id.append("<option value='" + towns[0]['id'] + "'"+" selected" +">" + towns[0]['name'] + "</option>");
+                    for (let i = 1; i < len; i++) {
+                        $town_id.append("<option value='" + towns[i]['id'] + "'>" + towns[i]['name'] + "</option>");
+                    }
+                }
+                $('#town').show();
+            }
+        });
+    }
+
+    /*function getDistrictsByTownId(id) {
+        let full_path = window.location.pathname;
+        let path = full_path.slice(0,full_path.indexOf('/',1)) + "/districts/" + id;
+        $.ajax({
+            type: 'GET',
+            url: path,
+            dataType: 'json',
+            success: function (districts) {
+                let $district_id = $("#district_id")
+                $district_id.html('')
+                let len = districts.length;
+
+                $district_id.append("<option value='-1' selected>" + "любой</option>");
+                for (let i = 0; i < len; i++) {
+                    $district_id.append("<option value='" + districts[i]['id'] + "'>" + districts[i]['name'] + "</option>");
+                }
+                $('#district').show();
+            }
+        });
+    }*/
+
+    $("#search-button").click(function () {
+        getSchools();
+    })
+
+    function getSchools() {
+        let params = encodeQueryData(getParams());
+        let url = "filter?" + params;
+
+        $.get(url).done(function (fragment) {
+            $("#schools-table").replaceWith(fragment);
+        });
+    }
+
+    function encodeQueryData(data) {
+        const result = [];
+        for (let key in data) {
+            result.push(key + '=' + data[key]);
+        }
+
+        return result.join('&');
+    }
+
+    function getParams() {
+        let params = {}
+        //params["resultSize"] = getResultSize();
+        params["title"] = getTitle();
+        params["number"] = getNumber();
+        params["countryId"] = getCountryId();
+        params["regionId"] = getRegionId();
+        params["townId"] = getTownId();
+        //params["containsDistrictId"] = getDistrictId();
+
+        return params;
+    }
+
+    function getResultSize() {
+        return $("#limit").val();
+    }
+
+    function getTitle() {
+        return $("#school_title").val();
+    }
+
+    function getNumber() {
+        return $("#school_number").val();
+    }
+
+    function getCountryId() {
+        return $("#country_id").val();
+    }
+
+    function getRegionId() {
+        return $("#region_id").val();
+    }
+
+    function getTownId() {
+        return $("#town_id").val() || -1;
+    }
+
+    /*function getDistrictId() {
+        return $("#district_id").val();
+    }*/
+
+
+    function checkAll(check){
+        let schools=document.getElementById("schools");
+        let ids = schools["ids"];
+        if (ids.name != undefined) {
+            ids = [ids];
+        }
+
+        for (let i = 0; i < ids.length; ++i) {
+            ids[i].checked = check;
+        }
+    }
+
+    function areSure() {
+        return window.confirm("Вы уверены?");
+    }
+
+    function delSchools(){
+        let schools = document.getElementById("schools");
+        let checked = document.querySelectorAll('input[name=ids]:checked');
+        if (checked.length === 0){
+            return false;
+        }
+        if (areSure()) {
+            schools.submit();
+        }
+        return false;
+    }
+</script>
+</body>
+</html>
