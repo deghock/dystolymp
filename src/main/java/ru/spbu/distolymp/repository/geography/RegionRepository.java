@@ -13,4 +13,5 @@ public interface RegionRepository extends PagingAndSortingRepository<Region, Lon
 
     List<RegionNameCodeDto> findRegionsByCountryIdOrderByCode(Long countryId);
 
+    RegionNameCodeDto getRegionNameCodeDtoById(Long id);
 }
