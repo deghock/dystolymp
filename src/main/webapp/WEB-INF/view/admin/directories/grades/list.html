@@ -29,6 +29,15 @@
     <div class="center">
         <div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
 
+        <div style="text-align:left; margin:0.5em;">
+            <a th:href="@{/grades/open_registration/}" class="abutton">
+                Открыть регистрацию
+            </a>
+            <a th:href="@{/grades/close_registration/}" class="abutton">
+                Закрыть регистрацию
+            </a>
+        </div>
+
         <table class="table border center" aria-describedby="title">
             <tr style="text-align: center">
                 <th id="grade">Класс</th>
