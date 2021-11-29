@@ -189,6 +189,7 @@
         var params = {}
         params["resultSize"] = getResultSize();
         params["containsName"] = getName();
+        params["belongsCountry"] = getCountry();
         params["showVisible"] = getVisible();
         params["showHidden"] = getHidden();
 
@@ -209,6 +210,10 @@
 
     function getVisible() {
         return $("#show-visible").is(":checked");
+    }
+
+    function getCountry() {
+        return $("#country").val();
     }
 
     function checkAll(check) {
