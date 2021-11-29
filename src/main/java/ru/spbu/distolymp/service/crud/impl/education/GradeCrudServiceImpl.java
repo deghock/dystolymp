@@ -121,4 +121,19 @@ public class GradeCrudServiceImpl implements GradeCrudService {
         }
     }
 
+    @Override
+    @Transactional
+    public void updateGrade(GradeListDto gradeDto) {
+        try {
+            Grade grade = gradeListMapper.toEntity(gradeDto);
+            Division division = divisionCrudService.getAnyDivision();
+
+            grade.setDivision(division);
+            gradeRepository.save(grade);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while updating a grade with id=" + gradeDto.getId(), e);
+            throw new GradeCrudServiceException();
+        }
+    }
+
 }
