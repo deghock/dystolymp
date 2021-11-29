@@ -76,6 +76,18 @@ public class GradeController {
         return REDIRECT_GRADE_LIST;
     }
 
+    @GetMapping("/open_registration")
+    public String openRegistration(ModelMap modelMap) {
+        gradeService.fillShowChangeRegistrationStatus(modelMap, "open");
+        return LIST_PAGE;
+    }
+
+    @GetMapping("/close_registration")
+    public String closeRegistration(ModelMap modelMap) {
+        gradeService.fillShowChangeRegistrationStatus(modelMap, "close");
+        return LIST_PAGE;
+    }
+
     @ExceptionHandler(AddNewGradeException.class)
     public String handleAddNewGradeException(RedirectAttributes ra) {
         ra.addFlashAttribute(ERROR_PARAM, "Новый класс не был добавлен");
