@@ -34,19 +34,19 @@
                     <th:block th:field="*{countryName}" th:each="country, iter : ${countries}">
                         <option th:value="${country.id}"
                                 th:text="${country.name}"
-                                th:selected="${country.name == details.countryName}">
+                                th:selected="${country.id == 1}">
                         </option>
                     </th:block>
                 </select>
             </div>
 
-            <div id="regions" th:hidden="${details.countryName != 'Россия'}">
+            <div id="regions">
                 <label for="region">Регион РФ:</label>
                 <select id="region" class="wide">
                     <th:block th:field="*{regionName}" th:each="region, iter : ${regions}">
                         <option th:value="${region.id}"
                                 th:text="${region.code} + '. ' + ${region.name}"
-                                th:selected="${region.name == details.regionName}">
+                                th:selected="${region.code == '78'}">
                         </option>
                     </th:block>
                 </select>
@@ -56,8 +56,7 @@
                 <label for="town">Город:</label>
                 <select th:field="*{townId}" id="town" class="wide">
                     <th:block th:each="town, iter : ${towns}">
-                        <option th:value="${town.id}" th:text="${town.name}"
-                                th:selected="${town.id == details.townId}">
+                        <option th:value="${town.id}" th:text="${town.name}">
                         </option>
                     </th:block>
                 </select>

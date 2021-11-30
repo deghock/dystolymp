@@ -3,9 +3,12 @@ package ru.spbu.distolymp.service.crud.impl.education;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.spbu.distolymp.dto.admin.directories.schools.CreateSchoolDto;
 import ru.spbu.distolymp.dto.entity.education.SchoolDto;
 import ru.spbu.distolymp.entity.division.Division;
 import ru.spbu.distolymp.entity.education.School;
@@ -33,21 +36,6 @@ public class SchoolCrudServiceImpl implements SchoolCrudService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<SchoolDto> getAllSchools() {
-        List<SchoolDto> schoolDtoList = new ArrayList<>();
-
-        try {
-            List<School> schools = schoolRepository.findAll();
-            schoolDtoList = schoolMapper.toDtoList(schools);
-        } catch (DataAccessException e) {
-            log.error("An error occurred while getting all schools", e);
-        }
-
-        return schoolDtoList;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public SchoolDto getSchoolById(Long id) {
         try {
             School school = schoolRepository.findById(id)
@@ -60,10 +48,51 @@ public class SchoolCrudServiceImpl implements SchoolCrudService {
     }
 
     @Override
+    @Transactional
+    public List<SchoolDto> getSchools(Sort sort) {
+        try {
+            List<School> schools = schoolRepository.findAllBy(sort);
+            return schoolMapper.toDtoList(schools);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while getting schools", e);
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
     @Transactional(readOnly = true)
-    public List<SchoolDto> getSchools(Specification<School> specs) {
-        List<School> schools = schoolRepository.findAll(specs);
-        return schoolMapper.toDtoList(schools);
+    public List<SchoolDto> getSchools(Pageable pageable) {
+        try {
+            List<School> schools = schoolRepository.findAllBy(pageable);
+            return schoolMapper.toDtoList(schools);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while getting schools", e);
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SchoolDto> getSchools(Specification<School> specs, Pageable pageable) {
+        try {
+            List<School> schools = schoolRepository.findAll(specs, pageable).getContent();
+            return schoolMapper.toDtoList(schools);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while getting schools", e);
+            throw new SchoolCrudException();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SchoolDto> getSchools(Specification<School> specs, Sort sort) {
+        try {
+            List<School> schools = schoolRepository.findAll(specs, sort);
+            return schoolMapper.toDtoList(schools);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while getting schools", e);
+            throw new SchoolCrudException();
+        }
     }
 
     @Override
@@ -96,8 +125,10 @@ public class SchoolCrudServiceImpl implements SchoolCrudService {
     @Transactional
     public void update(SchoolDto schoolDto) {
         try {
-            School school = schoolRepository.findById(schoolDto.getId())
-                    .orElseThrow(EntityNotFoundException::new);
+            School school = schoolMapper.toEntity(schoolDto);
+            Division division = divisionCrudService.getAnyDivision();
+            school.setDivision(division);
+            schoolRepository.save(school);
         } catch (DataAccessException | EntityNotFoundException e) {
             log.error("An error occurred while updating school with id=" + schoolDto.getId(), e);
             throw new SchoolCrudException();
