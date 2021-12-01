@@ -79,13 +79,13 @@ public class GradeController {
     @GetMapping("/open_registration")
     public String openRegistration(ModelMap modelMap) {
         gradeService.fillShowChangeRegistrationStatus(modelMap, "open");
-        return LIST_PAGE;
+        return REDIRECT_GRADE_LIST;
     }
 
     @GetMapping("/close_registration")
     public String closeRegistration(ModelMap modelMap) {
         gradeService.fillShowChangeRegistrationStatus(modelMap, "close");
-        return LIST_PAGE;
+        return REDIRECT_GRADE_LIST;
     }
 
     @ExceptionHandler(AddNewGradeException.class)
