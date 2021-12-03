@@ -20,14 +20,12 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping("/grades")
 public class GradeController {
-
     private static final String ROOT_DIR = "admin/directories/grades/";
     private static final String LIST_PAGE = ROOT_DIR + "list";
     private static final String REDIRECT_GRADE_LIST = "redirect:/grades/list";
     private static final String EDIT_PAGE = ROOT_DIR + "edit";
     private static final String PAGE_404 = "exception/404";
     private static final String ERROR_PARAM = "error";
-
     private final GradeService gradeService;
 
     @GetMapping("/list")

@@ -8,8 +8,6 @@ import lombok.Value;
 @Value
 public class SchoolNumberTitleDto {
     Long id;
-
     String title;
-
     Integer number;
 }

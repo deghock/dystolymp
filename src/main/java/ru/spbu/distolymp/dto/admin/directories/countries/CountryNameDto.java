@@ -7,9 +7,6 @@ import lombok.Value;
  */
 @Value
 public class CountryNameDto {
-
     Long id;
-
     String name;
-
 }
