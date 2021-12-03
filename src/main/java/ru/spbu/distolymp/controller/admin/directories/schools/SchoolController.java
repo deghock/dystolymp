@@ -5,7 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.spbu.distolymp.dto.admin.directories.schools.CreateSchoolDto;
 import ru.spbu.distolymp.dto.admin.directories.schools.SchoolFilter;
 import ru.spbu.distolymp.dto.entity.education.SchoolDto;
 import ru.spbu.distolymp.service.admin.directories.schools.api.SchoolService;
@@ -45,7 +44,7 @@ public class SchoolController {
     }
 
     @PostMapping("/delete")
-    public String deleteSelectedInstitutesById(@RequestParam(value = "ids") Long[] ids) {
+    public String deleteSelectedSchoolsById(@RequestParam(value = "ids") Long[] ids) {
         schoolService.deleteSchoolsById(ids);
         return LIST_REDIRECT_PAGE;
     }
@@ -84,7 +83,7 @@ public class SchoolController {
     }
 
     @GetMapping("/details/{id}")
-    public String getCountryDetails(@PathVariable("id") Long schoolId, ModelMap modelMap) {
+    public String getSchoolDetails(@PathVariable("id") Long schoolId, ModelMap modelMap) {
         modelMap.put(SCHOOL_PARAM, schoolService.getSchoolDetailsById(schoolId));
         return DETAILS_PAGE;
     }

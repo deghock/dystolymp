@@ -9,7 +9,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
-import ru.spbu.distolymp.dto.admin.directories.schools.CreateSchoolDto;
 import ru.spbu.distolymp.dto.admin.directories.schools.SchoolDetailsDto;
 import ru.spbu.distolymp.dto.admin.directories.schools.SchoolFilter;
 import ru.spbu.distolymp.dto.entity.education.SchoolDto;
@@ -152,12 +151,6 @@ public class SchoolServiceImpl extends SchoolCrudServiceImpl implements SchoolSe
         return schoolDto;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public CreateSchoolDto getNewCreateSchoolDto() {
-        CreateSchoolDto createSchoolDto = new CreateSchoolDto();
-        return createSchoolDto;
-    }
 
     @Override
     @Transactional(readOnly = true)

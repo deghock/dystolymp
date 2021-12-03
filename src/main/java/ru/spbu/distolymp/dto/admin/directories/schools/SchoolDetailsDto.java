@@ -1,7 +1,6 @@
 package ru.spbu.distolymp.dto.admin.directories.schools;
 
 import lombok.Data;
-import ru.spbu.distolymp.entity.education.SchoolType;
 
 
 /**

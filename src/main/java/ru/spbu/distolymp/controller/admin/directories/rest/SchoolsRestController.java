@@ -29,10 +29,5 @@ public class SchoolsRestController {
     public List<TownNameDto> showTownsByRegionId(@PathVariable("id") Long regionId) {
         return schoolService.fillShowTownsByRegionId(regionId);
     }
-
-    /*@GetMapping(value = "/districts/{id}", produces = "application/json")
-    public List<DistrictNameDto> showDistrictsByTownId(@PathVariable("id") Long townId) {
-        return schoolService.fillShowDistrictsByTownId(townId);
-    }*/
 }
 

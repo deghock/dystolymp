@@ -1,12 +1,9 @@
 package ru.spbu.distolymp.service.admin.directories.schools.api;
 
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import ru.spbu.distolymp.dto.admin.directories.schools.CreateSchoolDto;
 import ru.spbu.distolymp.dto.admin.directories.schools.SchoolDetailsDto;
 import ru.spbu.distolymp.dto.admin.directories.schools.SchoolFilter;
 import ru.spbu.distolymp.dto.entity.education.SchoolDto;
-import ru.spbu.distolymp.dto.entity.geography.district.DistrictNameDto;
 import ru.spbu.distolymp.dto.entity.geography.region.RegionNameCodeDto;
 import ru.spbu.distolymp.dto.entity.geography.town.TownNameDto;
 
@@ -30,8 +27,6 @@ public interface SchoolService {
     SchoolDto getSchoolDtoById(Long id);
 
     SchoolDto getNewSchoolDto();
-
-    CreateSchoolDto getNewCreateSchoolDto();
 
     SchoolDetailsDto getSchoolDetailsById(Long id);
 

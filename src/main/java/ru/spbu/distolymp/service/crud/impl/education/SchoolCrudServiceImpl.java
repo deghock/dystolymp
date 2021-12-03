@@ -8,7 +8,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.spbu.distolymp.dto.admin.directories.schools.CreateSchoolDto;
 import ru.spbu.distolymp.dto.entity.education.SchoolDto;
 import ru.spbu.distolymp.entity.division.Division;
 import ru.spbu.distolymp.entity.education.School;
