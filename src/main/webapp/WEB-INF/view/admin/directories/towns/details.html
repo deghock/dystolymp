@@ -45,53 +45,60 @@
 <div th:replace="fragments/menu-staff :: #menustaff"></div>
 <!--/*@thymesVar id="town" type="ru.spbu.distolymp.dto.admin.directories.towns.TownDetailsDto"*/-->
 <h3>Город
-    <a href="#" class="stealth"><strong th:text="${town.name}"></strong></a>
+    <a href="#" class="stealth"><strong th:text="${town.name}">Town_name</strong></a>
 </h3>
 
 <ul class="nav nav-tabs justify-content-center" id="towns-tab" role="tablist">
     <li class="nav-item" role="presentation">
-        <a class="nav-link active text-dark" id="schools-tab" data-toggle="tab" href="#schools" role="tab"
-           aria-controls="schools" aria-selected="false">Учебные заведения</a>
+        <a class="nav-link text-dark" id="schools-tab" data-toggle="tab" href="#schools" role="tab"
+           aria-controls="schools" aria-selected="true">Учебные заведения</a>
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link text-dark" id="info-tab" data-toggle="tab" href="#info" role="tab"
-           aria-controls="info" aria-selected="true">Информация</a>
+        <a class="nav-link active text-dark" id="info-tab" data-toggle="tab" href="#info" role="tab"
+           aria-controls="info" aria-selected="false">Информация</a>
     </li>
 </ul>
 
 <div class="tab-content" id="townsTabContent">
-    <div class="tab-pane show active fade mb-2" id="schools" role="tabpanel" aria-labelledby="schools-tab">
-        <h3 id="schools-table-desc" class="mt-2 mb-2">Учебные заведения города <strong th:text="${town.name}"></strong></h3>
-        <table class="border" style="margin:0.5em auto" aria-describedby="schools-table-desc">
+    <div class="tab-pane fade mb-2" id="schools" role="tabpanel" aria-labelledby="schools-tab">
+        <h3 id="school-table-desc" class="mt-2 mb-2">Учебные заведения города
+            <strong th:text="${town.name}">Town_name</strong></h3>
+        <table class="border" style="margin:0.5em auto" aria-describedby="school-table-desc">
             <tr style="text-align: center">
-                <th id="school-id">№</th>
-                <th id="school-number">Номер</th>
-                <th id="school-name">Название</th>
+                <th id="id">№</th>
+                <th id="number">Номер</th>
+                <th id="town">Название</th>
             </tr>
             <tr th:each="school, iter : ${town.schools}">
-                <td th:text="${iter.index + 1}"></td>
+                <td th:text="${iter.index + 1}">#</td>
                 <td>
-                    <a th:href=# th:text="${school.number}"
-                       class="stealth"></a>
+                    <a href="#" class="stealth" th:text="${school.number}">Number</a>
                 </td>
                 <td>
-                    <a th:href=# th:text="${school.title}"
-                       class="stealth"></a>
+                    <a href="#" class="stealth" th:text="${school.title}">Title</a>
                 </td>
             </tr>
         </table>
         <ul class="actions">
             <li>
-                <a th:href=# class="abuton">Работать с учебными заведениями</a>
+                <a href="#" class="abuton">Работать с учебными заведениями</a>
             </li>
         </ul>
     </div>
 
-    <div class="tab-pane fade mb-2" id="info" role="tabpanel" aria-labelledby="info-tab">
-        <h3 class="mt-2 mb-2">Информация о городе <strong th:text="${town.name}"></strong></h3>
+    <div class="tab-pane show active fade " id="info" role="tabpanel" aria-labelledby="info-tab">
+        <h3 class="mt-2 mb-2">Информация о городе <strong th:text="${town.name}">Town_name</strong></h3>
         <div class="infoForm">
             <fieldset>
                 <legend>Город</legend>
+                <div class="property">
+                    <label>Страна:</label>
+                    <span th:text="${town.countryName}"></span>
+                </div>
+                <div class="property">
+                    <label>Регион РФ:</label>
+                    <span th:text="${town.regionName}"></span>
+                </div>
                 <div class="property">
                     <label>Город:</label>
                     <span th:text="${town.name}"></span>
@@ -102,7 +109,7 @@
                 </div>
                 <div class="property">
                     <label>Добавление районов:</label>
-                    <span th:text="${town.editing ? 'открыто' : 'закрыто'}"></span>
+                    <span th:text="${town.editable ? 'открыто' : 'закрыто'}"></span>
                 </div>
             </fieldset>
         </div>
