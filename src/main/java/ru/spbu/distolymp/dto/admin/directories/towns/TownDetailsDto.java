@@ -1,19 +1,19 @@
 package ru.spbu.distolymp.dto.admin.directories.towns;
 
-import lombok.Value;
+import lombok.Data;
 import ru.spbu.distolymp.dto.entity.education.school.SchoolNumberTitleDto;
-import ru.spbu.distolymp.dto.entity.geography.region.RegionNameCountryDto;
+import ru.spbu.distolymp.dto.entity.geography.region.RegionNameCodeCountryDto;
 import java.util.List;
 
 /**
  * @author Vladislav Konovalov
  */
-@Value
+@Data
 public class TownDetailsDto {
     Long id;
     String name;
     List<SchoolNumberTitleDto> schools;
-    RegionNameCountryDto region;
+    RegionNameCodeCountryDto region;
     boolean visible;
     boolean editable;
 }

@@ -7,8 +7,9 @@ import ru.spbu.distolymp.dto.admin.directories.countries.CountryNameDto;
  * @author Vladislav Konovalov
  */
 @Value
-public class RegionNameCountryDto {
+public class RegionNameCodeCountryDto {
     Long id;
     String name;
+    String code;
     CountryNameDto country;
 }
