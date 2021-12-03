@@ -7,12 +7,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.spbu.distolymp.dto.admin.directories.towns.TownDetailsDto;
 import ru.spbu.distolymp.dto.entity.geography.town.TownDto;
 import ru.spbu.distolymp.entity.geography.Town;
+import ru.spbu.distolymp.exception.crud.geography.TownCrudServiceException;
+import ru.spbu.distolymp.mapper.admin.directories.towns.TownDetailsMapper;
 import ru.spbu.distolymp.mapper.entity.geography.TownMapper;
 import ru.spbu.distolymp.repository.geography.TownRepository;
 import ru.spbu.distolymp.service.crud.api.geography.TownCrudService;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,9 +27,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TownCrudServiceImpl implements TownCrudService {
-
     protected final TownRepository townRepository;
     private final TownMapper townMapper;
+    private final TownDetailsMapper townDetailsMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -51,4 +55,15 @@ public class TownCrudServiceImpl implements TownCrudService {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public TownDetailsDto getTownDetailsById(Long id) {
+        try {
+            Town town = townRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+            return townDetailsMapper.toDto(town);
+        } catch (EntityNotFoundException | DataAccessException e) {
+            log.error("An error occurred while getting a town by id=" + id, e);
+            throw new TownCrudServiceException();
+        }
+    }
 }
