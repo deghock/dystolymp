@@ -11,8 +11,12 @@ import ru.spbu.distolymp.entity.geography.Town;
 @Mapper
 public interface TownDetailsMapper {
     TownDetailsDto toDto(Town town);
+    Town toEntity(TownDetailsDto townDto);
 
     default boolean visibleToBoolean(Visible visible) {
         return visible.toBoolean();
+    }
+    default Visible booleanToVisible(boolean b) {
+        return b ? Visible.yes : Visible.no;
     }
 }
