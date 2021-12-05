@@ -10,4 +10,5 @@ import ru.spbu.distolymp.entity.geography.Region;
 @Mapper
 public interface RegionNameCodeCountryMapper {
     RegionNameCodeCountryDto toDto(Region region);
+    Region toEntity(RegionNameCodeCountryDto regionDto);
 }
