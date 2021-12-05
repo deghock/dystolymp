@@ -12,13 +12,13 @@ import java.util.List;
  */
 @Data
 public class TownDetailsDto {
-    Long id;
+    private Long id;
     @NotNull(message = "{town.name.required}")
     @Size(max = 255, message = "{town.name.tooLong}")
-    String name;
-    List<SchoolNumberTitleDto> schools;
-    RegionNameCodeCountryDto region;
-    Long countryId;
-    boolean visible;
-    boolean editable;
+    private String name;
+    private List<SchoolNumberTitleDto> schools;
+    private RegionNameCodeCountryDto region;
+    private Long countryId;
+    private boolean visible;
+    private boolean editable;
 }
