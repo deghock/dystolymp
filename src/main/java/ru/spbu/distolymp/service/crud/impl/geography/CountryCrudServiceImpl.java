@@ -35,6 +35,7 @@ public class CountryCrudServiceImpl implements CountryCrudService {
     protected final CountryRepository countryRepository;
     protected final CountryMapper countryMapper;
     private final CountryNameMapper countryNameMapper;
+    private static final String ERROR_MSG = "An error occurred while getting countries";
 
     @Override
     @Transactional
@@ -43,7 +44,7 @@ public class CountryCrudServiceImpl implements CountryCrudService {
             List<Country> countries = countryRepository.findAllBy(sort);
             return countryMapper.toDtoList(countries);
         } catch (DataAccessException e) {
-            log.error("An error occurred while getting countries", e);
+            log.error(ERROR_MSG, e);
             return new ArrayList<>();
         }
     }
@@ -55,7 +56,7 @@ public class CountryCrudServiceImpl implements CountryCrudService {
             List<Country> countries = countryRepository.findAllBy(pageable);
             return countryMapper.toDtoList(countries);
         } catch (DataAccessException e) {
-            log.error("An error occurred while getting countries", e);
+            log.error(ERROR_MSG, e);
             return new ArrayList<>();
         }
     }
@@ -144,7 +145,7 @@ public class CountryCrudServiceImpl implements CountryCrudService {
             List<Country> countries = countryRepository.findAll(specs, pageable).getContent();
             return countryMapper.toDtoList(countries);
         } catch (DataAccessException e) {
-            log.error("An error occurred while getting countries", e);
+            log.error(ERROR_MSG, e);
             throw new CountryCrudServiceException();
         }
     }
@@ -156,7 +157,7 @@ public class CountryCrudServiceImpl implements CountryCrudService {
             List<Country> countries = countryRepository.findAll(specs, sort);
             return countryMapper.toDtoList(countries);
         } catch (DataAccessException e) {
-            log.error("An error occurred while getting countries", e);
+            log.error(ERROR_MSG, e);
             throw new CountryCrudServiceException();
         }
     }
@@ -173,4 +174,15 @@ public class CountryCrudServiceImpl implements CountryCrudService {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public CountryNameDto getCountryByNameOrNull(String name) {
+        try {
+            Country country = countryRepository.findCountryByName(name);
+            return countryNameMapper.toDto(country);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while getting a country with name=" + name, e);
+            throw new CountryCrudServiceException();
+        }
+    }
 }

@@ -34,4 +34,6 @@ public interface CountryCrudService {
 
     List<CountryNameDto> getAllCountries();
 
+    CountryNameDto getCountryByNameOrNull(String name);
+
 }
