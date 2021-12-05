@@ -22,4 +22,6 @@ public interface CountryRepository extends PagingAndSortingRepository<Country, L
 
     void deleteAllByIdIn(List<Long> idList);
 
+    Country findCountryByName(String name);
+
 }
