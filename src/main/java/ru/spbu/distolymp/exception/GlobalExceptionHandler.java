@@ -22,14 +22,14 @@ public class GlobalExceptionHandler {
         dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
     }
 
-    @ExceptionHandler(value = NoHandlerFoundException.class)
+    @ExceptionHandler(NoHandlerFoundException.class)
     public String handleNoHandlerFoundException(Exception e) {
         return "exception/404";
     }
 
-    @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
-    public String handleHttpRequestMethodNotSupportedException(Exception e) {
+    @ExceptionHandler(Exception.class)
+    public String handleOtherExceptions(Exception e) {
         log.error(e);
-        return "exception/405";
+        return "exception/other";
     }
 }
