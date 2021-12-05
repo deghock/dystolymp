@@ -18,6 +18,7 @@ import ru.spbu.distolymp.service.admin.directories.towns.api.TownService;
 import ru.spbu.distolymp.service.crud.api.geography.CountryCrudService;
 import ru.spbu.distolymp.service.crud.api.geography.RegionCrudService;
 import ru.spbu.distolymp.service.crud.impl.geography.TownCrudServiceImpl;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -67,9 +68,22 @@ public class TownServiceImpl extends TownCrudServiceImpl implements TownService 
     public void fillShowEditPageModelMap(ModelMap modelMap, Long townId) {
         List<RegionNameCodeDto> regionDtoList = regionCrudService.getAllRussianRegions();
         List<CountryNameDto> countryDtoList = countryCrudService.getAllCountries();
-        TownDetailsDto townDto = getTownDetailsById(townId);
+        TownDetailsDto townDto;
+        if (townId == null)
+            townDto = getNewTownDto();
+        else
+            townDto = getTownDetailsById(townId);
         modelMap.put("countries", countryDtoList);
         modelMap.put("regions", regionDtoList);
         modelMap.put("town", townDto);
+    }
+
+    private TownDetailsDto getNewTownDto() {
+        TownDetailsDto townDto = new TownDetailsDto();
+        townDto.setVisible(true);
+        townDto.setEditable(false);
+        townDto.setRegion(regionCrudService.getFirstRegionByCode());
+        townDto.setSchools(new ArrayList<>());
+        return townDto;
     }
 }
