@@ -103,7 +103,7 @@
                     <a th:href="@{/countries/details/{id}(id=${town.region.country.id})}"
                        th:text="${town.region.country.name}" class="stealth"></a>
                 </div>
-                <div class="property">
+                <div class="property" th:if="${town.region.country.name == 'Россия'}">
                     <label>Регион РФ:</label>
                     <a th:href="@{/regions/details/{id}(id=${town.region.id})}"
                        th:text="${town.region.name}" class="stealth"></a>
