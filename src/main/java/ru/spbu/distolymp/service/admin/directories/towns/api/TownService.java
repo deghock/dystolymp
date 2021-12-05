@@ -8,4 +8,5 @@ import org.springframework.ui.ModelMap;
 public interface TownService {
     void fillShowAllTownsModelMap(ModelMap modelMap, int numbersOfTownsDisplayed);
     void fillShowTownDetailsModelMap(ModelMap modelMap, Long townId);
+    void fillShowEditPageModelMap(ModelMap modelMap, Long townId);
 }

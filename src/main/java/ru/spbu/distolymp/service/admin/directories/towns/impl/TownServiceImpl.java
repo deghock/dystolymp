@@ -9,12 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import ru.spbu.distolymp.dto.admin.directories.countries.CountryNameDto;
 import ru.spbu.distolymp.dto.admin.directories.towns.TownDetailsDto;
+import ru.spbu.distolymp.dto.entity.geography.region.RegionNameCodeDto;
 import ru.spbu.distolymp.dto.entity.geography.town.TownDto;
 import ru.spbu.distolymp.mapper.admin.directories.towns.TownDetailsMapper;
 import ru.spbu.distolymp.mapper.entity.geography.TownMapper;
 import ru.spbu.distolymp.repository.geography.TownRepository;
 import ru.spbu.distolymp.service.admin.directories.towns.api.TownService;
 import ru.spbu.distolymp.service.crud.api.geography.CountryCrudService;
+import ru.spbu.distolymp.service.crud.api.geography.RegionCrudService;
 import ru.spbu.distolymp.service.crud.impl.geography.TownCrudServiceImpl;
 import java.util.List;
 
@@ -25,13 +27,16 @@ import java.util.List;
 public class TownServiceImpl extends TownCrudServiceImpl implements TownService {
     private static final Sort SORT_BY_NAME_ASC = Sort.by("name").ascending();
     private final CountryCrudService countryCrudService;
+    private final RegionCrudService regionCrudService;
 
     public TownServiceImpl(TownRepository townRepository,
                            TownMapper townMapper,
                            TownDetailsMapper townDetailsMapper,
-                           @Qualifier("countryCrudServiceImpl") CountryCrudService countryCrudService) {
+                           @Qualifier("countryCrudServiceImpl") CountryCrudService countryCrudService,
+                           RegionCrudService regionCrudService) {
         super(townRepository, townMapper, townDetailsMapper);
         this.countryCrudService = countryCrudService;
+        this.regionCrudService = regionCrudService;
     }
 
     @Override
@@ -55,5 +60,16 @@ public class TownServiceImpl extends TownCrudServiceImpl implements TownService 
     public void fillShowTownDetailsModelMap(ModelMap modelMap, Long townId) {
         TownDetailsDto town = getTownDetailsById(townId);
         modelMap.put("town", town);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void fillShowEditPageModelMap(ModelMap modelMap, Long townId) {
+        List<RegionNameCodeDto> regionDtoList = regionCrudService.getAllRussianRegions();
+        List<CountryNameDto> countryDtoList = countryCrudService.getAllCountries();
+        TownDetailsDto townDto = getTownDetailsById(townId);
+        modelMap.put("countries", countryDtoList);
+        modelMap.put("regions", regionDtoList);
+        modelMap.put("town", townDto);
     }
 }
