@@ -1,15 +1,15 @@
 package ru.spbu.distolymp.dto.entity.geography.region;
 
-import lombok.Value;
+import lombok.Data;
 import ru.spbu.distolymp.dto.admin.directories.countries.CountryNameDto;
 
 /**
  * @author Vladislav Konovalov
  */
-@Value
+@Data
 public class RegionNameCodeCountryDto {
-    Long id;
-    String name;
-    String code;
-    CountryNameDto country;
+    private Long id;
+    private String name;
+    private String code;
+    private CountryNameDto country;
 }

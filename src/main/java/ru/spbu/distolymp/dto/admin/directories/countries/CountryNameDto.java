@@ -1,12 +1,12 @@
 package ru.spbu.distolymp.dto.admin.directories.countries;
 
-import lombok.Value;
+import lombok.Data;
 
 /**
  * @author Vladislav Konovalov
  */
-@Value
+@Data
 public class CountryNameDto {
-    Long id;
-    String name;
+    private Long id;
+    private String name;
 }
