@@ -43,6 +43,12 @@ public class TownController {
         return EDIT_PAGE;
     }
 
+    @GetMapping("/add")
+    public String getAddPage(ModelMap modelMap) {
+        townService.fillShowEditPageModelMap(modelMap, null);
+        return EDIT_PAGE;
+    }
+
     @ExceptionHandler(TownCrudServiceException.class)
     public String handleTownCrudServiceException() {
         return PAGE_404;
