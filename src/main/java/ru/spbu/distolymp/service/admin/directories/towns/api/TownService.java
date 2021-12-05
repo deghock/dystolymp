@@ -9,4 +9,6 @@ public interface TownService {
     void fillShowAllTownsModelMap(ModelMap modelMap, int numbersOfTownsDisplayed);
     void fillShowTownDetailsModelMap(ModelMap modelMap, Long townId);
     void fillShowEditPageModelMap(ModelMap modelMap, Long townId);
+    void fillShowEditPageModelMap(ModelMap modelMap);
+    void fillFailedEditPageModelMap(ModelMap modelMap);
 }

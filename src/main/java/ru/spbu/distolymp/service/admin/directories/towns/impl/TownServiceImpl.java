@@ -27,6 +27,8 @@ import java.util.List;
 @Service
 public class TownServiceImpl extends TownCrudServiceImpl implements TownService {
     private static final Sort SORT_BY_NAME_ASC = Sort.by("name").ascending();
+    private static final String COUNTRIES_PARAM = "countries";
+    private static final String REGIONS_PARAM = "regions";
     private final CountryCrudService countryCrudService;
     private final RegionCrudService regionCrudService;
 
@@ -45,7 +47,7 @@ public class TownServiceImpl extends TownCrudServiceImpl implements TownService 
         List<TownDto> townList = getTowns(numbersOfTownsDisplayed);
         List<CountryNameDto> countryList = countryCrudService.getAllCountries();
         modelMap.put("towns", townList);
-        modelMap.put("countries", countryList);
+        modelMap.put(COUNTRIES_PARAM, countryList);
     }
 
     private List<TownDto> getTowns(int numbersOfTownsDisplayed) {
@@ -68,13 +70,20 @@ public class TownServiceImpl extends TownCrudServiceImpl implements TownService 
     public void fillShowEditPageModelMap(ModelMap modelMap, Long townId) {
         List<RegionNameCodeDto> regionDtoList = regionCrudService.getAllRussianRegions();
         List<CountryNameDto> countryDtoList = countryCrudService.getAllCountries();
-        TownDetailsDto townDto;
-        if (townId == null)
-            townDto = getNewTownDto();
-        else
-            townDto = getTownDetailsById(townId);
-        modelMap.put("countries", countryDtoList);
-        modelMap.put("regions", regionDtoList);
+        TownDetailsDto townDto = getTownDetailsById(townId);
+        modelMap.put(COUNTRIES_PARAM, countryDtoList);
+        modelMap.put(REGIONS_PARAM, regionDtoList);
+        modelMap.put("town", townDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void fillShowEditPageModelMap(ModelMap modelMap) {
+        List<RegionNameCodeDto> regionDtoList = regionCrudService.getAllRussianRegions();
+        List<CountryNameDto> countryDtoList = countryCrudService.getAllCountries();
+        TownDetailsDto townDto = getNewTownDto();
+        modelMap.put(COUNTRIES_PARAM, countryDtoList);
+        modelMap.put(REGIONS_PARAM, regionDtoList);
         modelMap.put("town", townDto);
     }
 
@@ -85,5 +94,13 @@ public class TownServiceImpl extends TownCrudServiceImpl implements TownService 
         townDto.setRegion(regionCrudService.getFirstRegionByCode());
         townDto.setSchools(new ArrayList<>());
         return townDto;
+    }
+
+    @Override
+    public void fillFailedEditPageModelMap(ModelMap modelMap) {
+        List<RegionNameCodeDto> regionDtoList = regionCrudService.getAllRussianRegions();
+        List<CountryNameDto> countryDtoList = countryCrudService.getAllCountries();
+        modelMap.put(COUNTRIES_PARAM, countryDtoList);
+        modelMap.put(REGIONS_PARAM, regionDtoList);
     }
 }
