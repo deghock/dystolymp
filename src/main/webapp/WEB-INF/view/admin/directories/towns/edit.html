@@ -11,6 +11,9 @@
         p {
             text-align: center;
         }
+        .error {
+            color: red;
+        }
     </style>
 </head>
 
@@ -52,8 +55,8 @@
             </div>
 
             <label for="name">Город:</label>
-            <input type="text" class="wide" th:field="*{name}" id="name"/>
-            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Town name error</span>
+            <input type="text" class="small" th:field="*{name}" id="name"/>
+            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error">Town name error</span>
             <br/>
 
             <label for="visible">Отображение:</label>
@@ -81,7 +84,7 @@
 </body>
 <script type="text/javascript">
     function regionVisibility(countryName) {
-        if (countryName === 'Россия') {
+        if (countryName === 'Россия' || countryValue() === 'Россия') {
             document.getElementById('regionDiv').style.display = "block";
         } else {
             document.getElementById('regionDiv').style.display = "none";
@@ -89,7 +92,7 @@
     }
 
     function countryValue() {
-        return document.getElementById('country').value;
+        return document.getElementById('country').options[document.getElementById('country').selectedIndex].text;
     }
 </script>
 </html>
