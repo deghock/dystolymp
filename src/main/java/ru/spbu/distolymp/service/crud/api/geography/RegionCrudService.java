@@ -10,4 +10,5 @@ import java.util.List;
 public interface RegionCrudService {
     List<RegionNameCodeDto> getAllRussianRegions();
     RegionNameCodeCountryDto getFirstRegionByCode();
+    List<RegionNameCodeCountryDto> getRegionsByCountryId(Long countryId);
 }

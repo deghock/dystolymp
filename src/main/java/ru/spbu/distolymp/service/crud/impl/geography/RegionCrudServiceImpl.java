@@ -50,4 +50,16 @@ public class RegionCrudServiceImpl implements RegionCrudService {
             throw new RegionCrudServiceException();
         }
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<RegionNameCodeCountryDto> getRegionsByCountryId(Long countryId) {
+        try {
+            List<Region> regionList = regionRepository.findRegionsByCountryId(countryId);
+            return regionMapper.toDtoList(regionList);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while getting all regions with countryId=" + countryId, e);
+            return new ArrayList<>();
+        }
+    }
 }
