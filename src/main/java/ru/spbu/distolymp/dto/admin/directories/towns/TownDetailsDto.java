@@ -18,7 +18,7 @@ public class TownDetailsDto {
     private String name;
     private List<SchoolNumberTitleDto> schools;
     private RegionNameCodeCountryDto region;
-    private Long countryId;
+    private String countryName;
     private boolean visible;
     private boolean editing;
 }
