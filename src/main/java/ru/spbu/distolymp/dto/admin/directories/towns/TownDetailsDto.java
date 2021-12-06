@@ -20,5 +20,5 @@ public class TownDetailsDto {
     private RegionNameCodeCountryDto region;
     private Long countryId;
     private boolean visible;
-    private boolean editable;
+    private boolean editing;
 }
