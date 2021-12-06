@@ -34,7 +34,7 @@
 <form th:action="@{/towns/save-or-edit}" th:object="${town}" method="post">
     <div class="infoForm">
         <input type="hidden" th:field="*{id}"/>
-        <input type="hidden" th:field="*{countryId}" th:value="*{region.country.id}"/>
+        <input type="hidden" th:field="*{countryName}" id="countryName"/>
         <fieldset>
             <legend>Город</legend>
             <label for="country">Страна:</label>
@@ -84,6 +84,7 @@
 </body>
 <script type="text/javascript">
     function regionVisibility(countryName) {
+        setValue();
         if (countryName === 'Россия' || countryValue() === 'Россия') {
             document.getElementById('regionDiv').style.display = "block";
         } else {
@@ -93,6 +94,10 @@
 
     function countryValue() {
         return document.getElementById('country').options[document.getElementById('country').selectedIndex].text;
+    }
+
+    function setValue() {
+        document.getElementById('countryName').setAttribute('value', countryValue());
     }
 </script>
 </html>
