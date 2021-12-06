@@ -11,4 +11,5 @@ import java.util.List;
 public interface RegionRepository extends PagingAndSortingRepository<Region, Long> {
     List<RegionNameCodeDto> findRegionsByCountryIdOrderByCode(Long countryId);
     Region findTop1ByOrderByCode();
+    List<Region> findRegionsByCountryId(Long countryId);
 }
