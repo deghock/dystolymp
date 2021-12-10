@@ -34,6 +34,7 @@ public class TownServiceImpl extends TownCrudServiceImpl implements TownService 
     private static final Sort SORT_BY_NAME_ASC = Sort.by("name").ascending();
     private static final String COUNTRIES_PARAM = "countries";
     private static final String REGIONS_PARAM = "regions";
+    private static final String TOWNS_PARAM = "towns";
 
     public TownServiceImpl(TownRepository townRepository,
                            TownMapper townMapper,
@@ -47,7 +48,7 @@ public class TownServiceImpl extends TownCrudServiceImpl implements TownService 
     public void fillShowAllTownsModelMap(ModelMap modelMap, int numbersOfTownsDisplayed) {
         List<TownDto> townList = getTowns(numbersOfTownsDisplayed);
         List<CountryNameDto> countryList = countryCrudServiceImpl.getAllCountries();
-        modelMap.put("towns", townList);
+        modelMap.put(TOWNS_PARAM, townList);
         modelMap.put(COUNTRIES_PARAM, countryList);
     }
 
@@ -107,5 +108,25 @@ public class TownServiceImpl extends TownCrudServiceImpl implements TownService 
         List<CountryNameDto> countryDtoList = countryCrudServiceImpl.getAllCountries();
         modelMap.put(COUNTRIES_PARAM, countryDtoList);
         modelMap.put(REGIONS_PARAM, regionDtoList);
+    }
+
+    @Override
+    public void fillShowTownTableByFilterModelMap(TownFilter townFilter, ModelMap modelMap) {
+        int resultSize = townFilter.getResultSize();
+        Specification<Town> specs = TownSpecsConverter.toSpecs(townFilter);
+        List<TownDto> townDtoList;
+        if (specs == null) {
+            townDtoList = getTowns(resultSize);
+            modelMap.put(TOWNS_PARAM, townDtoList);
+            return;
+        }
+        if (resultSize == 0) {
+            townDtoList = getTownsBySpec(specs, SORT_BY_NAME_ASC);
+            modelMap.put(TOWNS_PARAM, townDtoList);
+            return;
+        }
+        Pageable sortedByNameAsc = getPageableSortedByName(resultSize);
+        townDtoList = getTownsBySpec(specs, sortedByNameAsc);
+        modelMap.put(TOWNS_PARAM, townDtoList);
     }
 }
