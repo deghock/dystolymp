@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.dto.admin.directories.countries.CountryNameDto;
@@ -102,6 +103,30 @@ public class TownCrudServiceImpl implements TownCrudService {
             townRepository.deleteAllByIdIn(Arrays.asList(ids));
         } catch (DataAccessException e) {
             log.error("An error occurred while deleting towns by ids", e);
+            throw new TownCrudServiceException();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TownDto> getTownsBySpec(Specification<Town> spec, Sort sort) {
+        try {
+            List<Town> townList = townRepository.findAll(spec, sort);
+            return townMapper.toDtoList(townList);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while getting towns by specs", e);
+            throw new TownCrudServiceException();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TownDto> getTownsBySpec(Specification<Town> spec, Pageable pageable) {
+        try {
+            List<Town> townList = townRepository.findAll(spec, pageable).getContent();
+            return townMapper.toDtoList(townList);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while getting towns by specs", e);
             throw new TownCrudServiceException();
         }
     }
