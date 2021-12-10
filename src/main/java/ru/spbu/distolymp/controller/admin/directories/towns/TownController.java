@@ -65,6 +65,12 @@ public class TownController {
             return REDIRECT_LIST;
     }
 
+    @PostMapping("delete")
+    public String deleteSelectedTowns(@RequestParam("ids") Long[] ids) {
+        townService.deleteTownsByIds(ids);
+        return REDIRECT_LIST;
+    }
+
     @ExceptionHandler(TownCrudServiceException.class)
     public String handleTownCrudServiceException() {
         return PAGE_404;
