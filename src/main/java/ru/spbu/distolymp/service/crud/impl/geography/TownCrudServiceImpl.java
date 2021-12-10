@@ -21,6 +21,7 @@ import ru.spbu.distolymp.service.crud.api.geography.RegionCrudService;
 import ru.spbu.distolymp.service.crud.api.geography.TownCrudService;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -92,5 +93,16 @@ public class TownCrudServiceImpl implements TownCrudService {
                 regionCrudService.getRegionsByCountryId(countryDto.getId());
         if (regionDtoList.size() == 1)
             townDto.setRegion(regionDtoList.get(0));
+    }
+
+    @Override
+    @Transactional
+    public void deleteTownsByIds(Long[] ids) {
+        try {
+            townRepository.deleteAllByIdIn(Arrays.asList(ids));
+        } catch (DataAccessException e) {
+            log.error("An error occurred while deleting towns by ids", e);
+            throw new TownCrudServiceException();
+        }
     }
 }

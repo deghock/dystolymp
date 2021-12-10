@@ -14,4 +14,5 @@ public interface TownCrudService {
     List<TownDto> getTowns(Pageable pageable);
     TownDetailsDto getTownDetailsById(Long id);
     void saveOrUpdate(TownDetailsDto townDto);
+    void deleteTownsByIds(Long[] ids);
 }

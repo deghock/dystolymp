@@ -13,4 +13,5 @@ public interface TownService {
     void fillShowEditPageModelMap(ModelMap modelMap);
     void fillFailedEditPageModelMap(ModelMap modelMap);
     void saveOrUpdate(TownDetailsDto townDto);
+    void deleteTownsByIds(Long[] ids);
 }
