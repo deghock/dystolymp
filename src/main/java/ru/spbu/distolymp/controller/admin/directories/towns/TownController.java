@@ -6,6 +6,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.spbu.distolymp.dto.admin.directories.towns.TownDetailsDto;
+import ru.spbu.distolymp.dto.admin.directories.towns.TownFilter;
 import ru.spbu.distolymp.exception.crud.geography.TownCrudServiceException;
 import ru.spbu.distolymp.service.admin.directories.towns.api.TownService;
 import javax.validation.Valid;
@@ -25,6 +26,7 @@ public class TownController {
     private static final String REDIRECT_DETAILS = "redirect:/towns/details/";
     private static final String PAGE_404 = "exception/404";
     private static final String EDIT_PAGE = ROOT_DIR + "edit";
+    private static final String TOWNS_TABLE = ROOT_DIR + "towns-table :: #towns-table";
     private final TownService townService;
 
     @GetMapping("/list")
@@ -69,6 +71,12 @@ public class TownController {
     public String deleteSelectedTowns(@RequestParam("ids") Long[] ids) {
         townService.deleteTownsByIds(ids);
         return REDIRECT_LIST;
+    }
+
+    @GetMapping("filter")
+    public String getTownsByFilter(TownFilter townFilter, ModelMap modelMap) {
+        townService.fillShowTownTableByFilterModelMap(townFilter, modelMap);
+        return TOWNS_TABLE;
     }
 
     @ExceptionHandler(TownCrudServiceException.class)
