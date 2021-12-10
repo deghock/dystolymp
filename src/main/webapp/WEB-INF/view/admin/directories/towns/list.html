@@ -91,44 +91,9 @@
             <a th:href="@{/towns/add}" class="abutton">Зарегистрировать новый город</a>
         </li>
         <li>
-            <a href="#" data-toggle="modal" data-target=".set-visible" class="abutton">
-                Назначить видимость городу
-            </a>
-        </li>
-        <li>
             <a href="#" onclick="return delTowns()" class="abutton">Удалить выбранные города</a>
         </li>
     </ul>
-
-    <div class="modal fade set-visible" id="set-visible-modal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Назначить видимость выбранным городам</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="set-visible-form" th:object="${towns}"
-                          th:action="@{/towns/setVisible}" method="post">
-                        <div class="form-group" style="align-items: center">
-                            <input type="radio" id="hidden" name="visibility" value="hidden" checked>
-                            <label for="hidden">Скрытые</label>
-                            <br/>
-                            <input type="radio" id="visible" name="visibility" value="visible">
-                            <label for="visible">Видимые</label>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light border-dark" data-dismiss="modal">Отмена</button>
-                    <button type="submit" class="btn btn-light border-dark" form="set-visible-form">Ок
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <div th:replace="fragments/footer :: #footer"></div>
@@ -140,31 +105,21 @@
     $("#town-name").on("keyup", function (event) {
         if (event.keyCode === 13) {
             event.preventDefault();
-            document.getElementById("search-button").click();
+            search();
         }
     })
+
+    function search() {
+        document.getElementById("search-button").click();
+    }
 
     $("#search-button").click(function () {
-        if (validSearchInput()) {
-            getTowns();
-        } else {
-            alert("Пожалуйста, выберите видимость городов");
-        }
+        getTowns();
     })
-
-    function validSearchInput() {
-        var showVisible = getVisible();
-        var showHidden = getHidden();
-
-        var showNone = !showHidden && !showVisible;
-
-        return !showNone;
-    }
 
     function getTowns() {
         var params = encodeQueryData(getParams());
         var url = "filter?" + params;
-
         $.get(url).done(function (fragment) {
             $("#towns-table").replaceWith(fragment);
         });
@@ -175,7 +130,6 @@
         for (var key in data) {
             result.push(key + '=' + data[key]);
         }
-
         return result.join('&');
     }
 
@@ -186,7 +140,6 @@
         params["belongsCountry"] = getCountry();
         params["showVisible"] = getVisible();
         params["showHidden"] = getHidden();
-
         return params;
     }
 
@@ -203,7 +156,7 @@
     }
 
     function getVisible() {
-        return $("#show-visible").is(":checked");
+        return true;
     }
 
     function getCountry() {
@@ -216,7 +169,6 @@
         if (ids.name != undefined) {
             ids = [ids];
         }
-
         for (var i = 0; i < ids.length; ++i) {
             ids[i].checked = check;
         }
@@ -229,13 +181,11 @@
     function delTowns() {
         var places = document.getElementById("towns");
         var flag = false;
-
         places.elements["ids"].forEach(function (item) {
             if (item.checked) {
                 flag = true;
             }
         });
-
         if (flag && areSure()) {
             places.submit();
         }
