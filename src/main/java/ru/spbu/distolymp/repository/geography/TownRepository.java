@@ -14,4 +14,5 @@ public interface TownRepository extends PagingAndSortingRepository<Town, Long> {
     List<TownNameDto> getTownsByRegionIdOrderByName(Long id);
     List<Town> findAllBy(Pageable pageable);
     List<Town> findAllBy(Sort sort);
+    void deleteAllByIdIn(List<Long> idList);
 }
