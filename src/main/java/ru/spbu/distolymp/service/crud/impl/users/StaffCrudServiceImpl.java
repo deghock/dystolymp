@@ -31,9 +31,12 @@ public class StaffCrudServiceImpl implements StaffCrudService {
     @Override
     @Transactional(readOnly = true)
     public Staff getStaffById(Long id) {
-        if (id == null) return null;
-        return staffRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("Staff with id=" + id + " was not found"));
+        try {
+            return staffRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        } catch (DataAccessException | EntityNotFoundException e) {
+            log.error("An error occurred while getting staff with id=" + id, e);
+            throw new StaffCrudServiceException();
+        }
     }
 
     @Override

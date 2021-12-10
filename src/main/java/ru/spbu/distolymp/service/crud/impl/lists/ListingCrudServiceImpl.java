@@ -11,7 +11,6 @@ import ru.spbu.distolymp.exception.crud.lists.ListingCrudServiceException;
 import ru.spbu.distolymp.mapper.entity.lists.listing.ListingNameMapper;
 import ru.spbu.distolymp.repository.lists.ListingRepository;
 import ru.spbu.distolymp.service.crud.api.lists.ListingCrudService;
-
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
@@ -22,16 +21,18 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ListingCrudServiceImpl implements ListingCrudService {
-
     private final ListingNameMapper listingNameMapper;
     protected final ListingRepository listingRepository;
 
     @Override
     @Transactional(readOnly = true)
     public Listing getListingById(Long id) {
-        if (id == null) return null;
-        return listingRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("Listing with id=" + id + " was not found"));
+        try {
+            return listingRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        } catch (DataAccessException | EntityNotFoundException e) {
+            log.error("An error occurred while getting listing with id=" + id, e);
+            throw new ListingCrudServiceException();
+        }
     }
 
     @Override
@@ -45,5 +46,4 @@ public class ListingCrudServiceImpl implements ListingCrudService {
             throw new ListingCrudServiceException();
         }
     }
-
 }
