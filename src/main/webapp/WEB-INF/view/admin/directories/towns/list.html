@@ -160,7 +160,10 @@
     }
 
     function getCountry() {
-        return $("#country").val();
+        var name = document.getElementById('country').options[document.getElementById('country').selectedIndex].text;
+        if (name === 'любая')
+            name = '';
+        return name;
     }
 
     function checkAll(check) {
