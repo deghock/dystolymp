@@ -12,8 +12,5 @@ public class SchoolFilter {
     private Long countryId;
     private Long regionId;
     private Long townId;
-    //private Long districtId;
     private int resultSize;
-    //private boolean showVisible;
-    //private boolean showHidden;
 }
