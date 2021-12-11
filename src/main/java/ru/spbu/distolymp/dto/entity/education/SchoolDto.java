@@ -17,8 +17,7 @@ public class SchoolDto {
     private Long districtId;
 
     private boolean editing;
-
-    @NotNull
+    
     private boolean visible;
 
     @NotNull(message = "{school.number.required}")
