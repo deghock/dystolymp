@@ -27,7 +27,6 @@ public class SchoolSpecsConverter {
         Specification<School> countrySpec = countrySpec(schoolFilter.getCountryId());
         Specification<School> regionSpec = regionSpec(schoolFilter.getRegionId());
         Specification<School> townSpec = townSpec(schoolFilter.getTownId());
-        //Specification<School> distSpec = districtSpec(schoolFilter.getDistrictId());
 
         List<Specification<School>> specs = new ArrayList<>();
         specs.add(titleSpec);
@@ -35,11 +34,7 @@ public class SchoolSpecsConverter {
         specs.add(countrySpec);
         specs.add(regionSpec);
         specs.add(townSpec);
-        //specs.add(distSpec);
-        System.out.println(specs.stream()
-                .filter(Objects::nonNull)
-                .reduce(Specification::and)
-                .orElse(null));
+        
         return specs.stream()
                 .filter(Objects::nonNull)
                 .reduce(Specification::and)
@@ -80,11 +75,4 @@ public class SchoolSpecsConverter {
         }
         return getSchoolByTownId(townId);
     }
-
-    /*private static Specification<School> districtSpec(Long distId) {
-        if (distId == null || distId == -1) {
-            return null;
-        }
-        return containsDistrictId(distId);
-    }*/
 }
