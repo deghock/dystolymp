@@ -21,12 +21,9 @@ public interface SchoolService {
 
     List<TownNameDto> fillShowTownsByRegionId(Long regionId);
 
-
     void saveOrUpdate(SchoolDto schoolDto);
 
     SchoolDto getSchoolDtoById(Long id);
-
-    SchoolDto getNewSchoolDto();
 
     SchoolDetailsDto getSchoolDetailsById(Long id);
 

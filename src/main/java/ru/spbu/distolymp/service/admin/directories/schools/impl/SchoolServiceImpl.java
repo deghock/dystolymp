@@ -88,7 +88,9 @@ public class SchoolServiceImpl extends SchoolCrudServiceImpl implements SchoolSe
         List<TownNameDto> towns = townRepository.getTownsByRegionIdOrderByName((long)1);
         List<SchoolTypeDto> schoolTypes = schoolTypeMapper.toDtoList(schoolTypeRepository.findAll());
 
-        modelMap.put("school", getNewSchoolDto());
+        SchoolDto schoolDto = new SchoolDto();
+
+        modelMap.put("school", schoolDto);
         modelMap.put("countries", countries);
         modelMap.put("regions", regions);
         modelMap.put("towns", towns);
@@ -144,12 +146,6 @@ public class SchoolServiceImpl extends SchoolCrudServiceImpl implements SchoolSe
         return getSchools(pageable);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public SchoolDto getNewSchoolDto() {
-        SchoolDto schoolDto = new SchoolDto();
-        return schoolDto;
-    }
 
 
     @Override
