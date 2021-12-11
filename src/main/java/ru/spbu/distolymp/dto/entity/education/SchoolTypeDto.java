@@ -10,12 +10,7 @@ import javax.validation.constraints.Size;
 @Data
 public class SchoolTypeDto {
     private Long id;
-
-    @NotNull
     private boolean visible;
-
-    @NotNull
-    @Size(max = 255)
     private String name;
 
 }
