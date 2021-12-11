@@ -102,8 +102,6 @@
         let id = $("#country_id").val();
         $("#region").hide();
         $("#town").hide();
-        //$("#district").hide();
-        //$("#district_id").val("-1");
         $("#town_id").val("-1");
         $("#region_id").val("-1");
         if (id === "-1") {
@@ -121,7 +119,6 @@
         }else{
             updateTownsList();
         }
-        //$("#district").hide();
     });
 
     function updateRegionList() {
@@ -133,11 +130,6 @@
         let id = $("#region_id").val();
         getTownsByRegionId(id);
     }
-
-    /*function updateDistrictsList() {
-        let id = $("#town_id").val();
-        //getDistrictsByTownId(id);
-    }*/
 
     function getRegionsByCountryId(id) {
         let full_path = window.location.pathname;
@@ -198,27 +190,6 @@
         });
     }
 
-    /*function getDistrictsByTownId(id) {
-        let full_path = window.location.pathname;
-        let path = full_path.slice(0,full_path.indexOf('/',1)) + "/districts/" + id;
-        $.ajax({
-            type: 'GET',
-            url: path,
-            dataType: 'json',
-            success: function (districts) {
-                let $district_id = $("#district_id")
-                $district_id.html('')
-                let len = districts.length;
-
-                $district_id.append("<option value='-1' selected>" + "любой</option>");
-                for (let i = 0; i < len; i++) {
-                    $district_id.append("<option value='" + districts[i]['id'] + "'>" + districts[i]['name'] + "</option>");
-                }
-                $('#district').show();
-            }
-        });
-    }*/
-
     $("#search-button").click(function () {
         getSchools();
     })
@@ -249,8 +220,6 @@
         params["countryId"] = getCountryId();
         params["regionId"] = getRegionId();
         params["townId"] = getTownId();
-        //params["containsDistrictId"] = getDistrictId();
-
         return params;
     }
 
@@ -277,11 +246,6 @@
     function getTownId() {
         return $("#town_id").val() || -1;
     }
-
-    /*function getDistrictId() {
-        return $("#district_id").val();
-    }*/
-
 
     function checkAll(check){
         let schools=document.getElementById("schools");
