@@ -30,6 +30,6 @@ public class SchoolType {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "visible", columnDefinition = "ENUM('yes', 'no')", nullable = false)
-    private Visible visible = Visible.yes;
+    private Visible visible = Visible.no;
 
 }
