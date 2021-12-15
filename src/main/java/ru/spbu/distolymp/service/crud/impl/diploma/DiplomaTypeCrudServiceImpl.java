@@ -10,15 +10,9 @@ import ru.spbu.distolymp.entity.diploma.DiplomaType;
 import ru.spbu.distolymp.exception.crud.diploma.DiplomaTypeCrudServiceException;
 import ru.spbu.distolymp.mapper.entity.diploma.DiplomaTypeMapper;
 import ru.spbu.distolymp.repository.diploma.DiplomaTypeRepository;
+import ru.spbu.distolymp.service.crud.api.diploma.DiplomaImageService;
 import ru.spbu.distolymp.service.crud.api.diploma.DiplomaTypeCrudService;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,8 +25,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DiplomaTypeCrudServiceImpl implements DiplomaTypeCrudService {
 
-    private final DiplomaTypeRepository diplomaTypeRepository;
+    protected final DiplomaTypeRepository diplomaTypeRepository;
     private final DiplomaTypeMapper diplomaTypeMapper;
+    protected final DiplomaImageService diplomaImageService;
 
     @Override
     @Transactional(readOnly = true)
@@ -51,8 +46,9 @@ public class DiplomaTypeCrudServiceImpl implements DiplomaTypeCrudService {
 
     @Override
     @Transactional
-    public void save(DiplomaType diplomaType, byte[] image, String path) {
-        boolean fileIsSaved = saveDiplomaTypeImage(image, path + diplomaType.getImageFileName());
+    public void save(DiplomaType diplomaType, byte[] image) {
+        String imageFileName = diplomaType.getImageFileName();
+        boolean fileIsSaved = diplomaImageService.saveDiplomaTypeImage(image, imageFileName);
 
         if (!fileIsSaved) {
             throw new DiplomaTypeCrudServiceException();
@@ -62,31 +58,9 @@ public class DiplomaTypeCrudServiceImpl implements DiplomaTypeCrudService {
             diplomaTypeRepository.save(diplomaType);
         } catch (DataAccessException e) {
             log.error("An error occurred while saving diploma type", e);
-            deleteDiplomaTypeImage(path);
+            diplomaImageService.deleteDiplomaTypeImage(imageFileName);
 
             throw new DiplomaTypeCrudServiceException();
-        }
-    }
-
-    private boolean saveDiplomaTypeImage(byte[] bytes, String path) {
-        File file = new File(path);
-
-        try (OutputStream os = new FileOutputStream(file)) {
-            os.write(bytes);
-        } catch (IOException e) {
-            log.error("An error occurred while saving diploma type image", e);
-            return false;
-        }
-
-        return true;
-    }
-
-    private void deleteDiplomaTypeImage(String filePath) {
-        Path path = Paths.get(filePath);
-        try {
-            Files.delete(path);
-        } catch (IOException e) {
-            log.error("Diploma type image with name " + path + " not deleted", e);
         }
     }
 
@@ -98,6 +72,21 @@ public class DiplomaTypeCrudServiceImpl implements DiplomaTypeCrudService {
             return diplomaTypeOptional.isPresent();
         } catch (DataAccessException e) {
             log.error("An error occurred while finding diploma type by name");
+            throw new DiplomaTypeCrudServiceException();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<DiplomaType> getDiplomaTypeById(Integer id) {
+        if (id == null) {
+            return Optional.empty();
+        }
+
+        try {
+            return diplomaTypeRepository.findById(id);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while getting diploma by id=" + id, e);
             throw new DiplomaTypeCrudServiceException();
         }
     }

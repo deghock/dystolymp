@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import ru.spbu.distolymp.exception.common.ResourceNotFoundException;
 
 /**
  * @author Daria Usova
@@ -22,7 +23,7 @@ public class GlobalExceptionHandler {
         dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
     }
 
-    @ExceptionHandler(NoHandlerFoundException.class)
+    @ExceptionHandler({NoHandlerFoundException.class, ResourceNotFoundException.class})
     public String handleNoHandlerFoundException(Exception e) {
         return "exception/404";
     }

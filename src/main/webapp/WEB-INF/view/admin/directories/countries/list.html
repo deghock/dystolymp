@@ -182,17 +182,13 @@
     }
 
     function delCountries() {
-        var places = document.getElementById("countries");
-        var flag = false;
-
-        places.elements["ids"].forEach(function (item) {
-            if (item.checked) {
-                flag = true;
-            }
-        });
-
-        if (flag && areSure()) {
-            places.submit();
+        let countries = document.getElementById("countries");
+        let checked = document.querySelectorAll('input[name=ids]:checked');
+        if (checked.length === 0){
+            return false;
+        }
+        if (areSure()) {
+            countries.submit();
         }
         return false;
     }

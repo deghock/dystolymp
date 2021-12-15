@@ -18,7 +18,7 @@
                     <input type="checkbox" name="ids" th:value="${diploma.id}"/>
                 </td>
                 <td>
-                    <a th:href="@{/diplomas/details/{id}(id=${diploma.id})}" th:text="${diploma.name}"
+                    <a th:href="@{/diplomas/edit/{id}(id=${diploma.id})}" th:text="${diploma.name}"
                        class="stealth"></a>
                 </td>
             </tr>

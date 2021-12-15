@@ -11,7 +11,7 @@ import javax.validation.ConstraintValidatorContext;
  * @author Daria Usova
  */
 @RequiredArgsConstructor
-public class UniqueDiplomaTypeNameValidator implements ConstraintValidator<UniqueDiplomaTypeName, String> {
+public class UniqueDiplomaTypeNameFieldValidator implements ConstraintValidator<UniqueDiplomaTypeName, String> {
 
     private final DiplomaTypeCrudService diplomaTypeCrudService;
 

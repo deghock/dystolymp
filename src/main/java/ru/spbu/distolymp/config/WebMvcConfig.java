@@ -6,6 +6,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -23,6 +25,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 
 @EnableWebMvc
 @Configuration
+@PropertySource("classpath:/application.properties")
 @ComponentScan(basePackages = {"ru.spbu.distolymp"})
 public class WebMvcConfig implements WebMvcConfigurer, ApplicationContextAware  {
 
@@ -90,6 +93,11 @@ public class WebMvcConfig implements WebMvcConfigurer, ApplicationContextAware  
         messageSource.setBasename("classpath:messages");
         messageSource.setDefaultEncoding(ENCODING);
         return messageSource;
+    }
+
+    @Bean
+    public PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
     }
 
 }
