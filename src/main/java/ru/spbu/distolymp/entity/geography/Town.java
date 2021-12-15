@@ -2,11 +2,12 @@ package ru.spbu.distolymp.entity.geography;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import ru.spbu.distolymp.entity.education.School;
 import ru.spbu.distolymp.entity.enumeration.Visible;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * @author Daria Usova
@@ -40,4 +41,6 @@ public class Town {
     @Column(name = "editing")
     private boolean editing = false;
 
+    @OneToMany(mappedBy = "town")
+    private List<School> schools;
 }

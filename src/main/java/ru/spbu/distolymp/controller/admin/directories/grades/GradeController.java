@@ -20,13 +20,12 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping("/grades")
 public class GradeController {
-
     private static final String ROOT_DIR = "admin/directories/grades/";
     private static final String LIST_PAGE = ROOT_DIR + "list";
     private static final String REDIRECT_GRADE_LIST = "redirect:/grades/list";
     private static final String EDIT_PAGE = ROOT_DIR + "edit";
+    private static final String PAGE_404 = "exception/404";
     private static final String ERROR_PARAM = "error";
-
     private final GradeService gradeService;
 
     @GetMapping("/list")
@@ -75,6 +74,18 @@ public class GradeController {
         return REDIRECT_GRADE_LIST;
     }
 
+    @GetMapping("/open_registration")
+    public String openRegistration(ModelMap modelMap) {
+        gradeService.fillShowChangeRegistrationStatus(modelMap, "open");
+        return REDIRECT_GRADE_LIST;
+    }
+
+    @GetMapping("/close_registration")
+    public String closeRegistration(ModelMap modelMap) {
+        gradeService.fillShowChangeRegistrationStatus(modelMap, "close");
+        return REDIRECT_GRADE_LIST;
+    }
+
     @ExceptionHandler(AddNewGradeException.class)
     public String handleAddNewGradeException(RedirectAttributes ra) {
         ra.addFlashAttribute(ERROR_PARAM, "Новый класс не был добавлен");
@@ -100,9 +111,8 @@ public class GradeController {
     }
 
     @ExceptionHandler(GradeCrudServiceException.class)
-    public String handleGradeCrudServiceException(RedirectAttributes ra) {
-        ra.addFlashAttribute(ERROR_PARAM, "Произошла ошибка. Пожалуйста, повторите операцию позже.");
-        return REDIRECT_GRADE_LIST;
+    public String handleGradeCrudServiceException() {
+        return PAGE_404;
     }
 
     // TODO: Implement a link to change the listing
