@@ -114,9 +114,4 @@ public class GradeController {
     public String handleGradeCrudServiceException() {
         return PAGE_404;
     }
-
-    // TODO: Implement a link to change the listing
-
-    // TODO: Implement a link to change the staff
-
 }
