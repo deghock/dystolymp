@@ -16,7 +16,8 @@
             <td th:text="${task.status}"></td>
             <td th:if="${task.status} == 'Архив'" style="text-align: center">
                 <a href="#" class="abutton">просмотр</a>
-                <a href="#" class="abutton">разархивировать</a>
+                <a href="#" class="abutton"
+                   onclick="return window.confirm('Вы уверены?')">разархивировать</a>
             </td>
             <td th:unless="${task.status} == 'Архив'" style="text-align: center">
                 <a href="#" class="abutton">просмотр</a>
