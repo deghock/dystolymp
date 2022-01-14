@@ -35,11 +35,11 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
         if (numberTasksDisplayed <= 0) {
             return getTasks(SORT_BY_TITLE_ASC);
         }
-        Pageable pageable = getPageableSortedByName(numberTasksDisplayed);
+        Pageable pageable = getPageableSortedByTitle(numberTasksDisplayed);
         return getTasks(pageable);
     }
 
-    private Pageable getPageableSortedByName(int numberTasksDisplayed) {
+    private Pageable getPageableSortedByTitle(int numberTasksDisplayed) {
         return PageRequest.of(0, numberTasksDisplayed, SORT_BY_TITLE_ASC);
     }
 }
