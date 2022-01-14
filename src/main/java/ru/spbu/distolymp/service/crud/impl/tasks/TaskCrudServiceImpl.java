@@ -5,10 +5,12 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto;
 import ru.spbu.distolymp.entity.tasks.Task;
+import ru.spbu.distolymp.exception.crud.tasks.TaskCrudServiceException;
 import ru.spbu.distolymp.mapper.admin.tasks.tasks.TaskListMapper;
 import ru.spbu.distolymp.repository.tasks.TaskRepository;
 import ru.spbu.distolymp.service.crud.api.tasks.TaskCrudService;
@@ -46,6 +48,30 @@ public class TaskCrudServiceImpl implements TaskCrudService {
         } catch (DataAccessException e) {
             log.error("An error occurred while getting tasks", e);
             return new ArrayList<>();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TaskListDto> getTasksBySpec(Specification<Task> spec, Pageable pageable) {
+        try {
+            List<Task> taskList = taskRepository.findAll(spec, pageable).getContent();
+            return taskListMapper.toDtoList(taskList);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while getting tasks by specs", e);
+            throw new TaskCrudServiceException();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TaskListDto> getTasksBySpec(Specification<Task> spec, Sort sort) {
+        try {
+            List<Task> taskList = taskRepository.findAll(spec, sort);
+            return taskListMapper.toDtoList(taskList);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while getting tasks by specs", e);
+            throw new TaskCrudServiceException();
         }
     }
 }
