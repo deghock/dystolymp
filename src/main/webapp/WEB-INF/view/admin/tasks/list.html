@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <style>
+        p {
+            text-align: center;
+        }
+
+        legend {
+            display: block;
+            width: auto;
+            padding: 0 5px;
+            margin-bottom: 0;
+            font-size: inherit;
+            line-height: inherit;
+            border-bottom: none;
+        }
+
+        fieldset {
+            border: 2px groove white;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey">
+
+<div th:replace="fragments/menu-staff :: #menustaff"></div>
+
+<p id="title">Задачи</p>
+
+<div class="container">
+    <div class="alert alert-danger col-6 ml-auto mr-auto" role="alert"
+         th:text="${error}" th:if="${error}"></div>
+
+    <fieldset>
+        <legend>Поиск задач</legend>
+        <div class="searchForm">
+            <label for="task-title">Задача:</label>
+            <input type="text" id="task-title" class="w-50"/><br/>
+
+            <div class="input-group" style="align-items: center">
+                <label for="limit">На странице:</label>
+                <select id="limit">
+                    <option value="5">5</option>
+                    <option value="20" selected>20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="0">все</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="text-align:center">
+            <button type="submit" id="search-button">Поиск</button>
+        </div>
+    </fieldset>
+
+    <br/>
+
+    <div id="towns-table" th:replace="admin/tasks/tasks-table :: #tasks-table"></div>
+
+    <ul class="actions">
+        <li>
+            <a href="#" class="abutton">Создать новую задачу</a>
+        </li>
+    </ul>
+</div>
+
+<div th:replace="fragments/footer :: #footer"></div>
+</body>
+
+<script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+<script type="text/javascript">
+    $("#task-title").on("keyup", function (event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            search();
+        }
+    })
+
+    function search() {
+        document.getElementById("search-button").click();
+    }
+
+    $("#search-button").click(function () {
+        getTasks();
+    })
+
+    function getTasks() {
+        var params = encodeQueryData(getParams());
+        var url = "filter?" + params;
+        $.get(url).done(function (fragment) {
+            $("#tasks-table").replaceWith(fragment);
+        });
+    }
+
+    function encodeQueryData(data) {
+        const result = [];
+        for (var key in data) {
+            result.push(key + '=' + data[key]);
+        }
+        return result.join('&');
+    }
+
+    function getParams() {
+        var params = {}
+        params["resultSize"] = getResultSize();
+        params["containsTitle"] = getTitle();
+        return params;
+    }
+
+    function getResultSize() {
+        return $("#limit").val();
+    }
+
+    function getTitle() {
+        return $("#task-title").val();
+    }
+</script>
+
+</html>

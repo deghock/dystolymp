@@ -1,0 +1,34 @@
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+
+<div id="tasks-table">
+    <table class="table border center" aria-describedby="title">
+        <tr style="text-align: center">
+            <th id="index">№</th>
+            <th id="title">Заголовок</th>
+            <th id="status">Статус</th>
+            <th id="actions">Действия</th>
+        </tr>
+
+        <!--/*@thymesVar id="taskList" type="java.util.List<ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto>"*/-->
+        <tr th:each="task, iter : ${taskList}">
+            <td th:text="${iter.index + 1}"></td>
+            <td th:text="${task.title}"></td>
+            <td th:text="${task.status}"></td>
+            <td th:if="${task.status} == 'Архив'" style="text-align: center">
+                <a href="#" class="abutton">просмотр</a>
+                <a href="#" class="abutton">разархивировать</a>
+            </td>
+            <td th:unless="${task.status} == 'Архив'" style="text-align: center">
+                <a href="#" class="abutton">просмотр</a>
+                <a href="#" class="abutton">редактировать</a>
+                <a href="#" class="abutton">копировать</a>
+                <a href="#" class="abutton"
+                   onclick="return window.confirm('Вы уверены?')">удалить</a>
+                <a href="#" class="abutton"
+                   onclick="return window.confirm('Вы уверены?')">архивировать</a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</html>
