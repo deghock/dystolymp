@@ -38,7 +38,7 @@
         <fieldset>
             <legend>Город</legend>
             <label for="country">Страна:</label>
-            <select th:field="*{region.country.id}" id="country">
+            <select th:field="*{region.country.id}" id="country" autocomplete="off">
                 <option th:each="country : ${countries}"
                         th:value="${country.id}" th:text="${country.name}"
                         th:attr="onclick=|regionVisibility('${country.name}')|"></option>
