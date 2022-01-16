@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <style>
+        p {
+            text-align: center;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey" th:attr="onload=|answerVisibility('${task.answerNote}', '${task.imageFileName}')|">
+
+<div th:replace="fragments/menu-staff :: #menustaff"></div>
+
+<p>Задачи</p>
+
+<!--/*@thymesVar id="task" type="ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto"*/-->
+<form th:action="@{/tasks/save-or-edit}" th:object="${task}" method="post">
+    <div class="infoForm">
+        <input type="hidden" th:field="*{id}"/>
+
+        <table class="bgForm" aria-describedby="title">
+            <tr>
+                <th id="key" style="width: 20%"></th>
+                <th id="value" style="width: 80%"></th>
+            </tr>
+
+            <tr>
+                <td>
+                    <label for="prefix">Префикс</label>
+                </td>
+                <td>
+                    <input id="prefix" type="text" th:field="*{prefix}" style="width: 97%"/>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label for="title">Заголовок<sup>*</sup></label>
+                </td>
+                <td>
+                    <input id="title" type="text" th:field="*{title}" style="width: 97%"/>
+                    <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="error">
+                            Task title error</span>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label for="problemText">Задание<sup>*</sup></label>
+                </td>
+                <td>
+                    <textarea id="problemText" class="loginf" th:field="*{problemText}" style="width: 97%"></textarea>
+                    <span th:if="${#fields.hasErrors('problemText')}" th:errors="*{problemText}" class="error">
+                            Problem text error</span>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label for="image">Изображение</label>
+                </td>
+                <td>
+                    <input type="file" id="image" th:field="*{imageFileName}"
+                           accept="image/png, image/jpeg"/>
+                    <br/>
+                    <label for="width" style="width: 60px">Ширина:</label>
+                    <input type="text" id="width" th:field="*{width}" style="width: 15%">
+                    <span th:if="${#fields.hasErrors('width')}" th:errors="*{width}" class="error">
+                            Width value error</span>
+                    <br/>
+                    <label for="height" style="width: 60px">Высота:</label>
+                    <input type="text" id="height" th:field="*{height}" style="width: 15%">
+                    <span th:if="${#fields.hasErrors('height')}" th:errors="*{height}" class="error">
+                            Height value error</span>
+                    <div id="imageAttr" style="display: none">
+                        <table style="display: none"><tr>
+                            <td><input id="isDelete" type="checkbox"></td>
+                            <td><label for="isDelete">Удалить</label></td>
+                        </tr></table>
+                        <a href="#" class="abutton" style="display: none">Просмотр</a>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label for="comment">Комментарий</label>
+                </td>
+                <td>
+                    <input id="comment" type="text" th:field="*{comment}" style="width: 97%"/>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label for="variables">Значения переменных<sup
+                            title="Var1 = val1;
+Var2 = [val1, val2, ..., valN];
+Var3 = (val1..val2, step);
+Var4 = expr(Var1, Var2, ...);">(?)</sup></label>
+                </td>
+                <td>
+                    <textarea id="variables" class="loginf" th:field="*{variables}" style="width: 97%"
+                    placeholder="Var1 = val1;
+Var2 = [val1, val2, ..., valN];
+Var3 = (val1..val2, step);
+Var4 = expr(Var1, Var2, ...);"></textarea>
+                    <span th:if="${#fields.hasErrors('variables')}" th:errors="*{variables}" class="error">
+                            Variables error</span>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label for="answerTypeRadio">Тип ответа</label>
+                </td>
+                <td>
+                    <table id="answerTypeRadio" th:attr="onclick=|answerVisibility('${task.answerNote}', '${task.imageFileName}')|">
+                        <tr>
+                            <td><input id="answerType0" type="radio" th:field="*{answerNote}" value="0" autocomplete="off"/></td>
+                            <td><label for="answerType0" class="placeholder">Только ответы</label></td>
+                        </tr>
+                        <tr>
+                            <td><input id="answerType1" type="radio" th:field="*{answerNote}" value="1" autocomplete="off"/></td>
+                            <td><label for="answerType1" class="placeholder">Ответы и комментарий</label></td>
+                        </tr>
+                        <tr>
+                            <td><input id="answerType2" type="radio" th:field="*{answerNote}" value="2" autocomplete="off"/></td>
+                            <td><label for="answerType2" class="placeholder">Только комментарий</label></td>
+                        </tr>
+                        <tr>
+                            <td><input id="answerType3" type="radio" th:field="*{answerNote}" value="3" autocomplete="off"/></td>
+                            <td><label for="answerType3" class="placeholder">Файл и комментарий</label></td>
+                        </tr>
+                        <tr>
+                            <td><input id="answerType4" type="radio" th:field="*{answerNote}" value="4" autocomplete="off"/></td>
+                            <td><label for="answerType4" class="placeholder">Только файл</label></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr id="answer" style="display: none">
+                <td>
+                    <label for="correctAnswer">Ответы<sup>*</sup></label>
+                </td>
+                <td>
+                    <textarea id="correctAnswer" class="loginf" th:field="*{correctAnswer}" style="width: 97%"></textarea>
+                    <span th:if="${#fields.hasErrors('correctAnswer')}" th:errors="*{correctAnswer}" class="error">
+                            Correct answer text error</span>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label for="gradePoints">Количество баллов<sup>*</sup></label>
+                </td>
+                <td>
+                    <input id="gradePoints" type="text" th:field="*{gradePoints}" style="width: 97%"/>
+                    <span th:if="${#fields.hasErrors('gradePoints')}" th:errors="*{gradePoints}" class="error">
+                            Grade points error</span>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label for="minusPoints">Штраф за неправильный ответ<sup>*</sup></label>
+                </td>
+                <td>
+                    <input id="minusPoints" type="text" th:field="*{minusPoints}" style="width: 97%"/>
+                    <span th:if="${#fields.hasErrors('minusPoints')}" th:errors="*{minusPoints}" class="error">
+                            Minus points error</span>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label for="minPoints">Минимальное количество баллов за правильный ответ<sup>*</sup></label>
+                </td>
+                <td>
+                    <input id="minPoints" type="text" th:field="*{minPoints}" style="width: 97%"/>
+                    <span th:if="${#fields.hasErrors('minPoints')}" th:errors="*{minPoints}" class="error">
+                            Min points error</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="text-align:center">
+        <button type="submit">Сохранить</button>
+    </div>
+</form>
+
+<br/>
+
+<div th:replace="fragments/footer :: #footer"></div>
+</body>
+
+<script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+<script type="text/javascript">
+    function answerVisibility(answerType, imageFileName) {
+        if (answerType === 0 ||
+            answerType === 1 ||
+            document.getElementById('answerType0').checked ||
+            document.getElementById('answerType1').checked) {
+            document.getElementById('answer').style.display = "table-row";
+        } else {
+            document.getElementById('answer').style.display = "none";
+        }
+        if (imageFileName === null || imageFileName === "")
+            document.getElementById('imageAttr').style.display = "none";
+        else
+            document.getElementById('imageAttr').style.display = "block";
+    }
+</script>
+</html>

@@ -9,8 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskFilter;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto;
+import ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto;
 import ru.spbu.distolymp.entity.tasks.Task;
 import ru.spbu.distolymp.mapper.admin.tasks.tasks.TaskListMapper;
+import ru.spbu.distolymp.mapper.entity.tasks.TaskMapper;
 import ru.spbu.distolymp.repository.tasks.TaskRepository;
 import ru.spbu.distolymp.service.admin.tasks.api.TaskService;
 import ru.spbu.distolymp.service.crud.impl.tasks.TaskCrudServiceImpl;
@@ -25,8 +27,10 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
     private static final Sort SORT_BY_TITLE_ASC = Sort.by("title").ascending();
     private static final String TASKS_PARAM = "taskList";
 
-    public TaskServiceImpl(TaskRepository taskRepository, TaskListMapper taskListMapper) {
-        super(taskRepository, taskListMapper);
+    public TaskServiceImpl(TaskRepository taskRepository,
+                           TaskListMapper taskListMapper,
+                           TaskMapper taskMapper) {
+        super(taskRepository, taskListMapper, taskMapper);
     }
 
     @Override
@@ -67,5 +71,13 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
         Pageable sortedByTitleAsc = getPageableSortedByTitle(resultSize);
         taskDtoList = getTasksBySpec(specs, sortedByTitleAsc);
         modelMap.put(TASKS_PARAM, taskDtoList);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void fillShowEditPageModelMap(ModelMap modelMap) {
+        TaskDto taskDto = new TaskDto();
+        taskDto.setAnswerNote(2);
+        modelMap.put("task", taskDto);
     }
 }

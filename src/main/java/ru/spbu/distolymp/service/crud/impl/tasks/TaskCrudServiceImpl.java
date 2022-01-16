@@ -9,9 +9,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto;
+import ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto;
 import ru.spbu.distolymp.entity.tasks.Task;
 import ru.spbu.distolymp.exception.crud.tasks.TaskCrudServiceException;
 import ru.spbu.distolymp.mapper.admin.tasks.tasks.TaskListMapper;
+import ru.spbu.distolymp.mapper.entity.tasks.TaskMapper;
 import ru.spbu.distolymp.repository.tasks.TaskRepository;
 import ru.spbu.distolymp.service.crud.api.tasks.TaskCrudService;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ import java.util.List;
 public class TaskCrudServiceImpl implements TaskCrudService {
     private final TaskRepository taskRepository;
     private final TaskListMapper taskListMapper;
+    private final TaskMapper taskMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -73,5 +76,41 @@ public class TaskCrudServiceImpl implements TaskCrudService {
             log.error("An error occurred while getting tasks by specs", e);
             throw new TaskCrudServiceException();
         }
+    }
+
+    @Override
+    @Transactional
+    public void saveOrUpdate(TaskDto taskDto) {
+        try {
+            Task task = taskMapper.toEntity(taskDto);
+            fillMissingFields(task);
+            taskRepository.save(task);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while saving or updating a task", e);
+            throw new TaskCrudServiceException();
+        }
+    }
+
+    private void fillMissingFields(Task task) {
+        task.setType(3);
+        task.setStatus(1);
+        if (task.getWidth() == null)
+            task.setWidth(0);
+        if (task.getHeight() == null)
+            task.setHeight(0);
+        if (task.getAnswerNote() != 0 && task.getAnswerNote() != 1)
+            task.setCorrectAnswer("answer=0");
+        task.setMaxPoints(getPoints(task.getGradePoints()));
+    }
+
+    private Double getPoints(String pointsStr) {
+        pointsStr = pointsStr.replaceAll("\\s+","");
+        pointsStr = pointsStr.replace(",",".");
+        String[] pointsList = pointsStr.split(";");
+        Double result = 0.0;
+        for (String point : pointsList)
+            if (!point.equals(""))
+                result += Double.parseDouble(point);
+        return result;
     }
 }
