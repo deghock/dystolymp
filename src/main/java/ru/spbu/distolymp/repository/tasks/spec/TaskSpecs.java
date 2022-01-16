@@ -11,6 +11,7 @@ public class TaskSpecs {
 
     public static Specification<Task> containsTitle(String title) {
         return (root, query, builder) ->
-                builder.like(builder.lower(root.get("title")), "%" + title.toLowerCase() + "%");
+                builder.or(builder.like(builder.lower(root.get("title")), "%" + title.toLowerCase() + "%"),
+                        builder.like(builder.lower(root.get("prefix")), "%" + title.toLowerCase() + "%"));
     }
 }

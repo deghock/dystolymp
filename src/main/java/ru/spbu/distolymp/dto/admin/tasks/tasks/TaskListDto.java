@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 public class TaskListDto {
     private Long id;
+    private String prefix;
     private String title;
     private String status;
 }
