@@ -26,7 +26,7 @@
                 <a href="#" class="abutton">просмотр</a>
                 <a th:href="@{/tasks/edit/{id}(id=${task.id})}" class="abutton">редактировать</a>
                 <a href="#" class="abutton">копировать</a>
-                <a href="#" class="abutton"
+                <a th:href="@{/tasks/delete/{id}(id=${task.id})}" class="abutton"
                    onclick="return window.confirm('Вы уверены?')">удалить</a>
                 <a href="#" class="abutton"
                    onclick="return window.confirm('Вы уверены?')">архивировать</a>

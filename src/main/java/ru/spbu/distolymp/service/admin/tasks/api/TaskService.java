@@ -13,4 +13,5 @@ public interface TaskService {
     void fillShowEditPageModelMap(ModelMap modelMap);
     void fillShowEditPageModelMap(Long id, ModelMap modelMap);
     void saveOrUpdate(TaskDto taskDto);
+    void deleteTaskById(Long id);
 }

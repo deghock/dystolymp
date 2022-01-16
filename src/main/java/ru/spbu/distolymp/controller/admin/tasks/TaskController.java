@@ -60,6 +60,12 @@ public class TaskController {
         return REDIRECT_LIST;
     }
 
+    @GetMapping("/delete/{id}")
+    public String deleteTask(@PathVariable("id") Long id) {
+        taskService.deleteTaskById(id);
+        return REDIRECT_LIST;
+    }
+
     @ExceptionHandler(TaskCrudServiceException.class)
     public String handleTaskCrudServiceException() {
         return PAGE_404;

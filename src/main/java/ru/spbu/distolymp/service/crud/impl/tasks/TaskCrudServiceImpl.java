@@ -16,7 +16,6 @@ import ru.spbu.distolymp.mapper.admin.tasks.tasks.TaskListMapper;
 import ru.spbu.distolymp.mapper.entity.tasks.TaskMapper;
 import ru.spbu.distolymp.repository.tasks.TaskRepository;
 import ru.spbu.distolymp.service.crud.api.tasks.TaskCrudService;
-
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -124,6 +123,18 @@ public class TaskCrudServiceImpl implements TaskCrudService {
             return taskMapper.toDto(task);
         } catch (DataAccessException | EntityNotFoundException e) {
             log.error("An error occurred while getting a task by id=" + id, e);
+            throw new TaskCrudServiceException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteTaskById(Long id) {
+        try {
+            Task task = taskRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+            taskRepository.delete(task);
+        } catch (DataAccessException | EntityNotFoundException e) {
+            log.error("An error occurred while deleting a task with id=" + id, e);
             throw new TaskCrudServiceException();
         }
     }
