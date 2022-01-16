@@ -12,7 +12,10 @@
         <!--/*@thymesVar id="taskList" type="java.util.List<ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto>"*/-->
         <tr th:each="task, iter : ${taskList}">
             <td th:text="${iter.index + 1}"></td>
-            <td th:text="${task.prefix} + ':&#13' + ${task.title}" style="white-space: pre; vertical-align: middle"></td>
+            <td th:if="${task.prefix != null}" th:text="${task.prefix} + ':&#13' + ${task.title}"
+                style="white-space: pre; vertical-align: middle"></td>
+            <td th:unless="${task.prefix != null}" th:text="${task.title}"
+                style="white-space: pre; vertical-align: middle"></td>
             <td th:text="${task.status}" style="text-align: center; vertical-align: middle"></td>
             <td th:if="${task.status} == 'Архив'" style="text-align: center; vertical-align: middle">
                 <a href="#" class="abutton">просмотр</a>
