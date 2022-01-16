@@ -45,6 +45,12 @@ public class TaskController {
         return EDIT_PAGE;
     }
 
+    @GetMapping("/edit/{id}")
+    public String getEditPage(@PathVariable("id") Long id, ModelMap modelMap) {
+        taskService.fillShowEditPageModelMap(id, modelMap);
+        return EDIT_PAGE;
+    }
+
     @PostMapping("/save-or-edit")
     public String saveOrUpdate(@Valid @ModelAttribute("task") TaskDto taskDto,
                                BindingResult bindingResult) {

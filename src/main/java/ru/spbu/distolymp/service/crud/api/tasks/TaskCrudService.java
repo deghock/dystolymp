@@ -17,4 +17,5 @@ public interface TaskCrudService {
     List<TaskListDto> getTasksBySpec(Specification<Task> spec, Pageable pageable);
     List<TaskListDto> getTasksBySpec(Specification<Task> spec, Sort sort);
     void saveOrUpdate(TaskDto taskDto);
+    TaskDto getTaskById(Long id);
 }

@@ -85,11 +85,11 @@
                     <span th:if="${#fields.hasErrors('height')}" th:errors="*{height}" class="error">
                             Height value error</span>
                     <div id="imageAttr" style="display: none">
-                        <table style="display: none"><tr>
-                            <td><input id="isDelete" type="checkbox"></td>
+                        <table><tr>
+                            <td><input id="isDelete" type="checkbox" autocomplete="off"></td>
                             <td><label for="isDelete">Удалить</label></td>
                         </tr></table>
-                        <a href="#" class="abutton" style="display: none">Просмотр</a>
+                        <a href="#" class="abutton" th:text="'Просмотр ' + ${task.imageFileName}"></a>
                     </div>
                 </td>
             </tr>
@@ -219,10 +219,11 @@ Var4 = expr(Var1, Var2, ...);"></textarea>
         } else {
             document.getElementById('answer').style.display = "none";
         }
-        if (imageFileName === null || imageFileName === "")
+        if (imageFileName === "null" || imageFileName === "") {
             document.getElementById('imageAttr').style.display = "none";
-        else
+        } else {
             document.getElementById('imageAttr').style.display = "block";
+        }
     }
 </script>
 </html>

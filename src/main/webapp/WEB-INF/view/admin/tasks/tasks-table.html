@@ -24,7 +24,7 @@
             </td>
             <td th:unless="${task.status} == 'Архив'" style="text-align: center; vertical-align: middle">
                 <a href="#" class="abutton">просмотр</a>
-                <a href="#" class="abutton">редактировать</a>
+                <a th:href="@{/tasks/edit/{id}(id=${task.id})}" class="abutton">редактировать</a>
                 <a href="#" class="abutton">копировать</a>
                 <a href="#" class="abutton"
                    onclick="return window.confirm('Вы уверены?')">удалить</a>

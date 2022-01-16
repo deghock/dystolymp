@@ -80,4 +80,11 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
         taskDto.setAnswerNote(2);
         modelMap.put("task", taskDto);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void fillShowEditPageModelMap(Long id, ModelMap modelMap) {
+        TaskDto taskDto = getTaskById(id);
+        modelMap.put("task", taskDto);
+    }
 }
