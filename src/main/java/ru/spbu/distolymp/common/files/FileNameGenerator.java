@@ -1,9 +1,9 @@
 package ru.spbu.distolymp.common.files;
 
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.UUID;
 
 /**
- * @author Daria Usova
+ * @author Daria Usova, Vladislav Konovalov
  */
 public class FileNameGenerator {
     private FileNameGenerator() {}
@@ -13,14 +13,6 @@ public class FileNameGenerator {
     }
 
     private static String generateFileName() {
-        StringBuilder stringBuilder = new StringBuilder();
-        int aCharIndex = 97;
-        int zCharIndex = 122;
-
-        for (int i = 1; i <= 20; i++) {
-            stringBuilder.append((char) ThreadLocalRandom.current().nextInt(aCharIndex, zCharIndex + 1));
-        }
-
-        return stringBuilder.toString();
+        return UUID.randomUUID().toString();
     }
 }
