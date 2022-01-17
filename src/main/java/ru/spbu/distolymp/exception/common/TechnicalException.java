@@ -10,4 +10,8 @@ public class TechnicalException extends RuntimeException {
     public TechnicalException(Throwable cause) {
         super(cause);
     }
+
+    public TechnicalException(String message) {
+        super(message);
+    }
 }

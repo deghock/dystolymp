@@ -7,6 +7,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.multipart.MultipartFile;
+import ru.spbu.distolymp.common.files.FileNameGenerator;
+import ru.spbu.distolymp.common.files.FilesUtils;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskFilter;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto;
 import ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto;
@@ -27,7 +30,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
     private static final Sort SORT_BY_TITLE_ASC = Sort.by("title").ascending();
     private static final String TASKS_PARAM = "taskList";
 
-    public TaskServiceImpl(TaskRepository taskRepository,
+    protected TaskServiceImpl(TaskRepository taskRepository,
                            TaskListMapper taskListMapper,
                            TaskMapper taskMapper) {
         super(taskRepository, taskListMapper, taskMapper);
@@ -86,5 +89,69 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
     public void fillShowEditPageModelMap(Long id, ModelMap modelMap) {
         TaskDto taskDto = getTaskById(id);
         modelMap.put("task", taskDto);
+    }
+
+    @Override
+    @Transactional
+    public void addTask(TaskDto taskDto) {
+        Task task = taskMapper.toEntity(taskDto);
+        MultipartFile image = taskDto.getImage();
+        initFields(task);
+        if ("".equals(image.getOriginalFilename())) {
+            saveOrUpdate(task, false);
+        } else {
+            String imageExtension = FilesUtils.getImageExtension(image);
+            task.setImageFileName(FileNameGenerator.generateFileName(imageExtension));
+            saveOrUpdate(task, FilesUtils.getImageBytes(image));
+        }
+    }
+
+    @Override
+    @Transactional
+    public void updateTask(TaskDto taskDto) {
+        Task task = taskMapper.toEntity(taskDto);
+        task.setType(3);
+        MultipartFile image = taskDto.getImage();
+        String oldImageName = task.getImageFileName();
+        if (oldImageName == null) {
+            if ("".equals(image.getOriginalFilename())) {
+                saveOrUpdate(task, false);
+            } else {
+                String imageExtension = FilesUtils.getImageExtension(image);
+                task.setImageFileName(FileNameGenerator.generateFileName(imageExtension));
+                saveOrUpdate(task, FilesUtils.getImageBytes(image));
+            }
+        } else {
+            if ("".equals(image.getOriginalFilename())) {
+                saveOrUpdate(task, taskDto.isDeleteImage());
+            } else {
+                String imageExtension = FilesUtils.getImageExtension(image);
+                task.setImageFileName(FileNameGenerator.generateFileName(imageExtension));
+                saveOrUpdate(task, FilesUtils.getImageBytes(image), oldImageName, taskDto.isDeleteImage());
+            }
+        }
+    }
+
+    private void initFields(Task task) {
+        task.setType(3);
+        task.setStatus(1);
+        if (task.getWidth() == null)
+            task.setWidth(0);
+        if (task.getHeight() == null)
+            task.setHeight(0);
+        if (task.getAnswerNote() != 0 && task.getAnswerNote() != 1)
+            task.setCorrectAnswer("answer=0");
+        task.setMaxPoints(getPoints(task.getGradePoints()));
+    }
+
+    private Double getPoints(String pointsStr) {
+        pointsStr = pointsStr.replaceAll("\\s+","");
+        pointsStr = pointsStr.replace(",",".");
+        String[] pointsList = pointsStr.split(";");
+        Double result = 0.0;
+        for (String point : pointsList)
+            if (!point.equals(""))
+                result += Double.parseDouble(point);
+        return result;
     }
 }

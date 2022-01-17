@@ -2,15 +2,19 @@ package ru.spbu.distolymp.service.crud.impl.tasks;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.spbu.distolymp.common.files.ImageService;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto;
 import ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto;
 import ru.spbu.distolymp.entity.tasks.Task;
+import ru.spbu.distolymp.exception.common.TechnicalException;
 import ru.spbu.distolymp.exception.crud.tasks.TaskCrudServiceException;
 import ru.spbu.distolymp.mapper.admin.tasks.tasks.TaskListMapper;
 import ru.spbu.distolymp.mapper.entity.tasks.TaskMapper;
@@ -27,9 +31,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TaskCrudServiceImpl implements TaskCrudService {
+    private static final String SAVE_OR_UPDATE_PARAM = "An error occurred while saving or updating a task";
+
     private final TaskRepository taskRepository;
     private final TaskListMapper taskListMapper;
-    private final TaskMapper taskMapper;
+    protected final TaskMapper taskMapper;
+    @Autowired
+    @Qualifier("taskImageService")
+    protected ImageService imageService;
 
     @Override
     @Transactional(readOnly = true)
@@ -81,38 +90,45 @@ public class TaskCrudServiceImpl implements TaskCrudService {
 
     @Override
     @Transactional
-    public void saveOrUpdate(TaskDto taskDto) {
+    public void saveOrUpdate(Task task, boolean deleteImage) {
+        if (deleteImage) {
+            imageService.deleteImage(task.getImageFileName());
+            task.setImageFileName(null);
+        }
         try {
-            Task task = taskMapper.toEntity(taskDto);
-            fillMissingFields(task);
             taskRepository.save(task);
         } catch (DataAccessException e) {
-            log.error("An error occurred while saving or updating a task", e);
+            log.error(SAVE_OR_UPDATE_PARAM, e);
             throw new TaskCrudServiceException();
         }
     }
 
-    private void fillMissingFields(Task task) {
-        task.setType(3);
-        task.setStatus(1);
-        if (task.getWidth() == null)
-            task.setWidth(0);
-        if (task.getHeight() == null)
-            task.setHeight(0);
-        if (task.getAnswerNote() != 0 && task.getAnswerNote() != 1)
-            task.setCorrectAnswer("answer=0");
-        task.setMaxPoints(getPoints(task.getGradePoints()));
+    @Override
+    @Transactional
+    public void saveOrUpdate(Task task, byte[] image) {
+        String imageFileName = task.getImageFileName();
+        boolean isFileSaved = imageService.saveImage(image, imageFileName);
+        if (!isFileSaved)
+            throw new TechnicalException("Task image is not saved");
+        try {
+            taskRepository.save(task);
+        } catch (DataAccessException e) {
+            log.error(SAVE_OR_UPDATE_PARAM, e);
+            imageService.deleteImage(imageFileName);
+            throw new TaskCrudServiceException();
+        }
     }
 
-    private Double getPoints(String pointsStr) {
-        pointsStr = pointsStr.replaceAll("\\s+","");
-        pointsStr = pointsStr.replace(",",".");
-        String[] pointsList = pointsStr.split(";");
-        Double result = 0.0;
-        for (String point : pointsList)
-            if (!point.equals(""))
-                result += Double.parseDouble(point);
-        return result;
+    @Override
+    @Transactional
+    public void saveOrUpdate(Task task, byte[] image, String oldImage, boolean deleteImage) {
+        imageService.deleteImage(oldImage);
+        if (deleteImage) {
+            task.setImageFileName(null);
+            saveOrUpdate(task, false);
+        } else {
+            saveOrUpdate(task, image);
+        }
     }
 
     @Override

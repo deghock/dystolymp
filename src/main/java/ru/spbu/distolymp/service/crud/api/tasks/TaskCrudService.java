@@ -16,7 +16,9 @@ public interface TaskCrudService {
     List<TaskListDto> getTasks(Pageable pageable);
     List<TaskListDto> getTasksBySpec(Specification<Task> spec, Pageable pageable);
     List<TaskListDto> getTasksBySpec(Specification<Task> spec, Sort sort);
-    void saveOrUpdate(TaskDto taskDto);
+    void saveOrUpdate(Task task, boolean deleteImage);
+    void saveOrUpdate(Task task, byte[] image);
+    void saveOrUpdate(Task task, byte[] image, String oldImage, boolean deleteImage);
     TaskDto getTaskById(Long id);
     void deleteTaskById(Long id);
 }

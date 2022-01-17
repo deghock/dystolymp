@@ -26,9 +26,11 @@
 <p>Задачи</p>
 
 <!--/*@thymesVar id="task" type="ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto"*/-->
-<form th:action="@{/tasks/save-or-edit}" th:object="${task}" method="post">
+<form th:action="@{/tasks/save-or-edit}" th:object="${task}" method="post" enctype="multipart/form-data">
     <div class="infoForm">
         <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{status}"/>
+        <input type="hidden" th:field="*{imageFileName}"/>
 
         <table class="bgForm" aria-describedby="title">
             <tr>
@@ -74,6 +76,7 @@
                 <td>
                     <input type="file" id="image" th:field="*{imageFileName}"
                            accept="image/png, image/jpeg, image/gif">
+                    <span th:if="${#fields.hasErrors('image')}" th:errors="*{image}">File mime type error</span>
                     <br/>
                     <label for="width" style="width: 60px">Ширина:</label>
                     <input type="text" id="width" th:field="*{width}" style="width: 15%">
@@ -86,7 +89,7 @@
                             Height value error</span>
                     <div id="imageAttr" style="display: none">
                         <table><tr>
-                            <td><input id="isDelete" type="checkbox" autocomplete="off"></td>
+                            <td><input id="isDelete" type="checkbox" th:field="*{deleteImage}" autocomplete="off"></td>
                             <td><label for="isDelete">Удалить</label></td>
                         </tr></table>
                         <a href="#" class="abutton" th:text="'Просмотр ' + ${task.imageFileName}"></a>

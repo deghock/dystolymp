@@ -5,8 +5,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskFilter;
 import ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto;
+import ru.spbu.distolymp.exception.common.TechnicalException;
 import ru.spbu.distolymp.exception.crud.tasks.TaskCrudServiceException;
 import ru.spbu.distolymp.service.admin.tasks.api.TaskService;
 import javax.validation.Valid;
@@ -53,10 +55,14 @@ public class TaskController {
 
     @PostMapping("/save-or-edit")
     public String saveOrUpdate(@Valid @ModelAttribute("task") TaskDto taskDto,
-                               BindingResult bindingResult) {
+                               BindingResult bindingResult, RedirectAttributes ra) {
         if (bindingResult.hasErrors())
             return EDIT_PAGE;
-        taskService.saveOrUpdate(taskDto);
+        if (taskDto.getId() == null)
+            taskService.addTask(taskDto);
+        else
+            taskService.updateTask(taskDto);
+        ra.addFlashAttribute("success", "Изменения сохранены");
         return REDIRECT_LIST;
     }
 
@@ -69,5 +75,11 @@ public class TaskController {
     @ExceptionHandler(TaskCrudServiceException.class)
     public String handleTaskCrudServiceException() {
         return PAGE_404;
+    }
+
+    @ExceptionHandler(TechnicalException.class)
+    public String handleTechnicalException(RedirectAttributes ra) {
+        ra.addFlashAttribute("error", "Произошла ошибка. Пожалуйста, попробуйте повторить операцию позже.");
+        return REDIRECT_LIST;
     }
 }
