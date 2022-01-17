@@ -39,14 +39,11 @@
 <p id="title">Задачи</p>
 
 <div class="container">
-    <div class="alert alert-danger col-6 ml-auto mr-auto" role="alert"
-         th:text="${error}" th:if="${error}"></div>
-
     <fieldset>
         <legend>Поиск задач</legend>
         <div class="searchForm">
             <label for="task-title">Заголовок:</label>
-            <input type="text" id="task-title" class="w-50"/><br/>
+            <input type="text" id="task-title" style="width: 40%"/><br/>
 
             <div class="input-group" style="align-items: center">
                 <label for="limit">На странице:</label>
@@ -66,6 +63,10 @@
     </fieldset>
 
     <br/>
+    <div class="alert alert-danger ml-auto mr-auto text-center" role="alert"
+         th:text="${error}" th:if="${error}"><br/></div>
+    <div class="alert alert-success ml-auto mr-auto text-center" role="alert"
+         th:text="${success}" th:if="${success}"><br/></div>
 
     <div id="towns-table" th:replace="admin/tasks/tasks-table :: #tasks-table"></div>
 
