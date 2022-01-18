@@ -39,39 +39,21 @@
 <p id="title">Задачи</p>
 
 <div class="container">
-    <fieldset>
-        <legend>Поиск задач</legend>
-        <div class="searchForm">
-            <label for="task-title">Заголовок:</label>
-            <input type="text" id="task-title" style="width: 40%"/><br/>
-
-            <div class="input-group" style="align-items: center">
-                <label for="limit">На странице:</label>
-                <select id="limit">
-                    <option value="5">5</option>
-                    <option value="20" selected>20</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                    <option value="0">все</option>
-                </select>
-            </div>
-        </div>
-
-        <div style="text-align:center">
-            <button type="submit" id="search-button">Поиск</button>
-        </div>
-    </fieldset>
-
-    <br/>
-    <div class="alert alert-danger ml-auto mr-auto text-center" role="alert"
+    <div class="alert alert-danger text-center mx-auto" role="alert" style="width: 50%"
          th:text="${error}" th:if="${error}"><br/></div>
-    <div class="alert alert-success ml-auto mr-auto text-center" role="alert"
+    <div class="alert alert-success text-center mx-auto" role="alert" style="width: 50%"
          th:text="${success}" th:if="${success}"><br/></div>
+
+    <div class="input-group mb-3 mx-auto" style="width: 50%">
+        <input type="text" id="task-title" class="form-control"
+               placeholder="Фильтр задач по заголовку и префиксу..." aria-describedby="search-button">
+        <button class="btn btn-secondary" type="submit" id="search-button">Поиск</button>
+    </div>
 
     <div id="towns-table" th:replace="admin/tasks/tasks-table :: #tasks-table"></div>
 
-    <ul class="actions">
-        <li>
+    <ul class="actions text-center" style="width: 50%">
+        <li style="width: 100%">
             <a th:href="@{/tasks/add}" class="abutton">Создать новую задачу</a>
         </li>
     </ul>
@@ -122,7 +104,7 @@
     }
 
     function getResultSize() {
-        return $("#limit").val();
+        return '0';
     }
 
     function getTitle() {
