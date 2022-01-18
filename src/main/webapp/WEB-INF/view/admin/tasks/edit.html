@@ -119,17 +119,17 @@
         </div>
 
         <div class="form-row text-left pl-2 align-items-center">
-            <div class="col-md-2"><label for="variables" style="width: auto">Значения переменных<sup title="Var1 = val1;
-Var2 = [val1, val2, ..., valN];
-Var3 = (val1..val2, step);
-Var4 = expr(Var1, Var2, ...);">(?)</sup></label>
+            <div class="col-md-2"><label for="variables" style="width: auto">Значения переменных<sup
+                    title="Var1 = val1;<br/>
+                           Var2 = [val1, val2, ..., valN];<br/>
+                           Var3 = (val1..val2, step);<br/>
+                           Var4 = expr(Var1, Var2, ...);"
+                     data-toggle="tooltip">(?)</sup></label>
             </div>
             <div class="col-sm-5">
                 <textarea id="variables" class="form-control form-control-sm text-dark"
-                          th:field="*{variables}" rows="8" cols="62" placeholder="Var1 = val1;
-Var2 = [val1, val2, ..., valN];
-Var3 = (val1..val2, step);
-Var4 = expr(Var1, Var2, ...);" style="width: inherit"></textarea>
+                          th:field="*{variables}" rows="8" cols="62" style="width: inherit">
+                </textarea>
             </div>
         </div>
 
@@ -233,10 +233,15 @@ Var4 = expr(Var1, Var2, ...);" style="width: inherit"></textarea>
 
 <script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
 <script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.bundle.min.js}"></script>
 <script type="text/javascript">
     $('#image').on('change', function() {
         var fileName = $(this).val().replace(/C:\\fakepath\\/i, '');
         $(this).next('.custom-file-label').html(fileName);
+    })
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip({ html: true })
     })
 
     function answerVisibility(answerType, imageFileName) {
