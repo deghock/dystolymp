@@ -7,14 +7,7 @@
     <title>Система интернет-олимпиад СПбГУ</title>
 
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
-    <style>
-        p {
-            text-align: center;
-        }
-        .error {
-            color: red;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
 </head>
 
 <div th:replace="fragments/header :: #header"></div>
@@ -23,185 +16,213 @@
 
 <div th:replace="fragments/menu-staff :: #menustaff"></div>
 
-<p>Задачи</p>
+<p style="text-align: center">Редактор задач</p>
 
 <!--/*@thymesVar id="task" type="ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto"*/-->
 <form th:action="@{/tasks/save-or-edit}" th:object="${task}" method="post" enctype="multipart/form-data">
-    <div class="infoForm">
+    <div class="infoForm container p-2 text-center">
         <input type="hidden" th:field="*{id}"/>
         <input type="hidden" th:field="*{status}"/>
         <input type="hidden" th:field="*{imageFileName}"/>
+        <input type="hidden" th:field="*{comment}"/>
 
-        <table class="bgForm" aria-describedby="title">
-            <tr>
-                <th id="key" style="width: 20%"></th>
-                <th id="value" style="width: 80%"></th>
-            </tr>
+        <div class="form-row text-left pl-2 align-items-center">
+            <div class="col-md-2"><label for="prefix" style="width: auto">Префикс</label></div>
+            <div class="col-sm-5">
+                <input id="prefix" type="text" class="form-control form-control-sm text-dark"
+                       th:field="*{prefix}"/>
+            </div>
+        </div>
 
-            <tr>
-                <td>
-                    <label for="prefix">Префикс</label>
-                </td>
-                <td>
-                    <input id="prefix" type="text" th:field="*{prefix}" style="width: 97%"/>
-                </td>
-            </tr>
+        <div class="form-row text-left pl-2 align-items-center">
+            <div class="col-md-2"><label for="title" style="width: auto">Заголовок</label></div>
+            <div class="col-sm-5">
+                <input id="title" type="text" class="form-control form-control-sm text-dark"
+                       th:field="*{title}"/>
+            </div>
+        </div>
 
-            <tr>
-                <td>
-                    <label for="title">Заголовок<sup>*</sup></label>
-                </td>
-                <td>
-                    <input id="title" type="text" th:field="*{title}" style="width: 97%"/>
-                    <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="error">
-                            Task title error</span>
-                </td>
-            </tr>
+        <div class="form-row text-left pl-2 align-items-center">
+            <div class="col-md-2"><label for="problemText" style="width: auto">Задание</label></div>
+            <div class="col-sm-5">
+                <textarea id="problemText" class="form-control form-control-sm text-dark"
+                          th:field="*{problemText}" rows="8" cols="62" style="width: inherit"></textarea>
+            </div>
+        </div>
 
-            <tr>
-                <td>
-                    <label for="problemText">Задание<sup>*</sup></label>
-                </td>
-                <td>
-                    <textarea id="problemText" class="loginf" th:field="*{problemText}" style="width: 97%"></textarea>
-                    <span th:if="${#fields.hasErrors('problemText')}" th:errors="*{problemText}" class="error">
-                            Problem text error</span>
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    <label for="image">Изображение</label>
-                </td>
-                <td>
-                    <input type="file" id="image" th:field="*{imageFileName}"
-                           accept="image/png, image/jpeg, image/gif">
-                    <span th:if="${#fields.hasErrors('image')}" th:errors="*{image}">File mime type error</span>
-                    <br/>
-                    <label for="width" style="width: 60px">Ширина:</label>
-                    <input type="text" id="width" th:field="*{width}" style="width: 15%">
-                    <span th:if="${#fields.hasErrors('width')}" th:errors="*{width}" class="error">
-                            Width value error</span>
-                    <br/>
-                    <label for="height" style="width: 60px">Высота:</label>
-                    <input type="text" id="height" th:field="*{height}" style="width: 15%">
-                    <span th:if="${#fields.hasErrors('height')}" th:errors="*{height}" class="error">
-                            Height value error</span>
-                    <div id="imageAttr" style="display: none">
-                        <table><tr>
-                            <td><input id="isDelete" type="checkbox" th:field="*{deleteImage}" autocomplete="off"></td>
-                            <td><label for="isDelete">Удалить</label></td>
-                        </tr></table>
-                        <a href="#" class="abutton" th:text="'Просмотр ' + ${task.imageFileName}"></a>
+        <div class="form-row text-left pl-2 align-items-center">
+            <div class="col-md-2"><label style="width: auto">Изображение</label></div>
+            <div class="col-sm-5">
+                <div class="form-row mb-1">
+                    <div class="col-12">
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input type="file" id="image" class="custom-file-input" th:field="*{image}"
+                                       accept="image/png, image/jpeg, image/gif">
+                                <label class="custom-file-label text-dark" for="image" style="width: initial">
+                                    Файл не выбран...
+                                </label>
+                            </div>
+                        </div>
                     </div>
-                </td>
-            </tr>
+                </div>
+                <div class="form-row align-items-center">
+                    <div class="col-md-3"><label for="width" style="width: auto">Ширина:</label></div>
+                    <div class="col-md-3">
+                        <input type="number" min="0" class="form-control form-control-sm text-dark"
+                               id="width" th:field="*{width}">
+                    </div>
+                </div>
+                <div class="form-row align-items-center">
+                    <div class="col-md-3"><label for="height" style="width: auto">Высота:</label></div>
+                    <div class="col-md-3">
+                        <input type="number" id="height" min="0" class="form-control form-control-sm text-dark"
+                               th:field="*{height}">
+                    </div>
+                </div>
+                <div id="imageAttr" style="display: none">
+                    <div class="form-row align-items-center">
+                        <div class="col-xl-0 form-check">
+                            <input id="isDelete" type="checkbox" class="form-check-input"
+                                   th:field="*{deleteImage}" autocomplete="off" style="position: inherit">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="isDelete" class="form-check-label" style="width: auto">Удалить</label>
+                        </div>
+                    </div>
+                    <div class="form-row mb-1">
+                        <div class="col-12">
+                            <a href="#" class="abutton" data-toggle="modal" data-target="#showImage">Просмотр</a>
+                            <div id="showImage" class="modal fade" tabindex="-1" role="dialog"
+                                 aria-labelledby="showImagePopup" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Просмотр загруженного изображения</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <img th:src="@{/img/tasks/{imageName}(imageName=${task.imageFileName})}"
+                                                 th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
+                                                 alt="Image not found" style="width: auto; height: auto;
+                                             margin-right: auto; margin-left: auto; display: block"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-            <tr>
-                <td>
-                    <label for="comment">Комментарий</label>
-                </td>
-                <td>
-                    <input id="comment" type="text" th:field="*{comment}" style="width: 97%"/>
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    <label for="variables">Значения переменных<sup
-                            title="Var1 = val1;
+        <div class="form-row text-left pl-2 align-items-center">
+            <div class="col-md-2"><label for="variables" style="width: auto">Значения переменных<sup title="Var1 = val1;
 Var2 = [val1, val2, ..., valN];
 Var3 = (val1..val2, step);
 Var4 = expr(Var1, Var2, ...);">(?)</sup></label>
-                </td>
-                <td>
-                    <textarea id="variables" class="loginf" th:field="*{variables}" style="width: 97%"
-                    placeholder="Var1 = val1;
+            </div>
+            <div class="col-sm-5">
+                <textarea id="variables" class="form-control form-control-sm text-dark"
+                          th:field="*{variables}" rows="8" cols="62" placeholder="Var1 = val1;
 Var2 = [val1, val2, ..., valN];
 Var3 = (val1..val2, step);
-Var4 = expr(Var1, Var2, ...);"></textarea>
-                    <span th:if="${#fields.hasErrors('variables')}" th:errors="*{variables}" class="error">
-                            Variables error</span>
-                </td>
-            </tr>
+Var4 = expr(Var1, Var2, ...);" style="width: inherit"></textarea>
+            </div>
+        </div>
 
-            <tr>
-                <td>
-                    <label for="answerTypeRadio">Тип ответа</label>
-                </td>
-                <td>
-                    <table id="answerTypeRadio" th:attr="onclick=|answerVisibility('${task.answerNote}', '${task.imageFileName}')|">
-                        <tr>
-                            <td><input id="answerType0" type="radio" th:field="*{answerNote}" value="0" autocomplete="off"/></td>
-                            <td><label for="answerType0" class="placeholder">Только ответы</label></td>
-                        </tr>
-                        <tr>
-                            <td><input id="answerType1" type="radio" th:field="*{answerNote}" value="1" autocomplete="off"/></td>
-                            <td><label for="answerType1" class="placeholder">Ответы и комментарий</label></td>
-                        </tr>
-                        <tr>
-                            <td><input id="answerType2" type="radio" th:field="*{answerNote}" value="2" autocomplete="off"/></td>
-                            <td><label for="answerType2" class="placeholder">Только комментарий</label></td>
-                        </tr>
-                        <tr>
-                            <td><input id="answerType3" type="radio" th:field="*{answerNote}" value="3" autocomplete="off"/></td>
-                            <td><label for="answerType3" class="placeholder">Файл и комментарий</label></td>
-                        </tr>
-                        <tr>
-                            <td><input id="answerType4" type="radio" th:field="*{answerNote}" value="4" autocomplete="off"/></td>
-                            <td><label for="answerType4" class="placeholder">Только файл</label></td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
+        <div class="form-row text-left pl-2 align-items-center">
+            <div class="col-md-2"><label for="answerTypeRadio" style="width: auto">Тип ответа</label></div>
+            <div class="col-sm-5">
+                <div id="answerTypeRadio" th:attr="onclick=|answerVisibility('${task.answerNote}', '${task.imageFileName}')|">
+                    <div class="form-row">
+                        <div class="col-xl-0 form-check">
+                            <input id="answerType0" type="radio" class="form-check-input" style="position: inherit"
+                                   th:field="*{answerNote}" value="0" autocomplete="off"/>
+                        </div>
+                        <div class="col-9"><label for="answerType0" class="form-check-label"
+                                                   style="width: auto">Только ответы</label>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-xl-0 form-check">
+                            <input id="answerType1" type="radio" class="form-check-input" style="position: inherit"
+                                   th:field="*{answerNote}" value="1" autocomplete="off"/>
+                        </div>
+                        <div class="col-9"><label for="answerType1" class="form-check-label"
+                                                   style="width: auto">Ответы и комментарий</label>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-xl-0 form-check">
+                            <input id="answerType2" type="radio" class="form-check-input" style="position: inherit"
+                                   th:field="*{answerNote}" value="2" autocomplete="off"/>
+                        </div>
+                        <div class="col-9"><label for="answerType2" class="form-check-label"
+                                                   style="width: auto">Только комментарий</label>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-xl-0 form-check">
+                            <input id="answerType3" type="radio" class="form-check-input" style="position: inherit"
+                                   th:field="*{answerNote}" value="3" autocomplete="off"/>
+                        </div>
+                        <div class="col-9"><label for="answerType3" class="form-check-label"
+                                                   style="width: auto">Файл и комментарий</label>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-xl-0 form-check">
+                            <input id="answerType4" type="radio" class="form-check-input" style="position: inherit"
+                                   th:field="*{answerNote}" value="4" autocomplete="off"/>
+                        </div>
+                        <div class="col-9"><label for="answerType4" class="form-check-label"
+                                                   style="width: auto">Только файл</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-            <tr id="answer" style="display: none">
-                <td>
-                    <label for="correctAnswer">Ответы<sup>*</sup></label>
-                </td>
-                <td>
-                    <textarea id="correctAnswer" class="loginf" th:field="*{correctAnswer}" style="width: 97%"></textarea>
-                    <span th:if="${#fields.hasErrors('correctAnswer')}" th:errors="*{correctAnswer}" class="error">
-                            Correct answer text error</span>
-                </td>
-            </tr>
+        <div id="answer" style="display: none">
+            <div class="form-row text-left pl-2 align-items-center">
+                <div class="col-md-2"><label for="correctAnswer" style="width: auto">Ответы</label></div>
+                <div class="col-sm-5">
+                    <textarea id="correctAnswer" class="form-control form-control-sm text-dark"
+                              th:field="*{correctAnswer}" rows="4" cols="62" style="width: inherit"></textarea>
+                </div>
+            </div>
+        </div>
 
-            <tr>
-                <td>
-                    <label for="gradePoints">Количество баллов<sup>*</sup></label>
-                </td>
-                <td>
-                    <input id="gradePoints" type="text" th:field="*{gradePoints}" style="width: 97%"/>
-                    <span th:if="${#fields.hasErrors('gradePoints')}" th:errors="*{gradePoints}" class="error">
-                            Grade points error</span>
-                </td>
-            </tr>
+        <div class="form-row text-left pl-2 align-items-center">
+            <div class="col-md-2"><label for="gradePoints" style="width: auto">Количество баллов</label></div>
+            <div class="col-sm-5">
+                <input id="gradePoints" type="text" class="form-control form-control-sm text-dark"
+                       th:field="*{gradePoints}"/>
+            </div>
+        </div>
 
-            <tr>
-                <td>
-                    <label for="minusPoints">Штраф за неправильный ответ<sup>*</sup></label>
-                </td>
-                <td>
-                    <input id="minusPoints" type="text" th:field="*{minusPoints}" style="width: 97%"/>
-                    <span th:if="${#fields.hasErrors('minusPoints')}" th:errors="*{minusPoints}" class="error">
-                            Minus points error</span>
-                </td>
-            </tr>
+        <div class="form-row text-left pl-2 align-items-center">
+            <div class="col-md-2"><label for="minusPoints" style="width: auto">Штраф за неправильный ответ</label></div>
+            <div class="col-sm-5">
+                <input id="minusPoints" type="text" class="form-control form-control-sm text-dark"
+                       th:field="*{minusPoints}"/>
+            </div>
+        </div>
 
-            <tr>
-                <td>
-                    <label for="minPoints">Минимальное количество баллов за правильный ответ<sup>*</sup></label>
-                </td>
-                <td>
-                    <input id="minPoints" type="text" th:field="*{minPoints}" style="width: 97%"/>
-                    <span th:if="${#fields.hasErrors('minPoints')}" th:errors="*{minPoints}" class="error">
-                            Min points error</span>
-                </td>
-            </tr>
-        </table>
+        <div class="form-row text-left pl-2 align-items-center">
+            <div class="col-md-2"><label for="minPoints" style="width: auto">Минимальное количество баллов за правильный ответ</label></div>
+            <div class="col-sm-5">
+                <input id="minPoints" type="text" class="form-control form-control-sm text-dark"
+                       th:field="*{minPoints}"/>
+            </div>
+        </div>
     </div>
-    <div style="text-align:center">
-        <button type="submit">Сохранить</button>
+
+    <div style="text-align: center">
+        <button type="submit" class="btn btn-light border border-dark">Сохранить</button>
     </div>
 </form>
 
@@ -213,12 +234,17 @@ Var4 = expr(Var1, Var2, ...);"></textarea>
 <script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
 <script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
 <script type="text/javascript">
+    $('#image').on('change', function() {
+        var fileName = $(this).val().replace(/C:\\fakepath\\/i, '');
+        $(this).next('.custom-file-label').html(fileName);
+    })
+
     function answerVisibility(answerType, imageFileName) {
         if (answerType === 0 ||
             answerType === 1 ||
             document.getElementById('answerType0').checked ||
             document.getElementById('answerType1').checked) {
-            document.getElementById('answer').style.display = "table-row";
+            document.getElementById('answer').style.display = "block";
         } else {
             document.getElementById('answer').style.display = "none";
         }
