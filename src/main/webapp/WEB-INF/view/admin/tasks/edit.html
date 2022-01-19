@@ -106,8 +106,19 @@
                                         <div class="modal-body">
                                             <img th:src="@{/img/tasks/{imageName}(imageName=${task.imageFileName})}"
                                                  th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
-                                                 alt="Image not found" style="width: auto; height: auto;
-                                             margin-right: auto; margin-left: auto; display: block"/>
+                                                 alt="Image not found" style="margin-right: auto; margin-left: auto;
+                                                 display: block" th:if="${task.width == 0}"
+                                                 th:style="'height:' + ${task.height} + 'px'"/>
+                                            <img th:src="@{/img/tasks/{imageName}(imageName=${task.imageFileName})}"
+                                                 th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
+                                                 alt="Image not found" style="margin-right: auto; margin-left: auto;
+                                                 display: block" th:if="${task.height == 0}"
+                                                 th:style="'width:' + ${task.width} + 'px'"/>
+                                            <img th:src="@{/img/tasks/{imageName}(imageName=${task.imageFileName})}"
+                                                 th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
+                                                 alt="Image not found" style="margin-right: auto; margin-left: auto;
+                                                 display: block" th:if="${task.width != 0 and task.height != 0}"
+                                                 th:style="'height: ' + ${task.height} + 'px; width: ' + ${task.width} + 'px'"/>
                                         </div>
                                     </div>
                                 </div>
