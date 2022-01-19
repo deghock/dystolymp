@@ -96,6 +96,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
     public void addTask(TaskDto taskDto) {
         Task task = taskMapper.toEntity(taskDto);
         MultipartFile image = taskDto.getImage();
+        task.setStatus(1);
         initFields(task);
         if ("".equals(image.getOriginalFilename())) {
             saveOrUpdate(task, false);
@@ -110,7 +111,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
     @Transactional
     public void updateTask(TaskDto taskDto) {
         Task task = taskMapper.toEntity(taskDto);
-        task.setType(3);
+        initFields(task);
         MultipartFile image = taskDto.getImage();
         String oldImageName = task.getImageFileName();
         if (oldImageName == null) {
@@ -134,7 +135,6 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
 
     private void initFields(Task task) {
         task.setType(3);
-        task.setStatus(1);
         if (task.getWidth() == null)
             task.setWidth(0);
         if (task.getHeight() == null)
