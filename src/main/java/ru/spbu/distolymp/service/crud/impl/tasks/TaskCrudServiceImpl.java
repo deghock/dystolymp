@@ -31,14 +31,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TaskCrudServiceImpl implements TaskCrudService {
-    private static final String SAVE_OR_UPDATE_PARAM = "An error occurred while saving or updating a task";
-
     private final TaskRepository taskRepository;
     private final TaskListMapper taskListMapper;
     protected final TaskMapper taskMapper;
     @Autowired
     @Qualifier("taskImageService")
     protected ImageService imageService;
+
+    private static final String SAVE_OR_UPDATE_PARAM = "An error occurred while saving or updating a task";
 
     @Override
     @Transactional(readOnly = true)

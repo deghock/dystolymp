@@ -154,4 +154,13 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
                 result += Double.parseDouble(point);
         return result;
     }
+
+    @Override
+    @Transactional
+    public void deleteTaskAndImage(Long id) {
+        String imageName = getTaskById(id).getImageFileName();
+        if (imageName != null)
+            imageService.deleteImage(imageName);
+        deleteTaskById(id);
+    }
 }
