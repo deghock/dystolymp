@@ -141,12 +141,11 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
             task.setHeight(0);
         if (task.getAnswerNote() != 0 && task.getAnswerNote() != 1)
             task.setCorrectAnswer("answer=0");
-        task.setMaxPoints(getPoints(task.getGradePoints()));
+        task.setMaxPoints(parseAndEvalPoints(task.getGradePoints()));
     }
 
-    private Double getPoints(String pointsStr) {
+    private Double parseAndEvalPoints(String pointsStr) {
         pointsStr = pointsStr.replaceAll("\\s+","");
-        pointsStr = pointsStr.replace(",",".");
         String[] pointsList = pointsStr.split(";");
         Double result = 0.0;
         for (String point : pointsList)
