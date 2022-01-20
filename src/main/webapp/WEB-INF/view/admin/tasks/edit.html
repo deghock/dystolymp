@@ -102,21 +102,18 @@
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                        <div class="modal-body">
+                                        <div class="modal-body text-center" style="overflow: auto">
                                             <img th:src="@{/img/tasks/{imageName}(imageName=${task.imageFileName})}"
                                                  th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
-                                                 alt="Image not found" style="margin-right: auto; margin-left: auto;
-                                                 display: block" th:if="${task.width == 0}"
+                                                 alt="Image not found" th:if="${task.width == 0}"
                                                  th:style="'height:' + ${task.height} + 'px'"/>
                                             <img th:src="@{/img/tasks/{imageName}(imageName=${task.imageFileName})}"
                                                  th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
-                                                 alt="Image not found" style="margin-right: auto; margin-left: auto;
-                                                 display: block" th:if="${task.height == 0}"
+                                                 alt="Image not found" th:if="${task.height == 0}"
                                                  th:style="'width:' + ${task.width} + 'px'"/>
                                             <img th:src="@{/img/tasks/{imageName}(imageName=${task.imageFileName})}"
                                                  th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
-                                                 alt="Image not found" style="margin-right: auto; margin-left: auto;
-                                                 display: block" th:if="${task.width != 0 and task.height != 0}"
+                                                 alt="Image not found" th:if="${task.width != 0 and task.height != 0}"
                                                  th:style="'height: ' + ${task.height} + 'px; width: ' + ${task.width} + 'px'"/>
                                         </div>
                                     </div>
