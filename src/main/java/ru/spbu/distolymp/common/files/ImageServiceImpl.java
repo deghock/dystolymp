@@ -69,4 +69,12 @@ public class ImageServiceImpl implements ImageService {
         saveImage(image, newFileName);
         deleteImage(prevFileName);
     }
+
+    @Override
+    public String getExtensionFromImageName(String imageName) {
+        String[] parsedName = imageName.split("\\.");
+        if (parsedName.length == 1)
+            return "";
+        return "." + parsedName[parsedName.length - 1];
+    }
 }

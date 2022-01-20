@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskFilter;
+import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto;
 import ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto;
 import ru.spbu.distolymp.exception.common.TechnicalException;
 import ru.spbu.distolymp.service.admin.tasks.api.TaskService;
@@ -60,13 +61,21 @@ public class TaskController {
             taskService.addTask(taskDto);
         else
             taskService.updateTask(taskDto);
-        ra.addFlashAttribute("success", "Изменения сохранены");
+        ra.addFlashAttribute("success", "Изменения сохранены.");
         return REDIRECT_LIST;
     }
 
     @GetMapping("/delete/{id}")
     public String deleteTask(@PathVariable("id") Long id) {
         taskService.deleteTaskAndImage(id);
+        return REDIRECT_LIST;
+    }
+
+    @PostMapping("/copy")
+    public String copyTask(@ModelAttribute("taskForCopy") TaskListDto taskDto,
+                           RedirectAttributes ra) {
+        taskService.copyTask(taskDto);
+        ra.addFlashAttribute("success", "Задача скопирована.");
         return REDIRECT_LIST;
     }
 

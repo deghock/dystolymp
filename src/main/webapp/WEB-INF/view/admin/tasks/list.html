@@ -57,10 +57,40 @@
     <div class="input-group mb-3 mx-auto" style="width: 50%">
         <input type="text" id="task-title" class="form-control"
                placeholder="Фильтр задач по заголовку и префиксу..." aria-describedby="search-button">
-        <button class="btn btn-secondary" type="submit" id="search-button">Поиск</button>
+        <button class="btn btn-secondary" type="submit" id="search-button"
+                style="border-top-left-radius: 0; border-bottom-left-radius: 0">Поиск</button>
     </div>
 
     <div id="towns-table" th:replace="admin/tasks/tasks-table :: #tasks-table"></div>
+
+    <div id="taskCopyModal" class="modal fade taskCopy" tabindex="-1" role="dialog"
+         aria-labelledby="taskCopyNamePopup" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Копирование задачи</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!--/*@thymesVar id="taskForCopy" type="ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto"*/-->
+                    <form id="taskCopyForm" th:object="${taskForCopy}" th:action="@{/tasks/copy}" method="post">
+                        <div class="form-group text-left">
+                            <label for="newTaskTitle">Заголовок новой задачи</label>
+                            <input th:field="*{title}" type="text" class="form-control"
+                                   id="newTaskTitle" placeholder="Введите заголовок новой задачи" required>
+                            <input type="hidden" id="taskCopyId" th:field="${taskForCopy.id}" th:value="*{id}">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-success" form="taskCopyForm">Ок</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <ul class="actions text-center" style="width: 50%">
         <li style="width: 100%">
@@ -75,6 +105,15 @@
 <script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
 <script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
 <script type="text/javascript">
+    $('#taskCopyModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var id = button.data('id')
+        var title = button.data('title')
+        var modal = $(this)
+        modal.find('.modal-body #newTaskTitle').val(title)
+        modal.find('.modal-body #taskCopyId').val(id)
+    })
+
     $("#task-title").on("keyup", function (event) {
         if (event.keyCode === 13) {
             event.preventDefault();

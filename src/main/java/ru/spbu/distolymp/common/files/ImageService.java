@@ -8,4 +8,5 @@ public interface ImageService {
     void deleteImage(String fileName);
     byte[] getImageWithName(String name);
     void replaceImage(String prevFileName, byte[] image, String newFileName);
+    String getExtensionFromImageName(String imageName);
 }

@@ -41,6 +41,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
     public void fillShowAllTaskModelMap(ModelMap modelMap, int numberTasksDisplayed) {
         List<TaskListDto> taskList = getTasks(numberTasksDisplayed);
         modelMap.put(TASKS_PARAM, taskList);
+        modelMap.put("taskForCopy", new TaskListDto());
     }
 
     private List<TaskListDto> getTasks(int numberTasksDisplayed) {
@@ -161,5 +162,36 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
         if (imageName != null)
             imageService.deleteImage(imageName);
         deleteTaskById(id);
+    }
+
+    @Override
+    @Transactional
+    public void copyTask(TaskListDto taskDto) {
+        TaskDto task = getTaskById(taskDto.getId());
+        Task newTask = new Task();
+
+        newTask.setType(3);
+        newTask.setTitle(taskDto.getTitle());
+        newTask.setPrefix(task.getPrefix());
+        newTask.setStatus(1);
+        newTask.setProblemText(task.getProblemText());
+        newTask.setWidth(task.getWidth());
+        newTask.setHeight(task.getHeight());
+        newTask.setVariables(task.getVariables());
+        newTask.setCorrectAnswer(task.getCorrectAnswer());
+        newTask.setMaxPoints(parseAndEvalPoints(task.getGradePoints()));
+        newTask.setGradePoints(task.getGradePoints());
+        newTask.setMinPoints(task.getMinPoints());
+        newTask.setMinusPoints(task.getMinusPoints());
+        newTask.setAnswerNote(task.getAnswerNote());
+
+        String imageName = task.getImageFileName();
+        if (imageName != null) {
+            String extension = imageService.getExtensionFromImageName(imageName);
+            newTask.setImageFileName(FileNameGenerator.generateFileName(extension));
+            saveOrUpdate(newTask, imageService.getImageWithName(imageName));
+        } else  {
+            saveOrUpdate(newTask, false);
+        }
     }
 }

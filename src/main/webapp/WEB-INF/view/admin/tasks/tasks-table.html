@@ -28,25 +28,10 @@
                 style="text-align: center; vertical-align: middle">
                 <a href="#" class="abutton">просмотр</a>
                 <a th:href="@{/tasks/edit/{id}(id=${task.id})}" class="abutton">редактировать</a>
-                <a href="#" class="abutton">копировать</a>
-                <a href="#" class="abutton" data-toggle="modal" data-target="#deleteConfirmation">удалить</a>
-                <div id="deleteConfirmation" class="modal fade" tabindex="-1" role="dialog"
-                     aria-labelledby="deleteConfirmationPopup" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h6 class="modal-title">Удалить задачу?</h6>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">Отмена</button>
-                                <a th:href="@{/tasks/delete/{id}(id=${task.id})}" class="btn btn-success">Ок</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <a href="#" class="abutton" data-toggle="modal" data-target=".taskCopy"
+                   th:attr="data-id=${task.id}, data-title=${task.title}">копировать</a>
+                <a th:href="@{/tasks/delete/{id}(id=${task.id})}" class="abutton"
+                   onclick="return window.confirm('Вы уверены?')">удалить</a>
             </td>
         </tr>
     </table>

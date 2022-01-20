@@ -2,6 +2,7 @@ package ru.spbu.distolymp.service.admin.tasks.api;
 
 import org.springframework.ui.ModelMap;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskFilter;
+import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto;
 import ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto;
 
 /**
@@ -15,4 +16,5 @@ public interface TaskService {
     void addTask(TaskDto taskDto);
     void updateTask(TaskDto taskDto);
     void deleteTaskAndImage(Long id);
+    void copyTask(TaskListDto taskDto);
 }
