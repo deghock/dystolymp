@@ -9,7 +9,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskFilter;
 import ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto;
 import ru.spbu.distolymp.exception.common.TechnicalException;
-import ru.spbu.distolymp.exception.crud.tasks.TaskCrudServiceException;
 import ru.spbu.distolymp.service.admin.tasks.api.TaskService;
 import javax.validation.Valid;
 
@@ -24,7 +23,6 @@ public class TaskController {
     private static final int DEFAULT_RESULT_SIZE = 0;
     private static final String LIST_PAGE = ROOT_DIR + "list";
     private static final String TASKS_TABLE = ROOT_DIR + "tasks-table :: #tasks-table";
-    private static final String PAGE_404 = "exception/404";
     private static final String EDIT_PAGE = ROOT_DIR + "edit";
     private static final String REDIRECT_LIST = "redirect:/tasks/list";
     private final TaskService taskService;
@@ -70,11 +68,6 @@ public class TaskController {
     public String deleteTask(@PathVariable("id") Long id) {
         taskService.deleteTaskAndImage(id);
         return REDIRECT_LIST;
-    }
-
-    @ExceptionHandler(TaskCrudServiceException.class)
-    public String handleTaskCrudServiceException() {
-        return PAGE_404;
     }
 
     @ExceptionHandler(TechnicalException.class)

@@ -14,8 +14,8 @@ import ru.spbu.distolymp.common.files.ImageService;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto;
 import ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto;
 import ru.spbu.distolymp.entity.tasks.Task;
+import ru.spbu.distolymp.exception.common.ResourceNotFoundException;
 import ru.spbu.distolymp.exception.common.TechnicalException;
-import ru.spbu.distolymp.exception.crud.tasks.TaskCrudServiceException;
 import ru.spbu.distolymp.mapper.admin.tasks.tasks.TaskListMapper;
 import ru.spbu.distolymp.mapper.entity.tasks.TaskMapper;
 import ru.spbu.distolymp.repository.tasks.TaskRepository;
@@ -72,7 +72,7 @@ public class TaskCrudServiceImpl implements TaskCrudService {
             return taskListMapper.toDtoList(taskList);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting tasks by specs", e);
-            throw new TaskCrudServiceException();
+            throw new TechnicalException();
         }
     }
 
@@ -84,7 +84,7 @@ public class TaskCrudServiceImpl implements TaskCrudService {
             return taskListMapper.toDtoList(taskList);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting tasks by specs", e);
-            throw new TaskCrudServiceException();
+            throw new TechnicalException();
         }
     }
 
@@ -99,7 +99,7 @@ public class TaskCrudServiceImpl implements TaskCrudService {
             taskRepository.save(task);
         } catch (DataAccessException e) {
             log.error(SAVE_OR_UPDATE_PARAM, e);
-            throw new TaskCrudServiceException();
+            throw new TechnicalException();
         }
     }
 
@@ -115,7 +115,7 @@ public class TaskCrudServiceImpl implements TaskCrudService {
         } catch (DataAccessException e) {
             log.error(SAVE_OR_UPDATE_PARAM, e);
             imageService.deleteImage(imageFileName);
-            throw new TaskCrudServiceException();
+            throw new TechnicalException();
         }
     }
 
@@ -137,9 +137,11 @@ public class TaskCrudServiceImpl implements TaskCrudService {
         try {
             Task task = taskRepository.findById(id).orElseThrow(EntityNotFoundException::new);
             return taskMapper.toDto(task);
-        } catch (DataAccessException | EntityNotFoundException e) {
+        } catch (DataAccessException e) {
             log.error("An error occurred while getting a task by id=" + id, e);
-            throw new TaskCrudServiceException();
+            throw new TechnicalException();
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException();
         }
     }
 
@@ -151,7 +153,7 @@ public class TaskCrudServiceImpl implements TaskCrudService {
             taskRepository.delete(task);
         } catch (DataAccessException | EntityNotFoundException e) {
             log.error("An error occurred while deleting a task with id=" + id, e);
-            throw new TaskCrudServiceException();
+            throw new TechnicalException();
         }
     }
 }
