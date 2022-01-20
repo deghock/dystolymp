@@ -166,32 +166,21 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
 
     @Override
     @Transactional
-    public void copyTask(TaskListDto taskDto) {
-        TaskDto task = getTaskById(taskDto.getId());
-        Task newTask = new Task();
-
-        newTask.setType(3);
-        newTask.setTitle(taskDto.getTitle());
-        newTask.setPrefix(task.getPrefix());
-        newTask.setStatus(1);
-        newTask.setProblemText(task.getProblemText());
-        newTask.setWidth(task.getWidth());
-        newTask.setHeight(task.getHeight());
-        newTask.setVariables(task.getVariables());
-        newTask.setCorrectAnswer(task.getCorrectAnswer());
-        newTask.setMaxPoints(parseAndEvalPoints(task.getGradePoints()));
-        newTask.setGradePoints(task.getGradePoints());
-        newTask.setMinPoints(task.getMinPoints());
-        newTask.setMinusPoints(task.getMinusPoints());
-        newTask.setAnswerNote(task.getAnswerNote());
-
+    public void copyTask(TaskListDto taskTitleDto) {
+        TaskDto taskDto = getTaskById(taskTitleDto.getId());
+        Task task = taskMapper.toEntity(taskDto);
+        task.setId(null);
+        task.setTitle(taskTitleDto.getTitle());
+        task.setType(3);
+        task.setStatus(1);
+        task.setMaxPoints(parseAndEvalPoints(task.getGradePoints()));
         String imageName = task.getImageFileName();
         if (imageName != null) {
             String extension = imageService.getExtensionFromImageName(imageName);
-            newTask.setImageFileName(FileNameGenerator.generateFileName(extension));
-            saveOrUpdate(newTask, imageService.getImageWithName(imageName));
+            task.setImageFileName(FileNameGenerator.generateFileName(extension));
+            saveOrUpdate(task, imageService.getImageWithName(imageName));
         } else  {
-            saveOrUpdate(newTask, false);
+            saveOrUpdate(task, false);
         }
     }
 }

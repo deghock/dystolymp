@@ -77,7 +77,7 @@
                     <!--/*@thymesVar id="taskForCopy" type="ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto"*/-->
                     <form id="taskCopyForm" th:object="${taskForCopy}" th:action="@{/tasks/copy}" method="post">
                         <div class="form-group text-left">
-                            <label for="newTaskTitle">Заголовок новой задачи</label>
+                            <label for="newTaskTitle">Заголовок новой задачи:</label>
                             <input th:field="*{title}" type="text" class="form-control"
                                    id="newTaskTitle" placeholder="Введите заголовок новой задачи" required>
                             <input type="hidden" id="taskCopyId" th:field="${taskForCopy.id}" th:value="*{id}">
