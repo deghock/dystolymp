@@ -19,7 +19,6 @@ public class TaskDto {
     private boolean deleteImage;
     private Integer width;
     private Integer height;
-    private String comment;
     private String variables;
     private Integer answerNote;
     private String correctAnswer;
