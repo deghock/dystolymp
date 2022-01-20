@@ -91,12 +91,11 @@ public class TaskCrudServiceImpl implements TaskCrudService {
     @Override
     @Transactional
     public void saveOrUpdate(Task task, boolean deleteImage) {
-        if (deleteImage) {
-            imageService.deleteImage(task.getImageFileName());
-            task.setImageFileName(null);
-        }
+        String imageName = task.getImageFileName();
+        if (deleteImage) task.setImageFileName(null);
         try {
             taskRepository.save(task);
+            if (deleteImage) imageService.deleteImage(imageName);
         } catch (DataAccessException e) {
             log.error(SAVE_OR_UPDATE_PARAM, e);
             throw new TechnicalException();
@@ -122,13 +121,13 @@ public class TaskCrudServiceImpl implements TaskCrudService {
     @Override
     @Transactional
     public void saveOrUpdate(Task task, byte[] image, String oldImage, boolean deleteImage) {
-        imageService.deleteImage(oldImage);
         if (deleteImage) {
             task.setImageFileName(null);
             saveOrUpdate(task, false);
         } else {
             saveOrUpdate(task, image);
         }
+        imageService.deleteImage(oldImage);
     }
 
     @Override

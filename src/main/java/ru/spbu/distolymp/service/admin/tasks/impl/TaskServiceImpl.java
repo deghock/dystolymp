@@ -159,9 +159,8 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
     @Transactional
     public void deleteTaskAndImage(Long id) {
         String imageName = getTaskById(id).getImageFileName();
-        if (imageName != null)
-            imageService.deleteImage(imageName);
         deleteTaskById(id);
+        if (imageName != null) imageService.deleteImage(imageName);
     }
 
     @Override
@@ -179,7 +178,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
             String extension = imageService.getExtensionFromImageName(imageName);
             task.setImageFileName(FileNameGenerator.generateFileName(extension));
             saveOrUpdate(task, imageService.getImageWithName(imageName));
-        } else  {
+        } else {
             saveOrUpdate(task, false);
         }
     }
