@@ -21,12 +21,12 @@ import javax.validation.Valid;
 @RequestMapping("/tasks")
 public class TaskController {
     private static final String ROOT_DIR = "admin/tasks/";
-    private static final int DEFAULT_RESULT_SIZE = 20;
+    private static final int DEFAULT_RESULT_SIZE = 0;
     private static final String LIST_PAGE = ROOT_DIR + "list";
     private static final String TASKS_TABLE = ROOT_DIR + "tasks-table :: #tasks-table";
     private static final String PAGE_404 = "exception/404";
     private static final String EDIT_PAGE = ROOT_DIR + "edit";
-    private static final String REDIRECT_LIST = "redirect:/tasks/list/";
+    private static final String REDIRECT_LIST = "redirect:/tasks/list";
     private final TaskService taskService;
 
     @GetMapping("/list")
@@ -35,7 +35,7 @@ public class TaskController {
         return LIST_PAGE;
     }
 
-    @GetMapping("filter")
+    @GetMapping("/filter")
     public String getTasksByFilter(TaskFilter taskFilter, ModelMap modelMap) {
         taskService.fillShowAllTaskByFilterModelMap(taskFilter, modelMap);
         return TASKS_TABLE;

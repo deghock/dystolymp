@@ -21,7 +21,7 @@ public class TownController {
     private static final int DEFAULT_RESULT_SIZE = 20;
     private static final String ROOT_DIR = "admin/directories/towns/";
     private static final String LIST_PAGE = ROOT_DIR + "list";
-    private static final String REDIRECT_LIST = "redirect:/towns/list/";
+    private static final String REDIRECT_LIST = "redirect:/towns/list";
     private static final String DETAILS_PAGE = ROOT_DIR + "details";
     private static final String REDIRECT_DETAILS = "redirect:/towns/details/";
     private static final String PAGE_404 = "exception/404";
@@ -67,13 +67,13 @@ public class TownController {
             return REDIRECT_LIST;
     }
 
-    @PostMapping("delete")
+    @PostMapping("/delete")
     public String deleteSelectedTowns(@RequestParam("ids") Long[] ids) {
         townService.deleteTownsByIds(ids);
         return REDIRECT_LIST;
     }
 
-    @GetMapping("filter")
+    @GetMapping("/filter")
     public String getTownsByFilter(TownFilter townFilter, ModelMap modelMap) {
         townService.fillShowTownTableByFilterModelMap(townFilter, modelMap);
         return TOWNS_TABLE;
