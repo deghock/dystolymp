@@ -27,7 +27,7 @@ import java.util.List;
  */
 @Service
 public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService {
-    private static final Sort SORT_BY_TITLE_ASC = Sort.by("title").ascending();
+    private static final Sort SORT_BY_ID_DESC = Sort.by("id").descending();
     private static final String TASKS_PARAM = "taskList";
 
     protected TaskServiceImpl(TaskRepository taskRepository,
@@ -46,14 +46,14 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
 
     private List<TaskListDto> getTasks(int numberTasksDisplayed) {
         if (numberTasksDisplayed <= 0) {
-            return getTasks(SORT_BY_TITLE_ASC);
+            return getTasks(SORT_BY_ID_DESC);
         }
-        Pageable pageable = getPageableSortedByTitle(numberTasksDisplayed);
+        Pageable pageable = getPageableSortedById(numberTasksDisplayed);
         return getTasks(pageable);
     }
 
-    private Pageable getPageableSortedByTitle(int numberTasksDisplayed) {
-        return PageRequest.of(0, numberTasksDisplayed, SORT_BY_TITLE_ASC);
+    private Pageable getPageableSortedById(int numberTasksDisplayed) {
+        return PageRequest.of(0, numberTasksDisplayed, SORT_BY_ID_DESC);
     }
 
     @Override
@@ -68,12 +68,12 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
             return;
         }
         if (resultSize == 0) {
-            taskDtoList = getTasksBySpec(specs, SORT_BY_TITLE_ASC);
+            taskDtoList = getTasksBySpec(specs, SORT_BY_ID_DESC);
             modelMap.put(TASKS_PARAM, taskDtoList);
             return;
         }
-        Pageable sortedByTitleAsc = getPageableSortedByTitle(resultSize);
-        taskDtoList = getTasksBySpec(specs, sortedByTitleAsc);
+        Pageable sortedByIdDesc = getPageableSortedById(resultSize);
+        taskDtoList = getTasksBySpec(specs, sortedByIdDesc);
         modelMap.put(TASKS_PARAM, taskDtoList);
     }
 
