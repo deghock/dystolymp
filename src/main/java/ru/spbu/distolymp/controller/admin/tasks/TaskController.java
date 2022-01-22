@@ -26,6 +26,7 @@ public class TaskController {
     private static final String TASKS_TABLE = ROOT_DIR + "tasks-table :: #tasks-table";
     private static final String EDIT_PAGE = ROOT_DIR + "edit";
     private static final String REDIRECT_LIST = "redirect:/tasks/list";
+    private static final String SUCCESS_PARAM = "success";
     private final TaskService taskService;
 
     @GetMapping("/list")
@@ -61,13 +62,14 @@ public class TaskController {
             taskService.addTask(taskDto);
         else
             taskService.updateTask(taskDto);
-        ra.addFlashAttribute("success", "Изменения сохранены.");
+        ra.addFlashAttribute(SUCCESS_PARAM, "Изменения сохранены.");
         return REDIRECT_LIST;
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteTask(@PathVariable("id") Long id) {
+    public String deleteTask(@PathVariable("id") Long id, RedirectAttributes ra) {
         taskService.deleteTaskAndImage(id);
+        ra.addFlashAttribute(SUCCESS_PARAM, "Задача удалена.");
         return REDIRECT_LIST;
     }
 
@@ -75,7 +77,7 @@ public class TaskController {
     public String copyTask(@ModelAttribute("taskForCopy") TaskListDto taskDto,
                            RedirectAttributes ra) {
         taskService.copyTask(taskDto);
-        ra.addFlashAttribute("success", "Задача скопирована.");
+        ra.addFlashAttribute(SUCCESS_PARAM, "Задача скопирована.");
         return REDIRECT_LIST;
     }
 
