@@ -18,6 +18,7 @@ import ru.spbu.distolymp.mapper.admin.tasks.tasks.TaskListMapper;
 import ru.spbu.distolymp.mapper.entity.tasks.TaskMapper;
 import ru.spbu.distolymp.repository.tasks.TaskRepository;
 import ru.spbu.distolymp.service.admin.tasks.api.TaskService;
+import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
 import ru.spbu.distolymp.service.crud.impl.tasks.TaskCrudServiceImpl;
 import ru.spbu.distolymp.util.admin.tasks.tasks.TaskSpecsConverter;
 import java.util.List;
@@ -30,10 +31,11 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
     private static final Sort SORT_BY_ID_DESC = Sort.by("id").descending();
     private static final String TASKS_PARAM = "taskList";
 
-    protected TaskServiceImpl(TaskRepository taskRepository,
+    public TaskServiceImpl(TaskRepository taskRepository,
+                           ListingProblemCrudService listingProblemCrudService,
                            TaskListMapper taskListMapper,
                            TaskMapper taskMapper) {
-        super(taskRepository, taskListMapper, taskMapper);
+        super(taskRepository, listingProblemCrudService, taskListMapper, taskMapper);
     }
 
     @Override

@@ -19,6 +19,7 @@ import ru.spbu.distolymp.exception.common.TechnicalException;
 import ru.spbu.distolymp.mapper.admin.tasks.tasks.TaskListMapper;
 import ru.spbu.distolymp.mapper.entity.tasks.TaskMapper;
 import ru.spbu.distolymp.repository.tasks.TaskRepository;
+import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
 import ru.spbu.distolymp.service.crud.api.tasks.TaskCrudService;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TaskCrudServiceImpl implements TaskCrudService {
     private final TaskRepository taskRepository;
+    private final ListingProblemCrudService listingProblemCrudService;
     private final TaskListMapper taskListMapper;
     protected final TaskMapper taskMapper;
     @Autowired
@@ -149,6 +151,7 @@ public class TaskCrudServiceImpl implements TaskCrudService {
     public void deleteTaskById(Long id) {
         try {
             Task task = taskRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+            listingProblemCrudService.deleteByProblemId(id);
             taskRepository.delete(task);
         } catch (DataAccessException | EntityNotFoundException e) {
             log.error("An error occurred while deleting a task with id=" + id, e);
