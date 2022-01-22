@@ -81,6 +81,12 @@ public class TaskController {
         return REDIRECT_LIST;
     }
 
+    @GetMapping("/unarchive/{id}")
+    public String unarchiveTask(@PathVariable("id") Long id) {
+        taskService.unarchiveTask(id);
+        return REDIRECT_LIST;
+    }
+
     @ExceptionHandler(TechnicalException.class)
     public String handleTechnicalException(RedirectAttributes ra) {
         ra.addFlashAttribute("error", "Произошла ошибка. Пожалуйста, попробуйте повторить операцию позже.");

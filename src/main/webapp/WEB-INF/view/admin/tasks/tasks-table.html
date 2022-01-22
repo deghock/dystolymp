@@ -22,7 +22,7 @@
 
             <td th:if="${task.status} == 'Архив'" style="text-align: center; vertical-align: middle">
                 <a href="#" class="abutton">просмотр</a>
-                <a href="#" class="abutton">разархивировать</a>
+                <a th:href="@{/tasks/unarchive/{id}(id=${task.id})}" class="abutton">разархивировать</a>
             </td>
             <td th:unless="${task.status} == 'Архив'"
                 style="text-align: center; vertical-align: middle">

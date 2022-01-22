@@ -17,4 +17,5 @@ public interface TaskService {
     void updateTask(TaskDto taskDto);
     void deleteTaskAndImage(Long id);
     void copyTask(TaskListDto taskDto);
+    void unarchiveTask(Long id);
 }

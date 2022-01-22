@@ -191,4 +191,12 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
             saveOrUpdate(task, false);
         }
     }
+
+    @Override
+    @Transactional
+    public void unarchiveTask(Long id) {
+        Task task = getTaskById(id).orElseThrow(ResourceNotFoundException::new);
+        task.setStatus(1);
+        saveOrUpdate(task, false);
+    }
 }
