@@ -14,6 +14,7 @@ import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskFilter;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto;
 import ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto;
 import ru.spbu.distolymp.entity.tasks.Task;
+import ru.spbu.distolymp.exception.common.ResourceNotFoundException;
 import ru.spbu.distolymp.mapper.admin.tasks.tasks.TaskListMapper;
 import ru.spbu.distolymp.mapper.entity.tasks.TaskMapper;
 import ru.spbu.distolymp.repository.tasks.TaskRepository;
@@ -90,7 +91,9 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
     @Override
     @Transactional(readOnly = true)
     public void fillShowEditPageModelMap(Long id, ModelMap modelMap) {
-        TaskDto taskDto = getTaskById(id);
+        TaskDto taskDto = getTaskById(id)
+                .map(taskMapper::toDto)
+                .orElseThrow(ResourceNotFoundException::new);
         modelMap.put("task", taskDto);
     }
 
@@ -160,7 +163,9 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
     @Override
     @Transactional
     public void deleteTaskAndImage(Long id) {
-        String imageName = getTaskById(id).getImageFileName();
+        String imageName = getTaskById(id)
+                .orElseThrow(ResourceNotFoundException::new)
+                .getImageFileName();
         deleteTaskById(id);
         if (imageName != null) imageService.deleteImage(imageName);
     }
@@ -168,7 +173,9 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
     @Override
     @Transactional
     public void copyTask(TaskListDto taskTitleDto) {
-        TaskDto taskDto = getTaskById(taskTitleDto.getId());
+        TaskDto taskDto = getTaskById(taskTitleDto.getId())
+                .map(taskMapper::toDto)
+                .orElseThrow(ResourceNotFoundException::new);
         Task task = taskMapper.toEntity(taskDto);
         task.setId(null);
         task.setTitle(taskTitleDto.getTitle());

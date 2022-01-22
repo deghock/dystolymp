@@ -12,9 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.common.files.ImageService;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto;
-import ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto;
 import ru.spbu.distolymp.entity.tasks.Task;
-import ru.spbu.distolymp.exception.common.ResourceNotFoundException;
 import ru.spbu.distolymp.exception.common.TechnicalException;
 import ru.spbu.distolymp.mapper.admin.tasks.tasks.TaskListMapper;
 import ru.spbu.distolymp.mapper.entity.tasks.TaskMapper;
@@ -24,6 +22,7 @@ import ru.spbu.distolymp.service.crud.api.tasks.TaskCrudService;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Vladislav Konovalov
@@ -134,15 +133,13 @@ public class TaskCrudServiceImpl implements TaskCrudService {
 
     @Override
     @Transactional(readOnly = true)
-    public TaskDto getTaskById(Long id) {
+    public Optional<Task> getTaskById(Long id) {
+        if (id == null) return Optional.empty();
         try {
-            Task task = taskRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-            return taskMapper.toDto(task);
+            return taskRepository.findById(id);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting a task by id=" + id, e);
             throw new TechnicalException();
-        } catch (EntityNotFoundException e) {
-            throw new ResourceNotFoundException();
         }
     }
 

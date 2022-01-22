@@ -4,9 +4,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto;
-import ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto;
 import ru.spbu.distolymp.entity.tasks.Task;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Vladislav Konovalov
@@ -19,6 +19,6 @@ public interface TaskCrudService {
     void saveOrUpdate(Task task, boolean deleteImage);
     void saveOrUpdate(Task task, byte[] image);
     void saveOrUpdate(Task task, byte[] image, String oldImage, boolean deleteImage);
-    TaskDto getTaskById(Long id);
+    Optional<Task> getTaskById(Long id);
     void deleteTaskById(Long id);
 }
