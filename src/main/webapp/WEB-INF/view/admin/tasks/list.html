@@ -12,21 +12,6 @@
         p {
             text-align: center;
         }
-
-        legend {
-            display: block;
-            width: auto;
-            padding: 0 5px;
-            margin-bottom: 0;
-            font-size: inherit;
-            line-height: inherit;
-            border-bottom: none;
-        }
-
-        fieldset {
-            border: 2px groove white;
-            padding: 5px;
-        }
     </style>
 </head>
 
@@ -40,21 +25,21 @@
 
 <div class="container">
     <div class="alert alert-success alert-dismissible text-center mx-auto" role="alert"
-         style="width: 50%; padding: .5rem" th:if="${success}">
+         style="width: 50%; padding: .5rem; min-width: 25rem" th:if="${success}">
         <span th:text="${success}"></span>
         <button type="button" class="close" data-dismiss="alert" style="padding: .5rem 1rem">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
     <div class="alert alert-danger alert-dismissible text-center mx-auto" role="alert"
-         style="width: 50%; padding: .5rem" th:if="${error}">
+         style="width: 50%; padding: .5rem; min-width: 25rem" th:if="${error}">
         <span th:text="${error}"></span>
         <button type="button" class="close" data-dismiss="alert" style="padding: .5rem 1rem">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
 
-    <div class="input-group mb-3 mx-auto" style="width: 50%">
+    <div class="input-group mb-3 mx-auto" style="width: 50%; min-width: 25rem">
         <input type="text" id="task-title" class="form-control"
                placeholder="Фильтр задач по заголовку и префиксу..." aria-describedby="search-button">
         <button class="btn btn-secondary" type="submit" id="search-button"
@@ -97,7 +82,7 @@
         </div>
     </div>
 
-    <ul class="actions text-center" style="width: 50%">
+    <ul class="actions text-center" style="width: 50%; min-width: 25rem">
         <li style="width: 100%">
             <a th:href="@{/tasks/add}" class="abutton">Создать новую задачу</a>
         </li>
