@@ -82,9 +82,11 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
 
     @Override
     @Transactional(readOnly = true)
-    public void fillShowEditPageModelMap(ModelMap modelMap) {
+    public void fillShowAddPageModelMap(ModelMap modelMap) {
         TaskDto taskDto = new TaskDto();
         taskDto.setAnswerNote(2);
+        taskDto.setWidth(0);
+        taskDto.setHeight(0);
         modelMap.put("task", taskDto);
     }
 

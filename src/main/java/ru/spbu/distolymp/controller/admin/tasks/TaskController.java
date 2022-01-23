@@ -43,7 +43,7 @@ public class TaskController {
 
     @GetMapping("/add")
     public String getAddPage(ModelMap modelMap) {
-        taskService.fillShowEditPageModelMap(modelMap);
+        taskService.fillShowAddPageModelMap(modelMap);
         return EDIT_PAGE;
     }
 

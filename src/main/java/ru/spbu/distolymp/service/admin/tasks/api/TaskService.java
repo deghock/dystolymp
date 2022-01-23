@@ -11,7 +11,7 @@ import ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto;
 public interface TaskService {
     void fillShowAllTaskModelMap(ModelMap modelMap, int numberTasksDisplayed);
     void fillShowAllTaskByFilterModelMap(TaskFilter taskFilter, ModelMap modelMap);
-    void fillShowEditPageModelMap(ModelMap modelMap);
+    void fillShowAddPageModelMap(ModelMap modelMap);
     void fillShowEditPageModelMap(Long id, ModelMap modelMap);
     void addTask(TaskDto taskDto);
     void updateTask(TaskDto taskDto);
