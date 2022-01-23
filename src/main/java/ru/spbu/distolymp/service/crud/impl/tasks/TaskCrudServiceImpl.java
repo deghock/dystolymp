@@ -31,6 +31,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class TaskCrudServiceImpl implements TaskCrudService {
+    private static final String SAVE_OR_UPDATE_PARAM = "An error occurred while saving or updating a task";
     private final TaskRepository taskRepository;
     private final ListingProblemCrudService listingProblemCrudService;
     private final TaskListMapper taskListMapper;
@@ -38,8 +39,6 @@ public class TaskCrudServiceImpl implements TaskCrudService {
     @Autowired
     @Qualifier("taskImageService")
     protected ImageService imageService;
-
-    private static final String SAVE_OR_UPDATE_PARAM = "An error occurred while saving or updating a task";
 
     @Override
     @Transactional(readOnly = true)
@@ -148,7 +147,7 @@ public class TaskCrudServiceImpl implements TaskCrudService {
     public void deleteTaskById(Long id) {
         try {
             Task task = taskRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-            listingProblemCrudService.deleteByProblemId(id);
+            if (task.getStatus() == 2) listingProblemCrudService.deleteByProblemId(id);
             taskRepository.delete(task);
         } catch (DataAccessException | EntityNotFoundException e) {
             log.error("An error occurred while deleting a task with id=" + id, e);
