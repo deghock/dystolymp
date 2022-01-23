@@ -3,9 +3,11 @@ package ru.spbu.distolymp.entity.tasks;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import ru.spbu.distolymp.entity.converter.LongToIntConverter;
+import ru.spbu.distolymp.entity.others.Answer;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * @author Vladislav Konovalov
@@ -37,5 +39,8 @@ public class Problem {
     @NotNull
     @Column(name = "problemstatus")
     private Integer status;
+
+    @OneToMany(mappedBy = "problem", cascade = CascadeType.REMOVE)
+    private List<Answer> answerList;
 
 }
