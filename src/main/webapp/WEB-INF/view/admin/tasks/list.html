@@ -58,7 +58,7 @@
         <input type="text" id="task-title" class="form-control"
                placeholder="Фильтр задач по заголовку и префиксу..." aria-describedby="search-button">
         <button class="btn btn-secondary" type="submit" id="search-button"
-                style="border-top-left-radius: 0; border-bottom-left-radius: 0" onclick="trimSpacesInInputs(true)">
+                style="border-top-left-radius: 0; border-bottom-left-radius: 0" onclick="trimInputs('task-title')">
             Поиск
         </button>
     </div>
@@ -77,18 +77,19 @@
                 </div>
                 <div class="modal-body">
                     <!--/*@thymesVar id="taskForCopy" type="ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto"*/-->
-                    <form id="taskCopyForm" th:object="${taskForCopy}" th:action="@{/tasks/copy}" method="post">
+                    <form id="taskCopyForm" th:object="${taskForCopy}" th:action="@{/tasks/copy}" method="post"  class="needs-validation was-validated" novalidate>
                         <div class="form-group text-left">
                             <label for="newTaskTitle">Заголовок новой задачи:</label>
                             <input th:field="*{title}" type="text" class="form-control"
                                    id="newTaskTitle" placeholder="Введите заголовок новой задачи" required>
+                            <div class="invalid-feedback">Пожалуйста, введите заголовок задачи</div>
                             <input type="hidden" id="taskCopyId" th:field="${taskForCopy.id}" th:value="*{id}">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Отмена</button>
-                    <button type="submit" class="btn btn-success" form="taskCopyForm" onclick="trimSpacesInInputs(false)">
+                    <button type="submit" class="btn btn-success" form="taskCopyForm" onclick="trimInputs('newTaskTitle')">
                         Ок
                     </button>
                 </div>
@@ -109,13 +110,28 @@
 <script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
 <script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
 <script type="text/javascript">
-    function trimSpacesInInputs(isSearch) {
-        var searchInput = document.getElementById("task-title")
-        var copyInput = document.getElementById("newTaskTitle")
-        if (isSearch)
-            searchInput.value = trim(searchInput.value)
-        else
-            copyInput.value = trim(copyInput.value)
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+
+    function trimInputs() {
+        var args = arguments;
+        for (var i = 0; i < args.length; i++) {
+            var inpt = document.getElementById(args[i])
+            inpt.value = trim(inpt.value)
+        }
     }
 
     function trim(value) {
