@@ -58,7 +58,9 @@
         <input type="text" id="task-title" class="form-control"
                placeholder="Фильтр задач по заголовку и префиксу..." aria-describedby="search-button">
         <button class="btn btn-secondary" type="submit" id="search-button"
-                style="border-top-left-radius: 0; border-bottom-left-radius: 0">Поиск</button>
+                style="border-top-left-radius: 0; border-bottom-left-radius: 0" onclick="trimSpacesInInputs(true)">
+            Поиск
+        </button>
     </div>
 
     <div id="towns-table" th:replace="admin/tasks/tasks-table :: #tasks-table"></div>
@@ -86,7 +88,9 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Отмена</button>
-                    <button type="submit" class="btn btn-success" form="taskCopyForm">Ок</button>
+                    <button type="submit" class="btn btn-success" form="taskCopyForm" onclick="trimSpacesInInputs(false)">
+                        Ок
+                    </button>
                 </div>
             </div>
         </div>
@@ -105,6 +109,19 @@
 <script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
 <script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
 <script type="text/javascript">
+    function trimSpacesInInputs(isSearch) {
+        var searchInput = document.getElementById("task-title")
+        var copyInput = document.getElementById("newTaskTitle")
+        if (isSearch)
+            searchInput.value = trim(searchInput.value)
+        else
+            copyInput.value = trim(copyInput.value)
+    }
+
+    function trim(value) {
+        return value.replace(/^\s+|\s+$/g,"");
+    }
+
     $('#taskCopyModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget)
         var id = button.data('id')
