@@ -52,7 +52,7 @@
 
     <div id="taskCopyModal" class="modal fade taskCopy" tabindex="-1" role="dialog"
          aria-labelledby="taskCopyNamePopup" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Копирование задачи</h5>
@@ -77,6 +77,21 @@
                     <button type="submit" class="btn btn-success" form="taskCopyForm" onclick="trimInputs('newTaskTitle')">
                         Ок
                     </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="taskDeleteModal" class="modal fade taskDelete" tabindex="-1" role="dialog"
+         aria-labelledby="taskDeletePopup" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content" style="max-width: 15rem; margin-right: auto; margin-left: auto">
+                <div class="modal-header" style="padding-bottom: .25rem">
+                    <h5 class="modal-title" style="margin: auto">Удалить задачу?</h5>
+                </div>
+                <div class="modal-footer" style="justify-content: space-between; padding-top: .25rem">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" style="min-width: 6rem">Отмена</button>
+                    <a th:href="@{/tasks/delete/}" class="btn btn-success" id="deleteBtn" style="min-width: 6rem">Ок</a>
                 </div>
             </div>
         </div>
@@ -122,6 +137,13 @@
     function trim(value) {
         return value.replace(/^\s+|\s+$/g,"");
     }
+
+    $('#taskDeleteModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var id = button.data('id')
+        var modal = $(this)
+        modal.find('.modal-footer #deleteBtn').attr('href', 'delete/' + id)
+    })
 
     $('#taskCopyModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget)

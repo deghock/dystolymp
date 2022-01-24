@@ -30,8 +30,8 @@
                 <a th:href="@{/tasks/edit/{id}(id=${task.id})}" class="abutton">редактировать</a>
                 <a href="#" class="abutton" data-toggle="modal" data-target=".taskCopy"
                    th:attr="data-id=${task.id}, data-title=${task.title}">копировать</a>
-                <a th:href="@{/tasks/delete/{id}(id=${task.id})}" class="abutton"
-                   onclick="return window.confirm('Вы уверены?')">удалить</a>
+                <a href="#" class="abutton" data-toggle="modal" data-target=".taskDelete" th:attr="data-id=${task.id}">
+                    удалить</a>
             </td>
         </tr>
     </table>
