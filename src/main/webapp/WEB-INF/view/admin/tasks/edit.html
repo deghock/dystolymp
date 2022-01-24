@@ -12,21 +12,23 @@
 
 <div th:replace="fragments/header :: #header"></div>
 
-<body class="bgGrey" th:attr="onload=|answerVisibility('${task.answerNote}', '${task.imageFileName}')|">
+<body class="bgGrey" th:attr="onload=|answerVisibility('${task.answerNote}', '${task.imageFileName}')|"
+      style="min-width: 612px; font-family: sans-serif; font-size: 11pt">
 
 <div th:replace="fragments/menu-staff :: #menustaff"></div>
 
-<p style="text-align: center">Редактор задач</p>
+<p style="text-align: center; margin-top: 1rem; margin-bottom: .5rem">Редактор задач</p>
 
 <!--/*@thymesVar id="task" type="ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto"*/-->
-<form th:action="@{/tasks/save-or-edit}" th:object="${task}" method="post" enctype="multipart/form-data">
-    <div class="infoForm container p-2 text-center" style="width: 60%; padding: 1rem !important;">
+<form th:action="@{/tasks/save-or-edit}" th:object="${task}" method="post" enctype="multipart/form-data"
+      class="needs-validation was-validated" novalidate>
+    <div class="infoForm container p-2 text-center" style="width: 60%; padding: 1rem !important; min-width: 36rem">
         <input type="hidden" th:field="*{id}"/>
         <input type="hidden" th:field="*{status}"/>
         <input type="hidden" th:field="*{imageFileName}"/>
 
         <div class="form-row text-left align-items-center">
-            <div class="col-md-3"><label for="prefix" style="width: auto">Префикс</label></div>
+            <div class="col-3"><label for="prefix" style="width: auto">Префикс</label></div>
             <div class="col-9">
                 <input id="prefix" type="text" class="form-control form-control-sm text-dark"
                        th:field="*{prefix}"/>
@@ -34,23 +36,25 @@
         </div>
 
         <div class="form-row text-left align-items-center">
-            <div class="col-md-3"><label for="title" style="width: auto">Заголовок</label></div>
+            <div class="col-3"><label for="title" style="width: auto">Заголовок</label></div>
             <div class="col-9">
                 <input id="title" type="text" class="form-control form-control-sm text-dark"
-                       th:field="*{title}"/>
+                       th:field="*{title}" required/>
+                <div class="invalid-feedback">Пожалуйста, введите заголовок задачи</div>
             </div>
         </div>
 
         <div class="form-row text-left align-items-center">
-            <div class="col-md-3"><label for="problemText" style="width: auto">Задание</label></div>
+            <div class="col-3"><label for="problemText" style="width: auto">Задание</label></div>
             <div class="col-9">
                 <textarea id="problemText" class="form-control form-control-sm text-dark"
-                          th:field="*{problemText}" rows="8" style="width: inherit"></textarea>
+                          th:field="*{problemText}" rows="8" style="width: inherit" required></textarea>
+                <div class="invalid-feedback">Пожалуйста, введите условие задачи</div>
             </div>
         </div>
 
         <div class="form-row text-left align-items-center">
-            <div class="col-md-3"><label style="width: auto">Изображение</label></div>
+            <div class="col-3"><label style="width: auto">Изображение</label></div>
             <div class="col-9">
                 <div class="form-row mb-1">
                     <div class="col-12">
@@ -66,17 +70,19 @@
                     </div>
                 </div>
                 <div class="form-row align-items-center">
-                    <div class="col-md-3"><label for="width" style="width: auto">Ширина:</label></div>
-                    <div class="col-md-3" style="min-width: 8rem">
+                    <div class="col-1" style="min-width: 5rem"><label for="width" style="width: auto">Ширина:</label></div>
+                    <div class="col-3" style="min-width: 8rem">
                         <input type="number" min="0" class="form-control form-control-sm text-dark"
-                               id="width" th:field="*{width}">
+                               id="width" th:field="*{width}" required>
+                        <div class="invalid-feedback">Пожалуйста, введите ширину картинки в пикселях</div>
                     </div>
                 </div>
                 <div class="form-row align-items-center">
-                    <div class="col-md-3"><label for="height" style="width: auto">Высота:</label></div>
-                    <div class="col-md-3" style="min-width: 8rem">
+                    <div class="col-1" style="min-width: 5rem"><label for="height" style="width: auto">Высота:</label></div>
+                    <div class="col-3" style="min-width: 8rem">
                         <input type="number" id="height" min="0" class="form-control form-control-sm text-dark"
-                               th:field="*{height}">
+                               th:field="*{height}" required>
+                        <div class="invalid-feedback">Пожалуйста, введите высоту картинки в пикселях</div>
                     </div>
                 </div>
                 <div id="imageAttr" style="display: none">
@@ -126,7 +132,7 @@
         </div>
 
         <div class="form-row text-left align-items-center">
-            <div class="col-md-3"><label for="variables" style="width: auto">Значения переменных<sup
+            <div class="col-3"><label for="variables" style="width: auto">Значения переменных<sup
                     title="Var1 = val1;<br/>
                            Var2 = [val1, val2, ..., valN];<br/>
                            Var3 = (val1..val2, step);<br/>
@@ -141,7 +147,7 @@
         </div>
 
         <div class="form-row text-left align-items-center">
-            <div class="col-md-3"><label for="answerTypeRadio" style="width: auto">Тип ответа</label></div>
+            <div class="col-3"><label for="answerTypeRadio" style="width: auto">Тип ответа</label></div>
             <div class="col-9">
                 <div id="answerTypeRadio" th:attr="onclick=|answerVisibility('${task.answerNote}', '${task.imageFileName}')|">
                     <div class="form-row">
@@ -195,7 +201,7 @@
 
         <div id="answer" style="display: none">
             <div class="form-row text-left align-items-center">
-                <div class="col-md-3"><label for="correctAnswer" style="width: auto">Ответы</label></div>
+                <div class="col-3"><label for="correctAnswer" style="width: auto">Ответы</label></div>
                 <div class="col-9">
                     <textarea id="correctAnswer" class="form-control form-control-sm text-dark"
                               th:field="*{correctAnswer}" rows="4" style="width: inherit"></textarea>
@@ -204,36 +210,40 @@
         </div>
 
         <div class="form-row text-left align-items-center">
-            <div class="col-md-3"><label for="gradePoints" style="width: auto">Количество баллов</label></div>
+            <div class="col-3"><label for="gradePoints" style="width: auto">Количество баллов</label></div>
             <div class="col-9">
                 <input id="gradePoints" type="text" class="form-control form-control-sm text-dark"
-                       th:field="*{gradePoints}"/>
+                       th:field="*{gradePoints}" required/>
+                <div class="invalid-feedback">Пожалуйста, введите баллы за задачу</div>
             </div>
         </div>
 
         <div class="form-row text-left align-items-center">
-            <div class="col-md-3"><label for="minusPoints" style="width: auto">Штраф за неправильный ответ</label></div>
+            <div class="col-3"><label for="minusPoints" style="width: auto">Штраф за неправильный ответ</label></div>
             <div class="col-9">
                 <input id="minusPoints" type="text" class="form-control form-control-sm text-dark"
-                       th:field="*{minusPoints}"/>
+                       th:field="*{minusPoints}" required/>
+                <div class="invalid-feedback">Пожалуйста, введите штрафные баллы</div>
             </div>
         </div>
 
         <div class="form-row text-left align-items-center">
-            <div class="col-md-3"><label for="minPoints" style="width: auto">Минимальное количество баллов за правильный ответ</label></div>
+            <div class="col-3"><label for="minPoints" style="width: auto">Минимальное количество баллов за правильный ответ</label></div>
             <div class="col-9">
                 <input id="minPoints" type="text" class="form-control form-control-sm text-dark"
-                       th:field="*{minPoints}"/>
+                       th:field="*{minPoints}" required/>
+                <div class="invalid-feedback">Пожалуйста, введите минимальное количество баллов за правильный ответ</div>
             </div>
         </div>
     </div>
 
-    <div style="text-align: center">
-        <button type="submit" class="btn btn-light border border-dark" style="width: 20%; min-width: 120px">Сохранить</button>
+    <div style="text-align: center; margin-top: 1rem; margin-bottom: 1rem">
+        <button type="submit" class="btn btn-light border border-dark" style="width: 20%; min-width: 7.5rem"
+                onclick="trimInputs('title', 'problemText', 'gradePoints', 'minusPoints', 'minPoints')">
+            Сохранить
+        </button>
     </div>
 </form>
-
-<br/>
 
 <div th:replace="fragments/footer :: #footer"></div>
 </body>
@@ -242,6 +252,34 @@
 <script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
 <script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.bundle.min.js}"></script>
 <script type="text/javascript">
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+
+    function trimInputs() {
+        var args = arguments;
+        for (var i = 0; i < args.length; i++) {
+            var inpt = document.getElementById(args[i])
+            inpt.value = trim(inpt.value)
+        }
+    }
+
+    function trim(value) {
+        return value.replace(/^\s+|\s+$/g,"");
+    }
+
     $('#image').on('change', function() {
         var fileName = $(this).val().replace(/C:\\fakepath\\/i, '');
         $(this).next('.custom-file-label').html(fileName);
