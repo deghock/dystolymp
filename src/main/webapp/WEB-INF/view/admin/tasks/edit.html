@@ -21,7 +21,7 @@
 
 <!--/*@thymesVar id="task" type="ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto"*/-->
 <form th:action="@{/tasks/save-or-edit}" th:object="${task}" method="post" enctype="multipart/form-data"
-      class="needs-validation was-validated" novalidate>
+      class="needs-validation" novalidate>
     <div class="infoForm container p-2 text-center" style="width: 60%; padding: 1rem !important; min-width: 36rem">
         <input type="hidden" th:field="*{id}"/>
         <input type="hidden" th:field="*{status}"/>
@@ -29,16 +29,16 @@
 
         <div class="form-row text-left align-items-center">
             <div class="col-3"><label for="prefix" style="width: auto">Префикс</label></div>
-            <div class="col-9">
-                <input id="prefix" type="text" class="form-control form-control-sm text-dark"
+            <div class="col-9 was-validated">
+                <input id="prefix" type="text" class="form-control form-control-sm text-dark" maxlength="255"
                        th:field="*{prefix}"/>
             </div>
         </div>
 
         <div class="form-row text-left align-items-center">
             <div class="col-3"><label for="title" style="width: auto">Заголовок</label></div>
-            <div class="col-9">
-                <input id="title" type="text" class="form-control form-control-sm text-dark"
+            <div class="col-9 was-validated">
+                <input id="title" type="text" class="form-control form-control-sm text-dark" maxlength="255"
                        th:field="*{title}" required/>
                 <div class="invalid-feedback">Пожалуйста, введите заголовок задачи</div>
             </div>
@@ -46,8 +46,8 @@
 
         <div class="form-row text-left align-items-center">
             <div class="col-3"><label for="problemText" style="width: auto">Задание</label></div>
-            <div class="col-9">
-                <textarea id="problemText" class="form-control form-control-sm text-dark"
+            <div class="col-9 was-validated">
+                <textarea id="problemText" class="form-control form-control-sm text-dark" maxlength="65535"
                           th:field="*{problemText}" rows="8" style="width: inherit" required></textarea>
                 <div class="invalid-feedback">Пожалуйста, введите условие задачи</div>
             </div>
@@ -58,31 +58,35 @@
             <div class="col-9">
                 <div class="form-row mb-1">
                     <div class="col-12">
-                        <div class="input-group">
-                            <div class="custom-file">
-                                <input type="file" id="image" class="custom-file-input" th:field="*{image}"
-                                       accept="image/png, image/jpeg, image/gif">
-                                <label class="custom-file-label text-dark" data-browse="Обзор" for="image" style="width: initial">
-                                    Файл не выбран
-                                </label>
+                        <div class="custom-file">
+                            <input type="file" id="image" class="custom-file-input is-valid" th:field="*{image}"
+                                   accept="image/png, image/jpeg, image/gif" onchange=validateImage()>
+                            <label class="custom-file-label text-dark" data-browse="Обзор" for="image" style="width: initial">
+                                Файл не выбран
+                            </label>
+                            <div id="imageExtensionError" class="invalid-feedback" style="display: none">
+                                Изображение должно иметь расширение jpg, png или gif
+                            </div>
+                            <div id="imageSizeError" class="invalid-feedback" style="display: none">
+                                Размер изображения не должен превышать 10 Мб
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="form-row align-items-center">
                     <div class="col-1" style="min-width: 5rem"><label for="width" style="width: auto">Ширина:</label></div>
-                    <div class="col-3" style="min-width: 8rem">
-                        <input type="number" min="0" class="form-control form-control-sm text-dark"
+                    <div class="col-3  was-validated" style="min-width: 8rem">
+                        <input type="number" min="0" max="65535" class="form-control form-control-sm text-dark"
                                id="width" th:field="*{width}" required>
-                        <div class="invalid-feedback">Пожалуйста, введите ширину картинки в пикселях</div>
+                        <div class="invalid-feedback">Ширина картинки должна быть от 0 до 65535 пикселей</div>
                     </div>
                 </div>
                 <div class="form-row align-items-center">
                     <div class="col-1" style="min-width: 5rem"><label for="height" style="width: auto">Высота:</label></div>
-                    <div class="col-3" style="min-width: 8rem">
-                        <input type="number" id="height" min="0" class="form-control form-control-sm text-dark"
+                    <div class="col-3 was-validated" style="min-width: 8rem">
+                        <input type="number" id="height" min="0" max="65535" class="form-control form-control-sm text-dark"
                                th:field="*{height}" required>
-                        <div class="invalid-feedback">Пожалуйста, введите высоту картинки в пикселях</div>
+                        <div class="invalid-feedback">Высота картинки должна быть от 0 до 65535 пикселей</div>
                     </div>
                 </div>
                 <div id="imageAttr" style="display: none">
@@ -139,8 +143,8 @@
                            Var4 = expr(Var1, Var2, ...);"
                      data-toggle="tooltip">(?)</sup></label>
             </div>
-            <div class="col-9">
-                <textarea id="variables" class="form-control form-control-sm text-dark"
+            <div class="col-9 was-validated">
+                <textarea id="variables" class="form-control form-control-sm text-dark" maxlength="65535"
                           th:field="*{variables}" rows="8" style="width: inherit">
                 </textarea>
             </div>
@@ -202,8 +206,8 @@
         <div id="answer" style="display: none">
             <div class="form-row text-left align-items-center">
                 <div class="col-3"><label for="correctAnswer" style="width: auto">Ответы</label></div>
-                <div class="col-9">
-                    <textarea id="correctAnswer" class="form-control form-control-sm text-dark"
+                <div class="col-9 was-validated">
+                    <textarea id="correctAnswer" class="form-control form-control-sm text-dark" maxlength="65535"
                               th:field="*{correctAnswer}" rows="4" style="width: inherit"></textarea>
                 </div>
             </div>
@@ -211,8 +215,8 @@
 
         <div class="form-row text-left align-items-center">
             <div class="col-3"><label for="gradePoints" style="width: auto">Количество баллов</label></div>
-            <div class="col-9">
-                <input id="gradePoints" type="text" class="form-control form-control-sm text-dark"
+            <div class="col-9 was-validated">
+                <input id="gradePoints" type="text" class="form-control form-control-sm text-dark" maxlength="255"
                        th:field="*{gradePoints}" required/>
                 <div class="invalid-feedback">Пожалуйста, введите баллы за задачу</div>
             </div>
@@ -220,25 +224,25 @@
 
         <div class="form-row text-left align-items-center">
             <div class="col-3"><label for="minusPoints" style="width: auto">Штраф за неправильный ответ</label></div>
-            <div class="col-9">
-                <input id="minusPoints" type="text" class="form-control form-control-sm text-dark"
+            <div class="col-9 was-validated">
+                <input id="minusPoints" type="number" step="any" min="0" max="65535" class="form-control form-control-sm text-dark"
                        th:field="*{minusPoints}" required/>
-                <div class="invalid-feedback">Пожалуйста, введите штрафные баллы</div>
+                <div class="invalid-feedback">Штрафной балл должен быть от 0 до 65535</div>
             </div>
         </div>
 
         <div class="form-row text-left align-items-center">
             <div class="col-3"><label for="minPoints" style="width: auto">Минимальное количество баллов за правильный ответ</label></div>
-            <div class="col-9">
-                <input id="minPoints" type="text" class="form-control form-control-sm text-dark"
+            <div class="col-9 was-validated">
+                <input id="minPoints" type="number" step="any" min="0" max="65535" class="form-control form-control-sm text-dark"
                        th:field="*{minPoints}" required/>
-                <div class="invalid-feedback">Пожалуйста, введите минимальное количество баллов за правильный ответ</div>
+                <div class="invalid-feedback">Минимальный балл за правильный ответ должен быть от 0 до 65535</div>
             </div>
         </div>
     </div>
 
     <div style="text-align: center; margin-top: 1rem; margin-bottom: 1rem">
-        <button type="submit" class="btn btn-light border border-dark" style="width: 20%; min-width: 7.5rem"
+        <button type="submit" class="btn btn-light border border-dark" style="width: 20%; min-width: 7.5rem" id="submitBtn"
                 onclick="trimInputs('title', 'problemText', 'gradePoints', 'minusPoints', 'minPoints')">
             Сохранить
         </button>
@@ -252,6 +256,35 @@
 <script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
 <script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.bundle.min.js}"></script>
 <script type="text/javascript">
+    function validateImage() {
+        var image = document.getElementById('image')
+        var extErrMsg = document.getElementById('imageExtensionError')
+        var sizeErrMsg = document.getElementById('imageSizeError')
+        var submitBtn = document.getElementById('submitBtn')
+        var exts = /(\.jpg|\.jpeg|\.gif|\.png)$/i;
+        var isExt = exts.exec(image.files[0].name) != null
+        var isSize = image.files[0].size <= 10485760
+        if (isExt && isSize) {
+            image.classList.remove('is-invalid')
+            image.classList.add('is-valid')
+            extErrMsg.style.display = 'none'
+            sizeErrMsg.style.display = 'none'
+            submitBtn.setAttribute('type', 'submit')
+        } else if (!isExt) {
+            image.classList.remove('is-valid')
+            image.classList.add('is-invalid')
+            extErrMsg.style.display = 'block'
+            sizeErrMsg.style.display = 'none'
+            submitBtn.setAttribute('type', 'button')
+        } else if (!isSize) {
+            image.classList.remove('is-valid')
+            image.classList.add('is-invalid')
+            extErrMsg.style.display = 'none'
+            sizeErrMsg.style.display = 'block'
+            submitBtn.setAttribute('type', 'button')
+        }
+    }
+
     (function() {
         'use strict';
         window.addEventListener('load', function() {
@@ -262,7 +295,6 @@
                         event.preventDefault();
                         event.stopPropagation();
                     }
-                    form.classList.add('was-validated');
                 }, false);
             });
         }, false);
