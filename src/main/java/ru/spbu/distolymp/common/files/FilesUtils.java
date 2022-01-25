@@ -24,7 +24,7 @@ public class FilesUtils {
         try {
             return image.getBytes();
         } catch (IOException e) {
-            log.error("An error occurred while getting bytes of multipart diploma type image", e);
+            log.error("An error occurred while getting bytes of multipart file", e);
             throw new TechnicalException(e);
         }
     }
