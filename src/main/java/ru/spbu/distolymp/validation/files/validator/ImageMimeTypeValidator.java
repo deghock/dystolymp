@@ -1,9 +1,8 @@
-package ru.spbu.distolymp.validation.admin.directories.diplomas.validator;
+package ru.spbu.distolymp.validation.files.validator;
 
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.multipart.MultipartFile;
-import ru.spbu.distolymp.validation.admin.directories.diplomas.annotation.ImageMimeType;
-
+import ru.spbu.distolymp.validation.files.annotation.ImageMimeType;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -30,7 +29,8 @@ public class ImageMimeTypeValidator implements ConstraintValidator<ImageMimeType
         }
 
         return fileMimeType.equals(MimeTypeUtils.IMAGE_JPEG_VALUE) ||
-               fileMimeType.equals(MimeTypeUtils.IMAGE_PNG_VALUE);
+               fileMimeType.equals(MimeTypeUtils.IMAGE_PNG_VALUE) ||
+               fileMimeType.equals(MimeTypeUtils.IMAGE_GIF_VALUE);
     }
 
 }

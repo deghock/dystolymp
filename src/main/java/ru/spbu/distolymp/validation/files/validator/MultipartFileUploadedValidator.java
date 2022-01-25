@@ -1,9 +1,8 @@
-package ru.spbu.distolymp.validation.admin.directories.diplomas.validator;
+package ru.spbu.distolymp.validation.files.validator;
 
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.multipart.MultipartFile;
-import ru.spbu.distolymp.validation.admin.directories.diplomas.annotation.MultipartFileUploaded;
-
+import ru.spbu.distolymp.validation.files.annotation.MultipartFileUploaded;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 

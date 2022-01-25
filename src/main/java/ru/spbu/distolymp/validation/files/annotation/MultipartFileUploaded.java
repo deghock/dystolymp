@@ -1,7 +1,6 @@
-package ru.spbu.distolymp.validation.admin.directories.diplomas.annotation;
+package ru.spbu.distolymp.validation.files.annotation;
 
-import ru.spbu.distolymp.validation.admin.directories.diplomas.validator.MultipartFileUploadedValidator;
-
+import ru.spbu.distolymp.validation.files.validator.MultipartFileUploadedValidator;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
