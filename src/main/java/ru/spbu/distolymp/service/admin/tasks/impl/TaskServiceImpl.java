@@ -154,6 +154,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
 
     private Double parseAndEvalPoints(String pointsStr) {
         pointsStr = pointsStr.replaceAll("\\s+","");
+        pointsStr = pointsStr.replace(",", ".");
         String[] pointsList = pointsStr.split(";");
         Double result = 0.0;
         for (String point : pointsList)
