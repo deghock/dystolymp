@@ -3,6 +3,8 @@ package ru.spbu.distolymp.dto.entity.tasks.tasks;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.web.multipart.MultipartFile;
+import ru.spbu.distolymp.validation.admin.tasks.annotation.Points;
+import ru.spbu.distolymp.validation.admin.tasks.annotation.Variables;
 import ru.spbu.distolymp.validation.files.annotation.ImageMimeType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -29,7 +31,6 @@ public class TaskDto {
 
     private String imageFileName;
 
-    // TODO: size validation (?)
     @ImageMimeType
     private MultipartFile image;
 
@@ -43,19 +44,19 @@ public class TaskDto {
     @Range(max = 65535)
     private Integer height;
 
-    // TODO: custom validation by pattern
     @Size(max = 65535)
+    @Variables
     private String variables;
 
     private Integer answerNote;
 
-    // TODO: custom validation by pattern
+    @NotNull(message = "{task.correctAnswer.required}")
     @Size(max = 65535)
     private String correctAnswer;
 
-    // TODO: custom validation by pattern
-    @NotNull
+    @NotNull(message = "{task.gradePoints.required}")
     @Size(max = 255)
+    @Points
     private String gradePoints;
 
     @NotNull
@@ -66,5 +67,7 @@ public class TaskDto {
     @Range(max = 65535)
     private Double minPoints;
 
-    //TODO: cross field validation (?)
+    // TODO: cross field validation:
+    //         1) ans + vars;
+    //         2) ans + gradePoints.
 }

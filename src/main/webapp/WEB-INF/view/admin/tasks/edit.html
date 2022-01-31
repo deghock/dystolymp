@@ -12,8 +12,8 @@
 
 <div th:replace="fragments/header :: #header"></div>
 
-<body class="bgGrey" th:attr="onload=|answerVisibility('${task.answerNote}', '${task.imageFileName}')|"
-      style="min-width: 612px; font-family: sans-serif; font-size: 11pt">
+<body class="bgGrey" th:attr="onload=|onUpdateAnswerTypeOrImage('${task.answerNote}', '${task.imageFileName}')|"
+      style="min-width: 612px; font-family: sans-serif; font-size: 11pt" onload="resetErrorMsg()">
 
 <div th:replace="fragments/menu-staff :: #menustaff"></div>
 
@@ -137,23 +137,26 @@
 
         <div class="form-row text-left align-items-center">
             <div class="col-3"><label for="variables" style="width: auto">Значения переменных<sup
-                    title="Var1 = val1;<br/>
-                           Var2 = [val1, val2, ..., valN];<br/>
-                           Var3 = (val1..val2, step);<br/>
-                           Var4 = expr(Var1, Var2, ...);"
+                    title="v1 = a;<br/>
+                           v2 = [a, b, ..., z];<br/>
+                           v3 = (a..b, step);<br/>
+                           v4 = expr(a, b, ..., z);"
                      data-toggle="tooltip">(?)</sup></label>
             </div>
-            <div class="col-9 was-validated">
+            <div class="col-9">
                 <textarea id="variables" class="form-control form-control-sm text-dark" maxlength="65535"
-                          th:field="*{variables}" rows="8" style="width: inherit">
+                          th:field="*{variables}" rows="8" style="width: inherit" onchange="setNeutral('variables')"
+                          th:classappend="${#fields.hasErrors('variables')} ? 'is-invalid'">
                 </textarea>
+                <div id="variablesError" class="invalid-feedback" th:if="${#fields.hasErrors('variables')}"
+                     th:errors="*{variables}" style="display: block"></div>
             </div>
         </div>
 
         <div class="form-row text-left align-items-center">
             <div class="col-3"><label for="answerTypeRadio" style="width: auto">Тип ответа</label></div>
             <div class="col-9">
-                <div id="answerTypeRadio" th:attr="onclick=|answerVisibility('${task.answerNote}', '${task.imageFileName}')|">
+                <div id="answerTypeRadio" th:attr="onclick=|onUpdateAnswerTypeOrImage('${task.answerNote}', '${task.imageFileName}')|">
                     <div class="form-row">
                         <div class="col-xl-0 form-check">
                             <input id="answerType0" type="radio" class="form-check-input" style="position: inherit"
@@ -206,19 +209,25 @@
         <div id="answer" style="display: none">
             <div class="form-row text-left align-items-center">
                 <div class="col-3"><label for="correctAnswer" style="width: auto">Ответы</label></div>
-                <div class="col-9 was-validated">
+                <div class="col-9">
                     <textarea id="correctAnswer" class="form-control form-control-sm text-dark" maxlength="65535"
-                              th:field="*{correctAnswer}" rows="4" style="width: inherit"></textarea>
+                              th:field="*{correctAnswer}" rows="4" style="width: inherit"
+                              th:classappend="${#fields.hasErrors('correctAnswer')} ? 'is-invalid'"
+                              onchange="setNeutral('correctAnswer')"></textarea>
+                    <div id="correctAnswerError" class="invalid-feedback" th:if="${#fields.hasErrors('correctAnswer')}"
+                         th:errors="*{correctAnswer}" style="display: block"></div>
                 </div>
             </div>
         </div>
 
         <div class="form-row text-left align-items-center">
             <div class="col-3"><label for="gradePoints" style="width: auto">Количество баллов</label></div>
-            <div class="col-9 was-validated">
+            <div class="col-9">
                 <input id="gradePoints" type="text" class="form-control form-control-sm text-dark" maxlength="255"
-                       th:field="*{gradePoints}" required/>
-                <div class="invalid-feedback">Пожалуйста, введите баллы за задачу</div>
+                       th:field="*{gradePoints}" th:classappend="${#fields.hasErrors('gradePoints')} ? 'is-invalid'"
+                       onchange="setNeutral('gradePoints')"/>
+                <div id="gradePointsError" class="invalid-feedback" th:if="${#fields.hasErrors('gradePoints')}"
+                     th:errors="*{gradePoints}" style="display: block"></div>
             </div>
         </div>
 
@@ -285,6 +294,15 @@
         }
     }
 
+    function fillAnswer(answerType) {
+        if (answerType === 2 || answerType === 3 || answerType === 4 ||
+            document.getElementById('answerType2').checked ||
+            document.getElementById('answerType3').checked ||
+            document.getElementById('answerType4').checked) {
+            document.getElementById('correctAnswer').value = 'answer=0';
+        }
+    }
+
     (function() {
         'use strict';
         window.addEventListener('load', function() {
@@ -304,12 +322,23 @@
         var args = arguments;
         for (var i = 0; i < args.length; i++) {
             var inpt = document.getElementById(args[i])
-            inpt.value = trim(inpt.value)
+            inpt.value = inpt.value.replace(/^\s+|\s+$/g,"");
         }
     }
 
-    function trim(value) {
-        return value.replace(/^\s+|\s+$/g,"");
+    function setNeutral(name) {
+        document.getElementById(name).classList.remove('is-invalid')
+        if (document.getElementById(name + 'Error') !== null)
+            document.getElementById(name + 'Error').style.display = 'none';
+    }
+
+    function resetErrorMsg() {
+        if (document.getElementById('variablesError') !== null)
+            document.getElementById('variablesError').style.display = 'block';
+        if (document.getElementById('correctAnswerError') !== null)
+            document.getElementById('correctAnswerError').style.display = 'block';
+        if (document.getElementById('gradePointsError') !== null)
+            document.getElementById('gradePointsError').style.display = 'block';
     }
 
     $('#image').on('change', function() {
@@ -321,7 +350,7 @@
         $('[data-toggle="tooltip"]').tooltip({ html: true })
     })
 
-    function answerVisibility(answerType, imageFileName) {
+    function onUpdateAnswerTypeOrImage(answerType, imageFileName) {
         if (answerType === 0 ||
             answerType === 1 ||
             document.getElementById('answerType0').checked ||
