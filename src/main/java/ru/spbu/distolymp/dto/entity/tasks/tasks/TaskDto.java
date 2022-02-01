@@ -5,7 +5,9 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.web.multipart.MultipartFile;
 import ru.spbu.distolymp.validation.admin.tasks.annotation.Points;
 import ru.spbu.distolymp.validation.admin.tasks.annotation.Variables;
+import ru.spbu.distolymp.validation.admin.tasks.validator.AnswersValidator;
 import ru.spbu.distolymp.validation.files.annotation.ImageMimeType;
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -67,7 +69,13 @@ public class TaskDto {
     @Range(max = 65535)
     private Double minPoints;
 
-    // TODO: cross field validation:
-    //         1) ans + vars;
-    //         2) ans + gradePoints.
+    @AssertTrue(message = "{answers.pattern}")
+    private boolean isAnswerValid() {
+        return AnswersValidator.isValid(variables, correctAnswer);
+    }
+
+    @AssertTrue(message = "{task.correctAnswer.number}")
+    private boolean isAnswerNumberValid() {
+        return AnswersValidator.isAnswerNumberValid(gradePoints, correctAnswer);
+    }
 }

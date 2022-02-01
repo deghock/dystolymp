@@ -22,10 +22,15 @@ public class PointsValidator implements ConstraintValidator<Points, String> {
         return !parsePoints(str).isEmpty();
     }
 
+    public int countPoints(String input) {
+        if (input == null || input.trim().equals("")) return 0;
+        return parsePoints(input).size();
+    }
+
     private List<String> parsePoints(String input) {
         List<String> points = new ArrayList<>();
         input = input.trim();
-        if (input.toCharArray()[0] == ';' || input.toCharArray()[input.length() - 1] == ';')
+        if (input.toCharArray()[0] == ';')
             return Collections.emptyList();
         String[] pointsArray = input.split(";");
         for (String pointStr : pointsArray) {

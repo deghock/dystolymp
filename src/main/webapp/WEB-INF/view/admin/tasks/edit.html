@@ -13,7 +13,7 @@
 <div th:replace="fragments/header :: #header"></div>
 
 <body class="bgGrey" th:attr="onload=|onUpdateAnswerTypeOrImage('${task.answerNote}', '${task.imageFileName}')|"
-      style="min-width: 612px; font-family: sans-serif; font-size: 11pt" onload="resetErrorMsg()">
+      style="min-width: 612px; font-family: sans-serif; font-size: 11pt">
 
 <div th:replace="fragments/menu-staff :: #menustaff"></div>
 
@@ -21,7 +21,7 @@
 
 <!--/*@thymesVar id="task" type="ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto"*/-->
 <form th:action="@{/tasks/save-or-edit}" th:object="${task}" method="post" enctype="multipart/form-data"
-      class="needs-validation" novalidate>
+      class="needs-validation" onsubmit="fillAnswer()" novalidate>
     <div class="infoForm container p-2 text-center" style="width: 60%; padding: 1rem !important; min-width: 36rem">
         <input type="hidden" th:field="*{id}"/>
         <input type="hidden" th:field="*{status}"/>
@@ -212,10 +212,11 @@
                 <div class="col-9">
                     <textarea id="correctAnswer" class="form-control form-control-sm text-dark" maxlength="65535"
                               th:field="*{correctAnswer}" rows="4" style="width: inherit"
-                              th:classappend="${#fields.hasErrors('correctAnswer')} ? 'is-invalid'"
                               onchange="setNeutral('correctAnswer')"></textarea>
-                    <div id="correctAnswerError" class="invalid-feedback" th:if="${#fields.hasErrors('correctAnswer')}"
-                         th:errors="*{correctAnswer}" style="display: block"></div>
+                    <div th:each="e : ${#fields.detailedErrors()}">
+                        <div id="correctAnswerError" class="invalid-feedback" style="display: block"
+                             th:if="${e.fieldName == 'answerValid'}" th:text="${e.message}"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -223,6 +224,10 @@
         <div class="form-row text-left align-items-center">
             <div class="col-3"><label for="gradePoints" style="width: auto">Количество баллов</label></div>
             <div class="col-9">
+                <div th:each="e : ${#fields.detailedErrors()}">
+                    <div id="answerNumberError" class="invalid-feedback" style="display: block"
+                         th:if="${e.fieldName == 'answerNumberValid'}" th:text="${e.message}"></div>
+                </div>
                 <input id="gradePoints" type="text" class="form-control form-control-sm text-dark" maxlength="255"
                        th:field="*{gradePoints}" th:classappend="${#fields.hasErrors('gradePoints')} ? 'is-invalid'"
                        onchange="setNeutral('gradePoints')"/>
@@ -303,6 +308,16 @@
         }
     }
 
+    function checkAnswer() {
+        if (document.getElementById('correctAnswerError') !== null) {
+            document.getElementById('correctAnswer').classList.add('is-invalid');
+        }
+        if (document.getElementById('correctAnswerError') !== null &&
+            document.getElementById('answerNumberError') !== null) {
+            document.getElementById('answerNumberError').style.display = 'none';
+        }
+    }
+
     (function() {
         'use strict';
         window.addEventListener('load', function() {
@@ -332,15 +347,6 @@
             document.getElementById(name + 'Error').style.display = 'none';
     }
 
-    function resetErrorMsg() {
-        if (document.getElementById('variablesError') !== null)
-            document.getElementById('variablesError').style.display = 'block';
-        if (document.getElementById('correctAnswerError') !== null)
-            document.getElementById('correctAnswerError').style.display = 'block';
-        if (document.getElementById('gradePointsError') !== null)
-            document.getElementById('gradePointsError').style.display = 'block';
-    }
-
     $('#image').on('change', function() {
         var fileName = $(this).val().replace(/C:\\fakepath\\/i, '');
         $(this).next('.custom-file-label').html(fileName);
@@ -364,6 +370,7 @@
         } else {
             document.getElementById('imageAttr').style.display = "block";
         }
+        checkAnswer();
     }
 </script>
 </html>

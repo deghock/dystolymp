@@ -90,7 +90,7 @@ public class TaskEvaluator {
      */
     public Map<String, Object> evalAndGetVariables(String input) {
         Map<String, Object> variables = new HashMap<>();
-        if (input == null || input.matches("^\\s*$")) return Collections.emptyMap();
+        if (input == null || input.trim().equals("")) return Collections.emptyMap();
         List<String> lines = parseInputToLines(input);
         for (String line : lines) {
             line = line.trim();
@@ -118,7 +118,7 @@ public class TaskEvaluator {
      */
     public Map<String, Map.Entry<Number, Number>> evalAndGetAnswers(String input) {
         Map<String, Map.Entry<Number, Number>> answers = new HashMap<>();
-        if (input == null || input.matches("^\\s*$")) return Collections.emptyMap();
+        if (input == null || input.trim().equals("")) return Collections.emptyMap();
         List<String> lines = parseInputToLines(input);
         for (String line : lines) {
             line = line.trim();
@@ -160,6 +160,19 @@ public class TaskEvaluator {
             answers.put(ansName, new AbstractMap.SimpleEntry<>((Number) variableValue, error));
         }
         return answers;
+    }
+
+    /**
+     * This method counts the number of rows in the input.
+     * A string is a set of characters in which there is an "=" and
+     * the strings are separated by a semicolon.
+     *
+     * @param input any input data suitable for parsing by this method
+     * @return the number of rows
+     */
+    public int countLines(String input) {
+        if (input == null || input.trim().equals("")) return 0;
+        return parseInputToLines(input).size();
     }
 
     private List<String> parseInputToLines(String input) {
