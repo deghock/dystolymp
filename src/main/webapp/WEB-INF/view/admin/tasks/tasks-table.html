@@ -1,6 +1,6 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 
-<div id="tasks-table">
+<div id="tasks-table" style="overflow: auto">
     <table class="table border center" aria-describedby="title">
         <tr style="text-align: center">
             <th id="index" style="vertical-align: middle">№</th>
@@ -14,9 +14,9 @@
             <td th:text="${iter.index + 1}" style="text-align: center; vertical-align: middle"></td>
 
             <td th:if="${task.prefix != null}" th:text="${task.prefix} + ':&#13' + ${task.title}"
-                style="white-space: break-spaces; vertical-align: middle"></td>
+                style="white-space: break-spaces; vertical-align: middle; overflow-wrap: anywhere"></td>
             <td th:unless="${task.prefix != null}" th:text="${task.title}"
-                style="white-space: break-spaces; vertical-align: middle"></td>
+                style="white-space: break-spaces; vertical-align: middle; overflow-wrap: anywhere"></td>
 
             <td th:text="${task.status}" style="text-align: center; vertical-align: middle"></td>
 
