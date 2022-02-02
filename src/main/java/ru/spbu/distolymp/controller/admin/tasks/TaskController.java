@@ -25,6 +25,8 @@ public class TaskController {
     private static final String LIST_PAGE = ROOT_DIR + "list";
     private static final String TASKS_TABLE = ROOT_DIR + "tasks-table :: #tasks-table";
     private static final String EDIT_PAGE = ROOT_DIR + "edit";
+    private static final String PREVIEW_PAGE = ROOT_DIR + "preview";
+    private static final String REDIRECT_PREVIEW = "redirect:/tasks/preview/";
     private static final String REDIRECT_LIST = "redirect:/tasks/list";
     private static final String SUCCESS_PARAM = "success";
     private final TaskService taskService;
@@ -33,6 +35,17 @@ public class TaskController {
     public String getTasks(ModelMap modelMap) {
         taskService.fillShowAllTaskModelMap(modelMap, DEFAULT_RESULT_SIZE);
         return LIST_PAGE;
+    }
+
+    @GetMapping("/preview/{id}")
+    public String previewTask(@PathVariable("id") Long id, ModelMap modelMap) {
+        // taskService.fillShowPreviewPageModelMap(id, modelMap);
+        return PREVIEW_PAGE;
+    }
+
+    @PostMapping("/submit-answer")
+    public String submitAnswer(BindingResult br, RedirectAttributes ra) {
+        return null;
     }
 
     @GetMapping("/filter")
@@ -55,8 +68,8 @@ public class TaskController {
 
     @PostMapping("/save-or-edit")
     public String saveOrUpdate(@Valid @ModelAttribute("task") TaskDto taskDto,
-                               BindingResult bindingResult, RedirectAttributes ra) {
-        if (bindingResult.hasErrors())
+                               BindingResult br, RedirectAttributes ra) {
+        if (br.hasErrors())
             return EDIT_PAGE;
         if (taskDto.getId() == null)
             taskService.addTask(taskDto);

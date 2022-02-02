@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <style>
+        legend {
+            display: block;
+            width: auto;
+            padding: 0 .5rem;
+            margin-bottom: 0;
+            font-size: inherit;
+            line-height: inherit;
+            border-bottom: none;
+        }
+        fieldset {
+            border: 2px groove white;
+            padding: .5rem;
+            overflow-wrap: anywhere;
+            overflow: auto;
+        }
+        .tooltip-inner {
+            text-align: left;
+        }
+        td {
+            vertical-align: middle;
+            text-align: center;
+        }
+        .text-wrapping {
+            white-space: break-spaces;
+            overflow-wrap: anywhere;
+        }
+        h3 {
+            font-weight: bold;
+            font-size: 12pt;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey" style="min-width: 612px">
+
+<div th:replace="fragments/menu-staff :: #menustaff"></div>
+
+<p id="title" style="margin-top: 1rem; margin-bottom: .5rem; font-weight: bold; text-align: center">
+    Предпросмотр задания
+</p>
+
+<div class="container" style="min-width: 38rem">
+    <div class="alert alert-success alert-dismissible text-center mx-auto" role="alert"
+         style="width: 100%; padding: .5rem; min-width: 19rem" th:if="${right}">
+        <span th:text="${right}"></span>
+        <button type="button" class="close" data-dismiss="alert" style="padding: .5rem 1rem">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="alert alert-warning alert-dismissible text-center mx-auto" role="alert"
+         style="width: 100%; padding: .5rem; min-width: 19rem" th:if="${partly}">
+        <span th:text="${partly}"></span>
+        <button type="button" class="close" data-dismiss="alert" style="padding: .5rem 1rem">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="alert alert-danger alert-dismissible text-center mx-auto" role="alert"
+         style="width: 100%; padding: .5rem; min-width: 19rem" th:if="${wrong}">
+        <span th:text="${wrong}"></span>
+        <button type="button" class="close" data-dismiss="alert" style="padding: .5rem 1rem">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="mb-2" style="border-color: black; border-width: 1px; border-style: solid;
+    padding: .5rem; overflow-wrap: anywhere; overflow: auto">
+        <img th:src="@{/img/tasks/{imageName}(imageName=zalepa.png)}"
+             th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
+             alt="Image not found" style="margin-right: .5rem; float: left; vertical-align: middle"/>
+        <div>
+            <h3 align=center>Олимпиада 2 тур: Определите импульс и энергию тел (10 баллов)</h3>
+            Два тела движутся по взаимно перпендикулярным направлениям.
+            <br>Масса первого тела {m1} кг, а скорость {v1} м/с. Масса второго {m2} кг и скорость {v2} м/с. Определите модуль полного импульса P данной системы тел и кинетическую энергию E системы.
+
+            <p> Ответ вводить с точностью до целых.
+        </div>
+    </div>
+
+    <form th:action="@{/tasks/submit-answer}" method="post" enctype="multipart/form-data" novalidate>
+        <div>
+            <div style="display: flex">
+                <p style="margin-bottom: 0; margin-left: auto; margin-right: auto; padding-left: 9rem;
+                text-align: center">Введите ответ:</p>
+                <a id="answerTooltip" style="margin-right: 0" class="abutton" data-toggle="tooltip"
+                   onclick="showTooltip()" onmouseleave="hideTooltip()"
+                   title="v = 0">правильные ответы</a>
+            </div>
+
+            <div class="form-row text-left align-items-center" style="margin-bottom: .25rem">
+                <div class="col-auto"><label style="margin-bottom: 0">Импульс P = </label></div>
+                <div class="col-auto"><input type="number" step="any" maxlength="65535" required/></div>
+                <div class="col"><label style="margin-bottom: 0"> Н*с</label></div>
+            </div>
+            <div class="form-row text-left align-items-center" style="margin-bottom: .25rem">
+                <div class="col-auto"><label style="margin-bottom: 0">Энергия гигантской сраки Е = </label></div>
+                <div class="col-auto"><input type="number" step="any" maxlength="65535" required/></div>
+                <div class="col"><label style="margin-bottom: 0"> МДж</label></div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: .5rem">
+            <button type="submit" class="btn btn-light border-dark" style="width: 25%; min-width: 13rem;
+            padding-bottom: .1rem; padding-top: .1rem">
+                Отправить результаты
+            </button>
+        </div>
+    </form>
+
+    <div style="display: block; width: 50%; min-width: 36rem; margin-top: 1rem; margin-left: auto;
+    margin-right: auto">
+        <div id="towns-table" th:replace="admin/tasks/results-table :: #results-table"></div>
+        <fieldset>
+            <legend>Параметры задания</legend>
+            Параметры
+        </fieldset>
+    </div>
+
+    <div style="margin-top: 1rem; margin-bottom: .5rem" th:text="'Время сервера при открытии страницы: '"></div>
+</div>
+
+<div th:replace="fragments/footer :: #footer"></div>
+
+</body>
+<script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.bundle.min.js}"></script>
+<script type="text/javascript">
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip({ html: true, trigger: 'manual' })
+    })
+
+    function showTooltip() {
+        $('#answerTooltip').tooltip('show')
+    }
+
+    function hideTooltip() {
+        $('#answerTooltip').tooltip('hide')
+    }
+</script>
+</html>
