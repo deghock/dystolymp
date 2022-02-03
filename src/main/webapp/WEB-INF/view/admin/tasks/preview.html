@@ -40,6 +40,24 @@
             font-size: 12pt;
             text-align: center;
         }
+        p {
+            margin-top: 1rem;
+            margin-bottom: 0;
+        }
+        .form-control::placeholder {
+            color: #DC3545;
+            opacity: .5;
+        }
+        .form-control:valid {
+            border-color: rgb(206, 212, 218) !important;
+            background-image: none !important;
+            padding-right: .5rem !important;
+        }
+        .form-control:valid:focus {
+            border-color: #80bdff !important;
+            outline: 0 !important;
+            box-shadow: 0 0 0 .2rem rgba(0,123,255,.25) !important;
+        }
     </style>
 </head>
 
@@ -76,39 +94,86 @@
         </button>
     </div>
 
+    <!--/*@thymesVar id="task" type="ru.spbu.distolymp.dto.admin.tasks.tasks.TaskPreviewDto"*/-->
     <div class="mb-2" style="border-color: black; border-width: 1px; border-style: solid;
     padding: .5rem; overflow-wrap: anywhere; overflow: auto">
-        <img th:src="@{/img/tasks/{imageName}(imageName=zalepa.png)}"
+        <img th:src="@{/img/tasks/{imageName}(imageName=${task.imageFileName})}"
              th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
-             alt="Image not found" style="margin-right: .5rem; float: left; vertical-align: middle"/>
-        <div>
-            <h3 align=center>Олимпиада 2 тур: Определите импульс и энергию тел (10 баллов)</h3>
-            Два тела движутся по взаимно перпендикулярным направлениям.
-            <br>Масса первого тела {m1} кг, а скорость {v1} м/с. Масса второго {m2} кг и скорость {v2} м/с. Определите модуль полного импульса P данной системы тел и кинетическую энергию E системы.
-
-            <p> Ответ вводить с точностью до целых.
-        </div>
+             alt="Image not found" style="margin-right: .5rem; float: left; vertical-align: middle;"
+             th:if="${task.width == 0 and task.height != 0 and task.imageFileName != null}"
+             th:styleappend="'height:' + ${task.height} + 'px'"/>
+        <img th:src="@{/img/tasks/{imageName}(imageName=${task.imageFileName})}"
+             th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
+             alt="Image not found" style="margin-right: .5rem; float: left; vertical-align: middle;"
+             th:if="${task.height == 0 and task.width != 0  and task.imageFileName != null}"
+             th:styleappend="'width:' + ${task.width} + 'px'"/>
+        <img th:src="@{/img/tasks/{imageName}(imageName=${task.imageFileName})}"
+             th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
+             alt="Image not found" style="margin-right: .5rem; float: left; vertical-align: middle;"
+             th:if="${task.width != 0 and task.height != 0 and task.imageFileName != null}"
+             th:styleappend="'height:' + ${task.height} + 'px; width:' + ${task.width} + 'px'"/>
+        <div th:utext="${task.parsedProblemText}"></div>
     </div>
 
-    <form th:action="@{/tasks/submit-answer}" method="post" enctype="multipart/form-data" novalidate>
+    <form class="needs-validation" th:action="@{/tasks/submit-answer}" method="post"
+          enctype="multipart/form-data" novalidate>
         <div>
             <div style="display: flex">
-                <p style="margin-bottom: 0; margin-left: auto; margin-right: auto; padding-left: 9rem;
-                text-align: center">Введите ответ:</p>
-                <a id="answerTooltip" style="margin-right: 0" class="abutton" data-toggle="tooltip"
-                   onclick="showTooltip()" onmouseleave="hideTooltip()"
-                   title="v = 0">правильные ответы</a>
+                <p th:text="${task.answerNote != 4} ? 'Введите ответ:' : 'Прикрепите файл:'"
+                   style="margin: 0 auto .5rem 0; text-align: center">Введите ответ:</p>
+                <a th:if="${task.answerNote == 0 or task.answerNote == 1}"
+                   id="answerTooltip" style="margin-right: 0; margin-left: auto" class="abutton"
+                   data-toggle="tooltip" onclick="showTooltip()" onmouseleave="hideTooltip()">
+                    правильные ответы</a>
+                <div id="tooltipContent" style="display: none">
+                    <ul th:each="ans : ${task.answerNameValue.entrySet()}"
+                        style="list-style-type: none; white-space: nowrap; padding: 0; margin: 0">
+                        <li th:text="${ans.key} + ' = ' + ${ans.value}"></li>
+                    </ul>
+                </div>
             </div>
 
-            <div class="form-row text-left align-items-center" style="margin-bottom: .25rem">
-                <div class="col-auto"><label style="margin-bottom: 0">Импульс P = </label></div>
-                <div class="col-auto"><input type="number" step="any" maxlength="65535" required/></div>
-                <div class="col"><label style="margin-bottom: 0"> Н*с</label></div>
+            <div class="form-row text-left align-items-center" style="margin-bottom: .25rem"
+                 th:if="${task.answerNote == 0 or task.answerNote == 1}"
+                 th:each="ansName, iter : ${task.answerNameList}">
+                <div class="col-auto">
+                    <label th:for="${ansName} + 'Input'"
+                           th:utext="${task.variableNameComment.keySet().contains('comment_' + ansName)} ?
+                           ${task.variableNameComment.get('comment_' + ansName)} : ${ansName} + ' = '"
+                           style="margin-bottom: 0"></label>
+                </div>
+                <div class="col-auto was-validated">
+                    <input th:id="${ansName} + 'Input'" type="number" step="any" maxlength="65535"
+                           class="form-control form-control-sm text-dark" placeholder="Введите ответ"
+                           autocomplete="off" required/>
+                </div>
+                <div class="col">
+                    <label th:utext="${task.variableNameComment.keySet().contains('commentAfter_' + ansName)} ?
+                           ${task.variableNameComment.get('commentAfter_' + ansName)}"
+                           style="margin-bottom: 0"></label>
+                </div>
             </div>
-            <div class="form-row text-left align-items-center" style="margin-bottom: .25rem">
-                <div class="col-auto"><label style="margin-bottom: 0">Энергия гигантской сраки Е = </label></div>
-                <div class="col-auto"><input type="number" step="any" maxlength="65535" required/></div>
-                <div class="col"><label style="margin-bottom: 0"> МДж</label></div>
+
+            <div class="form-row text-left align-items-center" style="margin-bottom: .25rem"
+                 th:if="${task.answerNote == 1 or task.answerNote == 2 or task.answerNote == 3}">
+                <div class="col">
+                    <textarea class="form-control form-control-sm text-dark" maxlength="65535" rows="8"
+                              style="width: inherit"></textarea>
+                </div>
+            </div>
+
+            <div class="form-row text-left align-items-center" style="margin-bottom: .25rem"
+                 th:if="${task.answerNote == 3 or task.answerNote == 4}">
+                <div class="col">
+                    <input id="file" type="file" class="custom-file-input">
+                    <label class="custom-file-label text-dark" data-browse="Обзор" for="file"
+                           style="width: initial; margin-left: .3rem; margin-right: .3rem">
+                        Файл не выбран
+                    </label>
+                    <div id="fileSizeError" class="invalid-feedback" style="display: none">
+                        Размер файла не должен превышать 10 Мб
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -120,7 +185,7 @@
         </div>
     </form>
 
-    <div style="display: block; width: 50%; min-width: 36rem; margin-top: 1rem; margin-left: auto;
+    <div style="display: none; width: 50%; min-width: 36rem; margin-top: 1rem; margin-left: auto;
     margin-right: auto">
         <div id="towns-table" th:replace="admin/tasks/results-table :: #results-table"></div>
         <fieldset>
@@ -129,7 +194,8 @@
         </fieldset>
     </div>
 
-    <div style="margin-top: 1rem; margin-bottom: .5rem" th:text="'Время сервера при открытии страницы: '"></div>
+    <div style="margin-top: 1rem; margin-bottom: .5rem"
+         th:text="'Время сервера при открытии страницы: ' + ${task.currentServerDateTime}"></div>
 </div>
 
 <div th:replace="fragments/footer :: #footer"></div>
@@ -139,12 +205,45 @@
 <script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
 <script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.bundle.min.js}"></script>
 <script type="text/javascript">
+    $('#file').on('change', function() {
+        var fileName = $(this).val().replace(/C:\\fakepath\\/i, '')
+        var sizeErrMsg = document.getElementById('fileSizeError')
+        var isSize = this.files[0].size <= 10485760
+        if (isSize) {
+            $(this).next('.custom-file-label').html(fileName)
+            sizeErrMsg.style.display = 'none'
+        } else {
+            $(this).next('.custom-file-label').html('Файл не выбран')
+            $(this).val(null)
+            sizeErrMsg.style.display = 'block'
+        }
+    })
+
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                }, false);
+            });
+        }, false);
+    })();
+
     $(function () {
-        $('[data-toggle="tooltip"]').tooltip({ html: true, trigger: 'manual' })
+        $('[data-toggle="tooltip"]').tooltip({
+            html: true,
+            trigger: 'manual',
+            title: $('#tooltipContent')})
     })
 
     function showTooltip() {
         $('#answerTooltip').tooltip('show')
+        document.getElementById('tooltipContent').style.display = 'block'
     }
 
     function hideTooltip() {

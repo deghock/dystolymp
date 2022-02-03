@@ -39,7 +39,7 @@ public class TaskController {
 
     @GetMapping("/preview/{id}")
     public String previewTask(@PathVariable("id") Long id, ModelMap modelMap) {
-        // taskService.fillShowPreviewPageModelMap(id, modelMap);
+        taskService.fillShowPreviewPageModelMap(id, modelMap);
         return PREVIEW_PAGE;
     }
 

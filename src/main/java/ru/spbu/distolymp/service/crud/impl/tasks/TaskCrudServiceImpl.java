@@ -14,7 +14,8 @@ import ru.spbu.distolymp.common.files.ImageService;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto;
 import ru.spbu.distolymp.entity.tasks.Task;
 import ru.spbu.distolymp.exception.common.TechnicalException;
-import ru.spbu.distolymp.mapper.admin.tasks.tasks.TaskListMapper;
+import ru.spbu.distolymp.mapper.admin.tasks.tasks.api.TaskListMapper;
+import ru.spbu.distolymp.mapper.admin.tasks.tasks.api.TaskPreviewMapper;
 import ru.spbu.distolymp.mapper.entity.tasks.TaskMapper;
 import ru.spbu.distolymp.repository.tasks.TaskRepository;
 import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
@@ -36,6 +37,7 @@ public class TaskCrudServiceImpl implements TaskCrudService {
     private final ListingProblemCrudService listingProblemCrudService;
     private final TaskListMapper taskListMapper;
     protected final TaskMapper taskMapper;
+    protected final TaskPreviewMapper taskPreviewMapper;
     @Autowired
     @Qualifier("taskImageService")
     protected ImageService imageService;

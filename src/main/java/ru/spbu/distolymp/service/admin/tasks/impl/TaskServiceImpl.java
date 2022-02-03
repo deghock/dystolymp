@@ -12,10 +12,12 @@ import ru.spbu.distolymp.common.files.FileNameGenerator;
 import ru.spbu.distolymp.common.files.FilesUtils;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskFilter;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto;
+import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskPreviewDto;
 import ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto;
 import ru.spbu.distolymp.entity.tasks.Task;
 import ru.spbu.distolymp.exception.common.ResourceNotFoundException;
-import ru.spbu.distolymp.mapper.admin.tasks.tasks.TaskListMapper;
+import ru.spbu.distolymp.mapper.admin.tasks.tasks.api.TaskListMapper;
+import ru.spbu.distolymp.mapper.admin.tasks.tasks.api.TaskPreviewMapper;
 import ru.spbu.distolymp.mapper.entity.tasks.TaskMapper;
 import ru.spbu.distolymp.repository.tasks.TaskRepository;
 import ru.spbu.distolymp.service.admin.tasks.api.TaskService;
@@ -35,8 +37,9 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
     public TaskServiceImpl(TaskRepository taskRepository,
                            ListingProblemCrudService listingProblemCrudService,
                            TaskListMapper taskListMapper,
-                           TaskMapper taskMapper) {
-        super(taskRepository, listingProblemCrudService, taskListMapper, taskMapper);
+                           TaskMapper taskMapper,
+                           TaskPreviewMapper taskPreviewMapper) {
+        super(taskRepository, listingProblemCrudService, taskListMapper, taskMapper, taskPreviewMapper);
     }
 
     @Override
@@ -95,6 +98,15 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
     public void fillShowEditPageModelMap(Long id, ModelMap modelMap) {
         TaskDto taskDto = getTaskById(id)
                 .map(taskMapper::toDto)
+                .orElseThrow(ResourceNotFoundException::new);
+        modelMap.put("task", taskDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void fillShowPreviewPageModelMap(Long id, ModelMap modelMap) {
+        TaskPreviewDto taskDto = getTaskById(id)
+                .map(taskPreviewMapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
         modelMap.put("task", taskDto);
     }
