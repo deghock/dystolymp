@@ -47,9 +47,11 @@ public class TaskParser {
 
     public static List<String> parseTaskConditionToLines(String condition) {
         List<String> lines = new ArrayList<>();
+        if (condition == null) return lines;
         List<Integer> equalIndexes = new ArrayList<>();
         List<Integer> separatorIndexes = new ArrayList<>();
         separatorIndexes.add(-1);
+        if (!condition.contains("=")) return lines;
         for (int i = condition.indexOf("="); i > -1; i = condition.indexOf("=", i + 1))
             equalIndexes.add(i);
         for (int i = 0; i < equalIndexes.size() - 1; i++) {
@@ -60,6 +62,7 @@ public class TaskParser {
         separatorIndexes.add(condition.length() - 1);
         for (int i = 0; i < separatorIndexes.size() - 1; i++) {
             String substr = condition.substring(separatorIndexes.get(i) + 1, separatorIndexes.get(i + 1) + 1);
+            if (substr.length() < 3) return Collections.emptyList();
             lines.add(substr);
         }
         return lines;

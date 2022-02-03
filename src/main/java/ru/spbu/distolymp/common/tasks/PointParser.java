@@ -12,6 +12,7 @@ public class PointParser {
 
     public static List<String> parsePoints(String pointsInput) {
         List<String> points = new ArrayList<>();
+        if (pointsInput == null) return points;
         pointsInput = pointsInput.trim();
         if (pointsInput.toCharArray()[0] == ';')
             return Collections.emptyList();

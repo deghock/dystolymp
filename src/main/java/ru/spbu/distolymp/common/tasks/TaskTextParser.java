@@ -9,6 +9,8 @@ public class TaskTextParser {
     private TaskTextParser() {}
 
     public static String parse(String problemText, Map<String, Object> variables) {
+        if (problemText == null) return null;
+        if (variables == null) return problemText;
         StringBuilder parsedProblemText = new StringBuilder(problemText);
         while (parsedProblemText.indexOf("{") != -1 && parsedProblemText.indexOf("}") != -1) {
             int start = parsedProblemText.indexOf("{");
