@@ -1,6 +1,8 @@
 package ru.spbu.distolymp.validation.admin.tasks.validator;
 
 import ru.spbu.distolymp.common.tasks.TaskEvaluator;
+import static ru.spbu.distolymp.common.tasks.PointParser.parsePoints;
+import static ru.spbu.distolymp.common.tasks.TaskParser.parseTaskConditionToLines;
 
 /**
  * @author Vladislav Konovalov
@@ -9,14 +11,12 @@ public class AnswersValidator {
     private AnswersValidator() {}
 
     public static boolean isValid(String variables, String answer) {
-        TaskEvaluator evaluator = new TaskEvaluator();
-        if (evaluator.evalAndGetVariables(variables).isEmpty()) return true;
-        return !evaluator.evalAndGetAnswers(answer).isEmpty();
+        TaskEvaluator evaluator = new TaskEvaluator(variables, answer);
+        if (evaluator.getVariableMap().isEmpty()) return true;
+        return !evaluator.getAnswerWithErrorMap().isEmpty();
     }
 
     public static boolean isAnswerNumberValid(String gradePoints, String answer) {
-        TaskEvaluator evaluator = new TaskEvaluator();
-        PointsValidator validator = new PointsValidator();
-        return evaluator.countLines(answer) == validator.countPoints(gradePoints);
+        return parseTaskConditionToLines(answer).size() == parsePoints(gradePoints).size();
     }
 }

@@ -17,7 +17,7 @@ public class VariablesValidator implements ConstraintValidator<Variables, String
     @Override
     public boolean isValid(String str, ConstraintValidatorContext constraintValidatorContext) {
         if (str == null || str.trim().equals("")) return true;
-        TaskEvaluator evaluator = new TaskEvaluator();
-        return !evaluator.evalAndGetVariables(str).isEmpty();
+        TaskEvaluator evaluator = new TaskEvaluator(str);
+        return !evaluator.getVariableMap().isEmpty();
     }
 }
