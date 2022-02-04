@@ -12,7 +12,7 @@ import ru.spbu.distolymp.common.files.FileNameGenerator;
 import ru.spbu.distolymp.common.files.FilesUtils;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskFilter;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto;
-import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskPreviewDto;
+import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskViewDto;
 import ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto;
 import ru.spbu.distolymp.entity.tasks.Task;
 import ru.spbu.distolymp.exception.common.ResourceNotFoundException;
@@ -105,7 +105,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
     @Override
     @Transactional(readOnly = true)
     public void fillShowPreviewPageModelMap(Long id, ModelMap modelMap) {
-        TaskPreviewDto taskDto = getTaskById(id)
+        TaskViewDto taskDto = getTaskById(id)
                 .map(taskPreviewMapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
         modelMap.put("task", taskDto);

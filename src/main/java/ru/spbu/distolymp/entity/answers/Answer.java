@@ -1,4 +1,4 @@
-package ru.spbu.distolymp.entity.others;
+package ru.spbu.distolymp.entity.answers;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -94,7 +94,7 @@
         </button>
     </div>
 
-    <!--/*@thymesVar id="task" type="ru.spbu.distolymp.dto.admin.tasks.tasks.TaskPreviewDto"*/-->
+    <!--/*@thymesVar id="task" type="ru.spbu.distolymp.dto.admin.tasks.tasks.TaskViewDto"*/-->
     <div class="mb-2" style="border-color: black; border-width: 1px; border-style: solid;
     padding: .5rem; overflow-wrap: anywhere; overflow: auto">
         <img th:src="@{/img/tasks/{imageName}(imageName=${task.imageFileName})}"
@@ -185,14 +185,10 @@
         </div>
     </form>
 
-    <div style="display: none; width: 50%; min-width: 36rem; margin-top: 1rem; margin-left: auto;
-    margin-right: auto">
-        <div id="towns-table" th:replace="admin/tasks/results-table :: #results-table"></div>
-        <fieldset>
-            <legend>Параметры задания</legend>
-            Параметры
-        </fieldset>
-    </div>
+    <!--/*@thymesVar id="answer" type="ru.spbu.distolymp.dto.admin.tasks.tasks.TaskViewDto"*/-->
+    <div th:replace="admin/tasks/preview-results :: #preview-results"
+         style="display: none; width: 50%; min-width: 36rem; margin-top: 1rem; margin-left: auto;
+         margin-right: auto"></div>
 
     <div style="margin-top: 1rem; margin-bottom: .5rem"
          th:text="'Время сервера при открытии страницы: ' + ${task.currentServerDateTime}"></div>
@@ -238,7 +234,8 @@
         $('[data-toggle="tooltip"]').tooltip({
             html: true,
             trigger: 'manual',
-            title: $('#tooltipContent')})
+            title: $('#tooltipContent')
+        })
     });
 
     function showTooltip() {

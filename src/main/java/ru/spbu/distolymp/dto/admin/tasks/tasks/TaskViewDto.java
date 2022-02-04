@@ -8,7 +8,7 @@ import java.util.Map;
  * @author Vladislav Konovalov
  */
 @Data
-public class TaskPreviewDto {
+public class TaskViewDto {
     private Long id;
     private String imageFileName;
     private Integer width;

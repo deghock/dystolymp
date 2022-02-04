@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.spbu.distolymp.common.tasks.TaskEvaluator;
 import ru.spbu.distolymp.common.tasks.TaskParser;
-import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskPreviewDto;
+import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskViewDto;
 import ru.spbu.distolymp.entity.tasks.Task;
 import ru.spbu.distolymp.mapper.admin.tasks.tasks.api.TaskPreviewMapper;
 import java.time.ZoneId;
@@ -19,9 +19,9 @@ import static ru.spbu.distolymp.common.tasks.TaskTextParser.parse;
 @RequiredArgsConstructor
 public class TaskPreviewMapperImpl implements TaskPreviewMapper {
     @Override
-    public TaskPreviewDto toDto(Task task) {
+    public TaskViewDto toDto(Task task) {
         if (task == null) return null;
-        TaskPreviewDto taskDto = new TaskPreviewDto();
+        TaskViewDto taskDto = new TaskViewDto();
         TaskEvaluator evaluator = new TaskEvaluator(task.getVariables(), task.getCorrectAnswer());
         ZonedDateTime dateTime = ZonedDateTime.now(ZoneId.of("Europe/Moscow"));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy kk:mm");
