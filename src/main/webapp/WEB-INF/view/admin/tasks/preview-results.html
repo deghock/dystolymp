@@ -1,25 +1,30 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
-<div id="preview-results" style="overflow: auto">
-    <table class="table border center" aria-describedby="title" style="margin-bottom: .5rem">
-        <tr style="text-align: center">
-            <th id="answerName" style="vertical-align: middle">Название</th>
-            <th id="answer" style="vertical-align: middle">Ответ</th>
-            <th id="correctAnswer" style="vertical-align: middle">Правильный ответ</th>
-            <th id="correctness" style="vertical-align: middle">Правильность</th>
-            <th id="points" style="vertical-align: middle">Баллы</th>
-        </tr>
-        <tr>
-            <td>P</td>
-            <td>12</td>
-            <td>12+-1</td>
-            <td style="color: green">Правильно</td>
-            <td>1</td>
-        </tr>
-    </table>
+<div id="preview-results" style="display: block; width: 50%; min-width: 36rem; margin-top: 1rem;
+     margin-left: auto; margin-right: auto">
+    <div style="overflow: auto; margin-bottom: .5rem">
+        <table class="table border center" aria-describedby="title" style="margin-bottom: 0">
+            <tr style="text-align: center">
+                <th id="answerName" style="vertical-align: middle">Название</th>
+                <th id="answer" style="vertical-align: middle">Ответ</th>
+                <th id="correctAnswer" style="vertical-align: middle">Правильный ответ</th>
+                <th id="correctness" style="vertical-align: middle">Правильность</th>
+                <th id="points" style="vertical-align: middle">Баллы</th>
+            </tr>
+            <tr>
+                <td>P</td>
+                <td>12</td>
+                <td>12+-1</td>
+                <td style="color: green">Правильно</td>
+                <td>1</td>
+            </tr>
+        </table>
+    </div>
 
-    <fieldset>
-        <legend>Параметры задания</legend>
-        Параметры
-    </fieldset>
+    <div style="overflow: auto">
+        <fieldset>
+            <legend>Параметры задания</legend>
+            Параметры
+        </fieldset>
+    </div>
 </div>
 </html>

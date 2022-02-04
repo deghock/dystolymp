@@ -22,7 +22,6 @@
             border: 2px groove white;
             padding: .5rem;
             overflow-wrap: anywhere;
-            overflow: auto;
         }
         .tooltip-inner {
             text-align: left;
@@ -95,28 +94,30 @@
     </div>
 
     <!--/*@thymesVar id="task" type="ru.spbu.distolymp.dto.admin.tasks.tasks.TaskViewDto"*/-->
-    <div class="mb-2" style="border-color: black; border-width: 1px; border-style: solid;
-    padding: .5rem; overflow-wrap: anywhere; overflow: auto">
-        <img th:src="@{/img/tasks/{imageName}(imageName=${task.imageFileName})}"
-             th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
-             alt="Image not found" style="margin-right: .5rem; float: left; vertical-align: middle;"
-             th:if="${task.width == 0 and task.height != 0 and task.imageFileName != null}"
-             th:styleappend="'height:' + ${task.height} + 'px'"/>
-        <img th:src="@{/img/tasks/{imageName}(imageName=${task.imageFileName})}"
-             th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
-             alt="Image not found" style="margin-right: .5rem; float: left; vertical-align: middle;"
-             th:if="${task.height == 0 and task.width != 0  and task.imageFileName != null}"
-             th:styleappend="'width:' + ${task.width} + 'px'"/>
-        <img th:src="@{/img/tasks/{imageName}(imageName=${task.imageFileName})}"
-             th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
-             alt="Image not found" style="margin-right: .5rem; float: left; vertical-align: middle;"
-             th:if="${task.width != 0 and task.height != 0 and task.imageFileName != null}"
-             th:styleappend="'height:' + ${task.height} + 'px; width:' + ${task.width} + 'px'"/>
-        <div th:utext="${task.parsedProblemText}"></div>
+    <div class="mb-2" style="border-color: black; border-width: 1px; border-style: solid">
+        <div style="margin: .5rem; overflow-wrap: anywhere; overflow: auto">
+            <img th:src="@{/img/tasks/{imageName}(imageName=${task.imageFileName})}"
+                 th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
+                 alt="Image not found" style="margin-right: .5rem; float: left; vertical-align: middle;"
+                 th:if="${task.width == 0 and task.height != 0 and task.imageFileName != null}"
+                 th:styleappend="'height:' + ${task.height} + 'px'"/>
+            <img th:src="@{/img/tasks/{imageName}(imageName=${task.imageFileName})}"
+                 th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
+                 alt="Image not found" style="margin-right: .5rem; float: left; vertical-align: middle;"
+                 th:if="${task.height == 0 and task.width != 0  and task.imageFileName != null}"
+                 th:styleappend="'width:' + ${task.width} + 'px'"/>
+            <img th:src="@{/img/tasks/{imageName}(imageName=${task.imageFileName})}"
+                 th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
+                 alt="Image not found" style="margin-right: .5rem; float: left; vertical-align: middle;"
+                 th:if="${task.width != 0 and task.height != 0 and task.imageFileName != null}"
+                 th:styleappend="'height:' + ${task.height} + 'px; width:' + ${task.width} + 'px'"/>
+            <div th:utext="${task.parsedProblemText}"></div>
+        </div>
     </div>
 
     <form class="needs-validation" th:action="@{/tasks/submit-answer}" method="post"
           enctype="multipart/form-data" novalidate>
+        <input type="hidden" th:value="${task.variableNameValue}"/>
         <div>
             <div style="display: flex">
                 <p th:text="${task.answerNote != 4} ? 'Введите ответ:' : 'Прикрепите файл:'"
@@ -165,7 +166,7 @@
             <div class="form-row text-left align-items-center" style="margin-bottom: .25rem"
                  th:if="${task.answerNote == 3 or task.answerNote == 4}">
                 <div class="col">
-                    <input id="file" type="file" class="custom-file-input">
+                    <input id="file" type="file" class="custom-file-input"/>
                     <label class="custom-file-label text-dark" data-browse="Обзор" for="file"
                            style="width: initial; margin-left: .3rem; margin-right: .3rem">
                         Файл не выбран
@@ -186,9 +187,7 @@
     </form>
 
     <!--/*@thymesVar id="answer" type="ru.spbu.distolymp.dto.admin.tasks.tasks.TaskViewDto"*/-->
-    <div th:replace="admin/tasks/preview-results :: #preview-results"
-         style="display: none; width: 50%; min-width: 36rem; margin-top: 1rem; margin-left: auto;
-         margin-right: auto"></div>
+    <div th:replace="admin/tasks/preview-results :: #preview-results"></div>
 
     <div style="margin-top: 1rem; margin-bottom: .5rem"
          th:text="'Время сервера при открытии страницы: ' + ${task.currentServerDateTime}"></div>
