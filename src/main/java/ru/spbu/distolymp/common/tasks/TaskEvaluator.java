@@ -66,7 +66,7 @@ public class TaskEvaluator {
                 line = parseInterval(line);
                 engine.eval(line);
             } catch (ScriptException e) {
-                variables = Collections.emptyMap();
+                variables = new HashMap<>();
                 return;
             }
             String varName = line.split("=")[0].trim();
@@ -90,14 +90,14 @@ public class TaskEvaluator {
             try {
                 engine.eval(line);
             } catch (ScriptException e) {
-                answers = Collections.emptyMap();
+                answers = new HashMap<>();
                 return;
             }
             String ansName = line.split("=")[0].trim();
             Number error;
             Object variableValue = engine.get(ansName);
             if (!(variableValue instanceof Number)) {
-                answers = Collections.emptyMap();
+                answers = new HashMap<>();
                 return;
             }
             if (errorStr == null) {
@@ -108,20 +108,20 @@ public class TaskEvaluator {
                     if (percentIndex == -1) {
                         error = (Number) engine.eval(errorStr);
                         if (error.doubleValue() < 0.0) {
-                            answers = Collections.emptyMap();
+                            answers = new HashMap<>();
                             return;
                         }
                     } else {
                         errorStr = errorStr.substring(0, percentIndex);
                         error = (Number) engine.eval(errorStr);
                         if (error.doubleValue() < 0.0) {
-                            answers = Collections.emptyMap();
+                            answers = new HashMap<>();
                             return;
                         }
                         error = Math.abs(((Number) variableValue).doubleValue() * error.doubleValue() / 100);
                     }
                 } catch (ScriptException | ClassCastException e) {
-                    answers = Collections.emptyMap();
+                    answers = new HashMap<>();
                     return;
                 }
             }

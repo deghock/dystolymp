@@ -62,7 +62,7 @@ public class TaskParser {
         separatorIndexes.add(condition.length() - 1);
         for (int i = 0; i < separatorIndexes.size() - 1; i++) {
             String substr = condition.substring(separatorIndexes.get(i) + 1, separatorIndexes.get(i + 1) + 1);
-            if (substr.length() < 3) return Collections.emptyList();
+            if (substr.length() < 3) return new ArrayList<>();
             lines.add(substr);
         }
         return lines;
