@@ -13,7 +13,8 @@ import ru.spbu.distolymp.dto.admin.directories.towns.TownDetailsDto;
 import ru.spbu.distolymp.dto.entity.geography.region.RegionNameCodeCountryDto;
 import ru.spbu.distolymp.dto.entity.geography.town.TownDto;
 import ru.spbu.distolymp.entity.geography.Town;
-import ru.spbu.distolymp.exception.crud.geography.TownCrudServiceException;
+import ru.spbu.distolymp.exception.common.ResourceNotFoundException;
+import ru.spbu.distolymp.exception.common.TechnicalException;
 import ru.spbu.distolymp.mapper.admin.directories.towns.TownDetailsMapper;
 import ru.spbu.distolymp.mapper.entity.geography.TownMapper;
 import ru.spbu.distolymp.repository.geography.TownRepository;
@@ -68,9 +69,11 @@ public class TownCrudServiceImpl implements TownCrudService {
         try {
             Town town = townRepository.findById(id).orElseThrow(EntityNotFoundException::new);
             return townDetailsMapper.toDto(town);
-        } catch (EntityNotFoundException | DataAccessException e) {
+        } catch (DataAccessException e) {
             log.error("An error occurred while getting a town by id=" + id, e);
-            throw new TownCrudServiceException();
+            throw new TechnicalException();
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException();
         }
     }
 
@@ -83,7 +86,7 @@ public class TownCrudServiceImpl implements TownCrudService {
             townRepository.save(town);
         } catch (DataAccessException e) {
             log.error("An error occurred while saving or updating a town", e);
-            throw new TownCrudServiceException();
+            throw new TechnicalException();
         }
     }
 
@@ -103,7 +106,7 @@ public class TownCrudServiceImpl implements TownCrudService {
             townRepository.deleteAllByIdIn(Arrays.asList(ids));
         } catch (DataAccessException e) {
             log.error("An error occurred while deleting towns by ids", e);
-            throw new TownCrudServiceException();
+            throw new TechnicalException();
         }
     }
 
@@ -115,7 +118,7 @@ public class TownCrudServiceImpl implements TownCrudService {
             return townMapper.toDtoList(townList);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting towns by specs", e);
-            throw new TownCrudServiceException();
+            throw new TechnicalException();
         }
     }
 
@@ -127,7 +130,7 @@ public class TownCrudServiceImpl implements TownCrudService {
             return townMapper.toDtoList(townList);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting towns by specs", e);
-            throw new TownCrudServiceException();
+            throw new TechnicalException();
         }
     }
 }

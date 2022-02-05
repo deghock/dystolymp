@@ -26,7 +26,9 @@ public class ListingCrudServiceImpl implements ListingCrudService {
 
     @Override
     @Transactional(readOnly = true)
-    public Listing getListingById(Long id) {
+    public Listing getListingByIdOrNull(Long id) {
+        if (id == null)
+            return null;
         try {
             return listingRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         } catch (DataAccessException | EntityNotFoundException e) {
