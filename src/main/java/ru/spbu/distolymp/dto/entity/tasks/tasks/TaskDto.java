@@ -46,6 +46,11 @@ public class TaskDto {
     @Range(max = 65535)
     private Integer height;
 
+    @NotNull(message = "{task.gradePoints.required}")
+    @Size(max = 255)
+    @Points
+    private String gradePoints;
+
     @Size(max = 65535)
     @Variables
     private String variables;
@@ -55,11 +60,6 @@ public class TaskDto {
     @NotNull(message = "{task.correctAnswer.required}")
     @Size(max = 65535)
     private String correctAnswer;
-
-    @NotNull(message = "{task.gradePoints.required}")
-    @Size(max = 255)
-    @Points
-    private String gradePoints;
 
     @NotNull
     @Range(max = 65535)

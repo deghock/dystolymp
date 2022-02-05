@@ -6,6 +6,7 @@ import ru.spbu.distolymp.entity.tasks.Task;
 /**
  * @author Vladislav Konovalov
  */
-public interface TaskPreviewMapper {
+public interface TaskViewMapper {
     TaskViewDto toDto(Task task);
+    TaskViewDto toDto(Task task, String params);
 }

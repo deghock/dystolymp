@@ -10,14 +10,18 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
 import ru.spbu.distolymp.common.files.FileNameGenerator;
 import ru.spbu.distolymp.common.files.FilesUtils;
+import ru.spbu.distolymp.common.tasks.PointParser;
+import ru.spbu.distolymp.common.tasks.TaskPreviewResultHandler;
+import ru.spbu.distolymp.dto.entity.answers.AnswerDto;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskFilter;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto;
+import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskPreviewResultDto;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskViewDto;
 import ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto;
 import ru.spbu.distolymp.entity.tasks.Task;
 import ru.spbu.distolymp.exception.common.ResourceNotFoundException;
 import ru.spbu.distolymp.mapper.admin.tasks.tasks.api.TaskListMapper;
-import ru.spbu.distolymp.mapper.admin.tasks.tasks.api.TaskPreviewMapper;
+import ru.spbu.distolymp.mapper.admin.tasks.tasks.api.TaskViewMapper;
 import ru.spbu.distolymp.mapper.entity.tasks.TaskMapper;
 import ru.spbu.distolymp.repository.tasks.TaskRepository;
 import ru.spbu.distolymp.service.admin.tasks.api.TaskService;
@@ -31,6 +35,7 @@ import java.util.List;
  */
 @Service
 public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService {
+    private final TaskViewMapper taskViewMapper;
     private static final Sort SORT_BY_ID_DESC = Sort.by("id").descending();
     private static final String TASKS_PARAM = "taskList";
 
@@ -38,8 +43,9 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
                            ListingProblemCrudService listingProblemCrudService,
                            TaskListMapper taskListMapper,
                            TaskMapper taskMapper,
-                           TaskPreviewMapper taskPreviewMapper) {
-        super(taskRepository, listingProblemCrudService, taskListMapper, taskMapper, taskPreviewMapper);
+                           TaskViewMapper taskViewMapper) {
+        super(taskRepository, listingProblemCrudService, taskListMapper, taskMapper);
+        this.taskViewMapper = taskViewMapper;
     }
 
     @Override
@@ -106,9 +112,29 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
     @Transactional(readOnly = true)
     public void fillShowPreviewPageModelMap(Long id, ModelMap modelMap) {
         TaskViewDto taskDto = getTaskById(id)
-                .map(taskPreviewMapper::toDto)
+                .map(taskViewMapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
+        AnswerDto answerDto = new AnswerDto();
+        Number[] userAnswers = new Number[taskDto.getAnswerNameList().size()];
+        answerDto.setUserAnswers(userAnswers);
         modelMap.put("task", taskDto);
+        modelMap.put("answer", answerDto);
+        modelMap.put("result", new TaskPreviewResultDto());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void fillShowPreviewModelMap(AnswerDto answerDto, ModelMap modelMap) {
+        Task task = getTaskById(answerDto.getProblemId()).orElseThrow(ResourceNotFoundException::new);
+        TaskViewDto taskDto = taskViewMapper.toDto(task, answerDto.getParam());
+        TaskPreviewResultDto resultDto = TaskPreviewResultHandler.toResultDto(
+                taskDto,
+                answerDto.getUserAnswers(),
+                task.getCorrectAnswer(),
+                PointParser.parsePoints(task.getGradePoints()),
+                task.getMaxPoints());
+        modelMap.put("task", taskDto);
+        modelMap.put("result", resultDto);
     }
 
     @Override
@@ -159,17 +185,14 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
             task.setWidth(0);
         if (task.getHeight() == null)
             task.setHeight(0);
-        task.setMaxPoints(parseAndEvalPoints(task.getGradePoints()));
+        task.setMaxPoints(calcPoints(task.getGradePoints()));
     }
 
-    private Double parseAndEvalPoints(String pointsStr) {
-        pointsStr = pointsStr.replaceAll("\\s+","");
-        pointsStr = pointsStr.replace(",", ".");
-        String[] pointsList = pointsStr.split(";");
+    private Double calcPoints(String pointsStr) {
         double result = 0.0;
-        for (String point : pointsList)
-            if (!point.equals(""))
-                result += Double.parseDouble(point);
+        List<String> points = PointParser.parsePoints(pointsStr);
+        for (String point : points)
+            result += Double.parseDouble(point);
         return result;
     }
 
@@ -194,7 +217,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
         task.setTitle(taskTitleDto.getTitle());
         task.setType(3);
         task.setStatus(1);
-        task.setMaxPoints(parseAndEvalPoints(task.getGradePoints()));
+        task.setMaxPoints(calcPoints(task.getGradePoints()));
         String imageName = task.getImageFileName();
         if (imageName != null) {
             String extension = imageService.getExtensionFromImageName(imageName);

@@ -6,6 +6,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.spbu.distolymp.dto.entity.answers.AnswerDto;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskFilter;
 import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto;
 import ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto;
@@ -26,7 +27,6 @@ public class TaskController {
     private static final String TASKS_TABLE = ROOT_DIR + "tasks-table :: #tasks-table";
     private static final String EDIT_PAGE = ROOT_DIR + "edit";
     private static final String PREVIEW_PAGE = ROOT_DIR + "preview";
-    private static final String REDIRECT_PREVIEW = "redirect:/tasks/preview/";
     private static final String REDIRECT_LIST = "redirect:/tasks/list";
     private static final String SUCCESS_PARAM = "success";
     private final TaskService taskService;
@@ -44,8 +44,10 @@ public class TaskController {
     }
 
     @PostMapping("/submit-answer")
-    public String submitAnswer(BindingResult br, RedirectAttributes ra) {
-        return null;
+    public String submitAnswer(@Valid @ModelAttribute("answer") AnswerDto answerDto,
+                               BindingResult br, ModelMap modelMap) {
+        taskService.fillShowPreviewModelMap(answerDto, modelMap);
+        return PREVIEW_PAGE;
     }
 
     @GetMapping("/filter")
@@ -75,14 +77,14 @@ public class TaskController {
             taskService.addTask(taskDto);
         else
             taskService.updateTask(taskDto);
-        ra.addFlashAttribute(SUCCESS_PARAM, "Изменения сохранены.");
+        ra.addFlashAttribute(SUCCESS_PARAM, "Изменения сохранены");
         return REDIRECT_LIST;
     }
 
     @GetMapping("/delete/{id}")
     public String deleteTask(@PathVariable("id") Long id, RedirectAttributes ra) {
         taskService.deleteTaskAndImage(id);
-        ra.addFlashAttribute(SUCCESS_PARAM, "Задача удалена.");
+        ra.addFlashAttribute(SUCCESS_PARAM, "Задача удалена");
         return REDIRECT_LIST;
     }
 
@@ -90,7 +92,7 @@ public class TaskController {
     public String copyTask(@ModelAttribute("taskForCopy") TaskListDto taskDto,
                            RedirectAttributes ra) {
         taskService.copyTask(taskDto);
-        ra.addFlashAttribute(SUCCESS_PARAM, "Задача скопирована.");
+        ra.addFlashAttribute(SUCCESS_PARAM, "Задача скопирована");
         return REDIRECT_LIST;
     }
 
@@ -102,7 +104,7 @@ public class TaskController {
 
     @ExceptionHandler(TechnicalException.class)
     public String handleTechnicalException(RedirectAttributes ra) {
-        ra.addFlashAttribute("error", "Произошла ошибка. Пожалуйста, попробуйте повторить операцию позже.");
+        ra.addFlashAttribute("error", "Произошла техническая ошибка");
         return REDIRECT_LIST;
     }
 }

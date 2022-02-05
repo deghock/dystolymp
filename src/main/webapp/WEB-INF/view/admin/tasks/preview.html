@@ -71,29 +71,44 @@
 </p>
 
 <div class="container" style="min-width: 38rem">
-    <div class="alert alert-success alert-dismissible text-center mx-auto" role="alert"
-         style="width: 100%; padding: .5rem; min-width: 19rem" th:if="${right}">
-        <span th:text="${right}"></span>
-        <button type="button" class="close" data-dismiss="alert" style="padding: .5rem 1rem">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="alert alert-warning alert-dismissible text-center mx-auto" role="alert"
-         style="width: 100%; padding: .5rem; min-width: 19rem" th:if="${partly}">
-        <span th:text="${partly}"></span>
-        <button type="button" class="close" data-dismiss="alert" style="padding: .5rem 1rem">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="alert alert-danger alert-dismissible text-center mx-auto" role="alert"
-         style="width: 100%; padding: .5rem; min-width: 19rem" th:if="${wrong}">
-        <span th:text="${wrong}"></span>
-        <button type="button" class="close" data-dismiss="alert" style="padding: .5rem 1rem">
-            <span aria-hidden="true">&times;</span>
-        </button>
+    <div th:if="${result.correctness != null}">
+        <div class="alert alert-success alert-dismissible text-center mx-auto" role="alert"
+             style="width: 100%; padding: .5rem; min-width: 19rem"
+             th:if="${not #maps.isEmpty(result.correctness) and #bools.setAnd(result.correctness.values())}">
+            <span>Правильно</span>
+            <button type="button" class="close" data-dismiss="alert" style="padding: .5rem 1rem">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="alert alert-info alert-dismissible text-center mx-auto" role="alert"
+             style="width: 100%; padding: .5rem; min-width: 19rem"
+             th:if="${not #bools.setAnd(result.correctness.values()) and #bools.setOr(result.correctness.values())}">
+            <span>Частично правильно</span>
+            <button type="button" class="close" data-dismiss="alert" style="padding: .5rem 1rem">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="alert alert-danger alert-dismissible text-center mx-auto" role="alert"
+             style="width: 100%; padding: .5rem; min-width: 19rem"
+             th:if="${not #bools.setAnd(result.correctness.values()) and not #bools.setOr(result.correctness.values())}">
+            <span>Неправильно</span>
+            <button type="button" class="close" data-dismiss="alert" style="padding: .5rem 1rem">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="alert alert-secondary alert-dismissible text-center mx-auto" role="alert"
+             style="width: 100%; padding: .5rem; min-width: 19rem; background-color: #D6D8D9"
+             th:if="${#maps.isEmpty(result.correctness)}">
+            <span>Решение отправлено</span>
+            <button type="button" class="close" data-dismiss="alert" style="padding: .5rem 1rem">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
     </div>
 
     <!--/*@thymesVar id="task" type="ru.spbu.distolymp.dto.admin.tasks.tasks.TaskViewDto"*/-->
+    <!--/*@thymesVar id="answer" type="ru.spbu.distolymp.dto.entity.answers.AnswerDto"*/-->
+    <!--/*@thymesVar id="result" type="ru.spbu.distolymp.dto.admin.tasks.tasks.TaskPreviewResultDto"*/-->
     <div class="mb-2" style="border-color: black; border-width: 1px; border-style: solid">
         <div style="margin: .5rem; overflow-wrap: anywhere; overflow: auto">
             <img th:src="@{/img/tasks/{imageName}(imageName=${task.imageFileName})}"
@@ -115,23 +130,21 @@
         </div>
     </div>
 
-    <form class="needs-validation" th:action="@{/tasks/submit-answer}" method="post"
-          enctype="multipart/form-data" novalidate>
-        <input type="hidden" th:value="${task.variableNameValue}"/>
+    <form class="needs-validation" th:action="@{/tasks/submit-answer}" th:object="${answer}"
+          method="post" enctype="multipart/form-data" onsubmit="getUserIP()" novalidate>
+        <input type="hidden" th:attr="name='param'" th:value="${task.variableNameValue}"/>
+        <input type="hidden" th:attr="name='problemId'" th:value="${task.id}"/>
+        <input id="userIP" type="hidden" th:attr="name='ip'"/>
+        <input type="hidden" th:attr="name='answerNote'" th:value="${task.answerNote}"/>
+        <input type="hidden" th:attr="name='taskStartDateTime'" th:value="${task.currentServerDateTime}">
         <div>
             <div style="display: flex">
                 <p th:text="${task.answerNote != 4} ? 'Введите ответ:' : 'Прикрепите файл:'"
                    style="margin: 0 auto .5rem 0; text-align: center">Введите ответ:</p>
                 <a th:if="${task.answerNote == 0 or task.answerNote == 1}"
                    id="answerTooltip" style="margin-right: 0; margin-left: auto" class="abutton"
-                   data-toggle="tooltip" onclick="showTooltip()" onmouseleave="hideTooltip()">
-                    правильные ответы</a>
-                <div id="tooltipContent" style="display: none">
-                    <ul th:each="ans : ${task.answerNameValue.entrySet()}"
-                        style="list-style-type: none; white-space: nowrap; padding: 0; margin: 0">
-                        <li th:text="${ans.key} + ' = ' + ${ans.value}"></li>
-                    </ul>
-                </div>
+                   data-toggle="tooltip" onclick="showTooltip()" onmouseleave="hideTooltip()"
+                   th:title="${task.answerNameValue}">правильные ответы</a>
             </div>
 
             <div class="form-row text-left align-items-center" style="margin-bottom: .25rem"
@@ -144,29 +157,36 @@
                            style="margin-bottom: 0"></label>
                 </div>
                 <div class="col-auto was-validated">
-                    <input th:id="${ansName} + 'Input'" type="number" step="any" maxlength="65535"
+                    <input th:id="${ansName} + 'Input'" type="number" step="any" maxlength="4368"
                            class="form-control form-control-sm text-dark" placeholder="Введите ответ"
-                           autocomplete="off" required/>
+                           autocomplete="off" required th:field="*{userAnswers[__${iter.index}__]}"/>
                 </div>
-                <div class="col">
+                <div class="col-auto">
                     <label th:utext="${task.variableNameComment.keySet().contains('commentAfter_' + ansName)} ?
                            ${task.variableNameComment.get('commentAfter_' + ansName)}"
                            style="margin-bottom: 0"></label>
+                </div>
+                <div th:if="${result.correctness != null and not #bools.setAnd(result.correctness.values())
+                     and #bools.setOr(result.correctness.values())}" class="col">
+                    <div th:if="${result.correctness.get(ansName)}" style="color: #28A745;
+                         text-decoration-line: underline">Правильно</div>
+                    <div th:unless="${result.correctness.get(ansName)}" style="color: #DC3545;
+                         text-decoration-line: underline">Неправильно</div>
                 </div>
             </div>
 
             <div class="form-row text-left align-items-center" style="margin-bottom: .25rem"
                  th:if="${task.answerNote == 1 or task.answerNote == 2 or task.answerNote == 3}">
-                <div class="col">
+                <div class="col was-validated">
                     <textarea class="form-control form-control-sm text-dark" maxlength="65535" rows="8"
-                              style="width: inherit"></textarea>
+                              style="width: inherit" th:field="*{userNotes}"></textarea>
                 </div>
             </div>
 
             <div class="form-row text-left align-items-center" style="margin-bottom: .25rem"
                  th:if="${task.answerNote == 3 or task.answerNote == 4}">
                 <div class="col">
-                    <input id="file" type="file" class="custom-file-input"/>
+                    <input id="file" type="file" class="custom-file-input" th:field="*{userFile}"/>
                     <label class="custom-file-label text-dark" data-browse="Обзор" for="file"
                            style="width: initial; margin-left: .3rem; margin-right: .3rem">
                         Файл не выбран
@@ -179,15 +199,57 @@
         </div>
 
         <div style="text-align: center; margin-top: .5rem">
-            <button type="submit" class="btn btn-light border-dark" style="width: 25%; min-width: 13rem;
-            padding-bottom: .1rem; padding-top: .1rem">
+            <button type="submit" class="btn btn-light border-dark"
+                    style="width: 25%; min-width: 13rem; padding-bottom: .1rem; padding-top: .1rem">
                 Отправить результаты
             </button>
         </div>
     </form>
 
-    <!--/*@thymesVar id="answer" type="ru.spbu.distolymp.dto.admin.tasks.tasks.TaskViewDto"*/-->
-    <div th:replace="admin/tasks/preview-results :: #preview-results"></div>
+    <div id="preview-results" style="display: none; width: 50%; min-width: 36rem; margin-top: 1rem;
+         margin-left: auto; margin-right: auto;" th:styleappend="${result.answerNote != null} ? 'display: block'">
+        <div th:if="${result.answerNote == 0 or result.answerNote == 1}"
+             style="overflow: auto; margin-bottom: .5rem">
+            <table class="table border center" aria-describedby="title" style="margin-bottom: 0">
+                <tr style="text-align: center">
+                    <th id="answerName" style="vertical-align: middle">Название</th>
+                    <th id="answer" style="vertical-align: middle">Ответ</th>
+                    <th id="correctAnswer" style="vertical-align: middle">Правильный ответ</th>
+                    <th id="correctness" style="vertical-align: middle">Правильность</th>
+                    <th id="points" style="vertical-align: middle">Баллы</th>
+                </tr>
+                <tr th:each="ansName, iter : ${result.answerNameList}">
+                    <td th:text="${ansName}"></td>
+                    <td th:text="${result.userAnswerMap.get(ansName)}"></td>
+                    <td th:text="${result.answerWithErrorMap.get(ansName).key} + ' ± ' +
+                        ${result.answerWithErrorMap.get(ansName).value}"></td>
+                    <td th:text="${result.correctness.get(ansName)} ? 'Правильно' : 'Неправильно'"
+                        th:style="'color:' + ${__${result.correctness.get(ansName)}__ ? '#28A745' : '#DC3545'}"></td>
+                    <td th:text="${result.points.get(iter.index)}"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align: right; background-color: #E3AF8B; font-weight: bold">Итого:</td>
+                    <td th:text="${result.correctAnswersNumber} + ' (из ' + ${#lists.size(result.answerNameList)} + ')'"></td>
+                    <td th:text="${result.userPoints} + ' (из ' + ${result.maxPoint} + ')'"></td>
+                </tr>
+            </table>
+        </div>
+
+        <div th:if="${not #lists.isEmpty(result.param) or result.answerNote == 2 or result.answerNote == 3
+             or result.answerNote == 4}"
+             style="overflow: auto">
+            <fieldset>
+                <legend>Информация о задании</legend>
+                <div th:if="${result.answerNote == 2 or result.answerNote == 3 or result.answerNote == 4}"
+                     th:utext="'Возможный балл за задачу: ' + ${result.maxPoint.toString()}"></div>
+                <div th:if="${not #lists.isEmpty(result.param)}" th:each="line, iter : ${result.param}">
+                    <div th:if="${iter.index == 0 and result.answerNote != 0 and result.answerNote != 1}"
+                         th:utext="'<br>'"></div>
+                    <div th:utext="${line}"></div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
 
     <div style="margin-top: 1rem; margin-bottom: .5rem"
          th:text="'Время сервера при открытии страницы: ' + ${task.currentServerDateTime}"></div>
@@ -200,6 +262,10 @@
 <script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
 <script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.bundle.min.js}"></script>
 <script type="text/javascript">
+    function getUserIP(json) {
+        document.getElementById('userIP').value = json.ip
+    }
+
     $('#file').on('change', function() {
         var fileName = $(this).val().replace(/C:\\fakepath\\/i, '')
         var sizeErrMsg = document.getElementById('fileSizeError')
@@ -232,18 +298,17 @@
     $(function () {
         $('[data-toggle="tooltip"]').tooltip({
             html: true,
-            trigger: 'manual',
-            title: $('#tooltipContent')
+            trigger: 'manual'
         })
     });
 
     function showTooltip() {
         $('#answerTooltip').tooltip('show')
-        document.getElementById('tooltipContent').style.display = 'block'
     }
 
     function hideTooltip() {
         $('#answerTooltip').tooltip('hide')
     }
 </script>
+<script type="text/javascript" src="https://api.ipify.org?format=jsonp&callback=getUserIP"></script>
 </html>

@@ -28,14 +28,45 @@ public class TaskEvaluator {
         return variables;
     }
 
+    public String getVariableString(boolean html) {
+        StringBuilder variableNameValueString = new StringBuilder();
+        Iterator<Entry<String, Object>> iterator = getVariableMap().entrySet().iterator();
+        while (iterator.hasNext()) {
+            Entry<String, Object> variable = iterator.next();
+            String name = variable.getKey();
+            Object value = variable.getValue();
+            if (value instanceof String)
+                variableNameValueString.append(name).append(" = '").append(value).append("';");
+            else
+                variableNameValueString.append(name).append(" = ").append(value.toString()).append(";");
+            if (iterator.hasNext())
+                variableNameValueString.append(html ? "<br>" : "\n");
+        }
+        return variableNameValueString.toString();
+    }
+
     public Map<String, Number> getAnswerMap() {
-        Map<String, Number> result = new HashMap<>();
+        Map<String, Number> answerNameValueMap = new HashMap<>();
         for (Entry<String, Entry<Number, Number>> ans : answers.entrySet()) {
             String name = ans.getKey();
             Number value = ans.getValue().getKey();
-            result.put(name, value);
+            answerNameValueMap.put(name, value);
         }
-        return result;
+        return answerNameValueMap;
+    }
+
+    public String getAnswerString(boolean html) {
+        StringBuilder answerNameValueString = new StringBuilder();
+        Iterator<Entry<String, Number>> iterator = getAnswerMap().entrySet().iterator();
+        while (iterator.hasNext()) {
+            Entry<String, Number> answer = iterator.next();
+            String name = answer.getKey();
+            String value = answer.getValue().toString();
+            answerNameValueString.append(name).append(" = ").append(value).append(";");
+            if (iterator.hasNext())
+                answerNameValueString.append(html ? "<br>" : "\n");
+        }
+        return answerNameValueString.toString();
     }
 
     public Map<String, Entry<Number, Number>> getAnswerWithErrorMap() {
@@ -43,16 +74,33 @@ public class TaskEvaluator {
     }
 
     public Map<String, String> getCommentForVariableMap() {
-        Map<String, String> result = new HashMap<>();
+        Map<String, String> commentNameValueMap = new HashMap<>();
         for (Entry<String, Object> variable : variables.entrySet()) {
             String commentName = variable.getKey();
             String value = variable.getValue().toString();
-            if (commentName.matches("^comment_\\w+$"))
-                result.put(commentName, value);
-            if (commentName.matches("^commentAfter_\\w+$"))
-                result.put(commentName, value);
+            if (commentName.matches("^comment_\\w+$") ||
+                    commentName.matches("^commentAfter_\\w+$")) {
+                commentNameValueMap.put(commentName, value);
+            }
         }
-        return result;
+        return commentNameValueMap;
+    }
+
+    public Map<String, Boolean> checkTaskCorrectness(Map<String, Number> userAnswerMap) {
+        Map<String, Boolean> correctnessMap = new HashMap<>();
+        for (Entry<String, Number> userAnswer : userAnswerMap.entrySet()) {
+            String name = userAnswer.getKey();
+            double userValue = userAnswer.getValue().doubleValue();
+            if (answers.containsKey(name)) {
+                double correctValue = answers.get(name).getKey().doubleValue();
+                double error = answers.get(name).getValue().doubleValue();
+                boolean correct = (userValue >= correctValue - error) && (userValue <= correctValue + error);
+                correctnessMap.put(name, correct);
+            } else {
+                correctnessMap.put(name, false);
+            }
+        }
+        return correctnessMap;
     }
 
     private void evalVariables(String variablesInput) {
@@ -80,7 +128,6 @@ public class TaskEvaluator {
         for (String line : lines) {
             line = line.trim();
             line = parseMathExpr(line);
-            line = line.replace(",", ".");
             String errorStr = null;
             int plusMinusIndex = line.lastIndexOf("+-");
             if (plusMinusIndex != -1) {
