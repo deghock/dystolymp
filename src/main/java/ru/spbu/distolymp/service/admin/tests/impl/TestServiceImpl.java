@@ -7,13 +7,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import ru.spbu.distolymp.dto.admin.tests.TestFilter;
 import ru.spbu.distolymp.dto.admin.tests.TestListDto;
+import ru.spbu.distolymp.dto.entity.tasks.TestDto;
 import ru.spbu.distolymp.entity.tasks.Test;
+import ru.spbu.distolymp.exception.common.ResourceNotFoundException;
 import ru.spbu.distolymp.mapper.admin.tests.api.TestListMapper;
+import ru.spbu.distolymp.mapper.entity.tasks.TestMapper;
 import ru.spbu.distolymp.repository.tasks.TestRepository;
 import ru.spbu.distolymp.service.admin.tests.api.TestService;
 import ru.spbu.distolymp.service.crud.impl.tasks.TestCrudServiceImpl;
 import ru.spbu.distolymp.util.admin.tasks.TestSpecsConverter;
-
 import java.util.List;
 
 /**
@@ -25,8 +27,9 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
     private static final String TESTS_PARAM = "testList";
 
     public TestServiceImpl(TestRepository testRepository,
-                           TestListMapper testListMapper) {
-        super(testRepository, testListMapper);
+                           TestListMapper testListMapper,
+                           TestMapper testMapper) {
+        super(testRepository, testListMapper, testMapper);
     }
 
     @Override
@@ -47,5 +50,23 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
         else
             testDtoList = getTests(SORT_BY_ID_DESC, specs);
         modelMap.put(TESTS_PARAM, testDtoList);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void fillShowEditPageModelMap(Long id, ModelMap modelMap) {
+        TestDto testDto = getTestById(id)
+                .map(testMapper::toDto)
+                .orElseThrow(ResourceNotFoundException::new);
+        modelMap.put("test", testDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void fillShowAddPageModelMap(ModelMap modelMap) {
+        TestDto testDto = new TestDto();
+        testDto.setWidth(0);
+        testDto.setHeight(0);
+        modelMap.put("test", testDto);
     }
 }

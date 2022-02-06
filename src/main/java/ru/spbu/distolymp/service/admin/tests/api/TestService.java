@@ -9,4 +9,6 @@ import ru.spbu.distolymp.dto.admin.tests.TestFilter;
 public interface TestService {
     void fillShowAllTestModelMap(ModelMap modelMap);
     void fillShowAllTestModelMap(ModelMap modelMap, TestFilter testFilter);
+    void fillShowEditPageModelMap(Long id, ModelMap modelMap);
+    void fillShowAddPageModelMap(ModelMap modelMap);
 }
