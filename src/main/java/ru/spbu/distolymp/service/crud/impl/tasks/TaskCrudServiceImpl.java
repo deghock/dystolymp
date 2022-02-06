@@ -137,7 +137,7 @@ public class TaskCrudServiceImpl implements TaskCrudService {
         try {
             return taskRepository.findById(id);
         } catch (DataAccessException e) {
-            log.error("An error occurred while getting a task by id=" + id, e);
+            log.error("An error occurred while getting a task with id=" + id, e);
             throw new TechnicalException();
         }
     }
