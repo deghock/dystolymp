@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <style>
+        p {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey" style="min-width: 612px">
+
+<div th:replace="fragments/menu-staff :: #menustaff"></div>
+
+<p id="title" style="margin-top: 1rem; margin-bottom: .5rem">Тесты</p>
+
+<div class="container" style="min-width: 38rem">
+    <div class="alert alert-success alert-dismissible text-center mx-auto" role="alert"
+         style="width: 50%; padding: .5rem; min-width: 25rem" th:if="${success}">
+        <span th:text="${success}"></span>
+        <button type="button" class="close" data-dismiss="alert" style="padding: .5rem 1rem">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="alert alert-danger alert-dismissible text-center mx-auto" role="alert"
+         style="width: 50%; padding: .5rem; min-width: 25rem" th:if="${error}">
+        <span th:text="${error}"></span>
+        <button type="button" class="close" data-dismiss="alert" style="padding: .5rem 1rem">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="input-group mb-3 mx-auto" style="width: 50%; min-width: 25rem">
+        <input type="text" id="test-title" class="form-control"
+               placeholder="Фильтр тестов по заголовку и префиксу..." aria-describedby="search-button">
+        <button class="btn btn-secondary" type="submit" id="search-button"
+                style="border-top-left-radius: 0; border-bottom-left-radius: 0" onclick="trimInputs('test-title')">
+            Поиск
+        </button>
+    </div>
+
+    <div id="tests-table" th:replace="admin/tests/tests-table :: #tests-table" style="min-width: 30rem"></div>
+
+    <div id="testCopyModal" class="modal fade testCopy" tabindex="-1" role="dialog"
+         aria-labelledby="testCopyNamePopup" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="max-width: 30rem; margin-right: auto; margin-left: auto">
+                <div class="modal-header" style="padding-bottom: .5rem">
+                    <h5 class="modal-title">Копирование теста</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="padding-top: .5rem; padding-bottom: .5rem">
+                    <!--/*@thymesVar id="testForCopy" type="ru.spbu.distolymp.dto.admin.tests.TestListDto"*/-->
+                    <form id="testCopyForm" th:object="${testForCopy}" th:action="@{/tests/copy}" method="post"
+                          class="needs-validation was-validated" style="margin-top: .4rem" novalidate>
+                        <div class="form-group text-left">
+                            <label for="newTestTitle">Заголовок нового теста:</label>
+                            <input th:field="*{title}" type="text" class="form-control"
+                                   id="newTestTitle" placeholder="Введите заголовок нового теста" required>
+                            <div class="invalid-feedback">Пожалуйста, введите заголовок теста</div>
+                            <input type="hidden" id="testCopyId" th:field="${testForCopy.id}" th:value="*{id}">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer" style="padding-top: .5rem">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" style="min-width: 6rem">Отмена</button>
+                    <button type="submit" class="btn btn-success" form="testCopyForm" onclick="trimInputs('newTestTitle')"
+                            style="min-width: 6rem">Ок</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="testDeleteModal" class="modal fade testDelete" tabindex="-1" role="dialog"
+         aria-labelledby="testDeletePopup" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content" style="max-width: 15rem; margin-right: auto; margin-left: auto">
+                <div class="modal-header" style="padding-bottom: .25rem">
+                    <h5 class="modal-title" style="margin: auto">Удалить тест?</h5>
+                </div>
+                <div class="modal-footer" style="justify-content: space-between; padding-top: .25rem">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" style="min-width: 6rem">Отмена</button>
+                    <a th:href="@{/tests/delete/}" class="btn btn-success" id="deleteBtn" style="min-width: 6rem">Ок</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ul class="actions text-center" style="width: 50%; min-width: 25rem; margin-bottom: 1rem; margin-top: .5rem">
+        <li style="width: 100%">
+            <a th:href="@{/tests/add}" class="abutton">Создать новый тест</a>
+        </li>
+    </ul>
+</div>
+
+<div th:replace="fragments/footer :: #footer"></div>
+</body>
+
+<script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+<script type="text/javascript">
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+
+    function trimInputs() {
+        var args = arguments;
+        for (var i = 0; i < args.length; i++) {
+            var inpt = document.getElementById(args[i])
+            inpt.value = trim(inpt.value)
+        }
+    }
+
+    function trim(value) {
+        return value.replace(/^\s+|\s+$/g,"");
+    }
+
+    $('#testDeleteModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var id = button.data('id')
+        var modal = $(this)
+        modal.find('.modal-footer #deleteBtn').attr('href', 'delete/' + id)
+    })
+
+    $('#testCopyModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var id = button.data('id')
+        var title = button.data('title')
+        var modal = $(this)
+        modal.find('.modal-body #newTestTitle').val(title)
+        modal.find('.modal-body #testCopyId').val(id)
+    })
+
+    $("#test-title").on("keyup", function (event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            search();
+        }
+    })
+
+    function search() {
+        document.getElementById("search-button").click();
+    }
+
+    $("#search-button").click(function () {
+        getTests();
+    })
+
+    function getTests() {
+        var params = encodeQueryData(getParams());
+        var url = "filter?" + params;
+        $.get(url).done(function (fragment) {
+            $("#tests-table").replaceWith(fragment);
+        });
+    }
+
+    function encodeQueryData(data) {
+        const result = [];
+        for (var key in data) {
+            result.push(key + '=' + data[key]);
+        }
+        return result.join('&');
+    }
+
+    function getParams() {
+        var params = {}
+        params["containsTitle"] = getTitle();
+        return params;
+    }
+
+    function getTitle() {
+        return $("#test-title").val();
+    }
+</script>
+
+</html>
