@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.dto.admin.models.ModelListDto;
@@ -32,6 +33,18 @@ public class ModelCrudServiceImpl implements ModelCrudService {
             return modelListMapper.toDtoList(modelList);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting models", e);
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ModelListDto> getModels(Sort sort, Specification<Model> spec) {
+        try {
+            List<Model> modelList = modelRepository.findAll(spec, sort);
+            return modelListMapper.toDtoList(modelList);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while getting models by specs", e);
             return new ArrayList<>();
         }
     }
