@@ -9,4 +9,6 @@ import ru.spbu.distolymp.dto.admin.models.ModelFilter;
 public interface ModelService {
     void fillShowAllModelModelMap(ModelMap modelMap);
     void fillShowAllModelModelMap(ModelMap modelMap, ModelFilter modelFilter);
+    void fillShowEditPageModelMap(Long id, ModelMap modelMap);
+    void fillShowAddPageModelMap(ModelMap modelMap);
 }

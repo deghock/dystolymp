@@ -9,11 +9,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.dto.admin.models.ModelListDto;
 import ru.spbu.distolymp.entity.tasks.Model;
+import ru.spbu.distolymp.exception.common.TechnicalException;
 import ru.spbu.distolymp.mapper.admin.models.api.ModelListMapper;
+import ru.spbu.distolymp.mapper.entity.tasks.ModelMapper;
 import ru.spbu.distolymp.repository.tasks.ModelRepository;
 import ru.spbu.distolymp.service.crud.api.tasks.ModelCrudService;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Vladislav Konovalov
@@ -24,6 +27,7 @@ import java.util.List;
 public class ModelCrudServiceImpl implements ModelCrudService {
     private final ModelRepository modelRepository;
     private final ModelListMapper modelListMapper;
+    protected final ModelMapper modelMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -46,6 +50,18 @@ public class ModelCrudServiceImpl implements ModelCrudService {
         } catch (DataAccessException e) {
             log.error("An error occurred while getting models by specs", e);
             return new ArrayList<>();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Model> getModelById(Long id) {
+        if (id == null) return Optional.empty();
+        try {
+            return modelRepository.findById(id);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while getting a model with id=" + id, e);
+            throw new TechnicalException();
         }
     }
 }
