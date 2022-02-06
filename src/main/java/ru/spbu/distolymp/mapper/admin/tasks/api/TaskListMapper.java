@@ -1,7 +1,7 @@
-package ru.spbu.distolymp.mapper.admin.tasks.tasks.api;
+package ru.spbu.distolymp.mapper.admin.tasks.api;
 
 import org.mapstruct.Mapper;
-import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto;
+import ru.spbu.distolymp.dto.admin.tasks.TaskListDto;
 import ru.spbu.distolymp.entity.tasks.Task;
 import java.util.List;
 

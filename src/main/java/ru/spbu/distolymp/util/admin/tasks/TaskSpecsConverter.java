@@ -1,7 +1,7 @@
-package ru.spbu.distolymp.util.admin.tasks.tasks;
+package ru.spbu.distolymp.util.admin.tasks;
 
 import org.springframework.data.jpa.domain.Specification;
-import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskFilter;
+import ru.spbu.distolymp.dto.admin.tasks.TaskFilter;
 import ru.spbu.distolymp.entity.tasks.Task;
 import static ru.spbu.distolymp.repository.tasks.spec.TaskSpecs.*;
 

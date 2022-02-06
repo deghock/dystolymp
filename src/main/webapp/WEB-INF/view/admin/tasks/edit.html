@@ -25,7 +25,7 @@
 
 <p style="text-align: center; margin-top: 1rem; margin-bottom: .5rem">Редактор задач</p>
 
-<!--/*@thymesVar id="task" type="ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto"*/-->
+<!--/*@thymesVar id="task" type="ru.spbu.distolymp.dto.entity.tasks.TaskDto"*/-->
 <form th:action="@{/tasks/save-or-edit}" th:object="${task}" method="post" enctype="multipart/form-data"
       class="needs-validation" onsubmit="fillAnswer()" novalidate>
     <div class="infoForm container p-2 text-center" style="width: 60%; padding: 1rem !important; min-width: 36rem">

@@ -1,4 +1,4 @@
-package ru.spbu.distolymp.dto.admin.tasks.tasks;
+package ru.spbu.distolymp.dto.admin.tasks;
 
 import lombok.Data;
 import java.util.List;
