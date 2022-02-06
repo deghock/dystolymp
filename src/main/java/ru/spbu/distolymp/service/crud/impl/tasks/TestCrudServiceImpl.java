@@ -60,7 +60,7 @@ public class TestCrudServiceImpl implements TestCrudService {
         try {
             return testRepository.findById(id);
         } catch (DataAccessException e) {
-            log.error("An error occurred while getting a test by id=" + id, e);
+            log.error("An error occurred while getting a test with id=" + id, e);
             throw new TechnicalException();
         }
     }
