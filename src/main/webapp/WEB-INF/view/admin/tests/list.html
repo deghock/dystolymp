@@ -67,7 +67,7 @@
                         <div class="form-group text-left">
                             <label for="newTestTitle">Заголовок нового теста:</label>
                             <input th:field="*{title}" type="text" class="form-control"
-                                   id="newTestTitle" placeholder="Введите заголовок нового теста" required>
+                                   id="newTestTitle" required>
                             <div class="invalid-feedback">Пожалуйста, введите заголовок теста</div>
                             <input type="hidden" id="testCopyId" th:field="${testForCopy.id}" th:value="*{id}">
                         </div>
@@ -120,7 +120,6 @@
                         event.preventDefault();
                         event.stopPropagation();
                     }
-                    form.classList.add('was-validated');
                 }, false);
             });
         }, false);
