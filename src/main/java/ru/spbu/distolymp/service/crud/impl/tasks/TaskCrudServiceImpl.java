@@ -72,7 +72,7 @@ public class TaskCrudServiceImpl implements TaskCrudService {
             return taskListMapper.toDtoList(taskList);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting tasks by specs", e);
-            throw new TechnicalException();
+            return new ArrayList<>();
         }
     }
 
@@ -84,7 +84,7 @@ public class TaskCrudServiceImpl implements TaskCrudService {
             return taskListMapper.toDtoList(taskList);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting tasks by specs", e);
-            throw new TechnicalException();
+            return new ArrayList<>();
         }
     }
 
