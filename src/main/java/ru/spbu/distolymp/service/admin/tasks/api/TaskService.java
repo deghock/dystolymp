@@ -2,9 +2,9 @@ package ru.spbu.distolymp.service.admin.tasks.api;
 
 import org.springframework.ui.ModelMap;
 import ru.spbu.distolymp.dto.entity.answers.AnswerDto;
-import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskFilter;
-import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto;
-import ru.spbu.distolymp.dto.entity.tasks.tasks.TaskDto;
+import ru.spbu.distolymp.dto.admin.tasks.TaskFilter;
+import ru.spbu.distolymp.dto.admin.tasks.TaskListDto;
+import ru.spbu.distolymp.dto.entity.tasks.TaskDto;
 
 /**
  * @author Vladislav Konovalov

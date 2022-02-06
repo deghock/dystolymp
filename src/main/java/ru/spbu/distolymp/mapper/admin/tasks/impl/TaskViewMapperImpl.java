@@ -1,12 +1,12 @@
-package ru.spbu.distolymp.mapper.admin.tasks.tasks.impl;
+package ru.spbu.distolymp.mapper.admin.tasks.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.spbu.distolymp.common.tasks.TaskEvaluator;
 import ru.spbu.distolymp.common.tasks.TaskParser;
-import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskViewDto;
+import ru.spbu.distolymp.dto.admin.tasks.TaskViewDto;
 import ru.spbu.distolymp.entity.tasks.Task;
-import ru.spbu.distolymp.mapper.admin.tasks.tasks.api.TaskViewMapper;
+import ru.spbu.distolymp.mapper.admin.tasks.api.TaskViewMapper;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import static ru.spbu.distolymp.common.tasks.TaskTextParser.parse;

@@ -1,7 +1,7 @@
 package ru.spbu.distolymp.common.tasks;
 
-import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskPreviewResultDto;
-import ru.spbu.distolymp.dto.admin.tasks.tasks.TaskViewDto;
+import ru.spbu.distolymp.dto.admin.tasks.TaskPreviewResultDto;
+import ru.spbu.distolymp.dto.admin.tasks.TaskViewDto;
 import java.util.*;
 
 /**

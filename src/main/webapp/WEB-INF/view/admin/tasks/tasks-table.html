@@ -9,7 +9,7 @@
             <th id="actions" style="vertical-align: middle">Действия</th>
         </tr>
 
-        <!--/*@thymesVar id="taskList" type="java.util.List<ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto>"*/-->
+        <!--/*@thymesVar id="taskList" type="java.util.List<ru.spbu.distolymp.dto.admin.tasks.TaskListDto>"*/-->
         <tr th:each="task, iter : ${taskList}">
             <td th:text="${iter.index + 1}" style="text-align: center; vertical-align: middle"></td>
 

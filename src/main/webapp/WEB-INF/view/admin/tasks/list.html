@@ -61,7 +61,7 @@
                     </button>
                 </div>
                 <div class="modal-body" style="padding-top: .5rem; padding-bottom: .5rem">
-                    <!--/*@thymesVar id="taskForCopy" type="ru.spbu.distolymp.dto.admin.tasks.tasks.TaskListDto"*/-->
+                    <!--/*@thymesVar id="taskForCopy" type="ru.spbu.distolymp.dto.admin.tasks.TaskListDto"*/-->
                     <form id="taskCopyForm" th:object="${taskForCopy}" th:action="@{/tasks/copy}" method="post"
                           class="needs-validation was-validated" style="margin-top: .4rem" novalidate>
                         <div class="form-group text-left">

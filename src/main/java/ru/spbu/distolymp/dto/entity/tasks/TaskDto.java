@@ -1,4 +1,4 @@
-package ru.spbu.distolymp.dto.entity.tasks.tasks;
+package ru.spbu.distolymp.dto.entity.tasks;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
