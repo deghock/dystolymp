@@ -44,8 +44,6 @@ public class TestDto {
 
     private boolean hideResult;
 
-    private boolean autoSendResult;
-
     @NotNull
     @Range(max = 65535)
     private Double points;
