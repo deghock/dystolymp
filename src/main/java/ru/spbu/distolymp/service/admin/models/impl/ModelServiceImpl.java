@@ -97,12 +97,22 @@ public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelServi
         initFields(model);
         MultipartFile image = modelDto.getImage();
         String oldImageName = model.getImageFileName();
-        if ("".equals(image.getOriginalFilename())) {
-            saveOrUpdate(model, modelDto.isDeleteImage());
+        if (oldImageName == null) {
+            if ("".equals(image.getOriginalFilename())) {
+                saveOrUpdate(model, false);
+            } else {
+                String imageExtension = FilesUtils.getImageExtension(image);
+                model.setImageFileName(FileNameGenerator.generateFileName(imageExtension));
+                saveOrUpdate(model, FilesUtils.getImageBytes(image));
+            }
         } else {
-            String imageExtension = FilesUtils.getImageExtension(image);
-            model.setImageFileName(FileNameGenerator.generateFileName(imageExtension));
-            saveOrUpdate(model, FilesUtils.getImageBytes(image), oldImageName, modelDto.isDeleteImage());
+            if ("".equals(image.getOriginalFilename())) {
+                saveOrUpdate(model, modelDto.isDeleteImage());
+            } else {
+                String imageExtension = FilesUtils.getImageExtension(image);
+                model.setImageFileName(FileNameGenerator.generateFileName(imageExtension));
+                saveOrUpdate(model, FilesUtils.getImageBytes(image), oldImageName, modelDto.isDeleteImage());
+            }
         }
     }
 
