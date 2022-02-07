@@ -18,7 +18,7 @@
 
 <div th:replace="fragments/header :: #header"></div>
 
-<body class="bgGrey" th:attr="onload=|onUpdateImage('${model.imageFileName}')|"
+<body class="bgGrey" th:attr="onload=|onUpdateImage('${model.imageFileName}', '${model.barsicFileName}')|"
       style="min-width: 612px; font-family: sans-serif; font-size: 11pt">
 
 <div th:replace="fragments/menu-staff :: #menustaff"></div>
@@ -81,8 +81,8 @@
                 </div>
                 <div class="form-row align-items-center">
                     <div class="col-1" style="min-width: 5rem"><label for="width" style="width: auto">Ширина:</label></div>
-                    <div class="col-3" style="min-width: 8rem">
-                        <input type="number" min="0" max="65535" class="form-control form-control-sm text-dark is-valid"
+                    <div class="col-3 was-validated" style="min-width: 8rem">
+                        <input type="number" min="0" max="65535" class="form-control form-control-sm text-dark"
                                id="width" th:field="*{width}" required>
                         <div class="invalid-feedback">Ширина картинки должна быть от 0 до 65535 пикселей</div>
                     </div>
@@ -208,26 +208,41 @@
         <div class="form-row text-left align-items-center">
             <div class="col-3"><label for="brcFile" style="width: auto">Файл BARSIC</label></div>
             <div class="col-9">
-                <input type="file" id="brcFile" class="custom-file-input" th:field="*{brcFile}">
-                <label class="custom-file-label text-dark" data-browse="Обзор" for="brcFile"
-                       style="width: initial; margin-left: .3rem; margin-right: .3rem">
-                    Файл не выбран
-                </label>
+                <div class="form-row align-items-center">
+                    <div id="brcFileDiv" class="col-12" th:classappend="${model.barsicFileName == null or model.barsicFileName == ''} ? 'was-validated'">
+                        <input type="file" id="brcFile" class="custom-file-input" th:field="*{barsicFile}"
+                               accept=".brc" th:classappend="${model.barsicFileName != null and model.barsicFileName != ''} ? 'is-valid'" required>
+                        <label class="custom-file-label text-dark" data-browse="Обзор" for="brcFile"
+                               style="width: initial; margin-left: .3rem; margin-right: .3rem">
+                            Файл не выбран
+                        </label>
+                        <div class="invalid-feedback">Пожалуйста, прикрепите BARSIC-файл</div>
+                        <div id="brcSizeError" class="invalid-feedback" style="display: none">
+                            Размер BARSIC-файла не должен превышать 10 Мб
+                        </div>
+                    </div>
+                </div>
+                <div id="brcFileAttr" class="form-row align-items-center" style="display: none">
+                    <div class="col-12">
+                        <a href="#" class="abutton">Просмотр</a>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="form-row text-left align-items-center">
             <div class="col-3"><label for="problemForm" style="width: auto">Отчёт</label></div>
-            <div class="col-9">
+            <div class="col-9 was-validated">
                 <textarea id="problemForm" class="form-control form-control-sm text-dark" maxlength="65535"
-                          th:field="*{problemForm}" rows="12" style="width: inherit"></textarea>
+                          th:field="*{problemForm}" rows="12" style="width: inherit" required></textarea>
+                <div class="invalid-feedback">Пожалуйста, введите форму отчёта</div>
             </div>
         </div>
     </div>
 
     <div style="text-align: center; margin-top: 1rem; margin-bottom: 1rem">
         <button type="submit" class="btn btn-light border border-dark" style="width: 20%; min-width: 7.5rem" id="submitBtn"
-                onclick="trimInputs('title', 'problemText', 'gradePoints', 'minusPoints', 'minPoints')">
+                onclick="trimInputs('title', 'problemText', 'gradePoints', 'minusPoints', 'minPoints', 'problemForm', 'correctAnswer')">
             Сохранить
         </button>
     </div>
@@ -245,7 +260,7 @@
         var sizeErrMsg = document.getElementById('imageSizeError')
         var extErrMsg = document.getElementById('imageExtensionError')
         var exts = /(\.jpg|\.jpeg|\.gif|\.png)$/i
-        var isExt = exts.exec(image.files[0].name) != null
+        var isExt = exts.exec(this.files[0].name) != null
         var isSize = this.files[0].size <= 10485760
         if (isExt && isSize) {
             $(this).next('.custom-file-label').html(imageName)
@@ -261,6 +276,31 @@
             $(this).val(null)
             sizeErrMsg.style.display = 'block'
             extErrMsg.style.display = 'none'
+        }
+    });
+
+    $('#brcFile').on('change', function() {
+        var brcName = $(this).val().replace(/C:\\fakepath\\/i, '')
+        var brcFileDiv = document.getElementById('brcFileDiv')
+        var sizeErrMsg = document.getElementById('brcSizeError')
+        var exts = /(\.brc)$/i
+        var isExt = exts.exec(this.files[0].name) != null
+        var isSize = this.files[0].size <= 10485760
+        if (isExt && isSize) {
+            $(this).next('.custom-file-label').html(brcName)
+            sizeErrMsg.style.display = 'none'
+        } else if (!isExt) {
+            $(this).next('.custom-file-label').html('Файл не выбран')
+            $(this).val(null)
+            this.classList.remove('is-valid')
+            brcFileDiv.classList.add('was-validated')
+            sizeErrMsg.style.display = 'none'
+        } else if (!isSize) {
+            $(this).next('.custom-file-label').html('Файл не выбран')
+            $(this).val(null)
+            sizeErrMsg.style.display = 'block'
+            this.classList.remove('is-valid')
+            brcFileDiv.classList.add('was-validated')
         }
     });
 
@@ -310,11 +350,16 @@
         })
     });
 
-    function onUpdateImage(imageFileName) {
+    function onUpdateImage(imageFileName, brcFileName) {
         if (imageFileName === "null" || imageFileName === "") {
             document.getElementById('imageAttr').style.display = "none";
         } else {
             document.getElementById('imageAttr').style.display = "block";
+        }
+        if (brcFileName === "null" || brcFileName === "") {
+            document.getElementById('brcFileAttr').style.display = "none";
+        } else {
+            document.getElementById('brcFileAttr').style.display = "block";
         }
         checkAnswer();
     }

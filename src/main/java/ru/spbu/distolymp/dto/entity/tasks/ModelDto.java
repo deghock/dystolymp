@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.spbu.distolymp.validation.admin.tasks.annotation.Points;
 import ru.spbu.distolymp.validation.admin.tasks.annotation.Variables;
 import ru.spbu.distolymp.validation.admin.tasks.validator.AnswersValidator;
+import ru.spbu.distolymp.validation.files.annotation.BarsicFileMimeType;
 import ru.spbu.distolymp.validation.files.annotation.ImageMimeType;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
@@ -67,8 +68,13 @@ public class ModelDto {
     @Range(max = 65535)
     private Double minPoints;
 
-    private MultipartFile brcFile;
+    private String barsicFileName;
 
+    @NotNull
+    @BarsicFileMimeType
+    private MultipartFile barsicFile;
+
+    @NotNull
     @Size(max = 65535)
     private String problemForm;
 
