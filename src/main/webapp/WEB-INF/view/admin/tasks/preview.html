@@ -111,17 +111,17 @@
     <!--/*@thymesVar id="result" type="ru.spbu.distolymp.dto.admin.tasks.TaskPreviewResultDto"*/-->
     <div class="mb-2" style="border-color: black; border-width: 1px; border-style: solid">
         <div style="margin: .5rem; overflow-wrap: anywhere; overflow: auto">
-            <img th:src="@{/img/tasks/{imageName}(imageName=${task.imageFileName})}"
+            <img th:src="@{/data/tasks/{imageName}(imageName=${task.imageFileName})}"
                  th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
                  alt="Image not found" style="margin-right: .5rem; float: left; vertical-align: middle;"
                  th:if="${task.width == 0 and task.height != 0 and task.imageFileName != null}"
                  th:styleappend="'height:' + ${task.height} + 'px'"/>
-            <img th:src="@{/img/tasks/{imageName}(imageName=${task.imageFileName})}"
+            <img th:src="@{/data/tasks/{imageName}(imageName=${task.imageFileName})}"
                  th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
                  alt="Image not found" style="margin-right: .5rem; float: left; vertical-align: middle;"
                  th:if="${task.height == 0 and task.width != 0  and task.imageFileName != null}"
                  th:styleappend="'width:' + ${task.width} + 'px'"/>
-            <img th:src="@{/img/tasks/{imageName}(imageName=${task.imageFileName})}"
+            <img th:src="@{/data/tasks/{imageName}(imageName=${task.imageFileName})}"
                  th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
                  alt="Image not found" style="margin-right: .5rem; float: left; vertical-align: middle;"
                  th:if="${task.width != 0 and task.height != 0 and task.imageFileName != null}"

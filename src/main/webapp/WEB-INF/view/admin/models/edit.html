@@ -119,15 +119,15 @@
                                             </button>
                                         </div>
                                         <div class="modal-body text-center" style="overflow: auto; margin: 1rem; padding: 0">
-                                            <img th:src="@{/img/models/{imageName}(imageName=${model.imageFileName})}"
+                                            <img th:src="@{/data/models/{imageName}(imageName=${model.imageFileName})}"
                                                  th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
                                                  alt="Image not found" th:if="${model.width == 0 and model.height != 0}"
                                                  th:style="'height:' + ${model.height} + 'px'"/>
-                                            <img th:src="@{/img/models/{imageName}(imageName=${model.imageFileName})}"
+                                            <img th:src="@{/data/models/{imageName}(imageName=${model.imageFileName})}"
                                                  th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
                                                  alt="Image not found" th:if="${model.height == 0 and model.width != 0 }"
                                                  th:style="'width:' + ${model.width} + 'px'"/>
-                                            <img th:src="@{/img/models/{imageName}(imageName=${model.imageFileName})}"
+                                            <img th:src="@{/data/models/{imageName}(imageName=${model.imageFileName})}"
                                                  th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
                                                  alt="Image not found" th:if="${model.width != 0 and model.height != 0}"
                                                  th:style="'height: ' + ${model.height} + 'px; width: ' + ${model.width} + 'px'"/>

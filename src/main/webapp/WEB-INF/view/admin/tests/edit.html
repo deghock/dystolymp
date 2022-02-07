@@ -113,15 +113,15 @@
                                             </button>
                                         </div>
                                         <div class="modal-body text-center" style="overflow: auto; margin: 1rem; padding: 0">
-                                            <img th:src="@{/img/tests/{imageName}(imageName=${test.imageFileName})}"
+                                            <img th:src="@{/data/tests/{imageName}(imageName=${test.imageFileName})}"
                                                  th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
                                                  alt="Image not found" th:if="${test.width == 0 and test.height != 0}"
                                                  th:style="'height:' + ${test.height} + 'px'"/>
-                                            <img th:src="@{/img/tests/{imageName}(imageName=${test.imageFileName})}"
+                                            <img th:src="@{/data/tests/{imageName}(imageName=${test.imageFileName})}"
                                                  th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
                                                  alt="Image not found" th:if="${test.height == 0 and test.width != 0 }"
                                                  th:style="'width:' + ${test.width} + 'px'"/>
-                                            <img th:src="@{/img/tests/{imageName}(imageName=${test.imageFileName})}"
+                                            <img th:src="@{/data/tests/{imageName}(imageName=${test.imageFileName})}"
                                                  th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
                                                  alt="Image not found" th:if="${test.width != 0 and test.height != 0}"
                                                  th:style="'height: ' + ${test.height} + 'px; width: ' + ${test.width} + 'px'"/>
