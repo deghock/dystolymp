@@ -14,4 +14,7 @@ public interface ModelCrudService {
     List<ModelListDto> getModels(Sort sort);
     List<ModelListDto> getModels(Sort sort, Specification<Model> spec);
     Optional<Model> getModelById(Long id);
+    void saveOrUpdate(Model model, boolean deleteImage);
+    void saveOrUpdate(Model model, byte[] image);
+    void saveOrUpdate(Model model, byte[] image, String oldImageName, boolean deleteImage);
 }

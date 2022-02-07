@@ -2,11 +2,14 @@ package ru.spbu.distolymp.service.crud.impl.tasks;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.spbu.distolymp.common.files.ImageService;
 import ru.spbu.distolymp.dto.admin.models.ModelListDto;
 import ru.spbu.distolymp.entity.tasks.Model;
 import ru.spbu.distolymp.exception.common.TechnicalException;
@@ -25,9 +28,13 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ModelCrudServiceImpl implements ModelCrudService {
+    private static final String SAVE_OR_UPDATE_PARAM = "An error occurred while saving or updating a model";
     private final ModelRepository modelRepository;
     private final ModelListMapper modelListMapper;
     protected final ModelMapper modelMapper;
+    @Autowired
+    @Qualifier("modelImageService")
+    protected ImageService imageService;
 
     @Override
     @Transactional(readOnly = true)
@@ -63,5 +70,47 @@ public class ModelCrudServiceImpl implements ModelCrudService {
             log.error("An error occurred while getting a model with id=" + id, e);
             throw new TechnicalException();
         }
+    }
+
+    @Override
+    @Transactional
+    public void saveOrUpdate(Model model, boolean deleteImage) {
+        String imageName = model.getImageFileName();
+        if (deleteImage) model.setImageFileName(null);
+        try {
+            modelRepository.save(model);
+            if (deleteImage) imageService.deleteImage(imageName);
+        } catch (DataAccessException e) {
+            log.error(SAVE_OR_UPDATE_PARAM, e);
+            throw new TechnicalException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public void saveOrUpdate(Model model, byte[] image) {
+        String imageName = model.getImageFileName();
+        boolean imageSaved = imageService.saveImage(image, imageName);
+        if (!imageSaved)
+            throw new TechnicalException("Model image not saved");
+        try {
+            modelRepository.save(model);
+        } catch (DataAccessException e) {
+            log.error(SAVE_OR_UPDATE_PARAM, e);
+            imageService.deleteImage(imageName);
+            throw new TechnicalException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public void saveOrUpdate(Model model, byte[] image, String oldImageName, boolean deleteImage) {
+        if (deleteImage) {
+            model.setImageFileName(null);
+            saveOrUpdate(model, false);
+        } else {
+            saveOrUpdate(model, image);
+        }
+        imageService.deleteImage(oldImageName);
     }
 }
