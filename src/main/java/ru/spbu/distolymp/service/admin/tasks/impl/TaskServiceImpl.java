@@ -185,15 +185,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
             task.setWidth(0);
         if (task.getHeight() == null)
             task.setHeight(0);
-        task.setMaxPoints(calcPoints(task.getGradePoints()));
-    }
-
-    private Double calcPoints(String pointsStr) {
-        double result = 0.0;
-        List<String> points = PointParser.parsePoints(pointsStr);
-        for (String point : points)
-            result += Double.parseDouble(point);
-        return result;
+        task.setMaxPoints(PointParser.calculatePoints(task.getGradePoints()));
     }
 
     @Override
@@ -217,7 +209,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
         task.setTitle(taskTitleDto.getTitle());
         task.setType(3);
         task.setStatus(1);
-        task.setMaxPoints(calcPoints(task.getGradePoints()));
+        task.setMaxPoints(PointParser.calculatePoints(task.getGradePoints()));
         String imageName = task.getImageFileName();
         if (imageName != null) {
             String extension = imageService.getExtensionFromImageName(imageName);

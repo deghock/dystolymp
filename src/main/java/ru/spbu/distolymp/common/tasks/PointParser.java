@@ -30,4 +30,12 @@ public class PointParser {
         }
         return points;
     }
+
+    public static Double calculatePoints(String pointsInput) {
+        List<String> points = parsePoints(pointsInput);
+        double result = 0.0;
+        for (String point : points)
+            result += Double.parseDouble(point);
+        return result;
+    }
 }
