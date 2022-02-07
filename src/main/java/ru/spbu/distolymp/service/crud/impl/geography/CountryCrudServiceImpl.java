@@ -23,6 +23,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Daria Usova
@@ -63,14 +64,14 @@ public class CountryCrudServiceImpl implements CountryCrudService {
 
     @Override
     @Transactional
-    public void save(CountryDto countryDto) {
+    public Country save(CountryDto countryDto) {
         try {
             Country country = countryMapper.toEntity(countryDto);
             Region region = getNewRegion(country);
 
             country.setRegions(Collections.singletonList(region));
 
-            countryRepository.save(country);
+            return countryRepository.save(country);
         } catch (DataAccessException e) {
             log.error("An error occurred while saving country", e);
             throw new CountryCrudServiceException();
@@ -176,13 +177,24 @@ public class CountryCrudServiceImpl implements CountryCrudService {
 
     @Override
     @Transactional(readOnly = true)
-    public CountryNameDto getCountryByNameOrNull(String name) {
+    public Optional<Country> getCountryByName(String name) {
         try {
-            Country country = countryRepository.findCountryByName(name);
-            return countryNameMapper.toDto(country);
+            return countryRepository.findCountryByName(name);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting a country with name=" + name, e);
             throw new CountryCrudServiceException();
         }
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Country> getCountryById(Long id) {
+        try {
+            return countryRepository.findById(id);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while getting country by id=" + id, e);
+            throw new CountryCrudServiceException();
+        }
+    }
+
 }

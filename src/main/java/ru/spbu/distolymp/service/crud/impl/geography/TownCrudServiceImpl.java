@@ -8,23 +8,24 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.spbu.distolymp.dto.admin.directories.countries.CountryNameDto;
 import ru.spbu.distolymp.dto.admin.directories.towns.TownDetailsDto;
 import ru.spbu.distolymp.dto.entity.geography.region.RegionNameCodeCountryDto;
 import ru.spbu.distolymp.dto.entity.geography.town.TownDto;
+import ru.spbu.distolymp.entity.enumeration.Visible;
+import ru.spbu.distolymp.entity.geography.Country;
+import ru.spbu.distolymp.entity.geography.Region;
 import ru.spbu.distolymp.entity.geography.Town;
 import ru.spbu.distolymp.exception.common.ResourceNotFoundException;
 import ru.spbu.distolymp.exception.common.TechnicalException;
 import ru.spbu.distolymp.mapper.admin.directories.towns.TownDetailsMapper;
-import ru.spbu.distolymp.mapper.entity.geography.TownMapper;
 import ru.spbu.distolymp.repository.geography.TownRepository;
 import ru.spbu.distolymp.service.crud.api.geography.CountryCrudService;
 import ru.spbu.distolymp.service.crud.api.geography.RegionCrudService;
 import ru.spbu.distolymp.service.crud.api.geography.TownCrudService;
+
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Vladislav Konovalov
@@ -33,18 +34,20 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TownCrudServiceImpl implements TownCrudService {
-    protected final TownRepository townRepository;
-    private final TownMapper townMapper;
+
+    private final TownRepository townRepository;
     private final TownDetailsMapper townDetailsMapper;
-    protected final CountryCrudService countryCrudServiceImpl;
-    protected final RegionCrudService regionCrudService;
+    private final CountryCrudService countryCrudService;
+    private final RegionCrudService regionCrudService;
 
     @Override
     @Transactional(readOnly = true)
     public List<TownDto> getTowns(Sort sort) {
         try {
-            List<Town> townList = townRepository.findAllBy(sort);
-            return townMapper.toDtoList(townList);
+            return townRepository.findAllBy(sort)
+                    .stream()
+                    .map(Town::toDto)
+                    .collect(Collectors.toList());
         } catch (DataAccessException e) {
             log.error("An error occurred while getting towns", e);
             return new ArrayList<>();
@@ -55,8 +58,10 @@ public class TownCrudServiceImpl implements TownCrudService {
     @Transactional(readOnly = true)
     public List<TownDto> getTowns(Pageable pageable) {
         try {
-            List<Town> townList = townRepository.findAllBy(pageable);
-            return townMapper.toDtoList(townList);
+            return townRepository.findAllBy(pageable)
+                    .stream()
+                    .map(Town::toDto)
+                    .collect(Collectors.toList());
         } catch (DataAccessException e) {
             log.error("An error occurred while getting towns", e);
             return new ArrayList<>();
@@ -79,11 +84,11 @@ public class TownCrudServiceImpl implements TownCrudService {
 
     @Override
     @Transactional
-    public void saveOrUpdate(TownDetailsDto townDto) {
+    public Town saveOrUpdate(TownDetailsDto townDto) {
         try {
             setForeignRegion(townDto);
             Town town = townDetailsMapper.toEntity(townDto);
-            townRepository.save(town);
+            return townRepository.save(town);
         } catch (DataAccessException e) {
             log.error("An error occurred while saving or updating a town", e);
             throw new TechnicalException();
@@ -91,10 +96,9 @@ public class TownCrudServiceImpl implements TownCrudService {
     }
 
     private void setForeignRegion(TownDetailsDto townDto) {
-        CountryNameDto countryDto =
-                countryCrudServiceImpl.getCountryByNameOrNull(townDto.getCountryName());
-        List<RegionNameCodeCountryDto> regionDtoList =
-                regionCrudService.getRegionsByCountryId(countryDto.getId());
+        Country country = countryCrudService.getCountryByName(townDto.getCountryName())
+                .orElseThrow(() -> new IllegalArgumentException("There is no country with name " + townDto.getCountryName()));
+        List<RegionNameCodeCountryDto> regionDtoList = regionCrudService.getRegionsByCountryId(country.getId());
         if (regionDtoList.size() == 1)
             townDto.setRegion(regionDtoList.get(0));
     }
@@ -114,8 +118,10 @@ public class TownCrudServiceImpl implements TownCrudService {
     @Transactional(readOnly = true)
     public List<TownDto> getTownsBySpec(Specification<Town> spec, Sort sort) {
         try {
-            List<Town> townList = townRepository.findAll(spec, sort);
-            return townMapper.toDtoList(townList);
+            return townRepository.findAll(spec, sort)
+                    .stream()
+                    .map(Town::toDto)
+                    .collect(Collectors.toList());
         } catch (DataAccessException e) {
             log.error("An error occurred while getting towns by specs", e);
             throw new TechnicalException();
@@ -126,11 +132,63 @@ public class TownCrudServiceImpl implements TownCrudService {
     @Transactional(readOnly = true)
     public List<TownDto> getTownsBySpec(Specification<Town> spec, Pageable pageable) {
         try {
-            List<Town> townList = townRepository.findAll(spec, pageable).getContent();
-            return townMapper.toDtoList(townList);
+            return townRepository.findAll(spec, pageable).getContent()
+                    .stream()
+                    .map(Town::toDto)
+                    .collect(Collectors.toList());
         } catch (DataAccessException e) {
             log.error("An error occurred while getting towns by specs", e);
             throw new TechnicalException();
         }
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Town> getVisibleTownsInRegion(Long regionId) {
+        try {
+            return townRepository.findByRegionIdAndVisible(regionId, Visible.yes);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while getting towns by specs", e);
+            throw new TechnicalException();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Town> getTownByRegionIdAndName(Long regionId, String name) {
+        try {
+            return townRepository.findFirstByRegionIdAndNameIgnoreCase(regionId, name);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while getting towns by specs", e);
+            throw new TechnicalException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public Town saveOrUpdate(Town town) {
+        try {
+            return townRepository.save(town);
+        } catch (DataAccessException e) {
+            log.error("An error occurred while saving town", e);
+            throw new TechnicalException();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Town> getVisibleTownsInCountryWithNoRegions(Long countryId) {
+        try {
+            Optional<Country> country = countryCrudService.getCountryById(countryId);
+            if (country.isPresent() && !country.get().isRussia()) {
+                Region region = country.get().getRegions().get(0);
+                return townRepository.getTownsByRegionIdAndVisibleOrderByName(region.getId(), Visible.yes);
+            }
+            return Collections.emptyList();
+        } catch (DataAccessException e) {
+            log.error("An error occurred while saving town", e);
+            throw new TechnicalException();
+        }
+    }
+
 }
