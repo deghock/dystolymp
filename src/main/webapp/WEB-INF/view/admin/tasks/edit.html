@@ -81,8 +81,8 @@
                 </div>
                 <div class="form-row align-items-center">
                     <div class="col-1" style="min-width: 5rem"><label for="width" style="width: auto">Ширина:</label></div>
-                    <div class="col-3" style="min-width: 8rem">
-                        <input type="number" min="0" max="65535" class="form-control form-control-sm text-dark is-valid"
+                    <div class="col-3 was-validated" style="min-width: 8rem">
+                        <input type="number" min="0" max="65535" class="form-control form-control-sm text-dark"
                                id="width" th:field="*{width}" required>
                         <div class="invalid-feedback">Ширина картинки должна быть от 0 до 65535 пикселей</div>
                     </div>
@@ -281,7 +281,7 @@
         var sizeErrMsg = document.getElementById('imageSizeError')
         var extErrMsg = document.getElementById('imageExtensionError')
         var exts = /(\.jpg|\.jpeg|\.gif|\.png)$/i
-        var isExt = exts.exec(image.files[0].name) != null
+        var isExt = exts.exec(this.files[0].name) != null
         var isSize = this.files[0].size <= 10485760
         if (isExt && isSize) {
             $(this).next('.custom-file-label').html(imageName)

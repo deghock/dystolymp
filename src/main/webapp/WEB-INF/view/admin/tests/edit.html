@@ -75,8 +75,8 @@
                 </div>
                 <div class="form-row align-items-center">
                     <div class="col-1" style="min-width: 5rem"><label for="width" style="width: auto">Ширина:</label></div>
-                    <div class="col-3" style="min-width: 8rem">
-                        <input type="number" min="0" max="65535" class="form-control form-control-sm text-dark is-valid"
+                    <div class="col-3 was-validated" style="min-width: 8rem">
+                        <input type="number" min="0" max="65535" class="form-control form-control-sm text-dark"
                                id="width" th:field="*{width}" required>
                         <div class="invalid-feedback">Ширина картинки должна быть от 0 до 65535 пикселей</div>
                     </div>
