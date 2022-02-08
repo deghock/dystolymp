@@ -23,7 +23,7 @@ public class ImageMimeTypeValidator implements ConstraintValidator<ImageMimeType
         }
 
         String fileMimeType = multipartFile.getContentType();
-        boolean noFileWasUploaded = fileMimeType.equals(MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE);
+        boolean noFileWasUploaded = "".equals(multipartFile.getOriginalFilename());
         if (noFileWasUploaded) {
             return true;
         }
