@@ -8,13 +8,16 @@ import ru.spbu.distolymp.dto.entity.geography.country.CountryDto;
 import ru.spbu.distolymp.entity.geography.Country;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Daria Usova
  */
 public interface CountryCrudService {
 
-    void save(CountryDto countryDto);
+    Country save(CountryDto countryDto);
+
+    Optional<Country> getCountryById(Long id);
 
     CountryDto getCountryByIdOrNull(Long id);
 
@@ -34,6 +37,6 @@ public interface CountryCrudService {
 
     List<CountryNameDto> getAllCountries();
 
-    CountryNameDto getCountryByNameOrNull(String name);
+    Optional<Country> getCountryByName(String name);
 
 }

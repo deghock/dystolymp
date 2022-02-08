@@ -1,7 +1,6 @@
 package ru.spbu.distolymp.service.admin.directories.diplomas.impl;
 
 import lombok.extern.log4j.Log4j;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
@@ -16,11 +15,9 @@ import ru.spbu.distolymp.exception.admin.directories.diplomas.DiplomaTypeService
 import ru.spbu.distolymp.exception.common.ResourceNotFoundException;
 import ru.spbu.distolymp.mapper.admin.directories.diplomas.api.EditDiplomaTypeMapper;
 import ru.spbu.distolymp.mapper.admin.directories.diplomas.api.NewDiplomaTypeMapper;
-import ru.spbu.distolymp.mapper.entity.diploma.DiplomaTypeMapper;
-import ru.spbu.distolymp.repository.diploma.DiplomaTypeRepository;
 import ru.spbu.distolymp.service.admin.directories.diplomas.api.DiplomaTypeService;
 import ru.spbu.distolymp.service.crud.api.diploma.DiplomaImageService;
-import ru.spbu.distolymp.service.crud.impl.diploma.DiplomaTypeCrudServiceImpl;
+import ru.spbu.distolymp.service.crud.api.diploma.DiplomaTypeCrudService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,26 +29,27 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 @Log4j
 @Service
-@Primary
-public class DiplomaTypeServiceImpl extends DiplomaTypeCrudServiceImpl implements DiplomaTypeService {
+public class DiplomaTypeServiceImpl implements DiplomaTypeService {
 
     private final NewDiplomaTypeMapper newDiplomaTypeMapper;
     private final EditDiplomaTypeMapper editDiplomaTypeMapper;
+    private final DiplomaTypeCrudService diplomaTypeCrudService;
+    private final DiplomaImageService diplomaImageService;
 
-    public DiplomaTypeServiceImpl(DiplomaTypeRepository diplomaTypeRepository,
-                                  DiplomaTypeMapper diplomaTypeMapper,
-                                  DiplomaImageService diplomaImageService,
-                                  NewDiplomaTypeMapper newDiplomaTypeMapper,
-                                  EditDiplomaTypeMapper editDiplomaTypeMapper) {
-        super(diplomaTypeRepository, diplomaTypeMapper, diplomaImageService);
+    public DiplomaTypeServiceImpl(NewDiplomaTypeMapper newDiplomaTypeMapper,
+                                  EditDiplomaTypeMapper editDiplomaTypeMapper,
+                                  DiplomaTypeCrudService diplomaTypeCrudService,
+                                  DiplomaImageService diplomaImageService) {
         this.newDiplomaTypeMapper = newDiplomaTypeMapper;
         this.editDiplomaTypeMapper = editDiplomaTypeMapper;
+        this.diplomaTypeCrudService = diplomaTypeCrudService;
+        this.diplomaImageService = diplomaImageService;
     }
 
     @Override
     @Transactional(readOnly = true)
     public void fillShowAllDiplomaTypesModelMap(ModelMap modelMap) {
-        List<DiplomaTypeDto> diplomaTypes = getAllDiplomaTypes();
+        List<DiplomaTypeDto> diplomaTypes = diplomaTypeCrudService.getAllDiplomaTypes();
         List<Integer> idList = new ArrayList<>();
 
         modelMap.put("diplomaTypes", diplomaTypes);
@@ -119,7 +117,7 @@ public class DiplomaTypeServiceImpl extends DiplomaTypeCrudServiceImpl implement
     }
 
     private void saveDiplomaTypeAndImage(DiplomaType diplomaType, MultipartFile image) {
-        save(diplomaType, getImageBytes(image));
+        diplomaTypeCrudService.save(diplomaType, getImageBytes(image));
     }
 
     @Override
@@ -135,7 +133,7 @@ public class DiplomaTypeServiceImpl extends DiplomaTypeCrudServiceImpl implement
             throw new ResourceNotFoundException();
         }
 
-        return getDiplomaTypeById(id)
+        return diplomaTypeCrudService.getDiplomaTypeById(id)
                 .map(editDiplomaTypeMapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
     }
@@ -143,7 +141,7 @@ public class DiplomaTypeServiceImpl extends DiplomaTypeCrudServiceImpl implement
     @Override
     @Transactional
     public void updateDiplomaType(EditDiplomaTypeDto editDiplomaTypeDto) {
-        DiplomaType diplomaType = getDiplomaTypeById(editDiplomaTypeDto.getId())
+        DiplomaType diplomaType = diplomaTypeCrudService.getDiplomaTypeById(editDiplomaTypeDto.getId())
                 .orElseThrow(DiplomaTypeServiceException::new);
 
         diplomaType.setName(editDiplomaTypeDto.getNewName());
