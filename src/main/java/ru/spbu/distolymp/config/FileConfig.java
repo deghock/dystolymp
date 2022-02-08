@@ -3,8 +3,8 @@ package ru.spbu.distolymp.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.spbu.distolymp.common.files.ImageService;
-import ru.spbu.distolymp.common.files.ImageServiceImpl;
+import ru.spbu.distolymp.common.files.FileService;
+import ru.spbu.distolymp.common.files.FileServiceImpl;
 import javax.servlet.ServletContext;
 
 /**
@@ -22,21 +22,21 @@ public class FileConfig {
     @Value("${models.directory}")
     private String modelDirectoryPath;
 
-    @Bean("diplomaImageService")
-    public ImageService diplomaService(ServletContext servletContext) {
+    @Bean("diplomaFileService")
+    public FileService diplomaService(ServletContext servletContext) {
         String path = servletContext.getRealPath(diplomaDirectoryPath);
-        return new ImageServiceImpl(path);
+        return new FileServiceImpl(path);
     }
 
-    @Bean("taskImageService")
-    public ImageService taskService(ServletContext servletContext) {
+    @Bean("taskFileService")
+    public FileService taskService(ServletContext servletContext) {
         String path = servletContext.getRealPath(taskDirectoryPath);
-        return new ImageServiceImpl(path);
+        return new FileServiceImpl(path);
     }
 
-    @Bean("modelImageService")
-    public ImageService modelService(ServletContext servletContext) {
+    @Bean("modelFileService")
+    public FileService modelService(ServletContext servletContext) {
         String path = servletContext.getRealPath(modelDirectoryPath);
-        return new ImageServiceImpl(path);
+        return new FileServiceImpl(path);
     }
 }

@@ -12,7 +12,7 @@ import java.io.IOException;
 public class FilesUtils {
     private FilesUtils() {}
 
-    public static String getImageExtension(MultipartFile multipartFile) {
+    public static String getFileExtension(MultipartFile multipartFile) {
         if (multipartFile == null || multipartFile.getContentType() == null) {
             throw new IllegalArgumentException("Multipart file and content must not be null");
         } else {
@@ -20,11 +20,11 @@ public class FilesUtils {
         }
     }
 
-    public static byte[] getImageBytes(MultipartFile image) {
+    public static byte[] getFileBytes(MultipartFile file) {
         try {
-            return image.getBytes();
+            return file.getBytes();
         } catch (IOException e) {
-            log.error("An error occurred while getting bytes of multipart file", e);
+            log.error("An error occurred while getting bytes of a multipart file", e);
             throw new TechnicalException(e);
         }
     }

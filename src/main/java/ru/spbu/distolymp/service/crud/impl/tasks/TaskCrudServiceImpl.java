@@ -10,7 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.spbu.distolymp.common.files.ImageService;
+import ru.spbu.distolymp.common.files.FileService;
 import ru.spbu.distolymp.dto.admin.tasks.TaskListDto;
 import ru.spbu.distolymp.entity.tasks.Task;
 import ru.spbu.distolymp.exception.common.TechnicalException;
@@ -37,8 +37,8 @@ public class TaskCrudServiceImpl implements TaskCrudService {
     private final TaskListMapper taskListMapper;
     protected final TaskMapper taskMapper;
     @Autowired
-    @Qualifier("taskImageService")
-    protected ImageService imageService;
+    @Qualifier("taskFileService")
+    protected FileService fileService;
 
     @Override
     @Transactional(readOnly = true)
@@ -95,7 +95,7 @@ public class TaskCrudServiceImpl implements TaskCrudService {
         if (deleteImage) task.setImageFileName(null);
         try {
             taskRepository.save(task);
-            if (deleteImage) imageService.deleteImage(imageName);
+            if (deleteImage) fileService.deleteFile(imageName);
         } catch (DataAccessException e) {
             log.error(SAVE_OR_UPDATE_PARAM, e);
             throw new TechnicalException();
@@ -106,14 +106,14 @@ public class TaskCrudServiceImpl implements TaskCrudService {
     @Transactional
     public void saveOrUpdate(Task task, byte[] image) {
         String imageFileName = task.getImageFileName();
-        boolean isFileSaved = imageService.saveImage(image, imageFileName);
+        boolean isFileSaved = fileService.saveFile(image, imageFileName);
         if (!isFileSaved)
             throw new TechnicalException("Task image is not saved");
         try {
             taskRepository.save(task);
         } catch (DataAccessException e) {
             log.error(SAVE_OR_UPDATE_PARAM, e);
-            imageService.deleteImage(imageFileName);
+            fileService.deleteFile(imageFileName);
             throw new TechnicalException();
         }
     }
@@ -127,7 +127,7 @@ public class TaskCrudServiceImpl implements TaskCrudService {
         } else {
             saveOrUpdate(task, image);
         }
-        imageService.deleteImage(oldImage);
+        fileService.deleteFile(oldImage);
     }
 
     @Override

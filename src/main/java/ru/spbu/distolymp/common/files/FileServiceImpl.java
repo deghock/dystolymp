@@ -10,48 +10,48 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * @author Daria Usova
+ * @author Daria Usova, Vladislav Konovalov
  */
 @Log4j
-public class ImageServiceImpl implements ImageService {
-    private final String imageDirectoryPath;
+public class FileServiceImpl implements FileService {
+    private final String fileDirectoryPath;
 
-    public ImageServiceImpl(String imageDirectoryPath) {
-        this.imageDirectoryPath = imageDirectoryPath;
+    public FileServiceImpl(String fileDirectoryPath) {
+        this.fileDirectoryPath = fileDirectoryPath;
     }
 
     @Override
-    public boolean saveImage(byte[] image, String fileName) {
-        File file = new File(imageDirectoryPath + fileName);
-        try (OutputStream os = new FileOutputStream(file)) {
-            os.write(image);
+    public boolean saveFile(byte[] file, String fileName) {
+        File fileLocation = new File(fileDirectoryPath + fileName);
+        try (OutputStream os = new FileOutputStream(fileLocation)) {
+            os.write(file);
         } catch (IOException e) {
-            log.error("An error occurred while saving an image", e);
+            log.error("An error occurred while saving a file", e);
             return false;
         }
         return true;
     }
 
     @Override
-    public void deleteImage(String fileName) {
-        Path path = Paths.get(imageDirectoryPath + fileName);
+    public void deleteFile(String fileName) {
+        Path path = Paths.get(fileDirectoryPath + fileName);
         try {
             Files.delete(path);
         } catch (IOException e) {
-            log.error("Image with name " + path + " not deleted", e);
+            log.error("File with name " + path + " not deleted", e);
         }
     }
 
     @Override
-    public byte[] getImageWithName(String name) {
-        Path path = Paths.get(imageDirectoryPath + name);
+    public byte[] getFileWithName(String fileName) {
+        Path path = Paths.get(fileDirectoryPath + fileName);
         if (path.toFile().exists()) {
-            return readImageFile(path);
+            return readFile(path);
         }
         return new byte[0];
     }
 
-    private byte[] readImageFile(Path path) {
+    private byte[] readFile(Path path) {
         try {
             return Files.readAllBytes(path);
         } catch (IOException e) {
@@ -61,18 +61,18 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public void replaceImage(String prevFileName, byte[] image, String newFileName) {
+    public void replaceFile(String prevFileName, byte[] file, String newFileName) {
         if (prevFileName.equals(newFileName)) {
             throw new IllegalArgumentException("New file name (" + newFileName +
                     ") must be different from previous one (" + prevFileName + ")");
         }
-        saveImage(image, newFileName);
-        deleteImage(prevFileName);
+        this.saveFile(file, newFileName);
+        this.deleteFile(prevFileName);
     }
 
     @Override
-    public String getExtensionFromImageName(String imageName) {
-        String[] parsedName = imageName.split("\\.");
+    public String getExtensionFromFileName(String fileName) {
+        String[] parsedName = fileName.split("\\.");
         if (parsedName.length == 1)
             return "";
         return "." + parsedName[parsedName.length - 1];

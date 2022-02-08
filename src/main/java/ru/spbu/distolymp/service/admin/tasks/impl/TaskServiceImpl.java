@@ -147,9 +147,9 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
         if ("".equals(image.getOriginalFilename())) {
             saveOrUpdate(task, false);
         } else {
-            String imageExtension = FilesUtils.getImageExtension(image);
+            String imageExtension = FilesUtils.getFileExtension(image);
             task.setImageFileName(FileNameGenerator.generateFileName(imageExtension));
-            saveOrUpdate(task, FilesUtils.getImageBytes(image));
+            saveOrUpdate(task, FilesUtils.getFileBytes(image));
         }
     }
 
@@ -164,17 +164,17 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
             if ("".equals(image.getOriginalFilename())) {
                 saveOrUpdate(task, false);
             } else {
-                String imageExtension = FilesUtils.getImageExtension(image);
+                String imageExtension = FilesUtils.getFileExtension(image);
                 task.setImageFileName(FileNameGenerator.generateFileName(imageExtension));
-                saveOrUpdate(task, FilesUtils.getImageBytes(image));
+                saveOrUpdate(task, FilesUtils.getFileBytes(image));
             }
         } else {
             if ("".equals(image.getOriginalFilename())) {
                 saveOrUpdate(task, taskDto.isDeleteImage());
             } else {
-                String imageExtension = FilesUtils.getImageExtension(image);
+                String imageExtension = FilesUtils.getFileExtension(image);
                 task.setImageFileName(FileNameGenerator.generateFileName(imageExtension));
-                saveOrUpdate(task, FilesUtils.getImageBytes(image), oldImageName, taskDto.isDeleteImage());
+                saveOrUpdate(task, FilesUtils.getFileBytes(image), oldImageName, taskDto.isDeleteImage());
             }
         }
     }
@@ -195,7 +195,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
                 .orElseThrow(ResourceNotFoundException::new)
                 .getImageFileName();
         deleteTaskById(id);
-        if (imageName != null) imageService.deleteImage(imageName);
+        if (imageName != null) fileService.deleteFile(imageName);
     }
 
     @Override
@@ -212,9 +212,9 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
         task.setMaxPoints(PointParser.calculatePoints(task.getGradePoints()));
         String imageName = task.getImageFileName();
         if (imageName != null) {
-            String extension = imageService.getExtensionFromImageName(imageName);
+            String extension = fileService.getExtensionFromFileName(imageName);
             task.setImageFileName(FileNameGenerator.generateFileName(extension));
-            saveOrUpdate(task, imageService.getImageWithName(imageName));
+            saveOrUpdate(task, fileService.getFileWithName(imageName));
         } else {
             saveOrUpdate(task, false);
         }
