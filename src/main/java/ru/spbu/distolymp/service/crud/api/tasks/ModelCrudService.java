@@ -5,6 +5,7 @@ import org.springframework.data.jpa.domain.Specification;
 import ru.spbu.distolymp.dto.admin.models.ModelListDto;
 import ru.spbu.distolymp.entity.tasks.Model;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -14,7 +15,5 @@ public interface ModelCrudService {
     List<ModelListDto> getModels(Sort sort);
     List<ModelListDto> getModels(Sort sort, Specification<Model> spec);
     Optional<Model> getModelById(Long id);
-    void saveOrUpdate(Model model, boolean deleteImage);
-    void saveOrUpdate(Model model, byte[] image);
-    void saveOrUpdate(Model model, byte[] image, String oldImageName, boolean deleteImage);
+    void saveOrUpdate(Model model, Map<String, byte[]> filesWithNames);
 }

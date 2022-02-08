@@ -9,7 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.spbu.distolymp.common.files.ImageService;
+import ru.spbu.distolymp.common.files.FileService;
 import ru.spbu.distolymp.dto.admin.models.ModelListDto;
 import ru.spbu.distolymp.entity.tasks.Model;
 import ru.spbu.distolymp.exception.common.TechnicalException;
@@ -19,6 +19,7 @@ import ru.spbu.distolymp.repository.tasks.ModelRepository;
 import ru.spbu.distolymp.service.crud.api.tasks.ModelCrudService;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -33,8 +34,8 @@ public class ModelCrudServiceImpl implements ModelCrudService {
     private final ModelListMapper modelListMapper;
     protected final ModelMapper modelMapper;
     @Autowired
-    @Qualifier("modelImageService")
-    protected ImageService imageService;
+    @Qualifier("modelFileService")
+    protected FileService fileService;
 
     @Override
     @Transactional(readOnly = true)
@@ -74,43 +75,23 @@ public class ModelCrudServiceImpl implements ModelCrudService {
 
     @Override
     @Transactional
-    public void saveOrUpdate(Model model, boolean deleteImage) {
-        String imageName = model.getImageFileName();
-        if (deleteImage) model.setImageFileName(null);
-        try {
-            modelRepository.save(model);
-            if (deleteImage) imageService.deleteImage(imageName);
-        } catch (DataAccessException e) {
-            log.error(SAVE_OR_UPDATE_PARAM, e);
-            throw new TechnicalException();
+    public void saveOrUpdate(Model model, Map<String, byte[]> filesWithNames) {
+        for (Map.Entry<String, byte[]> fileWithName : filesWithNames.entrySet()) {
+            String fileName = fileWithName.getKey();
+            byte[] file = fileWithName.getValue();
+            if ("".equals(fileName)) continue;
+            boolean fileSaved = fileService.saveFile(file, fileName);
+            if (!fileSaved) {
+                fileService.deleteFiles(filesWithNames.keySet());
+                throw new TechnicalException("Model's file with name=" + fileName + " is not saved");
+            }
         }
-    }
-
-    @Override
-    @Transactional
-    public void saveOrUpdate(Model model, byte[] image) {
-        String imageName = model.getImageFileName();
-        boolean imageSaved = imageService.saveImage(image, imageName);
-        if (!imageSaved)
-            throw new TechnicalException("Model image not saved");
         try {
             modelRepository.save(model);
         } catch (DataAccessException e) {
             log.error(SAVE_OR_UPDATE_PARAM, e);
-            imageService.deleteImage(imageName);
+            fileService.deleteFiles(filesWithNames.keySet());
             throw new TechnicalException();
         }
-    }
-
-    @Override
-    @Transactional
-    public void saveOrUpdate(Model model, byte[] image, String oldImageName, boolean deleteImage) {
-        if (deleteImage) {
-            model.setImageFileName(null);
-            saveOrUpdate(model, false);
-        } else {
-            saveOrUpdate(model, image);
-        }
-        imageService.deleteImage(oldImageName);
     }
 }

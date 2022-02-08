@@ -20,7 +20,9 @@ import ru.spbu.distolymp.repository.tasks.ModelRepository;
 import ru.spbu.distolymp.service.admin.models.api.ModelService;
 import ru.spbu.distolymp.service.crud.impl.tasks.ModelCrudServiceImpl;
 import ru.spbu.distolymp.util.admin.tasks.ModelSpecsConverter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Vladislav Konovalov
@@ -76,47 +78,45 @@ public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelServi
 
     @Override
     @Transactional
-    public void addModel(ModelDto modelDto) {
-        Model model = modelMapper.toEntity(modelDto);
-        MultipartFile image = modelDto.getImage();
-        model.setStatus(1);
-        initFields(model);
-        if ("".equals(image.getOriginalFilename())) {
-            saveOrUpdate(model, false);
-        } else {
-            String imageExtension = FilesUtils.getImageExtension(image);
-            model.setImageFileName(FileNameGenerator.generateFileName(imageExtension));
-            saveOrUpdate(model, FilesUtils.getImageBytes(image));
-        }
-    }
-
-    @Override
-    @Transactional
     public void updateModel(ModelDto modelDto) {
         Model model = modelMapper.toEntity(modelDto);
         initFields(model);
+
         MultipartFile image = modelDto.getImage();
+        MultipartFile barsicFile = modelDto.getBarsicFile();
         String oldImageName = model.getImageFileName();
-        if (oldImageName == null) {
-            if ("".equals(image.getOriginalFilename())) {
-                saveOrUpdate(model, false);
-            } else {
-                String imageExtension = FilesUtils.getImageExtension(image);
-                model.setImageFileName(FileNameGenerator.generateFileName(imageExtension));
-                saveOrUpdate(model, FilesUtils.getImageBytes(image));
-            }
-        } else {
-            if ("".equals(image.getOriginalFilename())) {
-                saveOrUpdate(model, modelDto.isDeleteImage());
-            } else {
-                String imageExtension = FilesUtils.getImageExtension(image);
-                model.setImageFileName(FileNameGenerator.generateFileName(imageExtension));
-                saveOrUpdate(model, FilesUtils.getImageBytes(image), oldImageName, modelDto.isDeleteImage());
-            }
+        String oldBarsicFileName = model.getBarsicFileName();
+
+        boolean newImageUpload = !"".equals(image.getOriginalFilename());
+        boolean newBarsicFileUpload = !"".equals(barsicFile.getOriginalFilename());
+        boolean oldImageExists = (oldImageName != null) && (!"".equals(oldImageName));
+        boolean oldBarsicFileExists = (oldBarsicFileName != null) && (!"".equals(oldBarsicFileName));
+        boolean deleteImage = modelDto.isDeleteImage();
+
+        Map<String, byte[]> filesWithNames = new HashMap<>();
+        if (newImageUpload && !deleteImage) {
+            String imageExtension = FilesUtils.getImageExtension(image);
+            String newImageName = FileNameGenerator.generateFileName(imageExtension);
+            model.setImageFileName(newImageName);
+            filesWithNames.put(newImageName, FilesUtils.getFileBytes(image));
         }
+        if (newBarsicFileUpload) {
+            String newBarsicFileName = FileNameGenerator.generateFileName(".brc");
+            model.setBarsicFileName(newBarsicFileName);
+            filesWithNames.put(newBarsicFileName, FilesUtils.getFileBytes(barsicFile));
+        }
+        if (deleteImage) model.setImageFileName(null);
+
+        saveOrUpdate(model, filesWithNames);
+
+        if ((newImageUpload && oldImageExists) || deleteImage)
+            fileService.deleteFile(oldImageName);
+        if (newBarsicFileUpload && oldBarsicFileExists)
+            fileService.deleteFile(oldBarsicFileName);
     }
 
     private void initFields(Model model) {
+        if (model.getId() == null) model.setStatus(1);
         model.setType(1);
         if (model.getWidth() == null) model.setWidth(0);
         if (model.getHeight() == null) model.setHeight(0);

@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Set;
 
 /**
  * @author Daria Usova, Vladislav Konovalov
@@ -40,6 +41,12 @@ public class FileServiceImpl implements FileService {
         } catch (IOException e) {
             log.error("File with name " + path + " not deleted", e);
         }
+    }
+
+    @Override
+    public void deleteFiles(Set<String> fileNames) {
+        for (String fileName : fileNames)
+            deleteFile(fileName);
     }
 
     @Override

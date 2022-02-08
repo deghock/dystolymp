@@ -12,7 +12,7 @@ import java.io.IOException;
 public class FilesUtils {
     private FilesUtils() {}
 
-    public static String getFileExtension(MultipartFile multipartFile) {
+    public static String getImageExtension(MultipartFile multipartFile) {
         if (multipartFile == null || multipartFile.getContentType() == null) {
             throw new IllegalArgumentException("Multipart file and content must not be null");
         } else {

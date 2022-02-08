@@ -56,10 +56,7 @@ public class ModelController {
                              BindingResult br, RedirectAttributes ra) {
         if (br.hasErrors())
             return EDIT_PAGE;
-        if (modelDto.getId() == null)
-            modelService.addModel(modelDto);
-        else
-            modelService.updateModel(modelDto);
+        modelService.updateModel(modelDto);
         ra.addFlashAttribute(SUCCESS_PARAM, "Изменения сохранены");
         return REDIRECT_LIST;
     }

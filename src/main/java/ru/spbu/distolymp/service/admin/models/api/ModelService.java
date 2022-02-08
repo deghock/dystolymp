@@ -12,6 +12,5 @@ public interface ModelService {
     void fillShowAllModelModelMap(ModelMap modelMap, ModelFilter modelFilter);
     void fillShowEditPageModelMap(Long id, ModelMap modelMap);
     void fillShowAddPageModelMap(ModelMap modelMap);
-    void addModel(ModelDto modelDto);
     void updateModel(ModelDto modelDto);
 }

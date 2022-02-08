@@ -212,7 +212,8 @@
                 <div class="form-row align-items-center">
                     <div id="brcFileDiv" class="col-12" th:classappend="${model.barsicFileName == null or model.barsicFileName == ''} ? 'was-validated'">
                         <input type="file" id="brcFile" class="custom-file-input" th:field="*{barsicFile}"
-                               accept=".brc" th:classappend="${model.barsicFileName != null and model.barsicFileName != ''} ? 'is-valid'" required>
+                               accept=".brc" th:classappend="${model.barsicFileName != null and model.barsicFileName != ''} ? 'is-valid'"
+                               th:required="${model.barsicFileName == null or model.barsicFileName == ''}">
                         <label class="custom-file-label text-dark" data-browse="Обзор" for="brcFile"
                                style="width: initial; margin-left: .3rem; margin-right: .3rem">
                             Файл не выбран
@@ -293,15 +294,11 @@
         } else if (!isExt) {
             $(this).next('.custom-file-label').html('Файл не выбран')
             $(this).val(null)
-            this.classList.remove('is-valid')
-            brcFileDiv.classList.add('was-validated')
             sizeErrMsg.style.display = 'none'
         } else if (!isSize) {
             $(this).next('.custom-file-label').html('Файл не выбран')
             $(this).val(null)
             sizeErrMsg.style.display = 'block'
-            this.classList.remove('is-valid')
-            brcFileDiv.classList.add('was-validated')
         }
     });
 
