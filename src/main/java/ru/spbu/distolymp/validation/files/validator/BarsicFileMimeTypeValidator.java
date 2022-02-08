@@ -1,8 +1,8 @@
 package ru.spbu.distolymp.validation.files.validator;
 
-import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.multipart.MultipartFile;
+import ru.spbu.distolymp.common.files.FilesUtils;
 import ru.spbu.distolymp.validation.files.annotation.BarsicFileMimeType;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -18,10 +18,12 @@ public class BarsicFileMimeTypeValidator implements ConstraintValidator<BarsicFi
 
     @Override
     public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext constraintValidatorContext) {
-        if (multipartFile == null || multipartFile.getContentType() == null) return true;
+        if ("".equals(multipartFile.getOriginalFilename())) return true;
+        String fileName = multipartFile.getOriginalFilename();
+        if (fileName == null) return true;
+        String fileExtension = FilesUtils.getExtensionFromFileName(fileName);
         String fileMimeType = multipartFile.getContentType();
-        boolean noFileWasUploaded = fileMimeType.equals(MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE);
-        if (noFileWasUploaded) return true;
-        return fileMimeType.equals(new MimeType("brc").getType());
+        if (!MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE.equals(fileMimeType)) return false;
+        return fileExtension.equals(".brc");
     }
 }
