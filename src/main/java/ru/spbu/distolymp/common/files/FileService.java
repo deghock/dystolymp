@@ -11,5 +11,4 @@ public interface FileService {
     void deleteFiles(Set<String> fileNames);
     byte[] getFileWithName(String fileName);
     void replaceFile(String prevFileName, byte[] file, String newFileName);
-    String getExtensionFromFileName(String fileName);
 }

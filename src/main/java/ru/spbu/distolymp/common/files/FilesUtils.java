@@ -28,4 +28,11 @@ public class FilesUtils {
             throw new TechnicalException(e);
         }
     }
+
+    public static String getExtensionFromFileName(String fileName) {
+        String[] parsedName = fileName.split("\\.");
+        if (parsedName.length == 1)
+            return "";
+        return "." + parsedName[parsedName.length - 1];
+    }
 }

@@ -76,12 +76,4 @@ public class FileServiceImpl implements FileService {
         this.saveFile(file, newFileName);
         this.deleteFile(prevFileName);
     }
-
-    @Override
-    public String getExtensionFromFileName(String fileName) {
-        String[] parsedName = fileName.split("\\.");
-        if (parsedName.length == 1)
-            return "";
-        return "." + parsedName[parsedName.length - 1];
-    }
 }
