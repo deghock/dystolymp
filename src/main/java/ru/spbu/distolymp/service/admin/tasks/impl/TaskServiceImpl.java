@@ -212,7 +212,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
         task.setMaxPoints(PointParser.calculatePoints(task.getGradePoints()));
         String imageName = task.getImageFileName();
         if (imageName != null) {
-            String extension = fileService.getExtensionFromFileName(imageName);
+            String extension = FilesUtils.getExtensionFromFileName(imageName);
             task.setImageFileName(FileNameGenerator.generateFileName(extension));
             saveOrUpdate(task, fileService.getFileWithName(imageName));
         } else {
