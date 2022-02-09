@@ -61,6 +61,13 @@ public class ModelController {
         return REDIRECT_LIST;
     }
 
+    @GetMapping("/delete/{id}")
+    public String deleteModel(@PathVariable("id") Long id, RedirectAttributes ra) {
+        modelService.deleteModelWithFiles(id);
+        ra.addFlashAttribute(SUCCESS_PARAM, "Модель удалена");
+        return REDIRECT_LIST;
+    }
+
     @ExceptionHandler(TechnicalException.class)
     public String handleTechnicalException(RedirectAttributes ra) {
         ra.addFlashAttribute("error", "Произошла техническая ошибка");

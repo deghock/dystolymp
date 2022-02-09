@@ -16,7 +16,9 @@ import ru.spbu.distolymp.exception.common.TechnicalException;
 import ru.spbu.distolymp.mapper.admin.models.api.ModelListMapper;
 import ru.spbu.distolymp.mapper.entity.tasks.ModelMapper;
 import ru.spbu.distolymp.repository.tasks.ModelRepository;
+import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
 import ru.spbu.distolymp.service.crud.api.tasks.ModelCrudService;
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +34,7 @@ public class ModelCrudServiceImpl implements ModelCrudService {
     private static final String SAVE_OR_UPDATE_PARAM = "An error occurred while saving or updating a model";
     private final ModelRepository modelRepository;
     private final ModelListMapper modelListMapper;
+    private final ListingProblemCrudService listingProblemCrudService;
     protected final ModelMapper modelMapper;
     @Autowired
     @Qualifier("modelFileService")
@@ -91,6 +94,19 @@ public class ModelCrudServiceImpl implements ModelCrudService {
         } catch (DataAccessException e) {
             log.error(SAVE_OR_UPDATE_PARAM, e);
             fileService.deleteFiles(filesWithNames.keySet());
+            throw new TechnicalException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteModelById(Long id) {
+        try {
+            Model model = getModelById(id).orElseThrow(EntityNotFoundException::new);
+            if (model.getStatus() == 2) listingProblemCrudService.deleteByProblemId(id);
+            modelRepository.delete(model);
+        } catch (DataAccessException | EntityNotFoundException e) {
+            log.error("An error occurred while deleting a model with id=" + id, e);
             throw new TechnicalException();
         }
     }

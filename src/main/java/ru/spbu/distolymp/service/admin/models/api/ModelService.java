@@ -13,4 +13,5 @@ public interface ModelService {
     void fillShowEditPageModelMap(Long id, ModelMap modelMap);
     void fillShowAddPageModelMap(ModelMap modelMap);
     void updateModel(ModelDto modelDto);
+    void deleteModelWithFiles(Long id);
 }

@@ -16,4 +16,5 @@ public interface ModelCrudService {
     List<ModelListDto> getModels(Sort sort, Specification<Model> spec);
     Optional<Model> getModelById(Long id);
     void saveOrUpdate(Model model, Map<String, byte[]> filesWithNames);
+    void deleteModelById(Long id);
 }

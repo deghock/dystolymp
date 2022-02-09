@@ -18,6 +18,7 @@ import ru.spbu.distolymp.mapper.admin.models.api.ModelListMapper;
 import ru.spbu.distolymp.mapper.entity.tasks.ModelMapper;
 import ru.spbu.distolymp.repository.tasks.ModelRepository;
 import ru.spbu.distolymp.service.admin.models.api.ModelService;
+import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
 import ru.spbu.distolymp.service.crud.impl.tasks.ModelCrudServiceImpl;
 import ru.spbu.distolymp.util.admin.tasks.ModelSpecsConverter;
 import java.util.HashMap;
@@ -34,8 +35,9 @@ public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelServi
 
     public ModelServiceImpl(ModelRepository modelRepository,
                             ModelListMapper modelListMapper,
+                            ListingProblemCrudService listingProblemCrudService,
                             ModelMapper modelMapper) {
-        super(modelRepository, modelListMapper, modelMapper);
+        super(modelRepository, modelListMapper, listingProblemCrudService, modelMapper);
     }
 
     @Override
@@ -121,5 +123,18 @@ public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelServi
         if (model.getWidth() == null) model.setWidth(0);
         if (model.getHeight() == null) model.setHeight(0);
         model.setMaxPoints(PointParser.calculatePoints(model.getGradePoints()));
+    }
+
+    @Override
+    @Transactional
+    public void deleteModelWithFiles(Long id) {
+        Model model = getModelById(id).orElseThrow(ResourceNotFoundException::new);
+        deleteModelById(id);
+        String imageName = model.getImageFileName();
+        String barsicFileName = model.getBarsicFileName();
+        boolean imageExists = (imageName != null) && (!"".equals(imageName));
+        boolean barsicFileExists = (barsicFileName != null) && (!"".equals(barsicFileName));
+        if (imageExists) fileService.deleteFile(imageName);
+        if (barsicFileExists) fileService.deleteFile(barsicFileName);
     }
 }
