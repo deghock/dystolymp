@@ -39,7 +39,7 @@ public class FileServiceImpl implements FileService {
         try {
             Files.delete(path);
         } catch (IOException e) {
-            log.error("File with name " + path + " not deleted", e);
+            log.error("File with name " + path.getFileName() + " not deleted", e);
         }
     }
 
