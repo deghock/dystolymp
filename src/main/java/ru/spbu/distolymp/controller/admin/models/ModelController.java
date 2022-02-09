@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.spbu.distolymp.dto.admin.models.ModelFilter;
+import ru.spbu.distolymp.dto.admin.models.ModelListDto;
 import ru.spbu.distolymp.dto.entity.tasks.ModelDto;
 import ru.spbu.distolymp.exception.common.TechnicalException;
 import ru.spbu.distolymp.service.admin.models.api.ModelService;
@@ -65,6 +66,14 @@ public class ModelController {
     public String deleteModel(@PathVariable("id") Long id, RedirectAttributes ra) {
         modelService.deleteModelWithFiles(id);
         ra.addFlashAttribute(SUCCESS_PARAM, "Модель удалена");
+        return REDIRECT_LIST;
+    }
+
+    @PostMapping("/copy")
+    public String copyModel(@ModelAttribute("modelForCopy") ModelListDto modelDto,
+                            RedirectAttributes ra) {
+        modelService.copyModel(modelDto);
+        ra.addFlashAttribute(SUCCESS_PARAM, "Модель скопирована");
         return REDIRECT_LIST;
     }
 

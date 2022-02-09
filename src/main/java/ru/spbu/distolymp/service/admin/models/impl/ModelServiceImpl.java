@@ -32,6 +32,7 @@ import java.util.Map;
 public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelService {
     private static final Sort SORT_BY_ID_DESC = Sort.by("id").descending();
     private static final String MODELS_PARAM = "modelList";
+    private static final String BARSIC_FILE_EXTENSION = ".brc";
 
     public ModelServiceImpl(ModelRepository modelRepository,
                             ModelListMapper modelListMapper,
@@ -103,7 +104,7 @@ public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelServi
             filesWithNames.put(newImageName, FilesUtils.getFileBytes(image));
         }
         if (newBarsicFileUpload) {
-            String newBarsicFileName = FileNameGenerator.generateFileName(".brc");
+            String newBarsicFileName = FileNameGenerator.generateFileName(BARSIC_FILE_EXTENSION);
             model.setBarsicFileName(newBarsicFileName);
             filesWithNames.put(newBarsicFileName, FilesUtils.getFileBytes(barsicFile));
         }
@@ -136,5 +137,38 @@ public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelServi
         boolean barsicFileExists = (barsicFileName != null) && (!"".equals(barsicFileName));
         if (imageExists) fileService.deleteFile(imageName);
         if (barsicFileExists) fileService.deleteFile(barsicFileName);
+    }
+
+    @Override
+    @Transactional
+    public void copyModel(ModelListDto modelTitleDto) {
+        Model model = getModelById(modelTitleDto.getId())
+                .map(modelMapper::toDto)
+                .map(modelMapper::toEntity)
+                .orElseThrow(ResourceNotFoundException::new);
+        model.setId(null);
+        model.setTitle(modelTitleDto.getTitle());
+        model.setType(1);
+        model.setStatus(1);
+        model.setMaxPoints(PointParser.calculatePoints(model.getGradePoints()));
+
+        String imageName = model.getImageFileName();
+        String barsicFileName = model.getBarsicFileName();
+        boolean imageExists = (imageName != null) && (!"".equals(imageName));
+        boolean barsicFileExists = (barsicFileName != null) && (!"".equals(barsicFileName));
+        Map<String, byte[]> filesWithNames = new HashMap<>();
+        if (imageExists) {
+            String imageExtension = FilesUtils.getExtensionFromFileName(imageName);
+            String newImageName = FileNameGenerator.generateFileName(imageExtension);
+            model.setImageFileName(newImageName);
+            filesWithNames.put(newImageName, fileService.getFileWithName(imageName));
+        }
+        if (barsicFileExists) {
+            String newBarsicFileName = FileNameGenerator.generateFileName(BARSIC_FILE_EXTENSION);
+            model.setBarsicFileName(newBarsicFileName);
+            filesWithNames.put(newBarsicFileName, fileService.getFileWithName(barsicFileName));
+        }
+
+        saveOrUpdate(model, filesWithNames);
     }
 }
