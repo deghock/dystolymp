@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
 import ru.spbu.distolymp.common.files.FileNameGenerator;
-import ru.spbu.distolymp.common.files.FilesUtils;
+import ru.spbu.distolymp.common.files.FileUtils;
 import ru.spbu.distolymp.common.tasks.PointParser;
 import ru.spbu.distolymp.common.tasks.TaskPreviewResultHandler;
 import ru.spbu.distolymp.dto.entity.answers.AnswerDto;
@@ -147,9 +147,9 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
         if ("".equals(image.getOriginalFilename())) {
             saveOrUpdate(task, false);
         } else {
-            String imageExtension = FilesUtils.getImageExtension(image);
+            String imageExtension = FileUtils.getImageExtension(image);
             task.setImageFileName(FileNameGenerator.generateFileName(imageExtension));
-            saveOrUpdate(task, FilesUtils.getFileBytes(image));
+            saveOrUpdate(task, FileUtils.getFileBytes(image));
         }
     }
 
@@ -164,17 +164,17 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
             if ("".equals(image.getOriginalFilename())) {
                 saveOrUpdate(task, false);
             } else {
-                String imageExtension = FilesUtils.getImageExtension(image);
+                String imageExtension = FileUtils.getImageExtension(image);
                 task.setImageFileName(FileNameGenerator.generateFileName(imageExtension));
-                saveOrUpdate(task, FilesUtils.getFileBytes(image));
+                saveOrUpdate(task, FileUtils.getFileBytes(image));
             }
         } else {
             if ("".equals(image.getOriginalFilename())) {
                 saveOrUpdate(task, taskDto.isDeleteImage());
             } else {
-                String imageExtension = FilesUtils.getImageExtension(image);
+                String imageExtension = FileUtils.getImageExtension(image);
                 task.setImageFileName(FileNameGenerator.generateFileName(imageExtension));
-                saveOrUpdate(task, FilesUtils.getFileBytes(image), oldImageName, taskDto.isDeleteImage());
+                saveOrUpdate(task, FileUtils.getFileBytes(image), oldImageName, taskDto.isDeleteImage());
             }
         }
     }
@@ -212,7 +212,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
         task.setMaxPoints(PointParser.calculatePoints(task.getGradePoints()));
         String imageName = task.getImageFileName();
         if (imageName != null) {
-            String extension = FilesUtils.getExtensionFromFileName(imageName);
+            String extension = FileUtils.getExtensionFromFileName(imageName);
             task.setImageFileName(FileNameGenerator.generateFileName(extension));
             saveOrUpdate(task, fileService.getFileWithName(imageName));
         } else {

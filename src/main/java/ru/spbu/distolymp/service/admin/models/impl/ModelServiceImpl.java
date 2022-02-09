@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
 import ru.spbu.distolymp.common.files.FileNameGenerator;
-import ru.spbu.distolymp.common.files.FilesUtils;
+import ru.spbu.distolymp.common.files.FileUtils;
 import ru.spbu.distolymp.common.tasks.PointParser;
 import ru.spbu.distolymp.dto.admin.models.ModelFilter;
 import ru.spbu.distolymp.dto.admin.models.ModelListDto;
@@ -98,15 +98,15 @@ public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelServi
 
         Map<String, byte[]> filesWithNames = new HashMap<>();
         if (newImageUpload && !deleteImage) {
-            String imageExtension = FilesUtils.getImageExtension(image);
+            String imageExtension = FileUtils.getImageExtension(image);
             String newImageName = FileNameGenerator.generateFileName(imageExtension);
             model.setImageFileName(newImageName);
-            filesWithNames.put(newImageName, FilesUtils.getFileBytes(image));
+            filesWithNames.put(newImageName, FileUtils.getFileBytes(image));
         }
         if (newBarsicFileUpload) {
             String newBarsicFileName = FileNameGenerator.generateFileName(BARSIC_FILE_EXTENSION);
             model.setBarsicFileName(newBarsicFileName);
-            filesWithNames.put(newBarsicFileName, FilesUtils.getFileBytes(barsicFile));
+            filesWithNames.put(newBarsicFileName, FileUtils.getFileBytes(barsicFile));
         }
         if (deleteImage) model.setImageFileName(null);
 
@@ -158,7 +158,7 @@ public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelServi
         boolean barsicFileExists = (barsicFileName != null) && (!"".equals(barsicFileName));
         Map<String, byte[]> filesWithNames = new HashMap<>();
         if (imageExists) {
-            String imageExtension = FilesUtils.getExtensionFromFileName(imageName);
+            String imageExtension = FileUtils.getExtensionFromFileName(imageName);
             String newImageName = FileNameGenerator.generateFileName(imageExtension);
             model.setImageFileName(newImageName);
             filesWithNames.put(newImageName, fileService.getFileWithName(imageName));

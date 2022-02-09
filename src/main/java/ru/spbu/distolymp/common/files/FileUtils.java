@@ -9,8 +9,8 @@ import java.io.IOException;
  * @author Daria Usova
  */
 @Log4j
-public class FilesUtils {
-    private FilesUtils() {}
+public class FileUtils {
+    private FileUtils() {}
 
     public static String getImageExtension(MultipartFile multipartFile) {
         if (multipartFile == null || multipartFile.getContentType() == null) {
