@@ -77,6 +77,13 @@ public class ModelController {
         return REDIRECT_LIST;
     }
 
+    @GetMapping("/unarchive/{id}")
+    public String unarchiveModel(@PathVariable("id") Long id, RedirectAttributes ra) {
+        modelService.unarchiveModel(id);
+        ra.addFlashAttribute(SUCCESS_PARAM, "Модель разархивирована");
+        return REDIRECT_LIST;
+    }
+
     @ExceptionHandler(TechnicalException.class)
     public String handleTechnicalException(RedirectAttributes ra) {
         ra.addFlashAttribute("error", "Произошла техническая ошибка");

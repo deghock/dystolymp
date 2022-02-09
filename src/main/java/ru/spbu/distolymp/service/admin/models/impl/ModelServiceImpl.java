@@ -171,4 +171,12 @@ public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelServi
 
         saveOrUpdate(model, filesWithNames);
     }
+
+    @Override
+    @Transactional
+    public void unarchiveModel(Long id) {
+        Model model = getModelById(id).orElseThrow(ResourceNotFoundException::new);
+        model.setStatus(1);
+        saveOrUpdate(model, new HashMap<>());
+    }
 }

@@ -16,4 +16,5 @@ public interface ModelService {
     void updateModel(ModelDto modelDto);
     void deleteModelWithFiles(Long id);
     void copyModel(ModelListDto modelTitleDto);
+    void unarchiveModel(Long id);
 }
