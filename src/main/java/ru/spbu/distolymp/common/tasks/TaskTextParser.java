@@ -12,14 +12,20 @@ public class TaskTextParser {
         if (problemText == null) return null;
         if (variables == null) return problemText;
         StringBuilder parsedProblemText = new StringBuilder(problemText);
-        while (parsedProblemText.indexOf("{") != -1 && parsedProblemText.indexOf("}") != -1) {
-            int start = parsedProblemText.indexOf("{");
-            int end = parsedProblemText.indexOf("}");
-            String varName = parsedProblemText.substring(start + 1, end);
-            if (variables.containsKey(varName)) {
-                parsedProblemText.replace(start, end + 1, variables.get(varName).toString());
-            } else {
-                parsedProblemText.replace(start, end + 1, varName);
+        String[] brackets = new String[] {"{}", "[]"};
+        for (String bracket : brackets) {
+            String openBracket = bracket.substring(0, 1);
+            String closeBracket = bracket.substring(1, 2);
+            while (parsedProblemText.indexOf(openBracket) != -1 &&
+                    parsedProblemText.indexOf(closeBracket) != -1) {
+                int start = parsedProblemText.indexOf(openBracket);
+                int end = parsedProblemText.indexOf(closeBracket);
+                String varName = parsedProblemText.substring(start + 1, end);
+                if (variables.containsKey(varName)) {
+                    parsedProblemText.replace(start, end + 1, variables.get(varName).toString());
+                } else {
+                    parsedProblemText.replace(start, end + 1, varName);
+                }
             }
         }
         return parsedProblemText.toString();
