@@ -11,10 +11,12 @@ import ru.spbu.distolymp.common.files.FileUtils;
 import ru.spbu.distolymp.common.tasks.PointParser;
 import ru.spbu.distolymp.dto.admin.models.ModelFilter;
 import ru.spbu.distolymp.dto.admin.models.ModelListDto;
+import ru.spbu.distolymp.dto.admin.models.ModelViewDto;
 import ru.spbu.distolymp.dto.entity.tasks.ModelDto;
 import ru.spbu.distolymp.entity.tasks.Model;
 import ru.spbu.distolymp.exception.common.ResourceNotFoundException;
 import ru.spbu.distolymp.mapper.admin.models.api.ModelListMapper;
+import ru.spbu.distolymp.mapper.admin.models.api.ModelViewMapper;
 import ru.spbu.distolymp.mapper.entity.tasks.ModelMapper;
 import ru.spbu.distolymp.repository.tasks.ModelRepository;
 import ru.spbu.distolymp.service.admin.models.api.ModelService;
@@ -30,15 +32,19 @@ import java.util.Map;
  */
 @Service
 public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelService {
+    private final ModelViewMapper modelViewMapper;
     private static final Sort SORT_BY_ID_DESC = Sort.by("id").descending();
     private static final String MODELS_PARAM = "modelList";
+    private static final String MODEL_PARAM = "model";
     private static final String BARSIC_FILE_EXTENSION = ".brc";
 
     public ModelServiceImpl(ModelRepository modelRepository,
                             ModelListMapper modelListMapper,
                             ListingProblemCrudService listingProblemCrudService,
-                            ModelMapper modelMapper) {
+                            ModelMapper modelMapper,
+                            ModelViewMapper modelViewMapper) {
         super(modelRepository, modelListMapper, listingProblemCrudService, modelMapper);
+        this.modelViewMapper = modelViewMapper;
     }
 
     @Override
@@ -67,7 +73,7 @@ public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelServi
         ModelDto modelDto = getModelById(id)
                 .map(modelMapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
-        modelMap.put("model", modelDto);
+        modelMap.put(MODEL_PARAM, modelDto);
     }
 
     @Override
@@ -76,7 +82,7 @@ public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelServi
         ModelDto modelDto = new ModelDto();
         modelDto.setWidth(0);
         modelDto.setHeight(0);
-        modelMap.put("model", modelDto);
+        modelMap.put(MODEL_PARAM, modelDto);
     }
 
     @Override
@@ -178,5 +184,14 @@ public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelServi
         Model model = getModelById(id).orElseThrow(ResourceNotFoundException::new);
         model.setStatus(1);
         saveOrUpdate(model, new HashMap<>());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void fillShowPreviewPageModelMap(Long id, ModelMap modelMap) {
+        ModelViewDto modelDto = getModelById(id)
+                .map(modelViewMapper::toDto)
+                .orElseThrow(ResourceNotFoundException::new);
+        modelMap.put(MODEL_PARAM, modelDto);
     }
 }

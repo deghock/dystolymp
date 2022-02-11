@@ -25,6 +25,7 @@ public class ModelController {
     private static final String REDIRECT_LIST = "redirect:/models/list";
     private static final String MODELS_TABLE = ROOT_DIR + "models-table :: #models-table";
     private static final String EDIT_PAGE = ROOT_DIR + "edit";
+    private static final String PREVIEW_PAGE = ROOT_DIR + "preview";
     private static final String SUCCESS_PARAM = "success";
     private final ModelService modelService;
 
@@ -82,6 +83,12 @@ public class ModelController {
         modelService.unarchiveModel(id);
         ra.addFlashAttribute(SUCCESS_PARAM, "Модель разархивирована");
         return REDIRECT_LIST;
+    }
+
+    @GetMapping("/preview/{id}")
+    public String previewModel(@PathVariable("id") Long id, ModelMap modelMap) {
+        modelService.fillShowPreviewPageModelMap(id, modelMap);
+        return PREVIEW_PAGE;
     }
 
     @ExceptionHandler(TechnicalException.class)

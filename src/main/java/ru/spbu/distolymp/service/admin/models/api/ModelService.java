@@ -17,4 +17,5 @@ public interface ModelService {
     void deleteModelWithFiles(Long id);
     void copyModel(ModelListDto modelTitleDto);
     void unarchiveModel(Long id);
+    void fillShowPreviewPageModelMap(Long id, ModelMap modelMap);
 }
