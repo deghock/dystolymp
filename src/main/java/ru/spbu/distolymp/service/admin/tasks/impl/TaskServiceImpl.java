@@ -38,6 +38,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
     private final TaskViewMapper taskViewMapper;
     private static final Sort SORT_BY_ID_DESC = Sort.by("id").descending();
     private static final String TASKS_PARAM = "taskList";
+    private static final String TASK_PARAM = "task";
 
     public TaskServiceImpl(TaskRepository taskRepository,
                            ListingProblemCrudService listingProblemCrudService,
@@ -96,7 +97,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
         taskDto.setAnswerNote(2);
         taskDto.setWidth(0);
         taskDto.setHeight(0);
-        modelMap.put("task", taskDto);
+        modelMap.put(TASK_PARAM, taskDto);
     }
 
     @Override
@@ -105,7 +106,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
         TaskDto taskDto = getTaskById(id)
                 .map(taskMapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
-        modelMap.put("task", taskDto);
+        modelMap.put(TASK_PARAM, taskDto);
     }
 
     @Override
@@ -117,7 +118,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
         AnswerDto answerDto = new AnswerDto();
         Number[] userAnswers = new Number[taskDto.getAnswerNameList().size()];
         answerDto.setUserAnswers(userAnswers);
-        modelMap.put("task", taskDto);
+        modelMap.put(TASK_PARAM, taskDto);
         modelMap.put("answer", answerDto);
         modelMap.put("result", new TaskPreviewResultDto());
     }
@@ -133,7 +134,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
                 task.getCorrectAnswer(),
                 PointParser.parsePoints(task.getGradePoints()),
                 task.getMaxPoints());
-        modelMap.put("task", taskDto);
+        modelMap.put(TASK_PARAM, taskDto);
         modelMap.put("result", resultDto);
     }
 
