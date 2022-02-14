@@ -121,6 +121,8 @@ public class TaskEvaluator {
             if (engine.get(varName) != null)
                 variables.put(varName, engine.get(varName));
         }
+        if (lines.size() != variables.size())
+            variables = new HashMap<>();
     }
 
     private void evalAnswers(String answerInput) {
@@ -176,5 +178,7 @@ public class TaskEvaluator {
             if (engine.get(ansName) != null)
                 answers.put(ansName, new AbstractMap.SimpleEntry<>((Number) variableValue, error));
         }
+        if (lines.size() != answers.size())
+            answers = new HashMap<>();
     }
 }
