@@ -118,7 +118,8 @@ public class TaskEvaluator {
                 return;
             }
             String varName = line.split("=")[0].trim();
-            variables.put(varName, engine.get(varName));
+            if (engine.get(varName) != null)
+                variables.put(varName, engine.get(varName));
         }
     }
 
@@ -172,7 +173,8 @@ public class TaskEvaluator {
                     return;
                 }
             }
-            answers.put(ansName, new AbstractMap.SimpleEntry<>((Number) variableValue, error));
+            if (engine.get(ansName) != null)
+                answers.put(ansName, new AbstractMap.SimpleEntry<>((Number) variableValue, error));
         }
     }
 }
