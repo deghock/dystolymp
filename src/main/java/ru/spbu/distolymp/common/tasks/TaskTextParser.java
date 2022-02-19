@@ -16,15 +16,17 @@ public class TaskTextParser {
         for (String bracket : brackets) {
             String openBracket = bracket.substring(0, 1);
             String closeBracket = bracket.substring(1, 2);
-            while (parsedProblemText.indexOf(openBracket) != -1 &&
-                    parsedProblemText.indexOf(closeBracket) != -1) {
-                int start = parsedProblemText.indexOf(openBracket);
-                int end = parsedProblemText.indexOf(closeBracket);
+            int oldStart = 0;
+            int oldEnd = 0;
+            while (parsedProblemText.indexOf(openBracket, oldStart) != -1 &&
+                    parsedProblemText.indexOf(closeBracket, oldEnd) != -1) {
+                int start = parsedProblemText.indexOf(openBracket, oldStart);
+                int end = parsedProblemText.indexOf(closeBracket, oldEnd);
+                oldStart = start + 1;
+                oldEnd = end + 1;
                 String varName = parsedProblemText.substring(start + 1, end);
                 if (variables.containsKey(varName)) {
                     parsedProblemText.replace(start, end + 1, variables.get(varName).toString());
-                } else {
-                    parsedProblemText.replace(start, end + 1, varName);
                 }
             }
         }
