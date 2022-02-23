@@ -13,7 +13,6 @@ public class ModelViewDto {
     private Integer height;
     private String barsicFileName;
     private String parsedProblemText;
-    private String problemForm;
     private String currentServerDateTime;
     private String variableNameValue;
 }
