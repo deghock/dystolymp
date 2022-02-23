@@ -90,6 +90,10 @@ public class TaskEvaluator {
         Map<String, Boolean> correctnessMap = new HashMap<>();
         for (Entry<String, Number> userAnswer : userAnswerMap.entrySet()) {
             String name = userAnswer.getKey();
+            if (userAnswer.getValue() == null) {
+                correctnessMap.put(name, false);
+                continue;
+            }
             double userValue = userAnswer.getValue().doubleValue();
             if (answers.containsKey(name)) {
                 double correctValue = answers.get(name).getKey().doubleValue();
