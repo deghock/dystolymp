@@ -1,6 +1,8 @@
 package ru.spbu.distolymp.dto.admin.models;
 
 import lombok.Data;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Vladislav Konovalov
@@ -15,4 +17,6 @@ public class ModelViewDto {
     private String parsedProblemText;
     private String currentServerDateTime;
     private String variableNameValue;
+    private Map<String, String> variableNameComment;
+    private List<String> answerNameList;
 }

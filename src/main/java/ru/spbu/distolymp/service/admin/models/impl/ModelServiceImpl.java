@@ -8,13 +8,18 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
 import ru.spbu.distolymp.common.files.FileNameGenerator;
 import ru.spbu.distolymp.common.files.FileUtils;
+import ru.spbu.distolymp.common.tasks.ModelFileContentGenerator;
+import ru.spbu.distolymp.common.tasks.ModelResultHandler;
 import ru.spbu.distolymp.common.tasks.PointParser;
 import ru.spbu.distolymp.dto.admin.models.ModelFilter;
 import ru.spbu.distolymp.dto.admin.models.ModelListDto;
+import ru.spbu.distolymp.dto.admin.models.ModelResultDto;
 import ru.spbu.distolymp.dto.admin.models.ModelViewDto;
+import ru.spbu.distolymp.dto.entity.answers.AnswerDto;
 import ru.spbu.distolymp.dto.entity.tasks.ModelDto;
 import ru.spbu.distolymp.entity.tasks.Model;
 import ru.spbu.distolymp.exception.common.ResourceNotFoundException;
+import ru.spbu.distolymp.exception.common.TechnicalException;
 import ru.spbu.distolymp.mapper.admin.models.api.ModelListMapper;
 import ru.spbu.distolymp.mapper.admin.models.api.ModelViewMapper;
 import ru.spbu.distolymp.mapper.entity.tasks.ModelMapper;
@@ -23,6 +28,7 @@ import ru.spbu.distolymp.service.admin.models.api.ModelService;
 import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
 import ru.spbu.distolymp.service.crud.impl.tasks.ModelCrudServiceImpl;
 import ru.spbu.distolymp.util.admin.tasks.ModelSpecsConverter;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -192,6 +198,47 @@ public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelServi
         ModelViewDto modelDto = getModelById(id)
                 .map(modelViewMapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
+
+        byte[] paramFile = ModelFileContentGenerator.generateParamFileContent(modelDto.getVariableNameValue());
+        byte[] textFile = ModelFileContentGenerator.generateTextFileContent(modelDto.getParsedProblemText());
+        byte[] resultFile = ModelFileContentGenerator.generateResultFileContent(modelDto);
+        boolean fileSaved = fileService.saveFile(paramFile, "p-model/param.html");
+        if (!fileSaved) throw new TechnicalException();
+        fileSaved = fileService.saveFile(textFile, "p-model/text.html");
+        if (!fileSaved) throw new TechnicalException();
+        fileSaved = fileService.saveFile(resultFile, "p-model/result.html");
+        if (!fileSaved) throw new TechnicalException();
+
         modelMap.put(MODEL_PARAM, modelDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void fillShowResultFormModelMap(ModelMap modelMap) {
+        AnswerDto answerDto = new AnswerDto();
+        String fileContent = new String(fileService.getFileWithName("p-model/result.html"),
+                StandardCharsets.UTF_8);
+        int startIndex = fileContent.indexOf("<input id=\"answerNumber\" type=\"hidden\" value=\"");
+        int endIndex = fileContent.indexOf("\"/>", startIndex);
+        int userAnswerNumber = Integer.parseInt(fileContent.substring(startIndex + 46, endIndex));
+        Number[] userAnswers = new Number[userAnswerNumber];
+        answerDto.setUserAnswers(userAnswers);
+        modelMap.put("answer", answerDto);
+        modelMap.put("result", new ModelResultDto());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void fillShowResultModelMap(AnswerDto answerDto, ModelMap modelMap) {
+        Model model = getModelById(answerDto.getProblemId()).orElseThrow(ResourceNotFoundException::new);
+        ModelViewDto modelDto = modelViewMapper.toDto(model, answerDto.getParam());
+        ModelResultDto resultDto = ModelResultHandler.toResultDto(
+                modelDto,
+                answerDto.getUserAnswers(),
+                model.getCorrectAnswer(),
+                PointParser.parsePoints(model.getGradePoints()),
+                model.getMaxPoints());
+        modelMap.put(MODEL_PARAM, modelDto);
+        modelMap.put("result", resultDto);
     }
 }

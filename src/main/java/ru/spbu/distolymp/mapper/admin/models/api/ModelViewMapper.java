@@ -8,4 +8,5 @@ import ru.spbu.distolymp.entity.tasks.Model;
  */
 public interface ModelViewMapper {
     ModelViewDto toDto(Model model);
+    ModelViewDto toDto(Model model, String params);
 }
