@@ -46,7 +46,7 @@ public class TaskController {
     @PostMapping("/submit-answer")
     public String submitAnswer(@Valid @ModelAttribute("answer") AnswerDto answerDto,
                                BindingResult br, ModelMap modelMap) {
-        taskService.fillShowPreviewModelMap(answerDto, modelMap);
+        taskService.fillShowResultModelMap(answerDto, modelMap);
         return PREVIEW_PAGE;
     }
 

@@ -1,23 +1,23 @@
 package ru.spbu.distolymp.common.tasks;
 
-import ru.spbu.distolymp.dto.admin.tasks.TaskPreviewResultDto;
+import ru.spbu.distolymp.dto.admin.tasks.TaskResultDto;
 import ru.spbu.distolymp.dto.admin.tasks.TaskViewDto;
 import java.util.*;
 
 /**
  * @author Vladislav Konovalov
  */
-public class TaskPreviewResultHandler {
-    private TaskPreviewResultHandler() {}
+public class TaskResultHandler {
+    private TaskResultHandler() {}
 
-    public static TaskPreviewResultDto toResultDto(TaskViewDto taskDto,
+    public static TaskResultDto toResultDto(TaskViewDto taskDto,
                                             Number[] userAnswers,
                                             String answersString,
                                             List<String> points,
                                             double maxPoint) {
         if (taskDto == null) return null;
 
-        TaskPreviewResultDto resultDto = new TaskPreviewResultDto();
+        TaskResultDto resultDto = new TaskResultDto();
         TaskEvaluator evaluator = new TaskEvaluator(taskDto.getVariableNameValue(), answersString);
 
         resultDto.setAnswerNote(taskDto.getAnswerNote());

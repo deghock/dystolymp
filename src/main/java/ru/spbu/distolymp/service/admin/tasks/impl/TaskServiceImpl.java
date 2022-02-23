@@ -11,11 +11,11 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.spbu.distolymp.common.files.FileNameGenerator;
 import ru.spbu.distolymp.common.files.FileUtils;
 import ru.spbu.distolymp.common.tasks.PointParser;
-import ru.spbu.distolymp.common.tasks.TaskPreviewResultHandler;
+import ru.spbu.distolymp.common.tasks.TaskResultHandler;
 import ru.spbu.distolymp.dto.entity.answers.AnswerDto;
 import ru.spbu.distolymp.dto.admin.tasks.TaskFilter;
 import ru.spbu.distolymp.dto.admin.tasks.TaskListDto;
-import ru.spbu.distolymp.dto.admin.tasks.TaskPreviewResultDto;
+import ru.spbu.distolymp.dto.admin.tasks.TaskResultDto;
 import ru.spbu.distolymp.dto.admin.tasks.TaskViewDto;
 import ru.spbu.distolymp.dto.entity.tasks.TaskDto;
 import ru.spbu.distolymp.entity.tasks.Task;
@@ -120,15 +120,15 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
         answerDto.setUserAnswers(userAnswers);
         modelMap.put(TASK_PARAM, taskDto);
         modelMap.put("answer", answerDto);
-        modelMap.put("result", new TaskPreviewResultDto());
+        modelMap.put("result", new TaskResultDto());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public void fillShowPreviewModelMap(AnswerDto answerDto, ModelMap modelMap) {
+    public void fillShowResultModelMap(AnswerDto answerDto, ModelMap modelMap) {
         Task task = getTaskById(answerDto.getProblemId()).orElseThrow(ResourceNotFoundException::new);
         TaskViewDto taskDto = taskViewMapper.toDto(task, answerDto.getParam());
-        TaskPreviewResultDto resultDto = TaskPreviewResultHandler.toResultDto(
+        TaskResultDto resultDto = TaskResultHandler.toResultDto(
                 taskDto,
                 answerDto.getUserAnswers(),
                 task.getCorrectAnswer(),

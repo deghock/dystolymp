@@ -8,7 +8,7 @@ import java.util.Map;
  * @author Vladislav Konovalov
  */
 @Data
-public class TaskPreviewResultDto {
+public class TaskResultDto {
     private Integer answerNote;
     private List<String> param;
     private List<String> answerNameList;

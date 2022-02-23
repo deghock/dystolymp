@@ -15,7 +15,7 @@ public interface TaskService {
     void fillShowAddPageModelMap(ModelMap modelMap);
     void fillShowEditPageModelMap(Long id, ModelMap modelMap);
     void fillShowPreviewPageModelMap(Long id, ModelMap modelMap);
-    void fillShowPreviewModelMap(AnswerDto answerDto, ModelMap modelMap);
+    void fillShowResultModelMap(AnswerDto answerDto, ModelMap modelMap);
     void addTask(TaskDto taskDto);
     void updateTask(TaskDto taskDto);
     void deleteTaskAndImage(Long id);
