@@ -23,9 +23,6 @@
             padding: .5rem;
             overflow-wrap: anywhere;
         }
-        .tooltip-inner {
-            text-align: left;
-        }
         td {
             vertical-align: middle;
             text-align: center;
@@ -111,7 +108,7 @@
 
     <!--/*@thymesVar id="task" type="ru.spbu.distolymp.dto.admin.tasks.TaskViewDto"*/-->
     <!--/*@thymesVar id="answer" type="ru.spbu.distolymp.dto.entity.answers.AnswerDto"*/-->
-    <!--/*@thymesVar id="result" type="ru.spbu.distolymp.dto.admin.tasks.TaskPreviewResultDto"*/-->
+    <!--/*@thymesVar id="result" type="ru.spbu.distolymp.dto.admin.tasks.TaskResultDto"*/-->
     <div class="mb-2" style="border-color: black; border-width: 1px; border-style: solid">
         <div style="margin: .5rem; overflow-wrap: anywhere; overflow: auto">
             <img th:src="@{/data/tasks/{imageName}(imageName=${task.imageFileName})}"
@@ -144,10 +141,6 @@
             <div style="display: flex">
                 <p th:text="${task.answerNote != 4} ? 'Введите ответ:' : 'Прикрепите файл:'"
                    style="margin: 0 auto .5rem 0; text-align: center">Введите ответ:</p>
-                <a th:if="${task.answerNote == 0 or task.answerNote == 1}"
-                   id="answerTooltip" style="margin-right: 0; margin-left: auto" class="abutton"
-                   data-toggle="tooltip" onclick="showTooltip()" onmouseleave="hideTooltip()"
-                   th:title="${task.answerNameValue}">правильные ответы</a>
             </div>
 
             <div class="form-row text-left align-items-center" style="margin-bottom: .25rem"
@@ -263,7 +256,6 @@
 </body>
 <script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
 <script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
-<script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.bundle.min.js}"></script>
 <script type="text/javascript">
     function getUserIP(json) {
         document.getElementById('userIP').value = json.ip
@@ -297,21 +289,6 @@
             });
         }, false);
     })();
-
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip({
-            html: true,
-            trigger: 'manual'
-        })
-    });
-
-    function showTooltip() {
-        $('#answerTooltip').tooltip('show')
-    }
-
-    function hideTooltip() {
-        $('#answerTooltip').tooltip('hide')
-    }
 </script>
 <script type="text/javascript" src="https://api.ipify.org?format=jsonp&callback=getUserIP"></script>
 </html>
