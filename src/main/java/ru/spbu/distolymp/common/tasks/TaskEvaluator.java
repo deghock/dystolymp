@@ -35,9 +35,7 @@ public class TaskEvaluator {
             Entry<String, Object> variable = iterator.next();
             String name = variable.getKey();
             Object value = variable.getValue();
-            if (value instanceof String)
-                variableNameValueString.append(name).append(" = '").append(value).append("';");
-            else
+            if (!(value instanceof String))
                 variableNameValueString.append(name).append(" = ").append(value.toString()).append(";");
             if (iterator.hasNext())
                 variableNameValueString.append(html ? "<br>" : "\n");
