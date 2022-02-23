@@ -239,20 +239,11 @@
                 </div>
             </div>
         </div>
-
-        <div class="form-row text-left align-items-center">
-            <div class="col-3"><label for="problemForm" style="width: auto">Отчёт</label></div>
-            <div class="col-9 was-validated">
-                <textarea id="problemForm" class="form-control form-control-sm text-dark" maxlength="65535"
-                          th:field="*{problemForm}" rows="12" style="width: inherit" required></textarea>
-                <div class="invalid-feedback">Пожалуйста, введите форму отчёта</div>
-            </div>
-        </div>
     </div>
 
     <div style="text-align: center; margin-top: 1rem; margin-bottom: 1rem">
         <button type="submit" class="btn btn-light border border-dark" style="width: 20%; min-width: 7.5rem" id="submitBtn"
-                onclick="trimInputs('title', 'problemText', 'gradePoints', 'minusPoints', 'minPoints', 'problemForm', 'correctAnswer')">
+                onclick="trimInputs('title', 'problemText', 'gradePoints', 'minusPoints', 'minPoints', 'correctAnswer')">
             Сохранить
         </button>
     </div>

@@ -74,10 +74,6 @@ public class ModelDto {
     @BarsicFileMimeType
     private MultipartFile barsicFile;
 
-    @NotNull
-    @Size(max = 65535)
-    private String problemForm;
-
     @AssertTrue(message = "{answers.pattern}")
     private boolean isAnswerValid() {
         return AnswersValidator.isValid(variables, correctAnswer);

@@ -37,7 +37,6 @@ public class TaskViewMapperImpl implements TaskViewMapper {
         taskDto.setAnswerNote(task.getAnswerNote());
         taskDto.setParsedProblemText(parse(task.getProblemText(), evaluator.getVariableMap()));
         taskDto.setCurrentServerDateTime(dateTime.format(formatter));
-        taskDto.setAnswerNameValue(evaluator.getAnswerString(true));
         taskDto.setVariableNameComment(evaluator.getCommentForVariableMap());
         taskDto.setAnswerNameList(TaskParser.getVarNames(task.getCorrectAnswer()));
         taskDto.setVariableNameValue(evaluator.getVariableString(false));
