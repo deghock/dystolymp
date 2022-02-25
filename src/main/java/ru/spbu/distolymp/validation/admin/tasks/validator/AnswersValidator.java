@@ -13,7 +13,7 @@ public class AnswersValidator {
     public static boolean isValid(String variables, String answer) {
         TaskEvaluator evaluator = new TaskEvaluator(variables, answer);
         boolean variablesEmpty = (variables == null) || (variables.trim().equals(""));
-        if (!variablesEmpty && evaluator.getVariableMap().isEmpty()) return false;
+        if (!variablesEmpty && evaluator.getVariableMap().isEmpty()) return true;
         return !evaluator.getAnswerWithErrorMap().isEmpty();
     }
 

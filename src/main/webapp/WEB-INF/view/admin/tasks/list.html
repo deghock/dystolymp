@@ -48,7 +48,7 @@
         </button>
     </div>
 
-    <div id="towns-table" th:replace="admin/tasks/tasks-table :: #tasks-table" style="min-width: 30rem"></div>
+    <div id="tasks-table" th:replace="admin/tasks/tasks-table :: #tasks-table" style="min-width: 30rem"></div>
 
     <div id="taskCopyModal" class="modal fade taskCopy" tabindex="-1" role="dialog"
          aria-labelledby="taskCopyNamePopup" aria-hidden="true">
@@ -67,7 +67,7 @@
                         <div class="form-group text-left">
                             <label for="newTaskTitle">Заголовок новой задачи:</label>
                             <input th:field="*{title}" type="text" class="form-control"
-                                   id="newTaskTitle" placeholder="Введите заголовок новой задачи" required>
+                                   id="newTaskTitle" required>
                             <div class="invalid-feedback">Пожалуйста, введите заголовок задачи</div>
                             <input type="hidden" id="taskCopyId" th:field="${taskForCopy.id}" th:value="*{id}">
                         </div>
@@ -120,7 +120,6 @@
                         event.preventDefault();
                         event.stopPropagation();
                     }
-                    form.classList.add('was-validated');
                 }, false);
             });
         }, false);

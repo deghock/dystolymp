@@ -35,9 +35,7 @@ public class TaskEvaluator {
             Entry<String, Object> variable = iterator.next();
             String name = variable.getKey();
             Object value = variable.getValue();
-            if (value instanceof String)
-                variableNameValueString.append(name).append(" = '").append(value).append("';");
-            else
+            if (!(value instanceof String))
                 variableNameValueString.append(name).append(" = ").append(value.toString()).append(";");
             if (iterator.hasNext())
                 variableNameValueString.append(html ? "<br>" : "\n");
@@ -90,6 +88,10 @@ public class TaskEvaluator {
         Map<String, Boolean> correctnessMap = new HashMap<>();
         for (Entry<String, Number> userAnswer : userAnswerMap.entrySet()) {
             String name = userAnswer.getKey();
+            if (userAnswer.getValue() == null) {
+                correctnessMap.put(name, false);
+                continue;
+            }
             double userValue = userAnswer.getValue().doubleValue();
             if (answers.containsKey(name)) {
                 double correctValue = answers.get(name).getKey().doubleValue();
@@ -118,8 +120,11 @@ public class TaskEvaluator {
                 return;
             }
             String varName = line.split("=")[0].trim();
-            variables.put(varName, engine.get(varName));
+            if (engine.get(varName) != null)
+                variables.put(varName, engine.get(varName));
         }
+        if (lines.size() != variables.size())
+            variables = new HashMap<>();
     }
 
     private void evalAnswers(String answerInput) {
@@ -172,7 +177,10 @@ public class TaskEvaluator {
                     return;
                 }
             }
-            answers.put(ansName, new AbstractMap.SimpleEntry<>((Number) variableValue, error));
+            if (engine.get(ansName) != null)
+                answers.put(ansName, new AbstractMap.SimpleEntry<>((Number) variableValue, error));
         }
+        if (lines.size() != answers.size())
+            answers = new HashMap<>();
     }
 }

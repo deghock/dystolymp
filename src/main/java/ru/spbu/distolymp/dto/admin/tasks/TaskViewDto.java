@@ -16,7 +16,6 @@ public class TaskViewDto {
     private Integer answerNote;
     private String parsedProblemText;
     private String currentServerDateTime;
-    private String answerNameValue;
     private Map<String, String> variableNameComment;
     private List<String> answerNameList;
     private String variableNameValue;

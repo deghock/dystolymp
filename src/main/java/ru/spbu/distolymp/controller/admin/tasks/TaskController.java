@@ -46,7 +46,7 @@ public class TaskController {
     @PostMapping("/submit-answer")
     public String submitAnswer(@Valid @ModelAttribute("answer") AnswerDto answerDto,
                                BindingResult br, ModelMap modelMap) {
-        taskService.fillShowPreviewModelMap(answerDto, modelMap);
+        taskService.fillShowResultModelMap(answerDto, modelMap);
         return PREVIEW_PAGE;
     }
 
@@ -97,8 +97,9 @@ public class TaskController {
     }
 
     @GetMapping("/unarchive/{id}")
-    public String unarchiveTask(@PathVariable("id") Long id) {
+    public String unarchiveTask(@PathVariable("id") Long id, RedirectAttributes ra) {
         taskService.unarchiveTask(id);
+        ra.addFlashAttribute(SUCCESS_PARAM, "Задача разархивирована");
         return REDIRECT_LIST;
     }
 

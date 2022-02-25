@@ -9,13 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
 import ru.spbu.distolymp.common.files.FileNameGenerator;
-import ru.spbu.distolymp.common.files.FilesUtils;
+import ru.spbu.distolymp.common.files.FileUtils;
 import ru.spbu.distolymp.common.tasks.PointParser;
-import ru.spbu.distolymp.common.tasks.TaskPreviewResultHandler;
+import ru.spbu.distolymp.common.tasks.TaskResultHandler;
 import ru.spbu.distolymp.dto.entity.answers.AnswerDto;
 import ru.spbu.distolymp.dto.admin.tasks.TaskFilter;
 import ru.spbu.distolymp.dto.admin.tasks.TaskListDto;
-import ru.spbu.distolymp.dto.admin.tasks.TaskPreviewResultDto;
+import ru.spbu.distolymp.dto.admin.tasks.TaskResultDto;
 import ru.spbu.distolymp.dto.admin.tasks.TaskViewDto;
 import ru.spbu.distolymp.dto.entity.tasks.TaskDto;
 import ru.spbu.distolymp.entity.tasks.Task;
@@ -38,6 +38,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
     private final TaskViewMapper taskViewMapper;
     private static final Sort SORT_BY_ID_DESC = Sort.by("id").descending();
     private static final String TASKS_PARAM = "taskList";
+    private static final String TASK_PARAM = "task";
 
     public TaskServiceImpl(TaskRepository taskRepository,
                            ListingProblemCrudService listingProblemCrudService,
@@ -96,7 +97,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
         taskDto.setAnswerNote(2);
         taskDto.setWidth(0);
         taskDto.setHeight(0);
-        modelMap.put("task", taskDto);
+        modelMap.put(TASK_PARAM, taskDto);
     }
 
     @Override
@@ -105,7 +106,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
         TaskDto taskDto = getTaskById(id)
                 .map(taskMapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
-        modelMap.put("task", taskDto);
+        modelMap.put(TASK_PARAM, taskDto);
     }
 
     @Override
@@ -117,23 +118,23 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
         AnswerDto answerDto = new AnswerDto();
         Number[] userAnswers = new Number[taskDto.getAnswerNameList().size()];
         answerDto.setUserAnswers(userAnswers);
-        modelMap.put("task", taskDto);
+        modelMap.put(TASK_PARAM, taskDto);
         modelMap.put("answer", answerDto);
-        modelMap.put("result", new TaskPreviewResultDto());
+        modelMap.put("result", new TaskResultDto());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public void fillShowPreviewModelMap(AnswerDto answerDto, ModelMap modelMap) {
+    public void fillShowResultModelMap(AnswerDto answerDto, ModelMap modelMap) {
         Task task = getTaskById(answerDto.getProblemId()).orElseThrow(ResourceNotFoundException::new);
         TaskViewDto taskDto = taskViewMapper.toDto(task, answerDto.getParam());
-        TaskPreviewResultDto resultDto = TaskPreviewResultHandler.toResultDto(
+        TaskResultDto resultDto = TaskResultHandler.toResultDto(
                 taskDto,
                 answerDto.getUserAnswers(),
                 task.getCorrectAnswer(),
                 PointParser.parsePoints(task.getGradePoints()),
                 task.getMaxPoints());
-        modelMap.put("task", taskDto);
+        modelMap.put(TASK_PARAM, taskDto);
         modelMap.put("result", resultDto);
     }
 
@@ -147,9 +148,9 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
         if ("".equals(image.getOriginalFilename())) {
             saveOrUpdate(task, false);
         } else {
-            String imageExtension = FilesUtils.getImageExtension(image);
+            String imageExtension = FileUtils.getImageExtension(image);
             task.setImageFileName(FileNameGenerator.generateFileName(imageExtension));
-            saveOrUpdate(task, FilesUtils.getImageBytes(image));
+            saveOrUpdate(task, FileUtils.getFileBytes(image));
         }
     }
 
@@ -164,17 +165,17 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
             if ("".equals(image.getOriginalFilename())) {
                 saveOrUpdate(task, false);
             } else {
-                String imageExtension = FilesUtils.getImageExtension(image);
+                String imageExtension = FileUtils.getImageExtension(image);
                 task.setImageFileName(FileNameGenerator.generateFileName(imageExtension));
-                saveOrUpdate(task, FilesUtils.getImageBytes(image));
+                saveOrUpdate(task, FileUtils.getFileBytes(image));
             }
         } else {
             if ("".equals(image.getOriginalFilename())) {
                 saveOrUpdate(task, taskDto.isDeleteImage());
             } else {
-                String imageExtension = FilesUtils.getImageExtension(image);
+                String imageExtension = FileUtils.getImageExtension(image);
                 task.setImageFileName(FileNameGenerator.generateFileName(imageExtension));
-                saveOrUpdate(task, FilesUtils.getImageBytes(image), oldImageName, taskDto.isDeleteImage());
+                saveOrUpdate(task, FileUtils.getFileBytes(image), oldImageName, taskDto.isDeleteImage());
             }
         }
     }
@@ -185,15 +186,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
             task.setWidth(0);
         if (task.getHeight() == null)
             task.setHeight(0);
-        task.setMaxPoints(calcPoints(task.getGradePoints()));
-    }
-
-    private Double calcPoints(String pointsStr) {
-        double result = 0.0;
-        List<String> points = PointParser.parsePoints(pointsStr);
-        for (String point : points)
-            result += Double.parseDouble(point);
-        return result;
+        task.setMaxPoints(PointParser.calculatePoints(task.getGradePoints()));
     }
 
     @Override
@@ -203,7 +196,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
                 .orElseThrow(ResourceNotFoundException::new)
                 .getImageFileName();
         deleteTaskById(id);
-        if (imageName != null) imageService.deleteImage(imageName);
+        if (imageName != null) fileService.deleteFile(imageName);
     }
 
     @Override
@@ -217,12 +210,12 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
         task.setTitle(taskTitleDto.getTitle());
         task.setType(3);
         task.setStatus(1);
-        task.setMaxPoints(calcPoints(task.getGradePoints()));
+        task.setMaxPoints(PointParser.calculatePoints(task.getGradePoints()));
         String imageName = task.getImageFileName();
         if (imageName != null) {
-            String extension = imageService.getExtensionFromImageName(imageName);
+            String extension = FileUtils.getExtensionFromFileName(imageName);
             task.setImageFileName(FileNameGenerator.generateFileName(extension));
-            saveOrUpdate(task, imageService.getImageWithName(imageName));
+            saveOrUpdate(task, fileService.getFileWithName(imageName));
         } else {
             saveOrUpdate(task, false);
         }

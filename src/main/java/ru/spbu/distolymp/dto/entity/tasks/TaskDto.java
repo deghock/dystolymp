@@ -46,7 +46,7 @@ public class TaskDto {
     @Range(max = 65535)
     private Integer height;
 
-    @NotNull(message = "{task.gradePoints.required}")
+    @NotNull(message = "{tasks.gradePoints.required}")
     @Size(max = 255)
     @Points
     private String gradePoints;
@@ -57,7 +57,7 @@ public class TaskDto {
 
     private Integer answerNote;
 
-    @NotNull(message = "{task.correctAnswer.required}")
+    @NotNull(message = "{tasks.correctAnswer.required}")
     @Size(max = 65535)
     private String correctAnswer;
 
@@ -74,7 +74,7 @@ public class TaskDto {
         return AnswersValidator.isValid(variables, correctAnswer);
     }
 
-    @AssertTrue(message = "{task.correctAnswer.number}")
+    @AssertTrue(message = "{tasks.correctAnswer.number}")
     private boolean isAnswerNumberValid() {
         return AnswersValidator.isAnswerNumberValid(gradePoints, correctAnswer);
     }
