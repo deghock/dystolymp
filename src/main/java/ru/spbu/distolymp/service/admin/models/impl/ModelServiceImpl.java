@@ -95,6 +95,13 @@ public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelServi
     @Transactional
     public void updateModel(ModelDto modelDto) {
         Model model = modelMapper.toEntity(modelDto);
+
+        if (modelDto.getId() != null) {
+            String problemForm = getModelById(modelDto.getId())
+                    .orElseThrow(ResourceNotFoundException::new)
+                    .getProblemForm();
+            model.setProblemForm(problemForm);
+        }
         initFields(model);
 
         MultipartFile image = modelDto.getImage();
@@ -154,15 +161,15 @@ public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelServi
     @Override
     @Transactional
     public void copyModel(ModelListDto modelTitleDto) {
-        Model model = getModelById(modelTitleDto.getId())
-                .map(modelMapper::toDto)
-                .map(modelMapper::toEntity)
+        Model originModel = getModelById(modelTitleDto.getId())
                 .orElseThrow(ResourceNotFoundException::new);
+        Model model = modelMapper.toEntity(modelMapper.toDto(originModel));
         model.setId(null);
         model.setTitle(modelTitleDto.getTitle());
         model.setType(1);
         model.setStatus(1);
         model.setMaxPoints(PointParser.calculatePoints(model.getGradePoints()));
+        model.setProblemForm(originModel.getProblemForm());
 
         String imageName = model.getImageFileName();
         String barsicFileName = model.getBarsicFileName();
