@@ -72,38 +72,28 @@
 
 <div class="container" style="min-width: 38rem">
     <div th:if="${result.correctness != null}">
+        <br>
         <div class="alert alert-success alert-dismissible text-center mx-auto" role="alert"
              style="width: 100%; padding: .5rem; min-width: 19rem"
              th:if="${not #maps.isEmpty(result.correctness) and #bools.setAnd(result.correctness.values())}">
             <span>Правильно</span>
-            <button type="button" class="close" data-dismiss="alert" style="padding: .5rem 1rem">
-                <span aria-hidden="true">&times;</span>
-            </button>
         </div>
         <div class="alert alert-info alert-dismissible text-center mx-auto" role="alert"
              style="width: 100%; padding: .5rem; min-width: 19rem"
              th:if="${not #bools.setAnd(result.correctness.values()) and #bools.setOr(result.correctness.values())}">
             <span>Частично правильно</span>
-            <button type="button" class="close" data-dismiss="alert" style="padding: .5rem 1rem">
-                <span aria-hidden="true">&times;</span>
-            </button>
         </div>
         <div class="alert alert-danger alert-dismissible text-center mx-auto" role="alert"
              style="width: 100%; padding: .5rem; min-width: 19rem"
              th:if="${not #bools.setAnd(result.correctness.values()) and not #bools.setOr(result.correctness.values())}">
             <span>Неправильно</span>
-            <button type="button" class="close" data-dismiss="alert" style="padding: .5rem 1rem">
-                <span aria-hidden="true">&times;</span>
-            </button>
         </div>
         <div class="alert alert-secondary alert-dismissible text-center mx-auto" role="alert"
              style="width: 100%; padding: .5rem; min-width: 19rem; background-color: #D6D8D9"
              th:if="${#maps.isEmpty(result.correctness)}">
             <span>Решение отправлено</span>
-            <button type="button" class="close" data-dismiss="alert" style="padding: .5rem 1rem">
-                <span aria-hidden="true">&times;</span>
-            </button>
         </div>
+        <br>
     </div>
 
     <!--/*@thymesVar id="task" type="ru.spbu.distolymp.dto.admin.tasks.TaskViewDto"*/-->
@@ -130,8 +120,8 @@
         </div>
     </div>
 
-    <form class="needs-validation" th:action="@{/tasks/submit-answer}" th:object="${answer}"
-          method="post" enctype="multipart/form-data" onsubmit="getUserIP()" novalidate>
+    <form th:action="@{/tasks/submit-answer}" th:object="${answer}"
+          method="post" enctype="multipart/form-data" onsubmit="getUserIP()">
         <input type="hidden" th:attr="name='param'" th:value="${task.variableNameValue}"/>
         <input type="hidden" th:attr="name='problemId'" th:value="${task.id}"/>
         <input id="userIP" type="hidden" th:attr="name='ip'"/>
@@ -146,47 +136,45 @@
             <div class="form-row text-left align-items-center" style="margin-bottom: .25rem"
                  th:if="${task.answerNote == 0 or task.answerNote == 1}"
                  th:each="ansName, iter : ${task.answerNameList}">
-                <div class="col-auto">
+                <span>
                     <label th:for="${ansName} + 'Input'"
                            th:utext="${task.variableNameComment.keySet().contains('comment_' + ansName)} ?
                            ${task.variableNameComment.get('comment_' + ansName)} : ${ansName} + ' = '"
-                           style="margin-bottom: 0"></label>
-                </div>
-                <div class="col-auto was-validated">
+                           style="margin-bottom: 0; width: auto"></label>
+                    </span>
+                <span>
                     <input th:id="${ansName} + 'Input'" type="number" step="any" maxlength="4368"
-                           class="form-control form-control-sm text-dark" placeholder="Введите ответ"
-                           autocomplete="off" required th:field="*{userAnswers[__${iter.index}__]}"/>
-                </div>
-                <div class="col-auto">
+                           class="form-control form-control-sm text-dark digit" placeholder="Введите ответ"
+                           autocomplete="off" required th:field="*{userAnswers[__${iter.index}__]}"
+                           style="width: 25%; min-width: 10rem; display: inline"/>
+                    </span>
+                <span>
                     <label th:utext="${task.variableNameComment.keySet().contains('commentAfter_' + ansName)} ?
                            ${task.variableNameComment.get('commentAfter_' + ansName)}"
-                           style="margin-bottom: 0"></label>
-                </div>
-                <div th:if="${result.correctness != null and not #bools.setAnd(result.correctness.values())
+                           style="margin-bottom: 0; width: auto"></label>
+                    </span>
+                <span th:if="${result.correctness != null and not #bools.setAnd(result.correctness.values())
                      and #bools.setOr(result.correctness.values())}" class="col">
-                    <div th:if="${result.correctness.get(ansName)}" style="color: #28A745;
-                         text-decoration-line: underline">Правильно</div>
-                    <div th:unless="${result.correctness.get(ansName)}" style="color: #DC3545;
-                         text-decoration-line: underline">Неправильно</div>
-                </div>
+                    <span th:if="${result.correctness.get(ansName)}" style="color: #28A745;
+                         text-decoration-line: underline">Правильно</span>
+                    <span th:unless="${result.correctness.get(ansName)}" style="color: #DC3545;
+                         text-decoration-line: underline">Неправильно</span>
+                </span>
             </div>
 
             <div class="form-row text-left align-items-center" style="margin-bottom: .25rem"
                  th:if="${task.answerNote == 1 or task.answerNote == 2 or task.answerNote == 3}">
                 <div class="col was-validated">
                     <textarea class="form-control form-control-sm text-dark" maxlength="65535" rows="8"
-                              style="width: inherit" th:field="*{userNotes}"></textarea>
+                              style="width: 95%; min-width: 10rem" th:field="*{userNotes}"></textarea>
                 </div>
             </div>
 
             <div class="form-row text-left align-items-center" style="margin-bottom: .25rem"
                  th:if="${task.answerNote == 3 or task.answerNote == 4}">
                 <div class="col">
-                    <input id="file" type="file" class="custom-file-input" th:field="*{userFile}"/>
-                    <label class="custom-file-label text-dark" data-browse="Обзор" for="file"
-                           style="width: initial; margin-left: .3rem; margin-right: .3rem">
-                        Файл не выбран
-                    </label>
+                    <input id="file" type="file" th:field="*{userFile}"
+                           onchange="fileOnChange()" style="width: 95%; min-width: 10rem"/>
                     <div id="fileSizeError" class="invalid-feedback" style="display: none">
                         Размер файла не должен превышать 10 Мб
                     </div>
@@ -195,6 +183,7 @@
         </div>
 
         <div style="text-align: center; margin-top: .5rem">
+            <br>
             <button type="submit" class="btn btn-light border-dark"
                     style="width: 25%; min-width: 13rem; padding-bottom: .1rem; padding-top: .1rem">
                 Отправить результаты
@@ -202,7 +191,7 @@
         </div>
     </form>
 
-    <div id="preview-results" style="display: none; width: 50%; min-width: 36rem; margin-top: 1rem;
+    <div id="preview-results" style="display: none; width: 75%; min-width: 36rem; margin-top: 1rem;
          margin-left: auto; margin-right: auto;" th:styleappend="${result.answerNote != null} ? 'display: block'">
         <div th:if="${result.answerNote == 0 or result.answerNote == 1}"
              style="overflow: auto; margin-bottom: .5rem">
@@ -230,6 +219,7 @@
                 </tr>
             </table>
         </div>
+        <br>
 
         <div th:if="${not #lists.isEmpty(result.param) or result.answerNote == 2 or result.answerNote == 3
              or result.answerNote == 4}"
@@ -254,41 +244,23 @@
 <div th:replace="fragments/footer :: #footer"></div>
 
 </body>
-<script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
-<script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
 <script type="text/javascript">
     function getUserIP(json) {
-        document.getElementById('userIP').value = json.ip
+        if (json != null)
+            document.getElementById('userIP').value = json.ip
     }
 
-    $('#file').on('change', function() {
-        var fileName = $(this).val().replace(/C:\\fakepath\\/i, '')
-        var sizeErrMsg = document.getElementById('fileSizeError')
-        var isSize = this.files[0].size <= 10485760
-        if (isSize) {
-            $(this).next('.custom-file-label').html(fileName)
-            sizeErrMsg.style.display = 'none'
-        } else {
-            $(this).next('.custom-file-label').html('Файл не выбран')
-            $(this).val(null)
-            sizeErrMsg.style.display = 'block'
+    function fileOnChange() {
+        if (document.getElementById('file').files != null) {
+            var isSize = document.getElementById('file').files[0].size <= 10485760
+            if (isSize) {
+                document.getElementById('fileSizeError').style.display = 'none'
+            } else {
+                document.getElementById('file').value = '';
+                document.getElementById('fileSizeError').style.display = 'block'
+            }
         }
-    });
-
-    (function() {
-        'use strict';
-        window.addEventListener('load', function() {
-            var forms = document.getElementsByClassName('needs-validation');
-            var validation = Array.prototype.filter.call(forms, function(form) {
-                form.addEventListener('submit', function(event) {
-                    if (form.checkValidity() === false) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                }, false);
-            });
-        }, false);
-    })();
+    }
 </script>
 <script type="text/javascript" src="https://api.ipify.org?format=jsonp&callback=getUserIP"></script>
 </html>

@@ -40,7 +40,7 @@
     </div>
 
     <div class="input-group mb-3 mx-auto" style="width: 50%; min-width: 25rem">
-        <input type="text" id="task-title" class="form-control"
+        <input type="text" id="task-title" class="form-control" style="width: 50%"
                placeholder="Фильтр задач по заголовку и префиксу..." aria-describedby="search-button">
         <button class="btn btn-secondary" type="submit" id="search-button"
                 style="border-top-left-radius: 0; border-bottom-left-radius: 0" onclick="trimInputs('task-title')">
@@ -177,7 +177,7 @@
     }
 
     function encodeQueryData(data) {
-        const result = [];
+        var result = [];
         for (var key in data) {
             result.push(key + '=' + data[key]);
         }
