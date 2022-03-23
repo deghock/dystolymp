@@ -1,6 +1,7 @@
 package ru.spbu.distolymp.common.tasks;
 
 import ru.spbu.distolymp.dto.admin.models.ModelViewDto;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
@@ -8,10 +9,12 @@ import java.util.Map;
 /**
  * @author Vladislav Konovalov
  */
-public class ModelFileContentGenerator {
-    private ModelFileContentGenerator() {}
+public class ModelFileGenerator {
+    private static final Charset CHARSET = StandardCharsets.UTF_8;
 
-    public static byte[] generateParamFileContent(String paramsString) {
+    private ModelFileGenerator() {}
+
+    public static byte[] generateParamFile(String paramsString) {
         StringBuilder fileContent = new StringBuilder();
         TaskEvaluator evaluator = new TaskEvaluator(paramsString);
         Map<String, Object> params = evaluator.getVariableMap();
@@ -48,10 +51,10 @@ public class ModelFileContentGenerator {
                 .append("</td>")
                 .append("</tr>\n")
                 .append("</table>\n</body>\n</html>");
-        return fileContent.toString().getBytes(StandardCharsets.UTF_8);
+        return fileContent.toString().getBytes(CHARSET);
     }
 
-    public static byte[] generateTextFileContent(String parsedText) {
+    public static byte[] generateTextFile(String parsedText) {
         String fileContent = "<!DOCTYPE html>\n" +
                 "<html lang=\"ru\"\n" +
                 "<head>\n" +
@@ -63,10 +66,10 @@ public class ModelFileContentGenerator {
                 "\n" +
                 "</body>\n" +
                 "</html>";
-        return fileContent.getBytes(StandardCharsets.UTF_8);
+        return fileContent.getBytes(CHARSET);
     }
 
-    public static byte[] generateResultFileContent(ModelViewDto modelDto) {
+    public static byte[] generateResultFile(ModelViewDto modelDto) {
         StringBuilder fileContent = new StringBuilder();
         List<String> ansNameList = modelDto.getAnswerNameList();
         Map<String, String> varNameComm = modelDto.getVariableNameComment();
@@ -249,6 +252,6 @@ public class ModelFileContentGenerator {
                 .append("</script>\n")
                 .append("<script type=\"text/javascript\" src=\"https://api.ipify.org?format=jsonp&callback=getUserIP\"></script>\n")
                 .append("</html>");
-        return fileContent.toString().getBytes(StandardCharsets.UTF_8);
+        return fileContent.toString().getBytes(CHARSET);
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
 import ru.spbu.distolymp.common.files.FileNameGenerator;
 import ru.spbu.distolymp.common.files.FileUtils;
-import ru.spbu.distolymp.common.tasks.ModelFileContentGenerator;
+import ru.spbu.distolymp.common.tasks.ModelFileGenerator;
 import ru.spbu.distolymp.common.tasks.ModelResultHandler;
 import ru.spbu.distolymp.common.tasks.PointParser;
 import ru.spbu.distolymp.dto.admin.models.ModelFilter;
@@ -206,9 +206,9 @@ public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelServi
                 .map(modelViewMapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
 
-        byte[] paramFile = ModelFileContentGenerator.generateParamFileContent(modelDto.getVariableNameValue());
-        byte[] textFile = ModelFileContentGenerator.generateTextFileContent(modelDto.getParsedProblemText());
-        byte[] resultFile = ModelFileContentGenerator.generateResultFileContent(modelDto);
+        byte[] paramFile = ModelFileGenerator.generateParamFile(modelDto.getVariableNameValue());
+        byte[] textFile = ModelFileGenerator.generateTextFile(modelDto.getParsedProblemText());
+        byte[] resultFile = ModelFileGenerator.generateResultFile(modelDto);
         boolean fileSaved = fileService.saveFile(paramFile, "p-model/param.html");
         if (!fileSaved) throw new TechnicalException();
         fileSaved = fileService.saveFile(textFile, "p-model/text.html");
