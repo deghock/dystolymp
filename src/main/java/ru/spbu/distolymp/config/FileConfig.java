@@ -22,6 +22,9 @@ public class FileConfig {
     @Value("${models.directory}")
     private String modelDirectoryPath;
 
+    @Value("${tests.directory}")
+    private String testDirectoryPath;
+
     @Bean("diplomaFileService")
     public FileService diplomaService(ServletContext servletContext) {
         String path = servletContext.getRealPath(diplomaDirectoryPath);
@@ -37,6 +40,12 @@ public class FileConfig {
     @Bean("modelFileService")
     public FileService modelService(ServletContext servletContext) {
         String path = servletContext.getRealPath(modelDirectoryPath);
+        return new FileServiceImpl(path);
+    }
+
+    @Bean("testFileService")
+    public FileService testService(ServletContext servletContext) {
+        String path = servletContext.getRealPath(testDirectoryPath);
         return new FileServiceImpl(path);
     }
 }

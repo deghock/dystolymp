@@ -3,14 +3,14 @@ package ru.spbu.distolymp.controller.admin.tests;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.spbu.distolymp.dto.admin.tests.TestFilter;
+import ru.spbu.distolymp.dto.entity.tasks.TestDto;
 import ru.spbu.distolymp.exception.common.TechnicalException;
 import ru.spbu.distolymp.service.admin.tests.api.TestService;
+import javax.validation.Valid;
 
 /**
  * @author Vladislav Konovalov
@@ -24,6 +24,7 @@ public class TestController {
     private static final String REDIRECT_LIST = "redirect:/tests/list";
     private static final String TESTS_TABLE = ROOT_DIR + "tests-table :: #tests-table";
     private static final String EDIT_PAGE = ROOT_DIR + "edit";
+    private static final String SUCCESS_PARAM = "success";
     private final TestService testService;
 
     @GetMapping("/list")
@@ -48,6 +49,16 @@ public class TestController {
     public String getAddPage(ModelMap modelMap) {
         testService.fillShowAddPageModelMap(modelMap);
         return EDIT_PAGE;
+    }
+
+    @PostMapping("/save-or-edit")
+    public String saveOrEdit(@Valid @ModelAttribute("test") TestDto testDto,
+                             BindingResult br, RedirectAttributes ra) {
+        if (br.hasErrors())
+            return EDIT_PAGE;
+        testService.updateTest(testDto);
+        ra.addFlashAttribute(SUCCESS_PARAM, "Изменения сохранены");
+        return REDIRECT_LIST;
     }
 
     @ExceptionHandler(TechnicalException.class)

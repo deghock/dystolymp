@@ -76,4 +76,16 @@ public class FileServiceImpl implements FileService {
         this.saveFile(file, newFileName);
         this.deleteFile(prevFileName);
     }
+
+    @Override
+    public boolean createDirectory(String dirName) {
+        Path dirPath = Paths.get(fileDirectoryPath + dirName);
+        try {
+            Files.createDirectory(dirPath);
+            return true;
+        } catch (IOException e) {
+            log.error("An error occurred while creating a directory", e);
+            return false;
+        }
+    }
 }

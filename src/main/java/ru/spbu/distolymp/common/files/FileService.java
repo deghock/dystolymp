@@ -11,4 +11,5 @@ public interface FileService {
     void deleteFiles(Set<String> fileNames);
     byte[] getFileWithName(String fileName);
     void replaceFile(String prevFileName, byte[] file, String newFileName);
+    boolean createDirectory(String dirName);
 }

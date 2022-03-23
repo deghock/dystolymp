@@ -42,7 +42,7 @@ public class TestDto {
     @Range(max = 65535)
     private Integer height;
 
-    private boolean hideResult;
+    private boolean showResult;
 
     @NotNull
     @Range(max = 65535)
@@ -55,4 +55,10 @@ public class TestDto {
     @NotNull
     @Range(max = 65535)
     private Double minPoints;
+
+    private String testFolder;
+
+    private String brcFileName;
+
+    private String parFileName;
 }

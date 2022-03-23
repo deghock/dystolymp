@@ -5,6 +5,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.multipart.MultipartFile;
+import ru.spbu.distolymp.common.files.FileNameGenerator;
+import ru.spbu.distolymp.common.files.FileUtils;
+import ru.spbu.distolymp.common.tasks.TestFileGenerator;
 import ru.spbu.distolymp.dto.admin.tests.TestFilter;
 import ru.spbu.distolymp.dto.admin.tests.TestListDto;
 import ru.spbu.distolymp.dto.entity.tasks.TestDto;
@@ -16,7 +20,9 @@ import ru.spbu.distolymp.repository.tasks.TestRepository;
 import ru.spbu.distolymp.service.admin.tests.api.TestService;
 import ru.spbu.distolymp.service.crud.impl.tasks.TestCrudServiceImpl;
 import ru.spbu.distolymp.util.admin.tasks.TestSpecsConverter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Vladislav Konovalov
@@ -68,5 +74,60 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
         testDto.setWidth(0);
         testDto.setHeight(0);
         modelMap.put("test", testDto);
+    }
+
+    @Override
+    @Transactional
+    public void updateTest(TestDto testDto) {
+        Test test = testMapper.toEntity(testDto);
+
+        initFields(test);
+
+        MultipartFile image = testDto.getImage();
+        String oldImageName = test.getImageFileName();
+
+        boolean newImageUpload = !"".equals(image.getOriginalFilename());
+        boolean oldImageExists = (oldImageName != null) && (!"".equals(oldImageName));
+        boolean deleteImage = testDto.isDeleteImage();
+
+        Map<String, byte[]> filesWithNames = new HashMap<>();
+
+        if (testDto.getId() == null) initEnvironment(test, filesWithNames);
+
+        if (newImageUpload && !deleteImage) {
+            String imageExtension = FileUtils.getImageExtension(image);
+            String newImageName = FileNameGenerator.generateFileName(imageExtension);
+            test.setImageFileName(newImageName);
+            filesWithNames.put(test.getTestFolder() + "/" + newImageName, FileUtils.getFileBytes(image));
+        }
+        if (deleteImage) test.setImageFileName(null);
+
+        saveOrUpdate(test, filesWithNames);
+
+        if ((newImageUpload && oldImageExists) || deleteImage)
+            fileService.deleteFile(test.getTestFolder() + "/" + oldImageName);
+    }
+
+    private void initFields(Test test) {
+        if (test.getId() == null) test.setStatus(1);
+        test.setType(2);
+        if (test.getWidth() == null) test.setWidth(0);
+        if (test.getHeight() == null) test.setHeight(0);
+    }
+
+    private void initEnvironment(Test test, Map<String, byte[]> filesWithNames) {
+        String dirName = FileNameGenerator.generateFileName("");
+        String testFileName = FileNameGenerator.generateFileName(".php");
+        String paramFileName = FileNameGenerator.generateFileName("_param.php");
+
+        test.setTestFolder(dirName);
+        test.setBrcFileName(testFileName);
+        test.setParFileName(paramFileName);
+
+        testFileName = dirName + "/" + testFileName;
+        paramFileName = dirName + "/" + paramFileName;
+
+        filesWithNames.put(testFileName, fileService.getFileWithName("testmain"));
+        filesWithNames.put(paramFileName, TestFileGenerator.generateParamFile());
     }
 }
