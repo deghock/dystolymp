@@ -217,7 +217,7 @@
         var sizeErrMsg = document.getElementById('imageSizeError')
         var extErrMsg = document.getElementById('imageExtensionError')
         var exts = /(\.jpg|\.jpeg|\.gif|\.png)$/i
-        var isExt = exts.exec(image.files[0].name) != null
+        var isExt = exts.exec(this.files[0].name) != null
         var isSize = this.files[0].size <= 10485760
         if (isExt && isSize) {
             $(this).next('.custom-file-label').html(imageName)
