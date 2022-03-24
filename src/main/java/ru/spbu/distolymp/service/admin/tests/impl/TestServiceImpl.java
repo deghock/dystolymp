@@ -141,6 +141,7 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
         deleteTestById(id);
         String testDirectory = test.getTestFolder();
         File[] testFiles = fileService.getAllFilesFromDirectory(testDirectory);
+        if (testFiles == null) return;
         for (File testFile : testFiles)
             fileService.deleteFile(testDirectory + "/" + testFile.getName());
         fileService.deleteFile(testDirectory);
