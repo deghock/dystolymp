@@ -16,4 +16,5 @@ public interface TestService {
     void updateTest(TestDto testDto);
     void deleteTestWithFiles(Long id);
     void copyTest(TestListDto testTitleDto);
+    void unarchiveTest(Long id);
 }

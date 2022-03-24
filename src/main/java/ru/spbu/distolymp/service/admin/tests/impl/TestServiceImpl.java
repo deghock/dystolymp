@@ -171,4 +171,12 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
 
         saveOrUpdate(test, filesWithNames);
     }
+
+    @Override
+    @Transactional
+    public void unarchiveTest(Long id) {
+        Test test = getTestById(id).orElseThrow(ResourceNotFoundException::new);
+        test.setStatus(1);
+        saveOrUpdate(test, new HashMap<>());
+    }
 }

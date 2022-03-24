@@ -77,6 +77,13 @@ public class TestController {
         return REDIRECT_LIST;
     }
 
+    @GetMapping("/unarchive/{id}")
+    public String unarchiveTest(@PathVariable("id") Long id, RedirectAttributes ra) {
+        testService.unarchiveTest(id);
+        ra.addFlashAttribute(SUCCESS_PARAM, "Тест разархивирован");
+        return REDIRECT_LIST;
+    }
+
     @ExceptionHandler(TechnicalException.class)
     public String handleTechnicalException(RedirectAttributes ra) {
         ra.addFlashAttribute("error", "Произошла техническая ошибка");
