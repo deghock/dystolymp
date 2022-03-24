@@ -14,6 +14,7 @@ import ru.spbu.distolymp.dto.admin.tests.TestListDto;
 import ru.spbu.distolymp.dto.entity.tasks.TestDto;
 import ru.spbu.distolymp.entity.tasks.Test;
 import ru.spbu.distolymp.exception.common.ResourceNotFoundException;
+import ru.spbu.distolymp.exception.common.TechnicalException;
 import ru.spbu.distolymp.mapper.admin.tests.api.TestListMapper;
 import ru.spbu.distolymp.mapper.entity.tasks.TestMapper;
 import ru.spbu.distolymp.repository.tasks.TestRepository;
@@ -164,6 +165,7 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
         String originDir = originTest.getTestFolder();
         File[] testFiles = fileService.getAllFilesFromDirectory(originDir);
         Map<String, byte[]> filesWithNames = new HashMap<>();
+        if (testFiles == null) throw new TechnicalException();
         for (File testFile : testFiles) {
             String fileName = testFile.getName();
             byte[] file = fileService.getFileWithName(originDir + "/" + fileName);
