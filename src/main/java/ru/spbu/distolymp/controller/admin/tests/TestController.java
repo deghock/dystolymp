@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.spbu.distolymp.dto.admin.tests.TestFilter;
+import ru.spbu.distolymp.dto.admin.tests.TestListDto;
 import ru.spbu.distolymp.dto.entity.tasks.TestDto;
 import ru.spbu.distolymp.exception.common.TechnicalException;
 import ru.spbu.distolymp.service.admin.tests.api.TestService;
@@ -65,6 +66,14 @@ public class TestController {
     public String deleteTest(@PathVariable("id") Long id, RedirectAttributes ra) {
         testService.deleteTestWithFiles(id);
         ra.addFlashAttribute(SUCCESS_PARAM, "Тест удалён");
+        return REDIRECT_LIST;
+    }
+
+    @PostMapping("/copy")
+    public String copyTest(@ModelAttribute("testForCopy") TestListDto testDto,
+                           RedirectAttributes ra) {
+        testService.copyTest(testDto);
+        ra.addFlashAttribute(SUCCESS_PARAM, "Тест скопирован");
         return REDIRECT_LIST;
     }
 

@@ -145,4 +145,30 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
             fileService.deleteFile(testDirectory + "/" + testFile.getName());
         fileService.deleteFile(testDirectory);
     }
+
+    @Override
+    @Transactional
+    public void copyTest(TestListDto testTitleDto) {
+        Test originTest = getTestById(testTitleDto.getId())
+                .orElseThrow(ResourceNotFoundException::new);
+
+        Test test = testMapper.toEntity(testMapper.toDto(originTest));
+        test.setId(null);
+        test.setTitle(testTitleDto.getTitle());
+        test.setType(2);
+        test.setStatus(1);
+        String dirName = FileNameGenerator.generateFileName("");
+        test.setTestFolder(dirName);
+
+        String originDir = originTest.getTestFolder();
+        File[] testFiles = fileService.getAllFilesFromDirectory(originDir);
+        Map<String, byte[]> filesWithNames = new HashMap<>();
+        for (File testFile : testFiles) {
+            String fileName = testFile.getName();
+            byte[] file = fileService.getFileWithName(originDir + "/" + fileName);
+            filesWithNames.put(dirName + "/" + fileName, file);
+        }
+
+        saveOrUpdate(test, filesWithNames);
+    }
 }
