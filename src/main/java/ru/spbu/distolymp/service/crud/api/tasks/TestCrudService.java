@@ -16,4 +16,5 @@ public interface TestCrudService {
     List<TestListDto> getTests(Sort sort, Specification<Test> spec);
     Optional<Test> getTestById(Long id);
     void saveOrUpdate(Test test, Map<String, byte[]> fileWithNames);
+    void deleteTestById(Long id);
 }

@@ -13,4 +13,5 @@ public interface TestService {
     void fillShowEditPageModelMap(Long id, ModelMap modelMap);
     void fillShowAddPageModelMap(ModelMap modelMap);
     void updateTest(TestDto testDto);
+    void deleteTestWithFiles(Long id);
 }

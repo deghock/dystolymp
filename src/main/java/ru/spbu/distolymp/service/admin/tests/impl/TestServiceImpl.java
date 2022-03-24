@@ -18,8 +18,10 @@ import ru.spbu.distolymp.mapper.admin.tests.api.TestListMapper;
 import ru.spbu.distolymp.mapper.entity.tasks.TestMapper;
 import ru.spbu.distolymp.repository.tasks.TestRepository;
 import ru.spbu.distolymp.service.admin.tests.api.TestService;
+import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
 import ru.spbu.distolymp.service.crud.impl.tasks.TestCrudServiceImpl;
 import ru.spbu.distolymp.util.admin.tasks.TestSpecsConverter;
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +36,9 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
 
     public TestServiceImpl(TestRepository testRepository,
                            TestListMapper testListMapper,
+                           ListingProblemCrudService listingProblemCrudService,
                            TestMapper testMapper) {
-        super(testRepository, testListMapper, testMapper);
+        super(testRepository, testListMapper, listingProblemCrudService, testMapper);
     }
 
     @Override
@@ -129,5 +132,17 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
 
         filesWithNames.put(testFileName, fileService.getFileWithName("testmain"));
         filesWithNames.put(paramFileName, TestFileGenerator.generateParamFile());
+    }
+
+    @Override
+    @Transactional
+    public void deleteTestWithFiles(Long id) {
+        Test test = getTestById(id).orElseThrow(ResourceNotFoundException::new);
+        deleteTestById(id);
+        String testDirectory = test.getTestFolder();
+        File[] testFiles = fileService.getAllFilesFromDirectory(testDirectory);
+        for (File testFile : testFiles)
+            fileService.deleteFile(testDirectory + "/" + testFile.getName());
+        fileService.deleteFile(testDirectory);
     }
 }

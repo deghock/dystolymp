@@ -16,7 +16,9 @@ import ru.spbu.distolymp.exception.common.TechnicalException;
 import ru.spbu.distolymp.mapper.admin.tests.api.TestListMapper;
 import ru.spbu.distolymp.mapper.entity.tasks.TestMapper;
 import ru.spbu.distolymp.repository.tasks.TestRepository;
+import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
 import ru.spbu.distolymp.service.crud.api.tasks.TestCrudService;
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +33,7 @@ import java.util.Optional;
 public class TestCrudServiceImpl implements TestCrudService {
     private final TestRepository testRepository;
     private final TestListMapper testListMapper;
+    private final ListingProblemCrudService listingProblemCrudService;
     protected final TestMapper testMapper;
     @Autowired
     @Qualifier("testFileService")
@@ -94,6 +97,19 @@ public class TestCrudServiceImpl implements TestCrudService {
         } catch (DataAccessException e) {
             log.error("An error occurred while saving or updating a test");
             fileService.deleteFiles(fileWithNames.keySet());
+            throw new TechnicalException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteTestById(Long id) {
+        try {
+            Test test = getTestById(id).orElseThrow(EntityNotFoundException::new);
+            if (test.getStatus() == 2) listingProblemCrudService.deleteByProblemId(id);
+            testRepository.delete(test);
+        } catch (DataAccessException | EntityNotFoundException e) {
+            log.error("An error occurred while deleting a test with id=" + id, e);
             throw new TechnicalException();
         }
     }

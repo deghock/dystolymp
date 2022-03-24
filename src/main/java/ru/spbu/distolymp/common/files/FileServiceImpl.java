@@ -88,4 +88,10 @@ public class FileServiceImpl implements FileService {
             return false;
         }
     }
+
+    @Override
+    public File[] getAllFilesFromDirectory(String dirName) {
+        File dir = new File(fileDirectoryPath + "/" + dirName);
+        return dir.listFiles();
+    }
 }

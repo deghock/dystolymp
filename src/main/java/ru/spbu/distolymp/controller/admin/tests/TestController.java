@@ -61,6 +61,13 @@ public class TestController {
         return REDIRECT_LIST;
     }
 
+    @GetMapping("/delete/{id}")
+    public String deleteTest(@PathVariable("id") Long id, RedirectAttributes ra) {
+        testService.deleteTestWithFiles(id);
+        ra.addFlashAttribute(SUCCESS_PARAM, "Тест удалён");
+        return REDIRECT_LIST;
+    }
+
     @ExceptionHandler(TechnicalException.class)
     public String handleTechnicalException(RedirectAttributes ra) {
         ra.addFlashAttribute("error", "Произошла техническая ошибка");
