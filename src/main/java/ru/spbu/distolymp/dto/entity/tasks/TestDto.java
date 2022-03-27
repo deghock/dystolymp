@@ -3,9 +3,11 @@ package ru.spbu.distolymp.dto.entity.tasks;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.web.multipart.MultipartFile;
+import ru.spbu.distolymp.common.tasks.auxiliary.QuestionDto;
 import ru.spbu.distolymp.validation.files.annotation.ImageMimeType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * @author Vladislav Konovalov
@@ -44,17 +46,19 @@ public class TestDto {
 
     private boolean showResult;
 
-    @NotNull
-    @Range(max = 65535)
-    private Double points;
+    private boolean randomOrder;
+
+    private int[] questionsNumber;
+
+    private boolean questionSkip;
 
     @NotNull
     @Range(max = 65535)
     private Double minusPoints;
 
-    @NotNull
-    @Range(max = 65535)
-    private Double minPoints;
+    private List<QuestionDto> questionList;
+
+    private int[] allQuestionsNumber;
 
     private String testFolder;
 

@@ -23,6 +23,8 @@ import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
 import ru.spbu.distolymp.service.crud.impl.tasks.TestCrudServiceImpl;
 import ru.spbu.distolymp.util.admin.tasks.TestSpecsConverter;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,9 +67,13 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
     @Override
     @Transactional(readOnly = true)
     public void fillShowEditPageModelMap(Long id, ModelMap modelMap) {
-        TestDto testDto = getTestById(id)
-                .map(testMapper::toDto)
-                .orElseThrow(ResourceNotFoundException::new);
+        Test test = getTestById(id).orElseThrow(ResourceNotFoundException::new);
+        String folder = test.getTestFolder();
+        String fileName = folder + "/" + test.getParFileName();
+        byte[] file = fileService.getFileWithName(fileName);
+        String fileContent = new String(file, StandardCharsets.UTF_8);
+        TestDto testDto = testMapper.toDto(test, fileContent);
+
         modelMap.put("test", testDto);
     }
 
@@ -77,6 +83,12 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
         TestDto testDto = new TestDto();
         testDto.setWidth(0);
         testDto.setHeight(0);
+        testDto.setRandomOrder(true);
+        testDto.setQuestionsNumber(new int[] {0, 0, 0});
+        testDto.setAllQuestionsNumber(new int[] {0, 0, 0});
+        testDto.setQuestionSkip(true);
+        testDto.setQuestionList(new ArrayList<>());
+
         modelMap.put("test", testDto);
     }
 
@@ -114,6 +126,7 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
 
     private void initFields(Test test) {
         if (test.getId() == null) test.setStatus(1);
+        test.setMinPoints(0.0);
         test.setType(2);
         if (test.getWidth() == null) test.setWidth(0);
         if (test.getHeight() == null) test.setHeight(0);
@@ -159,6 +172,7 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
         test.setTitle(testTitleDto.getTitle());
         test.setType(2);
         test.setStatus(1);
+        test.setMinPoints(originTest.getMinPoints());
         String dirName = FileNameGenerator.generateFileName("");
         test.setTestFolder(dirName);
 
