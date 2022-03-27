@@ -1,5 +1,7 @@
-package ru.spbu.distolymp.common.tasks;
+package ru.spbu.distolymp.common.tasks.resulthandler;
 
+import ru.spbu.distolymp.common.tasks.parser.TaskEvaluator;
+import ru.spbu.distolymp.common.tasks.parser.TaskParser;
 import ru.spbu.distolymp.dto.admin.tasks.TaskResultDto;
 import ru.spbu.distolymp.dto.admin.tasks.TaskViewDto;
 import java.util.*;

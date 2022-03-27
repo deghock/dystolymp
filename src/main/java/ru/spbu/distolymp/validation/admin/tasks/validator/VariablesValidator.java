@@ -1,6 +1,6 @@
 package ru.spbu.distolymp.validation.admin.tasks.validator;
 
-import ru.spbu.distolymp.common.tasks.TaskEvaluator;
+import ru.spbu.distolymp.common.tasks.parser.TaskEvaluator;
 import ru.spbu.distolymp.validation.admin.tasks.annotation.Variables;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

@@ -1,5 +1,6 @@
-package ru.spbu.distolymp.common.tasks;
+package ru.spbu.distolymp.common.tasks.resulthandler;
 
+import ru.spbu.distolymp.common.tasks.parser.TaskEvaluator;
 import ru.spbu.distolymp.dto.admin.models.ModelResultDto;
 import ru.spbu.distolymp.dto.admin.models.ModelViewDto;
 import java.util.HashMap;

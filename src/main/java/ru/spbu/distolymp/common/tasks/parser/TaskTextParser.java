@@ -1,4 +1,4 @@
-package ru.spbu.distolymp.common.tasks;
+package ru.spbu.distolymp.common.tasks.parser;
 
 import java.util.Map;
 

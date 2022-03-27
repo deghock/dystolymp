@@ -1,11 +1,11 @@
-package ru.spbu.distolymp.common.tasks;
+package ru.spbu.distolymp.common.tasks.parser;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.util.*;
 import java.util.Map.Entry;
-import static ru.spbu.distolymp.common.tasks.TaskParser.*;
+import static ru.spbu.distolymp.common.tasks.parser.TaskParser.*;
 
 /**
  * @author Vladislav Konovalov

@@ -1,5 +1,6 @@
-package ru.spbu.distolymp.common.tasks;
+package ru.spbu.distolymp.common.tasks.filegenerator;
 
+import ru.spbu.distolymp.common.tasks.parser.TaskEvaluator;
 import ru.spbu.distolymp.dto.admin.models.ModelViewDto;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
