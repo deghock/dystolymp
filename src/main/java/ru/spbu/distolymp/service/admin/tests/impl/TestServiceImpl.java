@@ -8,7 +8,9 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
 import ru.spbu.distolymp.common.files.FileNameGenerator;
 import ru.spbu.distolymp.common.files.FileUtils;
+import ru.spbu.distolymp.common.tasks.auxiliary.QuestionDto;
 import ru.spbu.distolymp.common.tasks.filegenerator.TestFileGenerator;
+import ru.spbu.distolymp.common.tasks.parser.TestParser;
 import ru.spbu.distolymp.dto.admin.tests.TestFilter;
 import ru.spbu.distolymp.dto.admin.tests.TestListDto;
 import ru.spbu.distolymp.dto.entity.tasks.TestDto;
@@ -68,8 +70,7 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
     @Transactional(readOnly = true)
     public void fillShowEditPageModelMap(Long id, ModelMap modelMap) {
         Test test = getTestById(id).orElseThrow(ResourceNotFoundException::new);
-        String folder = test.getTestFolder();
-        String fileName = folder + "/" + test.getParFileName();
+        String fileName = test.getTestFolder() + "/" + test.getParFileName();
         byte[] file = fileService.getFileWithName(fileName);
         String fileContent = new String(file, StandardCharsets.UTF_8);
         TestDto testDto = testMapper.toDto(test, fileContent);
@@ -108,7 +109,17 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
 
         Map<String, byte[]> filesWithNames = new HashMap<>();
 
-        if (testDto.getId() == null) initEnvironment(test, filesWithNames);
+        if (testDto.getId() == null) {
+            initEnvironment(test, testDto, filesWithNames);
+        } else {
+            String fileName = testDto.getTestFolder() + "/" + testDto.getParFileName();
+            byte[] file = fileService.getFileWithName(fileName);
+            String fileContent = new String(file, StandardCharsets.UTF_8);
+            List<QuestionDto> questions = TestParser.getQuestions(fileContent);
+            testDto.setQuestionList(questions);
+            byte[] newFile = TestFileGenerator.generateParamFile(testDto, questions);
+            filesWithNames.put(testDto.getTestFolder() + "/" + testDto.getParFileName(), newFile);
+        }
 
         if (newImageUpload && !deleteImage) {
             String imageExtension = FileUtils.getImageExtension(image);
@@ -132,10 +143,11 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
         if (test.getHeight() == null) test.setHeight(0);
     }
 
-    private void initEnvironment(Test test, Map<String, byte[]> filesWithNames) {
+    private void initEnvironment(Test test, TestDto testDto, Map<String, byte[]> filesWithNames) {
         String dirName = FileNameGenerator.generateFileName("");
-        String testFileName = FileNameGenerator.generateFileName(".php");
-        String paramFileName = FileNameGenerator.generateFileName("_param.php");
+        String fileName = FileNameGenerator.generateFileName("");
+        String testFileName = fileName + ".php";
+        String paramFileName = fileName + "_param.php";
 
         test.setTestFolder(dirName);
         test.setBrcFileName(testFileName);
@@ -145,7 +157,7 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
         paramFileName = dirName + "/" + paramFileName;
 
         filesWithNames.put(testFileName, fileService.getFileWithName("testmain"));
-        filesWithNames.put(paramFileName, TestFileGenerator.generateParamFile());
+        filesWithNames.put(paramFileName, TestFileGenerator.generateParamFile(testDto));
     }
 
     @Override

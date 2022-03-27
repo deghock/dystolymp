@@ -61,7 +61,7 @@ public class TestParser {
             QuestionDto questionDto = new QuestionDto();
             questionDto.setNumber(number++);
             QuestionType type = getType(questionStr);
-            questionDto.setType(type.getName());
+            questionDto.setType(type);
             questionDto.setText(getText(questionStr));
             questionDto.setImageName(getImageName(questionStr));
             questionDto.setDifficulty(getDifficulty(questionStr));

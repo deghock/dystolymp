@@ -268,7 +268,7 @@
                     <tr th:each="question : ${test.questionList}">
                         <th scope="row" th:text="${question.number}" style="vertical-align: middle"></th>
                         <td th:utext="${question.text}" style="vertical-align: middle"></td>
-                        <td th:text="${question.type}" style="vertical-align: middle"></td>
+                        <td th:text="${question.type.getName()}" style="vertical-align: middle"></td>
                         <td th:text="${question.difficulty}" style="vertical-align: middle"></td>
                         <td style="vertical-align: middle">
                             <a href="#" class="tableactions">редактировать</a>

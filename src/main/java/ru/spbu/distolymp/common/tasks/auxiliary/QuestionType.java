@@ -20,4 +20,21 @@ public enum QuestionType {
     public String getName() {
         return name;
     }
+
+    public String getShortName() {
+        switch (this) {
+            case S:
+                return "S";
+            case C:
+                return "C";
+            case L:
+                return "L";
+            case I:
+                return "I";
+            case F:
+                return "F";
+            default:
+                return "U";
+        }
+    }
 }
