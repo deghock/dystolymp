@@ -25,11 +25,9 @@ import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
 import ru.spbu.distolymp.service.crud.impl.tasks.TestCrudServiceImpl;
 import ru.spbu.distolymp.util.admin.tasks.TestSpecsConverter;
 import java.io.File;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Vladislav Konovalov
@@ -38,6 +36,7 @@ import java.util.Map;
 public class TestServiceImpl extends TestCrudServiceImpl implements TestService {
     private static final Sort SORT_BY_ID_DESC = Sort.by("id").descending();
     private static final String TESTS_PARAM = "testList";
+    private static final Charset CHARSET = StandardCharsets.UTF_8;
 
     public TestServiceImpl(TestRepository testRepository,
                            TestListMapper testListMapper,
@@ -72,7 +71,7 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
         Test test = getTestById(id).orElseThrow(ResourceNotFoundException::new);
         String fileName = test.getTestFolder() + "/" + test.getParFileName();
         byte[] file = fileService.getFileWithName(fileName);
-        String fileContent = new String(file, StandardCharsets.UTF_8);
+        String fileContent = new String(file, CHARSET);
         TestDto testDto = testMapper.toDto(test, fileContent);
 
         modelMap.put("test", testDto);
@@ -114,7 +113,7 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
         } else {
             String fileName = testDto.getTestFolder() + "/" + testDto.getParFileName();
             byte[] file = fileService.getFileWithName(fileName);
-            String fileContent = new String(file, StandardCharsets.UTF_8);
+            String fileContent = new String(file, CHARSET);
             List<QuestionDto> questions = TestParser.getQuestions(fileContent);
             testDto.setQuestionList(questions);
             byte[] newFile = TestFileGenerator.generateParamFile(testDto, questions);
@@ -207,5 +206,28 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
         Test test = getTestById(id).orElseThrow(ResourceNotFoundException::new);
         test.setStatus(1);
         saveOrUpdate(test, new HashMap<>());
+    }
+
+    @Override
+    public void deleteQuestionByNumber(Long testId, int number) {
+        Test test = getTestById(testId).orElseThrow(ResourceNotFoundException::new);
+        String folderName = test.getTestFolder();
+        String parFileName = test.getParFileName();
+        byte[] parFile = fileService.getFileWithName(folderName + "/" + parFileName);
+        String fileContent = new String(parFile, CHARSET);
+        List<QuestionDto> questions = TestParser.getQuestions(fileContent);
+        TestDto testDto = testMapper.toDto(test, fileContent);
+
+        questions.remove(number - 1);
+        int[] questionsMax = TestParser.getAllQuestionsNumber(questions);
+        int[] questionsCount = testDto.getQuestionsNumber();
+        for (int i = 0; i < questionsMax.length; i++) {
+            if (questionsCount[i] > questionsMax[i]) questionsCount[i]--;
+        }
+
+        byte[] newFile = TestFileGenerator.generateParamFile(testDto, questions);
+        boolean fileSaved = fileService.saveFile(newFile, folderName + "/" + parFileName);
+        if (!fileSaved)
+            throw new TechnicalException("Question with number=" + number + " is not deleted");
     }
 }

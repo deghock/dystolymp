@@ -33,6 +33,21 @@
 
 <p style="text-align: center; margin-top: 1rem; margin-bottom: .5rem">Редактор тестов</p>
 
+<div class="alert alert-success alert-dismissible text-center mx-auto" role="alert"
+     style="width: 60%; padding: .5rem; min-width: 25rem" th:if="${success}">
+    <span th:text="${success}"></span>
+    <button type="button" class="close" data-dismiss="alert" style="padding: .5rem 1rem">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="alert alert-danger alert-dismissible text-center mx-auto" role="alert"
+     style="width: 60%; padding: .5rem; min-width: 25rem" th:if="${error}">
+    <span th:text="${error}"></span>
+    <button type="button" class="close" data-dismiss="alert" style="padding: .5rem 1rem">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
 <!--/*@thymesVar id="test" type="ru.spbu.distolymp.dto.entity.tasks.TestDto"*/-->
 <form th:action="@{/tests/save-or-edit}" th:object="${test}" method="post" enctype="multipart/form-data"
       class="needs-validation" novalidate>
@@ -240,54 +255,72 @@
             </div>
         </div>
 
-        <div class="form-row text-center align-items-center" style="margin-top: 1rem; margin-bottom: .5rem">
-            <div class="col-12">
-                <strong>Список вопросов</strong>
+        <div class="form-row align-items-center">
+            <div class="col-12" style="margin-top: .5rem">
+                <button type="submit" class="btn btn-light border border-dark" style="width: 30%; min-width: 7.5rem" id="submitBtn"
+                        onclick="trimInputs('title', 'problemText', 'gradePoints', 'minusPoints', 'minPoints')">
+                    Сохранить
+                </button>
             </div>
         </div>
-
-        <div class="form-row text-center align-items-center">
-            <div class="col-12" style="overflow: auto">
-                <div style="margin-bottom: .5rem">
-                    <a href="#" class="btn btn-light" style="display: block">Добавить вопрос</a>
-                </div>
-
-                <table class="table table-striped table-light table-sm"
-                       style="border-radius: .2rem; margin-bottom: 0"
-                       aria-describedby=" Test's questions table">
-                    <thead class="thead-light">
-                    <tr>
-                        <th scope="col" style="border-radius: .2rem 0 0 0">№</th>
-                        <th scope="col">Вопрос</th>
-                        <th scope="col">Тип</th>
-                        <th scope="col">Сложность</th>
-                        <th scope="col" style="border-radius: 0 .2rem 0 0">Действия</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="question : ${test.questionList}">
-                        <th scope="row" th:text="${question.number}" style="vertical-align: middle"></th>
-                        <td th:utext="${question.text}" style="vertical-align: middle"></td>
-                        <td th:text="${question.type.getName()}" style="vertical-align: middle"></td>
-                        <td th:text="${question.difficulty}" style="vertical-align: middle"></td>
-                        <td style="vertical-align: middle">
-                            <a href="#" class="tableactions">редактировать</a>
-                            <a href="#" class="tableactions">удалить</a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div style="text-align: center; margin-top: 1rem; margin-bottom: 1rem">
-        <button type="submit" class="btn btn-light border border-dark" style="width: 20%; min-width: 7.5rem" id="submitBtn"
-                onclick="trimInputs('title', 'problemText', 'gradePoints', 'minusPoints', 'minPoints')">
-            Сохранить
-        </button>
     </div>
 </form>
+
+<div class="form-row align-items-center" style="margin-top: .5rem; margin-bottom: .5rem">
+    <div class="col-12">
+        <div class="infoForm container p-2 text-center" style="width: 60%; padding: 1rem !important; min-width: 36rem">
+            <div class="form-row text-center align-items-center">
+                <div class="col-12" style="overflow: auto">
+                    <div style="margin-bottom: .5rem">
+                        <a href="#" class="btn btn-light" style="display: block">Добавить вопрос</a>
+                    </div>
+
+                    <table class="table table-striped table-light table-sm"
+                           style="border-radius: .2rem; margin-bottom: 0"
+                           aria-describedby=" Test's questions table">
+                        <thead class="thead-light">
+                        <tr>
+                            <th scope="col" style="border-radius: .2rem 0 0 0">№</th>
+                            <th scope="col">Вопрос</th>
+                            <th scope="col">Тип</th>
+                            <th scope="col">Сложность</th>
+                            <th scope="col" style="border-radius: 0 .2rem 0 0">Действия</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="question, iter : ${test.questionList}">
+                            <th scope="row" th:text="${iter.count}" style="vertical-align: middle"></th>
+                            <td th:utext="${question.text}" style="vertical-align: middle"></td>
+                            <td th:text="${question.type.getName()}" style="vertical-align: middle"></td>
+                            <td th:text="${question.difficulty}" style="vertical-align: middle"></td>
+                            <td style="vertical-align: middle">
+                                <a href="#" class="tableactions">редактировать</a>
+                                <a href="#" class="tableactions" data-toggle="modal" data-target=".questionDelete"
+                                   th:attr="data-id=${test.id}, data-number=${iter.count}">удалить</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="questionDeleteModal" class="modal fade questionDelete" tabindex="-1" role="dialog"
+     aria-labelledby="questionDeletePopup" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content" style="max-width: 15rem; margin-right: auto; margin-left: auto">
+            <div class="modal-header" style="padding-bottom: .25rem">
+                <h5 class="modal-title" style="margin: auto">Удалить вопрос?</h5>
+            </div>
+            <div class="modal-footer" style="justify-content: space-between; padding-top: .25rem">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" style="min-width: 6rem">Отмена</button>
+                <a href="#" class="btn btn-success" id="deleteBtn" style="min-width: 6rem">Ок</a>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div th:replace="fragments/footer :: #footer"></div>
 </body>
@@ -295,13 +328,12 @@
 <script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
 <script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
 <script type="text/javascript">
-    $('#questionUpdateModal').on('show.bs.modal', function (event) {
+    $('#questionDeleteModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget)
         var id = button.data('id')
-        var title = button.data('title')
+        var number = button.data('number')
         var modal = $(this)
-        modal.find('.modal-body #questionText').val(title)
-        modal.find('.modal-body #testCopyId').val(id)
+        modal.find('.modal-footer #deleteBtn').attr('href', id + '/deleteQuestion/' + number)
     })
 
     function countPoints() {

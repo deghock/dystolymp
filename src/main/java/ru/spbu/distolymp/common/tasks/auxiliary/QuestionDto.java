@@ -8,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Data
 public class QuestionDto {
-    private int number;
     private QuestionType type;
     private String text;
     private String imageName;

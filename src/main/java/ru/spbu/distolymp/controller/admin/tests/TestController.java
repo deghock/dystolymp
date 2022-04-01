@@ -24,6 +24,7 @@ public class TestController {
     private static final String LIST_PAGE = ROOT_DIR + "list";
     private static final String REDIRECT_LIST = "redirect:/tests/list";
     private static final String TESTS_TABLE = ROOT_DIR + "tests-table :: #tests-table";
+    private static final String REDIRECT_EDIT = "redirect:/tests/edit/";
     private static final String EDIT_PAGE = ROOT_DIR + "edit";
     private static final String SUCCESS_PARAM = "success";
     private final TestService testService;
@@ -82,6 +83,14 @@ public class TestController {
         testService.unarchiveTest(id);
         ra.addFlashAttribute(SUCCESS_PARAM, "Тест разархивирован");
         return REDIRECT_LIST;
+    }
+
+    @GetMapping("/edit/{id}/deleteQuestion/{number}")
+    public String deleteQuestion(@PathVariable("id") Long testId, @PathVariable("number") int number,
+                                 RedirectAttributes ra) {
+        testService.deleteQuestionByNumber(testId, number);
+        ra.addFlashAttribute(SUCCESS_PARAM, "Вопрос удалён");
+        return REDIRECT_EDIT + testId;
     }
 
     @ExceptionHandler(TechnicalException.class)

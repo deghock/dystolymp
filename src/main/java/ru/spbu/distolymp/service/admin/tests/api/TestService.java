@@ -17,4 +17,5 @@ public interface TestService {
     void deleteTestWithFiles(Long id);
     void copyTest(TestListDto testTitleDto);
     void unarchiveTest(Long id);
+    void deleteQuestionByNumber(Long testId, int number);
 }

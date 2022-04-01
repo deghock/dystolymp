@@ -45,8 +45,10 @@ public class TestFileGenerator {
                 .append("$question_count_S=0;\r\n")
                 .append("$question=array(\r\n");
 
+        int count = 0;
         for (QuestionDto question : questions) {
-            fileContent.append(question.getNumber())
+            count++;
+            fileContent.append(count)
                     .append("=>array(\r\n")
                     .append("         0=>'")
                     .append(question.getType().getShortName())
@@ -144,7 +146,7 @@ public class TestFileGenerator {
                 default:
                     break;
             }
-            if (question.getNumber() < testDto.getQuestionList().size())
+            if (count < questions.size())
                 fileContent.append(",");
             fileContent.append("\r\n");
         }

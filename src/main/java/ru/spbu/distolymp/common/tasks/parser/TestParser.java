@@ -56,10 +56,8 @@ public class TestParser {
         List<QuestionDto> result = new ArrayList<>();
         List<String> questionsStr = getQuestionsString(paramFileContent);
 
-        int number = 1;
         for (String questionStr : questionsStr) {
             QuestionDto questionDto = new QuestionDto();
-            questionDto.setNumber(number++);
             QuestionType type = getType(questionStr);
             questionDto.setType(type);
             questionDto.setText(getText(questionStr));
