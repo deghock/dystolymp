@@ -6,6 +6,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.spbu.distolymp.common.tasks.auxiliary.QuestionDto;
 import ru.spbu.distolymp.dto.admin.tests.TestFilter;
 import ru.spbu.distolymp.dto.admin.tests.TestListDto;
 import ru.spbu.distolymp.dto.entity.tasks.TestDto;
@@ -26,6 +27,7 @@ public class TestController {
     private static final String TESTS_TABLE = ROOT_DIR + "tests-table :: #tests-table";
     private static final String REDIRECT_EDIT = "redirect:/tests/edit/";
     private static final String EDIT_PAGE = ROOT_DIR + "edit";
+    private static final String EDIT_QUESTION_PAGE = ROOT_DIR + "question-edit";
     private static final String SUCCESS_PARAM = "success";
     private final TestService testService;
 
@@ -91,6 +93,31 @@ public class TestController {
         testService.deleteQuestionByNumber(testId, number);
         ra.addFlashAttribute(SUCCESS_PARAM, "Вопрос удалён");
         return REDIRECT_EDIT + testId;
+    }
+
+    @GetMapping("/edit/{testId}/add-question")
+    public String getAddQuestionPage(@PathVariable("testId") Long testId, ModelMap modelMap) {
+        testService.fillShowAddQuestionPageModelMap(testId, modelMap);
+        return EDIT_QUESTION_PAGE;
+    }
+
+    @GetMapping("/edit/{testId}/edit-question/{number}")
+    public String getEditQuestionPage(@PathVariable("testId") Long testId,
+                                      @PathVariable("number") int number, ModelMap modelMap) {
+        testService.fillShowEditQuestionPageModelMap(testId, number, modelMap);
+        return EDIT_QUESTION_PAGE;
+    }
+
+    @PostMapping("/edit/save-or-edit-question")
+    public String saveOrUpdateQuestion(@Valid @ModelAttribute("question") QuestionDto questionDto,
+                                       BindingResult br, RedirectAttributes ra, ModelMap modelMap) {
+        if (br.hasErrors()) {
+            testService.fillUpdateQuestionFailedModelMap(questionDto.getTestId(), modelMap);
+            return EDIT_QUESTION_PAGE;
+        }
+        testService.updateQuestion(questionDto);
+        ra.addFlashAttribute(SUCCESS_PARAM, "Изменения сохранены");
+        return REDIRECT_EDIT + questionDto.getTestId();
     }
 
     @ExceptionHandler(TechnicalException.class)

@@ -269,10 +269,17 @@
 <div class="form-row align-items-center" style="margin-top: .5rem; margin-bottom: .5rem">
     <div class="col-12">
         <div class="infoForm container p-2 text-center" style="width: 60%; padding: 1rem !important; min-width: 36rem">
-            <div class="form-row text-center align-items-center">
+            <div th:if="${test.id == null}" class="form-row align-items-center">
+                <div class="col-12 invalid-feedback" style="display: block; color: #212529; font-size: 11pt">
+                    <strong>Для редактирования вопросов необходимо сохранить тест</strong>
+                </div>
+            </div>
+
+            <div th:if="${test.id != null}" class="form-row text-center align-items-center">
                 <div class="col-12" style="overflow: auto">
                     <div style="margin-bottom: .5rem">
-                        <a href="#" class="btn btn-light" style="display: block">Добавить вопрос</a>
+                        <a th:href="@{/tests/edit/{testId}/add-question(testId=${test.id})}"
+                           class="btn btn-light" style="display: block">Добавить новый вопрос</a>
                     </div>
 
                     <table class="table table-striped table-light table-sm"
@@ -294,7 +301,8 @@
                             <td th:text="${question.type.getName()}" style="vertical-align: middle"></td>
                             <td th:text="${question.difficulty}" style="vertical-align: middle"></td>
                             <td style="vertical-align: middle">
-                                <a href="#" class="tableactions">редактировать</a>
+                                <a th:href="@{/tests/edit/{testId}/edit-question/{number}(testId=${test.id}, number=${iter.count})}"
+                                   class="tableactions">редактировать</a>
                                 <a href="#" class="tableactions" data-toggle="modal" data-target=".questionDelete"
                                    th:attr="data-id=${test.id}, data-number=${iter.count}">удалить</a>
                             </td>

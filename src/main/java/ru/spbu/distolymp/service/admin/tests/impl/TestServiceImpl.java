@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.spbu.distolymp.common.files.FileNameGenerator;
 import ru.spbu.distolymp.common.files.FileUtils;
 import ru.spbu.distolymp.common.tasks.auxiliary.QuestionDto;
+import ru.spbu.distolymp.common.tasks.auxiliary.QuestionType;
 import ru.spbu.distolymp.common.tasks.filegenerator.TestFileGenerator;
 import ru.spbu.distolymp.common.tasks.parser.TestParser;
 import ru.spbu.distolymp.dto.admin.tests.TestFilter;
@@ -229,5 +230,192 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
         boolean fileSaved = fileService.saveFile(newFile, folderName + "/" + parFileName);
         if (!fileSaved)
             throw new TechnicalException("Question with number=" + number + " is not deleted");
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void fillShowAddQuestionPageModelMap(Long testId, ModelMap modelMap) {
+        Test test = getTestById(testId).orElseThrow(ResourceNotFoundException::new);
+        String folderName = test.getTestFolder();
+        String parName = test.getParFileName();
+        String fileName = folderName + "/" + parName;
+        byte[] file = fileService.getFileWithName(fileName);
+        String fileContent = new String(file, CHARSET);
+        int questionNumber = TestParser.getQuestions(fileContent).size();
+
+        QuestionDto questionDto = new QuestionDto();
+        questionDto.setAnswers(new String[5]);
+        questionDto.setTrueAnswers(new String[5]);
+        questionDto.setType(QuestionType.S);
+        questionDto.setDifficulty("Лёгкий");
+        questionDto.setFolderName(folderName);
+        questionDto.setNumber(questionNumber + 1);
+        questionDto.setTestId(test.getId());
+
+        modelMap.put("question", questionDto);
+        modelMap.put(QUESTION_NUMBER_PARAM, questionNumber + 1);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void updateQuestion(QuestionDto questionDto) {
+        Test test = getTestById(questionDto.getTestId()).orElseThrow(ResourceNotFoundException::new);
+        String folderName = test.getTestFolder();
+        String parFileName = test.getParFileName();
+        byte[] parFile = fileService.getFileWithName(folderName + "/" + parFileName);
+        String fileContent = new String(parFile, CHARSET);
+        List<QuestionDto> questions = TestParser.getQuestions(fileContent);
+        TestDto testDto = testMapper.toDto(test, fileContent);
+
+        MultipartFile image = questionDto.getImage();
+        String oldImageName = questionDto.getImageName();
+
+        boolean newImageUpload = !"".equals(image.getOriginalFilename());
+        boolean oldImageExists = (oldImageName != null) && (!"".equals(oldImageName));
+        boolean deleteImage = questionDto.isDeleteImage();
+
+        if (newImageUpload && !deleteImage) {
+            String imageExtension = FileUtils.getImageExtension(image);
+            String newImageName = FileNameGenerator.generateFileName(imageExtension);
+            questionDto.setImageName(newImageName);
+            fileService.saveFile(FileUtils.getFileBytes(image), test.getTestFolder() + "/" + newImageName);
+        }
+        if (deleteImage) questionDto.setImageName("");
+
+        if ((newImageUpload && oldImageExists) || deleteImage)
+            fileService.deleteFile(test.getTestFolder() + "/" + oldImageName);
+
+        refactorFieldsToServer(questionDto);
+        int number = questionDto.getNumber();
+        if (number > questions.size()) {
+            questions.add(questionDto);
+        } else {
+            if (questionDto.getOldNumber() != 0)
+                questions.remove(questionDto.getOldNumber() - 1);
+            questions.add(number - 1, questionDto);
+            for (int i = 0; i < questions.size(); i++) {
+                QuestionDto question = questions.get(i);
+                question.setNumber(i + 1);
+                questions.set(i, question);
+            }
+        }
+
+        byte[] newFile = TestFileGenerator.generateParamFile(testDto, questions);
+        boolean fileSaved = fileService.saveFile(newFile, folderName + "/" + parFileName);
+        if (!fileSaved)
+            throw new TechnicalException("Question with number=" + number + " is not deleted");
+    }
+
+    private void refactorFieldsToServer(QuestionDto questionDto) {
+        if (questionDto.getImageName() == null) questionDto.setImageName("");
+
+        String[] initAnswers = questionDto.getAnswers();
+        String[] initTrueAnswers = questionDto.getTrueAnswers();
+        List<String> answers = new ArrayList<>();
+        List<String> trueAnswers = new ArrayList<>();
+        switch (questionDto.getType()) {
+            case S:
+                int skip = 0;
+                for (int i = 0; i < 5; i++) {
+                    if (initAnswers[i] == null && i + 1 < Integer.parseInt(initTrueAnswers[0]))
+                        skip++;
+                    else
+                        answers.add(initAnswers[i]);
+                }
+                trueAnswers.add(String.valueOf(Integer.parseInt(initTrueAnswers[0]) - skip));
+                while (answers.size() < 5) answers.add("");
+                while (trueAnswers.size() < 5) trueAnswers.add("");
+                break;
+            case C:
+                skip = 0;
+                for (int i = 0; i < 5; i++) {
+                    if (initAnswers[i] == null)
+                        skip++;
+                    else
+                        answers.add(initAnswers[i]);
+                    if (initTrueAnswers[i] != null)
+                        trueAnswers.add(String.valueOf(Integer.parseInt(initTrueAnswers[i]) - skip));
+                }
+                while (answers.size() < 5) answers.add("");
+                while (trueAnswers.size() < 5) trueAnswers.add("");
+                break;
+            case L:
+                for (int i = 0; i < 5; i++) {
+                    if (initAnswers[i] != null && initTrueAnswers[i] != null) {
+                        answers.add(initAnswers[i]);
+                        trueAnswers.add(initTrueAnswers[i]);
+                    }
+                }
+                while (answers.size() < 5) answers.add("");
+                while (trueAnswers.size() < 5) trueAnswers.add("");
+                break;
+            case I:
+                for (int i = 0; i < 3; i++) {
+                    answers.add(initAnswers[i]);
+                }
+                while (answers.size() < 5) answers.add("");
+                break;
+            case F:
+                for (int i = 0; i < 5; i++) {
+                    if (i != 1)
+                        answers.add(initAnswers[i] == null ? "" : initAnswers[i]);
+                    else
+                        answers.add("%");
+                }
+                break;
+            default:
+                break;
+        }
+
+        questionDto.setAnswers(answers.toArray(new String[0]));
+        questionDto.setTrueAnswers(trueAnswers.toArray(new String[0]));
+    }
+
+    private void refactorFieldsToClient(QuestionDto questionDto) {
+        if (questionDto.getType() == QuestionType.C) {
+            String[] initTrueAnswers = questionDto.getTrueAnswers();
+            String[] result = new String[] {"", "", "", "", ""};
+            for (int i = 0; i < 5; i++) {
+                if (!"".equals(initTrueAnswers[i])) {
+                    result[Integer.parseInt(initTrueAnswers[i]) - 1] = initTrueAnswers[i];
+                }
+            }
+            questionDto.setTrueAnswers(result);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void fillUpdateQuestionFailedModelMap(Long testId, ModelMap modelMap) {
+        Test test = getTestById(testId).orElseThrow(ResourceNotFoundException::new);
+        String folderName = test.getTestFolder();
+        String parName = test.getParFileName();
+        String fileName = folderName + "/" + parName;
+        byte[] file = fileService.getFileWithName(fileName);
+        String fileContent = new String(file, CHARSET);
+        int questionNumber = TestParser.getQuestions(fileContent).size();
+
+        modelMap.put(QUESTION_NUMBER_PARAM, questionNumber);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void fillShowEditQuestionPageModelMap(Long testId, int number, ModelMap modelMap) {
+        Test test = getTestById(testId).orElseThrow(ResourceNotFoundException::new);
+        String folderName = test.getTestFolder();
+        String parName = test.getParFileName();
+        String fileName = folderName + "/" + parName;
+        byte[] file = fileService.getFileWithName(fileName);
+        String fileContent = new String(file, CHARSET);
+        int questionNumber = TestParser.getQuestions(fileContent).size();
+
+        QuestionDto questionDto = TestParser.getQuestions(fileContent).get(number - 1);
+        questionDto.setTestId(test.getId());
+        questionDto.setFolderName(test.getTestFolder());
+        questionDto.setOldNumber(questionDto.getNumber());
+        refactorFieldsToClient(questionDto);
+
+        modelMap.put("question", questionDto);
+        modelMap.put(QUESTION_NUMBER_PARAM, questionNumber);
     }
 }

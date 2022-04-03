@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+
+    <style>
+        textarea {
+            min-height: 2rem;
+        }
+    </style>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey" th:attr="onload=|onUpdateImage('${question.imageName}', '${question.type.getName()}')|"
+      style="min-width: 612px; font-family: sans-serif; font-size: 11pt">
+
+<div th:replace="fragments/menu-staff :: #menustaff"></div>
+
+<p th:text="'Редактировать вопрос'"
+   style="text-align: center; margin-top: 1rem; margin-bottom: .5rem"></p>
+
+<!--/*@thymesVar id="question" type="ru.spbu.distolymp.common.tasks.auxiliary.QuestionDto"*/-->
+<!--/*@thymesVar id="questionNumber" type="java.lang.Integer"*/-->
+<form th:action="@{/tests/edit/save-or-edit-question}" th:object="${question}" method="post" enctype="multipart/form-data"
+      class="needs-validation" novalidate>
+    <div class="infoForm container p-2 text-center" style="width: 60%; padding: 1rem !important; min-width: 36rem">
+        <input type="hidden" th:field="*{imageName}"/>
+        <input type="hidden" th:field="*{testId}"/>
+        <input type="hidden" th:field="*{folderName}"/>
+        <input type="hidden" th:field="*{oldNumber}"/>
+
+        <div class="form-row text-left align-items-center">
+            <div class="col-3">Номер вопроса</div>
+            <div class="col-9">
+                <div class="form-row">
+                    <div class="col-12">
+                        <select th:field="*{number}">
+                            <option th:each="i : ${#numbers.sequence(1, questionNumber)}"
+                                    th:text="${i}" th:value="${i}" th:if="${questionNumber != 0}"></option>
+                            <option th:if="${questionNumber == 0}" value="1">1</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row text-left align-items-center">
+            <div class="col-3">Тип вопроса</div>
+            <div class="col-9">
+                <div class="form-row">
+                    <div class="col-12 form-check">
+                        <select id="type" th:field="*{type}" autocomplete="off" onclick="checkAnswerType()">
+                            <option th:each="type : ${T(ru.spbu.distolymp.common.tasks.auxiliary.QuestionType).values()}"
+                                    th:if="${type.getShortName() != 'U'}" th:text="${type.getName()}"
+                                    th:value="${type}" ></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row text-left align-items-center">
+            <div class="col-3">Сложность вопроса</div>
+            <div class="col-9">
+                <div class="form-row">
+                    <div class="col-12">
+                        <select th:field="*{difficulty}">
+                            <option th:value="${'Лёгкий'}">Лёгкий</option>
+                            <option th:value="${'Средний'}">Средний</option>
+                            <option th:value="${'Сложный'}">Сложный</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row text-left align-items-center">
+            <div class="col-3"><label style="width: auto">Изображение</label></div>
+            <div class="col-9">
+                <div class="form-row mb-1">
+                    <div class="col-12">
+                        <div class="custom-file">
+                            <input type="file" id="image" class="custom-file-input is-valid" th:field="*{image}"
+                                   accept="image/png, image/jpeg, image/gif">
+                            <label class="custom-file-label text-dark" data-browse="Обзор" for="image" style="width: initial">
+                                Файл не выбран
+                            </label>
+                            <div id="imageExtensionError" class="invalid-feedback" style="display: none">
+                                Изображение должно иметь расширение jpg, png или gif
+                            </div>
+                            <div id="imageSizeError" class="invalid-feedback" style="display: none">
+                                Размер изображения не должен превышать 10 Мб
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="imageAttr" style="display: none">
+                    <div class="form-row align-items-center">
+                        <div class="col-xl-0 form-check">
+                            <input id="isDelete" type="checkbox" class="form-check-input"
+                                   th:field="*{deleteImage}" autocomplete="off" style="position: inherit">
+                        </div>
+                        <div class="col-9">
+                            <label for="isDelete" class="form-check-label" style="width: auto">Удалить</label>
+                        </div>
+                    </div>
+                    <div class="form-row mb-1">
+                        <div class="col-12">
+                            <a href="#" class="abutton" data-toggle="modal" data-target="#showImage">Просмотр</a>
+                            <div id="showImage" class="modal fade" tabindex="-1" role="dialog"
+                                 aria-labelledby="showImagePopup" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Просмотр загруженного изображения</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body text-center" style="overflow: auto; margin: 1rem; padding: 0">
+                                            <img th:src="@{/data/tests/{imageName}(imageName=${question.folderName} + '/' + ${question.imageName})}"
+                                                 th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
+                                                 alt="Image not found"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row text-left align-items-center">
+            <div class="col-3"><label for="text" style="width: auto">Текст вопроса</label></div>
+            <div class="col-9 was-validated">
+                <textarea id="text" class="form-control form-control-sm text-dark" maxlength="65535"
+                          th:field="*{text}" rows="8" style="width: inherit" required></textarea>
+                <div class="invalid-feedback">Пожалуйста, введите текст вопроса</div>
+            </div>
+        </div>
+
+        <div class="form-row text-left align-items-center">
+            <div class="col-3">Ответ</div>
+            <div class="col-9">
+                <div id="answerS">
+                    <div class="form-row" th:each="i : ${#numbers.sequence(0, 4)}">
+                        <div class="col-xl-0 form-check">
+                            <input th:id="'trueAnswerS' + ${i + 1}" type="radio" class="form-check-input" style="position: inherit; margin-top: .6rem"
+                                   th:field="*{trueAnswers[0]}" th:value="${i + 1}" autocomplete="off"/>
+                        </div>
+                        <div class="col-6">
+                            <input th:id="'answerS' + ${i + 1}" type="text" class="form-control form-control-sm text-dark"
+                                   th:field="*{answers[__${i}__]}" maxlength="255"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="answerC" style="display: none;">
+                    <div class="form-row" th:each="i : ${#numbers.sequence(0, 4)}">
+                        <div class="col-xl-0 form-check">
+                            <input th:id="'trueAnswerC' + ${i + 1}" type="checkbox" class="form-check-input" style="position: inherit; margin-top: .6rem"
+                                   th:field="*{trueAnswers[__${i}__]}" th:value="${i + 1}" autocomplete="off"/>
+                        </div>
+                        <div class="col-6">
+                            <input th:id="'answerC' + ${i + 1}" type="text" class="form-control form-control-sm text-dark"
+                                   th:field="*{answers[__${i}__]}" maxlength="255"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="answerL" style="display: none;">
+                    <div class="form-row" th:each="i : ${#numbers.sequence(0, 4)}">
+                        <div class="col-6 form-check">
+                            <input th:id="'answerL' + ${i + 1}" type="text" class="form-control form-control-sm text-dark"
+                                   th:field="*{answers[__${i}__]}" maxlength="255"/>
+                        </div>
+                        <div class="col-6 form-check">
+                            <input th:id="'trueAnswerL' + ${i + 1}" type="text" class="form-control form-control-sm text-dark"
+                                   th:field="*{trueAnswers[__${i}__]}" maxlength="255"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="answerI" style="display: none;">
+                    <div class="form-row">
+                        <div class="col-auto">
+                            <label>
+                                Текст до:
+                            </label>
+                        </div>
+                        <div class="col-6">
+                            <input id="answerI3" type="text" class="form-control form-control-sm text-dark"
+                                   th:field="*{answers[2]}" maxlength="255"/>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-auto">
+                            <label>
+                                Значение ответа:
+                            </label>
+                        </div>
+                        <div class="col-6 was-validated">
+                            <input id="answerI1" type="number" step="1" class="form-control form-control-sm text-dark"
+                                   th:field="*{answers[0]}" maxlength="255" required/>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-auto">
+                            <label>
+                                Текст после:
+                            </label>
+                        </div>
+                        <div class="col-6">
+                            <input id="answerI2" type="text" class="form-control form-control-sm text-dark"
+                                   th:field="*{answers[1]}" maxlength="255"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="answerF" style="display: none;">
+                    <div class="form-row">
+                        <div class="col-auto">
+                            <label>
+                                Текст до:
+                            </label>
+                        </div>
+                        <div class="col-6">
+                            <input id="answerF5" type="text" class="form-control form-control-sm text-dark"
+                                   th:field="*{answers[4]}" maxlength="255"/>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-auto">
+                            <label>
+                                Значение ответа:
+                            </label>
+                        </div>
+                        <div class="col-6 was-validated">
+                            <input id="answerF1" type="number" step="any" class="form-control form-control-sm text-dark"
+                                   th:field="*{answers[0]}" maxlength="255" required/>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-auto">
+                            <label>
+                                Погрешность в %:
+                            </label>
+                        </div>
+                        <div class="col-6 was-validated">
+                            <input id="answerF3" type="number" step="any" class="form-control form-control-sm text-dark"
+                                   th:field="*{answers[2]}" maxlength="255" required/>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-auto">
+                            <label>
+                                Текст после:
+                            </label>
+                        </div>
+                        <div class="col-6">
+                            <input id="answerF4" type="text" class="form-control form-control-sm text-dark"
+                                   th:field="*{answers[3]}" maxlength="255"/>
+                        </div>
+                    </div>
+                </div>
+                <div th:each="e : ${#fields.detailedErrors()}">
+                    <div class="invalid-feedback" style="display: block"
+                         th:if="${e.fieldName == 'questionValid'}" th:text="${e.message}"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row align-items-center">
+            <div class="col-12" style="margin-top: .5rem">
+                <button type="submit" class="btn btn-light border border-dark" style="width: 30%; min-width: 7.5rem" id="submitBtn">
+                    Сохранить
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div th:replace="fragments/footer :: #footer"></div>
+</body>
+
+<script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+<script type="text/javascript">
+    function checkAnswerType() {
+        var answerS = document.getElementById('answerS')
+        var answerC = document.getElementById('answerC')
+        var answerL = document.getElementById('answerL')
+        var answerI = document.getElementById('answerI')
+        var answerF = document.getElementById('answerF')
+        var index = document.getElementById('type').selectedIndex
+        var item = document.getElementById('type').options[index].text
+
+        if (item === 'Один ответ') {
+            answerS.style.display = 'block'
+            answerC.style.display = 'none'
+            answerL.style.display = 'none'
+            answerI.style.display = 'none'
+            answerF.style.display = 'none'
+
+            document.getElementById('answerS1').disabled = false
+            document.getElementById('answerS2').disabled = false
+            document.getElementById('answerS3').disabled = false
+            document.getElementById('answerS4').disabled = false
+            document.getElementById('answerS5').disabled = false
+            document.getElementById('trueAnswerS1').disabled = false
+            document.getElementById('trueAnswerS2').disabled = false
+            document.getElementById('trueAnswerS3').disabled = false
+            document.getElementById('trueAnswerS4').disabled = false
+            document.getElementById('trueAnswerS5').disabled = false
+
+            document.getElementById('answerC1').disabled = true
+            document.getElementById('answerC2').disabled = true
+            document.getElementById('answerC3').disabled = true
+            document.getElementById('answerC4').disabled = true
+            document.getElementById('answerC5').disabled = true
+            document.getElementById('trueAnswerC1').disabled = true
+            document.getElementById('trueAnswerC2').disabled = true
+            document.getElementById('trueAnswerC3').disabled = true
+            document.getElementById('trueAnswerC4').disabled = true
+            document.getElementById('trueAnswerC5').disabled = true
+
+            document.getElementById('answerL1').disabled = true
+            document.getElementById('answerL2').disabled = true
+            document.getElementById('answerL3').disabled = true
+            document.getElementById('answerL4').disabled = true
+            document.getElementById('answerL5').disabled = true
+            document.getElementById('trueAnswerL1').disabled = true
+            document.getElementById('trueAnswerL2').disabled = true
+            document.getElementById('trueAnswerL3').disabled = true
+            document.getElementById('trueAnswerL4').disabled = true
+            document.getElementById('trueAnswerL5').disabled = true
+
+            document.getElementById('answerI1').disabled = true
+            document.getElementById('answerI2').disabled = true
+            document.getElementById('answerI3').disabled = true
+
+            document.getElementById('answerF1').disabled = true
+            document.getElementById('answerF3').disabled = true
+            document.getElementById('answerF4').disabled = true
+            document.getElementById('answerF5').disabled = true
+        }
+        if (item === 'Несколько ответов') {
+            answerS.style.display = 'none'
+            answerC.style.display = 'block'
+            answerL.style.display = 'none'
+            answerI.style.display = 'none'
+            answerF.style.display = 'none'
+
+            document.getElementById('answerS1').disabled = true
+            document.getElementById('answerS2').disabled = true
+            document.getElementById('answerS3').disabled = true
+            document.getElementById('answerS4').disabled = true
+            document.getElementById('answerS5').disabled = true
+            document.getElementById('trueAnswerS1').disabled = true
+            document.getElementById('trueAnswerS2').disabled = true
+            document.getElementById('trueAnswerS3').disabled = true
+            document.getElementById('trueAnswerS4').disabled = true
+            document.getElementById('trueAnswerS5').disabled = true
+
+            document.getElementById('answerC1').disabled = false
+            document.getElementById('answerC2').disabled = false
+            document.getElementById('answerC3').disabled = false
+            document.getElementById('answerC4').disabled = false
+            document.getElementById('answerC5').disabled = false
+            document.getElementById('trueAnswerC1').disabled = false
+            document.getElementById('trueAnswerC2').disabled = false
+            document.getElementById('trueAnswerC3').disabled = false
+            document.getElementById('trueAnswerC4').disabled = false
+            document.getElementById('trueAnswerC5').disabled = false
+
+            document.getElementById('answerL1').disabled = true
+            document.getElementById('answerL2').disabled = true
+            document.getElementById('answerL3').disabled = true
+            document.getElementById('answerL4').disabled = true
+            document.getElementById('answerL5').disabled = true
+            document.getElementById('trueAnswerL1').disabled = true
+            document.getElementById('trueAnswerL2').disabled = true
+            document.getElementById('trueAnswerL3').disabled = true
+            document.getElementById('trueAnswerL4').disabled = true
+            document.getElementById('trueAnswerL5').disabled = true
+
+            document.getElementById('answerI1').disabled = true
+            document.getElementById('answerI2').disabled = true
+            document.getElementById('answerI3').disabled = true
+
+            document.getElementById('answerF1').disabled = true
+            document.getElementById('answerF3').disabled = true
+            document.getElementById('answerF4').disabled = true
+            document.getElementById('answerF5').disabled = true
+        }
+        if (item === 'Соответствие') {
+            answerS.style.display = 'none'
+            answerC.style.display = 'none'
+            answerL.style.display = 'block'
+            answerI.style.display = 'none'
+            answerF.style.display = 'none'
+
+            document.getElementById('answerS1').disabled = true
+            document.getElementById('answerS2').disabled = true
+            document.getElementById('answerS3').disabled = true
+            document.getElementById('answerS4').disabled = true
+            document.getElementById('answerS5').disabled = true
+            document.getElementById('trueAnswerS1').disabled = true
+            document.getElementById('trueAnswerS2').disabled = true
+            document.getElementById('trueAnswerS3').disabled = true
+            document.getElementById('trueAnswerS4').disabled = true
+            document.getElementById('trueAnswerS5').disabled = true
+
+            document.getElementById('answerC1').disabled = true
+            document.getElementById('answerC2').disabled = true
+            document.getElementById('answerC3').disabled = true
+            document.getElementById('answerC4').disabled = true
+            document.getElementById('answerC5').disabled = true
+            document.getElementById('trueAnswerC1').disabled = true
+            document.getElementById('trueAnswerC2').disabled = true
+            document.getElementById('trueAnswerC3').disabled = true
+            document.getElementById('trueAnswerC4').disabled = true
+            document.getElementById('trueAnswerC5').disabled = true
+
+            document.getElementById('answerL1').disabled = false
+            document.getElementById('answerL2').disabled = false
+            document.getElementById('answerL3').disabled = false
+            document.getElementById('answerL4').disabled = false
+            document.getElementById('answerL5').disabled = false
+            document.getElementById('trueAnswerL1').disabled = false
+            document.getElementById('trueAnswerL2').disabled = false
+            document.getElementById('trueAnswerL3').disabled = false
+            document.getElementById('trueAnswerL4').disabled = false
+            document.getElementById('trueAnswerL5').disabled = false
+
+            document.getElementById('answerI1').disabled = true
+            document.getElementById('answerI2').disabled = true
+            document.getElementById('answerI3').disabled = true
+
+            document.getElementById('answerF1').disabled = true
+            document.getElementById('answerF3').disabled = true
+            document.getElementById('answerF4').disabled = true
+            document.getElementById('answerF5').disabled = true
+        }
+        if (item === 'Целочисленный ответ') {
+            answerS.style.display = 'none'
+            answerC.style.display = 'none'
+            answerL.style.display = 'none'
+            answerI.style.display = 'block'
+            answerF.style.display = 'none'
+
+            document.getElementById('answerS1').disabled = true
+            document.getElementById('answerS2').disabled = true
+            document.getElementById('answerS3').disabled = true
+            document.getElementById('answerS4').disabled = true
+            document.getElementById('answerS5').disabled = true
+            document.getElementById('trueAnswerS1').disabled = true
+            document.getElementById('trueAnswerS2').disabled = true
+            document.getElementById('trueAnswerS3').disabled = true
+            document.getElementById('trueAnswerS4').disabled = true
+            document.getElementById('trueAnswerS5').disabled = true
+
+            document.getElementById('answerC1').disabled = true
+            document.getElementById('answerC2').disabled = true
+            document.getElementById('answerC3').disabled = true
+            document.getElementById('answerC4').disabled = true
+            document.getElementById('answerC5').disabled = true
+            document.getElementById('trueAnswerC1').disabled = true
+            document.getElementById('trueAnswerC2').disabled = true
+            document.getElementById('trueAnswerC3').disabled = true
+            document.getElementById('trueAnswerC4').disabled = true
+            document.getElementById('trueAnswerC5').disabled = true
+
+            document.getElementById('answerL1').disabled = true
+            document.getElementById('answerL2').disabled = true
+            document.getElementById('answerL3').disabled = true
+            document.getElementById('answerL4').disabled = true
+            document.getElementById('answerL5').disabled = true
+            document.getElementById('trueAnswerL1').disabled = true
+            document.getElementById('trueAnswerL2').disabled = true
+            document.getElementById('trueAnswerL3').disabled = true
+            document.getElementById('trueAnswerL4').disabled = true
+            document.getElementById('trueAnswerL5').disabled = true
+
+            document.getElementById('answerI1').disabled = false
+            document.getElementById('answerI2').disabled = false
+            document.getElementById('answerI3').disabled = false
+
+            document.getElementById('answerF1').disabled = true
+            document.getElementById('answerF3').disabled = true
+            document.getElementById('answerF4').disabled = true
+            document.getElementById('answerF5').disabled = true
+        }
+        if (item === 'Вещественный ответ') {
+            answerS.style.display = 'none'
+            answerC.style.display = 'none'
+            answerL.style.display = 'none'
+            answerI.style.display = 'none'
+            answerF.style.display = 'block'
+
+            document.getElementById('answerS1').disabled = true
+            document.getElementById('answerS2').disabled = true
+            document.getElementById('answerS3').disabled = true
+            document.getElementById('answerS4').disabled = true
+            document.getElementById('answerS5').disabled = true
+            document.getElementById('trueAnswerS1').disabled = true
+            document.getElementById('trueAnswerS2').disabled = true
+            document.getElementById('trueAnswerS3').disabled = true
+            document.getElementById('trueAnswerS4').disabled = true
+            document.getElementById('trueAnswerS5').disabled = true
+
+            document.getElementById('answerC1').disabled = true
+            document.getElementById('answerC2').disabled = true
+            document.getElementById('answerC3').disabled = true
+            document.getElementById('answerC4').disabled = true
+            document.getElementById('answerC5').disabled = true
+            document.getElementById('trueAnswerC1').disabled = true
+            document.getElementById('trueAnswerC2').disabled = true
+            document.getElementById('trueAnswerC3').disabled = true
+            document.getElementById('trueAnswerC4').disabled = true
+            document.getElementById('trueAnswerC5').disabled = true
+
+            document.getElementById('answerL1').disabled = true
+            document.getElementById('answerL2').disabled = true
+            document.getElementById('answerL3').disabled = true
+            document.getElementById('answerL4').disabled = true
+            document.getElementById('answerL5').disabled = true
+            document.getElementById('trueAnswerL1').disabled = true
+            document.getElementById('trueAnswerL2').disabled = true
+            document.getElementById('trueAnswerL3').disabled = true
+            document.getElementById('trueAnswerL4').disabled = true
+            document.getElementById('trueAnswerL5').disabled = true
+
+            document.getElementById('answerI1').disabled = true
+            document.getElementById('answerI2').disabled = true
+            document.getElementById('answerI3').disabled = true
+
+            document.getElementById('answerF1').disabled = false
+            document.getElementById('answerF3').disabled = false
+            document.getElementById('answerF4').disabled = false
+            document.getElementById('answerF5').disabled = false
+        }
+    }
+
+    $('#image').on('change', function() {
+        var imageName = $(this).val().replace(/C:\\fakepath\\/i, '')
+        var sizeErrMsg = document.getElementById('imageSizeError')
+        var extErrMsg = document.getElementById('imageExtensionError')
+        var exts = /(\.jpg|\.jpeg|\.gif|\.png)$/i
+        var isExt = exts.exec(this.files[0].name) != null
+        var isSize = this.files[0].size <= 10485760
+        if (isExt && isSize) {
+            $(this).next('.custom-file-label').html(imageName)
+            sizeErrMsg.style.display = 'none'
+            extErrMsg.style.display = 'none'
+        } else if (!isExt) {
+            $(this).next('.custom-file-label').html('Файл не выбран')
+            $(this).val(null)
+            extErrMsg.style.display = 'block'
+            sizeErrMsg.style.display = 'none'
+        } else if (!isSize) {
+            $(this).next('.custom-file-label').html('Файл не выбран')
+            $(this).val(null)
+            sizeErrMsg.style.display = 'block'
+            extErrMsg.style.display = 'none'
+        }
+    });
+
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                }, false);
+            });
+        }, false);
+    })();
+
+    function onUpdateImage(imageFileName, type) {
+        if (imageFileName === "null" || imageFileName === "") {
+            document.getElementById('imageAttr').style.display = "none";
+        } else {
+            document.getElementById('imageAttr').style.display = "block";
+        }
+
+        var answerS = document.getElementById('answerS')
+        var answerC = document.getElementById('answerC')
+        var answerL = document.getElementById('answerL')
+        var answerI = document.getElementById('answerI')
+        var answerF = document.getElementById('answerF')
+        if (type === 'Один ответ') {
+            answerS.style.display = 'block'
+            answerC.style.display = 'none'
+            answerL.style.display = 'none'
+            answerI.style.display = 'none'
+            answerF.style.display = 'none'
+
+            document.getElementById('answerS1').disabled = false
+            document.getElementById('answerS2').disabled = false
+            document.getElementById('answerS3').disabled = false
+            document.getElementById('answerS4').disabled = false
+            document.getElementById('answerS5').disabled = false
+            document.getElementById('trueAnswerS1').disabled = false
+            document.getElementById('trueAnswerS2').disabled = false
+            document.getElementById('trueAnswerS3').disabled = false
+            document.getElementById('trueAnswerS4').disabled = false
+            document.getElementById('trueAnswerS5').disabled = false
+
+            document.getElementById('answerC1').disabled = true
+            document.getElementById('answerC2').disabled = true
+            document.getElementById('answerC3').disabled = true
+            document.getElementById('answerC4').disabled = true
+            document.getElementById('answerC5').disabled = true
+            document.getElementById('trueAnswerC1').disabled = true
+            document.getElementById('trueAnswerC2').disabled = true
+            document.getElementById('trueAnswerC3').disabled = true
+            document.getElementById('trueAnswerC4').disabled = true
+            document.getElementById('trueAnswerC5').disabled = true
+
+            document.getElementById('answerL1').disabled = true
+            document.getElementById('answerL2').disabled = true
+            document.getElementById('answerL3').disabled = true
+            document.getElementById('answerL4').disabled = true
+            document.getElementById('answerL5').disabled = true
+            document.getElementById('trueAnswerL1').disabled = true
+            document.getElementById('trueAnswerL2').disabled = true
+            document.getElementById('trueAnswerL3').disabled = true
+            document.getElementById('trueAnswerL4').disabled = true
+            document.getElementById('trueAnswerL5').disabled = true
+
+            document.getElementById('answerI1').disabled = true
+            document.getElementById('answerI2').disabled = true
+            document.getElementById('answerI3').disabled = true
+
+            document.getElementById('answerF1').disabled = true
+            document.getElementById('answerF3').disabled = true
+            document.getElementById('answerF4').disabled = true
+            document.getElementById('answerF5').disabled = true
+        }
+        if (type === 'Несколько ответов') {
+            answerS.style.display = 'none'
+            answerC.style.display = 'block'
+            answerL.style.display = 'none'
+            answerI.style.display = 'none'
+            answerF.style.display = 'none'
+
+            document.getElementById('answerS1').disabled = true
+            document.getElementById('answerS2').disabled = true
+            document.getElementById('answerS3').disabled = true
+            document.getElementById('answerS4').disabled = true
+            document.getElementById('answerS5').disabled = true
+            document.getElementById('trueAnswerS1').disabled = true
+            document.getElementById('trueAnswerS2').disabled = true
+            document.getElementById('trueAnswerS3').disabled = true
+            document.getElementById('trueAnswerS4').disabled = true
+            document.getElementById('trueAnswerS5').disabled = true
+
+            document.getElementById('answerC1').disabled = false
+            document.getElementById('answerC2').disabled = false
+            document.getElementById('answerC3').disabled = false
+            document.getElementById('answerC4').disabled = false
+            document.getElementById('answerC5').disabled = false
+            document.getElementById('trueAnswerC1').disabled = false
+            document.getElementById('trueAnswerC2').disabled = false
+            document.getElementById('trueAnswerC3').disabled = false
+            document.getElementById('trueAnswerC4').disabled = false
+            document.getElementById('trueAnswerC5').disabled = false
+
+            document.getElementById('answerL1').disabled = true
+            document.getElementById('answerL2').disabled = true
+            document.getElementById('answerL3').disabled = true
+            document.getElementById('answerL4').disabled = true
+            document.getElementById('answerL5').disabled = true
+            document.getElementById('trueAnswerL1').disabled = true
+            document.getElementById('trueAnswerL2').disabled = true
+            document.getElementById('trueAnswerL3').disabled = true
+            document.getElementById('trueAnswerL4').disabled = true
+            document.getElementById('trueAnswerL5').disabled = true
+
+            document.getElementById('answerI1').disabled = true
+            document.getElementById('answerI2').disabled = true
+            document.getElementById('answerI3').disabled = true
+
+            document.getElementById('answerF1').disabled = true
+            document.getElementById('answerF3').disabled = true
+            document.getElementById('answerF4').disabled = true
+            document.getElementById('answerF5').disabled = true
+        }
+        if (type === 'Соответствие') {
+            answerS.style.display = 'none'
+            answerC.style.display = 'none'
+            answerL.style.display = 'block'
+            answerI.style.display = 'none'
+            answerF.style.display = 'none'
+
+            document.getElementById('answerS1').disabled = true
+            document.getElementById('answerS2').disabled = true
+            document.getElementById('answerS3').disabled = true
+            document.getElementById('answerS4').disabled = true
+            document.getElementById('answerS5').disabled = true
+            document.getElementById('trueAnswerS1').disabled = true
+            document.getElementById('trueAnswerS2').disabled = true
+            document.getElementById('trueAnswerS3').disabled = true
+            document.getElementById('trueAnswerS4').disabled = true
+            document.getElementById('trueAnswerS5').disabled = true
+
+            document.getElementById('answerC1').disabled = true
+            document.getElementById('answerC2').disabled = true
+            document.getElementById('answerC3').disabled = true
+            document.getElementById('answerC4').disabled = true
+            document.getElementById('answerC5').disabled = true
+            document.getElementById('trueAnswerC1').disabled = true
+            document.getElementById('trueAnswerC2').disabled = true
+            document.getElementById('trueAnswerC3').disabled = true
+            document.getElementById('trueAnswerC4').disabled = true
+            document.getElementById('trueAnswerC5').disabled = true
+
+            document.getElementById('answerL1').disabled = false
+            document.getElementById('answerL2').disabled = false
+            document.getElementById('answerL3').disabled = false
+            document.getElementById('answerL4').disabled = false
+            document.getElementById('answerL5').disabled = false
+            document.getElementById('trueAnswerL1').disabled = false
+            document.getElementById('trueAnswerL2').disabled = false
+            document.getElementById('trueAnswerL3').disabled = false
+            document.getElementById('trueAnswerL4').disabled = false
+            document.getElementById('trueAnswerL5').disabled = false
+
+            document.getElementById('answerI1').disabled = true
+            document.getElementById('answerI2').disabled = true
+            document.getElementById('answerI3').disabled = true
+
+            document.getElementById('answerF1').disabled = true
+            document.getElementById('answerF3').disabled = true
+            document.getElementById('answerF4').disabled = true
+            document.getElementById('answerF5').disabled = true
+        }
+        if (type === 'Целочисленный ответ') {
+            answerS.style.display = 'none'
+            answerC.style.display = 'none'
+            answerL.style.display = 'none'
+            answerI.style.display = 'block'
+            answerF.style.display = 'none'
+
+            document.getElementById('answerS1').disabled = true
+            document.getElementById('answerS2').disabled = true
+            document.getElementById('answerS3').disabled = true
+            document.getElementById('answerS4').disabled = true
+            document.getElementById('answerS5').disabled = true
+            document.getElementById('trueAnswerS1').disabled = true
+            document.getElementById('trueAnswerS2').disabled = true
+            document.getElementById('trueAnswerS3').disabled = true
+            document.getElementById('trueAnswerS4').disabled = true
+            document.getElementById('trueAnswerS5').disabled = true
+
+            document.getElementById('answerC1').disabled = true
+            document.getElementById('answerC2').disabled = true
+            document.getElementById('answerC3').disabled = true
+            document.getElementById('answerC4').disabled = true
+            document.getElementById('answerC5').disabled = true
+            document.getElementById('trueAnswerC1').disabled = true
+            document.getElementById('trueAnswerC2').disabled = true
+            document.getElementById('trueAnswerC3').disabled = true
+            document.getElementById('trueAnswerC4').disabled = true
+            document.getElementById('trueAnswerC5').disabled = true
+
+            document.getElementById('answerL1').disabled = true
+            document.getElementById('answerL2').disabled = true
+            document.getElementById('answerL3').disabled = true
+            document.getElementById('answerL4').disabled = true
+            document.getElementById('answerL5').disabled = true
+            document.getElementById('trueAnswerL1').disabled = true
+            document.getElementById('trueAnswerL2').disabled = true
+            document.getElementById('trueAnswerL3').disabled = true
+            document.getElementById('trueAnswerL4').disabled = true
+            document.getElementById('trueAnswerL5').disabled = true
+
+            document.getElementById('answerI1').disabled = false
+            document.getElementById('answerI2').disabled = false
+            document.getElementById('answerI3').disabled = false
+
+            document.getElementById('answerF1').disabled = true
+            document.getElementById('answerF3').disabled = true
+            document.getElementById('answerF4').disabled = true
+            document.getElementById('answerF5').disabled = true
+        }
+        if (type === 'Вещественный ответ') {
+            answerS.style.display = 'none'
+            answerC.style.display = 'none'
+            answerL.style.display = 'none'
+            answerI.style.display = 'none'
+            answerF.style.display = 'block'
+
+            document.getElementById('answerS1').disabled = true
+            document.getElementById('answerS2').disabled = true
+            document.getElementById('answerS3').disabled = true
+            document.getElementById('answerS4').disabled = true
+            document.getElementById('answerS5').disabled = true
+            document.getElementById('trueAnswerS1').disabled = true
+            document.getElementById('trueAnswerS2').disabled = true
+            document.getElementById('trueAnswerS3').disabled = true
+            document.getElementById('trueAnswerS4').disabled = true
+            document.getElementById('trueAnswerS5').disabled = true
+
+            document.getElementById('answerC1').disabled = true
+            document.getElementById('answerC2').disabled = true
+            document.getElementById('answerC3').disabled = true
+            document.getElementById('answerC4').disabled = true
+            document.getElementById('answerC5').disabled = true
+            document.getElementById('trueAnswerC1').disabled = true
+            document.getElementById('trueAnswerC2').disabled = true
+            document.getElementById('trueAnswerC3').disabled = true
+            document.getElementById('trueAnswerC4').disabled = true
+            document.getElementById('trueAnswerC5').disabled = true
+
+            document.getElementById('answerL1').disabled = true
+            document.getElementById('answerL2').disabled = true
+            document.getElementById('answerL3').disabled = true
+            document.getElementById('answerL4').disabled = true
+            document.getElementById('answerL5').disabled = true
+            document.getElementById('trueAnswerL1').disabled = true
+            document.getElementById('trueAnswerL2').disabled = true
+            document.getElementById('trueAnswerL3').disabled = true
+            document.getElementById('trueAnswerL4').disabled = true
+            document.getElementById('trueAnswerL5').disabled = true
+
+            document.getElementById('answerI1').disabled = true
+            document.getElementById('answerI2').disabled = true
+            document.getElementById('answerI3').disabled = true
+
+            document.getElementById('answerF1').disabled = false
+            document.getElementById('answerF3').disabled = false
+            document.getElementById('answerF4').disabled = false
+            document.getElementById('answerF5').disabled = false
+        }
+    }
+</script>
+</html>
