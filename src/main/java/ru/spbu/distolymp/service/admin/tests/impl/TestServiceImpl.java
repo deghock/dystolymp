@@ -37,6 +37,7 @@ import java.util.*;
 public class TestServiceImpl extends TestCrudServiceImpl implements TestService {
     private static final Sort SORT_BY_ID_DESC = Sort.by("id").descending();
     private static final String TESTS_PARAM = "testList";
+    private static final String QUESTION_NUMBER_PARAM = "questionNumber";
     private static final Charset CHARSET = StandardCharsets.UTF_8;
 
     public TestServiceImpl(TestRepository testRepository,
@@ -210,6 +211,7 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void deleteQuestionByNumber(Long testId, int number) {
         Test test = getTestById(testId).orElseThrow(ResourceNotFoundException::new);
         String folderName = test.getTestFolder();
@@ -219,7 +221,9 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
         List<QuestionDto> questions = TestParser.getQuestions(fileContent);
         TestDto testDto = testMapper.toDto(test, fileContent);
 
+        QuestionDto questionDto = questions.get(number - 1);
         questions.remove(number - 1);
+        fileService.deleteFile(test.getTestFolder() + "/" + questionDto.getImageName());
         int[] questionsMax = TestParser.getAllQuestionsNumber(questions);
         int[] questionsCount = testDto.getQuestionsNumber();
         for (int i = 0; i < questionsMax.length; i++) {

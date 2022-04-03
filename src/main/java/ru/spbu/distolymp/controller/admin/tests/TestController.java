@@ -58,8 +58,7 @@ public class TestController {
     @PostMapping("/save-or-edit")
     public String saveOrEdit(@Valid @ModelAttribute("test") TestDto testDto,
                              BindingResult br, RedirectAttributes ra) {
-        if (br.hasErrors())
-            return EDIT_PAGE;
+        if (br.hasErrors()) return EDIT_PAGE;
         testService.updateTest(testDto);
         ra.addFlashAttribute(SUCCESS_PARAM, "Изменения сохранены");
         return REDIRECT_LIST;

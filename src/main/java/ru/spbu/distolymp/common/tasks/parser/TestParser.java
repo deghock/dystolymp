@@ -55,6 +55,7 @@ public class TestParser {
     public static List<QuestionDto> getQuestions(String paramFileContent) {
         List<QuestionDto> result = new ArrayList<>();
         List<String> questionsStr = getQuestionsString(paramFileContent);
+        int number = 1;
 
         for (String questionStr : questionsStr) {
             QuestionDto questionDto = new QuestionDto();
@@ -65,7 +66,9 @@ public class TestParser {
             questionDto.setDifficulty(getDifficulty(questionStr));
             questionDto.setAnswers(getAnswers(questionStr, type));
             questionDto.setTrueAnswers(getTrueAnswers(questionStr, type));
+            questionDto.setNumber(number);
             result.add(questionDto);
+            number++;
         }
 
         return result;
@@ -190,7 +193,7 @@ public class TestParser {
     }
 
     private static String[] getAnswers(String questionContent, QuestionType type) {
-        String[] result = (type == QuestionType.I) ? new String[3] : new String[5];
+        String[] result = new String[5];
         String expr1;
         String expr2 = "'";
         if (type == QuestionType.L)
@@ -200,9 +203,14 @@ public class TestParser {
         String answersStr = getAnswersString(questionContent);
         int end = 0;
         for (int i = 0; i < result.length; i++) {
-            int start = answersStr.indexOf(expr1, end) + expr1.length();
-            end = answersStr.indexOf(expr2, start);
-            result[i] = answersStr.substring(start, end);
+            int start = answersStr.indexOf(expr1, end);
+            if (start == -1) {
+                result[i] = "";
+            } else {
+                start = start + expr1.length();
+                end = answersStr.indexOf(expr2, start);
+                result[i] = answersStr.substring(start, end);
+            }
         }
         return result;
     }

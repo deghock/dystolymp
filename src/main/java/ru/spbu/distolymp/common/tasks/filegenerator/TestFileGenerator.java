@@ -128,13 +128,19 @@ public class TestFileGenerator {
                     break;
                 case I:
                 case F:
-                    for (int i = 0; i < answers.length; i++) {
+                    int length = 0;
+                    for (String answer : answers) {
+                        if (!"".equals(replace(answer))) {
+                            length++;
+                        }
+                    }
+                    for (int i = 0; i < length; i++) {
                         fileContent.append("                         ")
                                 .append(i + 1)
                                 .append("=>'")
                                 .append(replace(answers[i]))
                                 .append("'");
-                        if (i < answers.length - 1) fileContent.append(",");
+                        if (i < length - 1) fileContent.append(",");
                         fileContent.append("\r\n");
                     }
                     fileContent.append("                         ),\r\n")
@@ -159,6 +165,7 @@ public class TestFileGenerator {
     }
 
     private static String replace(String input) {
+        if (input == null) return "";
         return input.replace("'", "&prime;")
                 .replace("\n", "<br />")
                 .replace("\r", "");
