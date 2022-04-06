@@ -28,6 +28,7 @@ public class TestController {
     private static final String REDIRECT_EDIT = "redirect:/tests/edit/";
     private static final String EDIT_PAGE = ROOT_DIR + "edit";
     private static final String EDIT_QUESTION_PAGE = ROOT_DIR + "question-edit";
+    private static final String PREVIEW_PAGE = ROOT_DIR + "preview";
     private static final String SUCCESS_PARAM = "success";
     private final TestService testService;
 
@@ -117,6 +118,12 @@ public class TestController {
         testService.updateQuestion(questionDto);
         ra.addFlashAttribute(SUCCESS_PARAM, "Изменения сохранены");
         return REDIRECT_EDIT + questionDto.getTestId();
+    }
+
+    @GetMapping("/preview/{id}")
+    public String previewTest(@PathVariable("id") Long id, ModelMap modelMap) {
+        testService.fillShowPreviewPageModelMap(id, modelMap);
+        return PREVIEW_PAGE;
     }
 
     @ExceptionHandler(TechnicalException.class)
