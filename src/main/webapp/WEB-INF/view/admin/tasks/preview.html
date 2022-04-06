@@ -70,7 +70,7 @@
     Предпросмотр задания
 </p>
 
-<div class="container" style="min-width: 38rem">
+<div class="container" style="min-width: 38rem; padding: 0; margin: auto; max-width: 1140px">
     <div th:if="${result.correctness != null}">
         <br>
         <div class="alert alert-success alert-dismissible text-center mx-auto" role="alert"
@@ -133,7 +133,7 @@
                    style="margin: 0 auto .5rem 0; text-align: center">Введите ответ:</p>
             </div>
 
-            <div class="form-row text-left align-items-center" style="margin-bottom: .25rem"
+            <div class="text-left align-items-center" style="margin-bottom: .25rem"
                  th:if="${task.answerNote == 0 or task.answerNote == 1}"
                  th:each="ansName, iter : ${task.answerNameList}">
                 <span>
