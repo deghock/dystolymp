@@ -282,7 +282,9 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
             String imageExtension = FileUtils.getImageExtension(image);
             String newImageName = FileNameGenerator.generateFileName(imageExtension);
             questionDto.setImageName(newImageName);
-            fileService.saveFile(FileUtils.getFileBytes(image), test.getTestFolder() + "/" + newImageName);
+            boolean fileSaved = fileService.saveFile(FileUtils.getFileBytes(image),
+                    test.getTestFolder() + "/" + newImageName);
+            if (!fileSaved) throw new TechnicalException();
         }
         if (deleteImage) questionDto.setImageName("");
 
@@ -307,7 +309,7 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
         byte[] newFile = TestFileGenerator.generateParamFile(testDto, questions);
         boolean fileSaved = fileService.saveFile(newFile, folderName + "/" + parFileName);
         if (!fileSaved)
-            throw new TechnicalException("Question with number=" + number + " is not deleted");
+            throw new TechnicalException();
     }
 
     private void refactorFieldsToServer(QuestionDto questionDto) {
