@@ -13,6 +13,20 @@
         textarea {
             min-height: 2rem;
         }
+        .tableactions {
+            color: #212529;
+        }
+        .tableactions:hover {
+            color: #FF0000;
+        }
+        table td {
+            vertical-align: middle;
+            text-align: center;
+            user-select: none;
+        }
+        .table td:hover {
+            background-color: #EAEAEB;
+        }
     </style>
 </head>
 
@@ -144,6 +158,63 @@
                 <textarea id="text" class="form-control form-control-sm text-dark" maxlength="65535"
                           th:field="*{text}" rows="8" style="width: inherit" required></textarea>
                 <div class="invalid-feedback">Пожалуйста, введите текст вопроса</div>
+            </div>
+        </div>
+
+        <div class="form-row text-left align-items-center" style="margin-top: .25rem; margin-bottom: .25rem">
+            <div class="col-3">Специальные символы</div>
+            <div class="col-9" style="overflow: auto">
+                <table id="specialSymbols" class="table table-bordered table-light table-sm"
+                       style="margin-bottom: 0">
+                    <tbody>
+                    <tr>
+                        <td id="lt" class="tableactions" style="border-color: #DEE2E6">&lt;</td>
+                        <td id="gt" class="tableactions" style="border-color: #DEE2E6">&gt;</td>
+                        <td id="deg" class="tableactions" style="border-color: #DEE2E6">&deg;</td>
+                        <td id="plusmn" class="tableactions" style="border-color: #DEE2E6">&plusmn;</td>
+                        <td id="middot" class="tableactions" style="border-color: #DEE2E6">&middot;</td>
+                        <td id="times" class="tableactions" style="border-color: #DEE2E6">&times;</td>
+                        <td id="divide" class="tableactions" style="border-color: #DEE2E6">&divide;</td>
+                        <td id="sup2" class="tableactions" style="border-color: #DEE2E6">&sup2;</td>
+                        <td id="sup3" class="tableactions" style="border-color: #DEE2E6">&sup3;</td>
+                        <td id="sup" class="tableactions" style="border-color: #DEE2E6"><span style="color: #212529">x</span><sup>y</sup></td>
+                        <td id="sub" class="tableactions" style="border-color: #DEE2E6"><span style="color: #212529">x</span><sub>y</sub></td>
+                        <td id="sqrt" class="tableactions" style="border-color: #DEE2E6">&radic;</td>
+                        <td id="quot" class="tableactions" style="border-color: #DEE2E6">&quot;</td>
+                        <td id="prime" class="tableactions" style="border-color: #DEE2E6">&prime;</td>
+                        <td id="sect" class="tableactions" style="border-color: #DEE2E6">&sect;</td>
+                        <td id="nbsp" class="tableactions" style="border-color: #DEE2E6">&#9251;</td>
+                        <td id="bslash" class="tableactions" style="border-color: #DEE2E6">&#0092;</td>
+                        <td id="bold" class="tableactions" style="border-color: #DEE2E6"><b>Ж</b></td>
+                        <td id="ital" class="tableactions" style="border-color: #DEE2E6"><i>К</i></td>
+                        <td id="ulined" class="tableactions" style="border-color: #DEE2E6"><u>Ч</u></td>
+                        <td id="br" class="tableactions" style="border-color: #DEE2E6">&ldca;</td>
+                    </tr>
+                    <tr>
+                        <td id="alpha" class="tableactions" style="border-color: #DEE2E6">&alpha;</td>
+                        <td id="beta" class="tableactions" style="border-color: #DEE2E6">&beta;</td>
+                        <td id="gamma" class="tableactions" style="border-color: #DEE2E6">&gamma;</td>
+                        <td id="delta" class="tableactions" style="border-color: #DEE2E6">&delta;</td>
+                        <td id="epsilon" class="tableactions" style="border-color: #DEE2E6">&epsilon;</td>
+                        <td id="eta" class="tableactions" style="border-color: #DEE2E6">&eta;</td>
+                        <td id="theta" class="tableactions" style="border-color: #DEE2E6">&theta;</td>
+                        <td id="lambda" class="tableactions" style="border-color: #DEE2E6">&lambda;</td>
+                        <td id="mu" class="tableactions" style="border-color: #DEE2E6">&mu;</td>
+                        <td id="nu" class="tableactions" style="border-color: #DEE2E6">&nu;</td>
+                        <td id="xi" class="tableactions" style="border-color: #DEE2E6">&xi;</td>
+                        <td id="pi" class="tableactions" style="border-color: #DEE2E6">&pi;</td>
+                        <td id="rho" class="tableactions" style="border-color: #DEE2E6">&rho;</td>
+                        <td id="sigma" class="tableactions" style="border-color: #DEE2E6">&sigma;</td>
+                        <td id="tau" class="tableactions" style="border-color: #DEE2E6">&tau;</td>
+                        <td id="phi" class="tableactions" style="border-color: #DEE2E6">&phi;</td>
+                        <td id="omega" class="tableactions" style="border-color: #DEE2E6">&omega;</td>
+                        <td id="cdelta" class="tableactions" style="border-color: #DEE2E6">&Delta;</td>
+                        <td id="cphi" class="tableactions" style="border-color: #DEE2E6">&Phi;</td>
+                        <td id="cpsi" class="tableactions" style="border-color: #DEE2E6">&Psi;</td>
+                        <td id="comega" class="tableactions" style="border-color: #DEE2E6">&Omega;</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -294,6 +365,68 @@
 <script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
 <script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
 <script type="text/javascript">
+    $('#lt, #gt, #deg, #plusmn, #middot, #times, #divide, #sup2, #sup3, #sup, #sub, #sqrt, #quot, #prime, #sect, #nbsp, #bslash, #bold, #ital, #ulined, #br, #alpha, #beta, #gamma, #delta, #epsilon, #eta, #theta, #lambda, #mu, #nu, #xi, #pi, #rho, #sigma, #tau, #phi, #omega, #cdelta, #cphi, #cpsi, #comega')
+        .on('mousedown', function(event) {
+            event.preventDefault();
+            var focusedId = $(':focus').attr('id');
+            var clickedId = $(this).attr('id');
+            var inputIds = ['text', 'answerS1', 'answerS2', 'answerS3', 'answerS4', 'answerS5',
+                          'answerC1', 'answerC2', 'answerC3', 'answerC4', 'answerC5',
+                          'answerL1', 'answerL2', 'answerL3', 'answerL4', 'answerL5',
+                          'trueAnswerL1', 'trueAnswerL2', 'trueAnswerL3', 'trueAnswerL4', 'trueAnswerL5',
+                          'answerI3', 'answerI2', 'answerF5', 'answerF4'];
+            if (inputIds.includes(focusedId)) {
+                var element = document.getElementById(focusedId);
+                var elementValue = element.value;
+                var value = '';
+                switch (clickedId) {
+                    case 'sup':
+                        value = '<sup></sup>';
+                        break;
+                    case 'sub':
+                        value = '<sub></sub>';
+                        break;
+                    case 'sqrt':
+                        value = '&radic;<font style="text-decoration: overline"></font>';
+                        break;
+                    case 'nbsp':
+                        value = '&nbsp;';
+                        break;
+                    case 'bslash':
+                        value = '&#0092;';
+                        break;
+                    case 'bold':
+                        value = '<b></b>';
+                        break;
+                    case 'ital':
+                        value = '<i></i>';
+                        break;
+                    case 'ulined':
+                        value = '<u></u>';
+                        break;
+                    case 'br':
+                        value = '<br>';
+                        break;
+                    case 'cdelta':
+                        value = '&Delta;';
+                        break;
+                    case 'cphi':
+                        value = '&Phi;';
+                        break;
+                    case 'cpsi':
+                        value = '&Psi;';
+                        break;
+                    case 'comega':
+                        value = '&Omega;';
+                        break;
+                    default:
+                        value = '&' + clickedId + ';';
+                        break;
+                }
+                element.value = elementValue + value;
+            }
+    });
+
     function checkAnswerType() {
         var answerS = document.getElementById('answerS')
         var answerC = document.getElementById('answerC')
