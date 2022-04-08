@@ -25,8 +25,8 @@ public class TestViewMapperImpl implements TestViewMapper {
         testDto.setPreviewText(test.getProblemText());
         testDto.setTestFolder(test.getTestFolder());
         testDto.setImageName(test.getImageFileName());
-        testDto.setWidth(testDto.getWidth());
-        testDto.setHeight(testDto.getHeight());
+        testDto.setWidth(test.getWidth());
+        testDto.setHeight(test.getHeight());
         testDto.setCurrentServerDateTime(dateTime.format(formatter));
 
         return testDto;
