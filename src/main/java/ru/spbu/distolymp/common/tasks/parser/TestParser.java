@@ -13,6 +13,7 @@ public class TestParser {
 
     public static String getName(String paramFileContent) {
         String expr = "$test_name='";
+        if (!paramFileContent.contains(expr)) return "";
         int start = paramFileContent.indexOf(expr) + expr.length();
         int end = paramFileContent.indexOf("';", start);
         return paramFileContent.substring(start, end);
@@ -20,6 +21,7 @@ public class TestParser {
 
     public static boolean getRandomOrder(String paramFileContent) {
         String expr = "$question_order=";
+        if (!paramFileContent.contains(expr)) return false;
         int start = paramFileContent.indexOf(expr) + expr.length();
         int end = start + 1;
         String resultStr = paramFileContent.substring(start, end);
@@ -28,6 +30,7 @@ public class TestParser {
 
     public static boolean getQuestionSkip(String paramFileContent) {
         String expr = "$question_skip=";
+        if (!paramFileContent.contains(expr)) return false;
         int start = paramFileContent.indexOf(expr);
         if (start == -1) return true;
         start += expr.length();
@@ -40,6 +43,7 @@ public class TestParser {
         int[] result = new int[3];
         for (int i = 0; i < result.length; i++) {
             String expr = "$question_count_" + ((i + 1) * 2) + "=";
+            if (!paramFileContent.contains(expr)) return new int[] {0, 0, 0};
             int start = paramFileContent.indexOf(expr) + expr.length();
             int end = paramFileContent.indexOf(";", start);
             String resultStr = paramFileContent.substring(start, end);
@@ -101,6 +105,7 @@ public class TestParser {
         List<Integer> indexes = new ArrayList<>();
         int currentIndex = 0;
         String expr = "=>array(\r\n         0=>'";
+        if (!paramFileContent.contains(expr)) return new ArrayList<>();
 
         while (paramFileContent.indexOf(expr, currentIndex) != -1) {
             int index = paramFileContent.indexOf(expr, currentIndex);
@@ -121,6 +126,7 @@ public class TestParser {
     private static String getAnswersString(String questionContent) {
         String expr1 = "'answer'=>array(\r\n" +
                 "                         ";
+        if (!questionContent.contains(expr1)) return "";
         String expr2 = "),\r\n" +
                 "         '";
         int start = questionContent.indexOf(expr1);
@@ -131,6 +137,7 @@ public class TestParser {
     private static String getTrueAnswersString(String questionContent) {
         String expr1 = "'true_answer'=>array(\r\n" +
                 "                              ";
+        if (!questionContent.contains(expr1)) return "";
         String expr2 = ")\r\n" +
                 "         )";
         int start = questionContent.indexOf(expr1);
@@ -140,6 +147,7 @@ public class TestParser {
 
     private static QuestionType getType(String questionContent) {
         String expr = "0=>'";
+        if (!questionContent.contains(expr)) return QuestionType.U;
         int start = questionContent.indexOf(expr) + expr.length();
         int end = start + 1;
         String type = questionContent.substring(start, end);
@@ -161,6 +169,7 @@ public class TestParser {
 
     private static String getText(String questionContent) {
         String expr = "1=>'";
+        if (!questionContent.contains(expr)) return "";
         int start = questionContent.indexOf(expr) + expr.length();
         int end = questionContent.indexOf("',", start);
         return questionContent.substring(start, end);
@@ -168,6 +177,7 @@ public class TestParser {
 
     private static String getImageName(String questionContent) {
         String expr = "2=>'";
+        if (!questionContent.contains(expr)) return "";
         int start = questionContent.indexOf(expr) + expr.length();
         int end = questionContent.indexOf("',", start);
         return questionContent.substring(start, end);
@@ -175,6 +185,7 @@ public class TestParser {
 
     private static String getDifficulty(String questionContent) {
         String expr1 = "5=>";
+        if (!questionContent.contains(expr1)) return "Неизвестно";
         String expr2 = ",\r\n" +
                 "         '";
         int start = questionContent.indexOf(expr1) + expr1.length();
@@ -200,6 +211,7 @@ public class TestParser {
             expr1 = "=>array('";
         else
             expr1 = "=>'";
+        if (!questionContent.contains(expr1)) return new String[] {"", "", "", "", ""};
         String answersStr = getAnswersString(questionContent);
         int end = 0;
         for (int i = 0; i < result.length; i++) {
@@ -229,6 +241,7 @@ public class TestParser {
             expr1 = "=>";
             expr2 = null;
         }
+        if (!questionContent.contains(expr1)) return new String[] {"", "", "", "", ""};
         int end = 0;
         for (int i = 0; i < result.length; i++) {
             int start = trueAnswersStr.indexOf(expr1, end);
