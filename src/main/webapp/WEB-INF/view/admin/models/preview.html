@@ -34,7 +34,7 @@
 
 <div class="container" style="min-width: 38rem; padding: 0; margin: auto; max-width: 1140px">
   <!--/*@thymesVar id="model" type="ru.spbu.distolymp.dto.admin.models.ModelViewDto"*/-->
-  <div style="border-color: black; border-width: 1px; border-style: solid">
+  <div style="border-color: black; border-width: 1px; border-style: solid; margin-left: 1rem; margin-right: 1rem;">
     <div style="margin: .5rem; overflow-wrap: anywhere; overflow: auto">
       <div th:utext="${model.parsedProblemText}"></div>
       <img th:src="@{/data/models/{imageName}(imageName=${model.imageFileName})}"
@@ -60,7 +60,7 @@
        class="pbutton">Начать выполнение практического задания</a>
   </div>
 
-  <div style="margin-top: 1rem; margin-bottom: .5rem"
+  <div style="margin: 1rem 1rem .5rem;"
        th:text="'Время сервера при открытии страницы: ' + ${model.currentServerDateTime}"></div>
 </div>
 

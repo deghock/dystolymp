@@ -99,7 +99,7 @@
     <!--/*@thymesVar id="task" type="ru.spbu.distolymp.dto.admin.tasks.TaskViewDto"*/-->
     <!--/*@thymesVar id="answer" type="ru.spbu.distolymp.dto.entity.answers.AnswerDto"*/-->
     <!--/*@thymesVar id="result" type="ru.spbu.distolymp.dto.admin.tasks.TaskResultDto"*/-->
-    <div class="mb-2" style="border-color: black; border-width: 1px; border-style: solid">
+    <div class="mb-2" style="border-color: black; border-width: 1px; border-style: solid; margin-left: 1rem; margin-right: 1rem;">
         <div style="margin: .5rem; overflow-wrap: anywhere; overflow: auto">
             <img th:src="@{/data/tasks/{imageName}(imageName=${task.imageFileName})}"
                  th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
@@ -120,76 +120,78 @@
         </div>
     </div>
 
-    <form th:action="@{/tasks/submit-answer}" th:object="${answer}"
-          method="post" enctype="multipart/form-data" onsubmit="getUserIP()">
-        <input type="hidden" th:attr="name='param'" th:value="${task.variableNameValue}"/>
-        <input type="hidden" th:attr="name='problemId'" th:value="${task.id}"/>
-        <input id="userIP" type="hidden" th:attr="name='ip'"/>
-        <input type="hidden" th:attr="name='answerNote'" th:value="${task.answerNote}"/>
-        <input type="hidden" th:attr="name='taskStartDateTime'" th:value="${task.currentServerDateTime}">
-        <div>
-            <div style="display: flex">
-                <p th:text="${task.answerNote != 4} ? 'Введите ответ:' : 'Прикрепите файл:'"
-                   style="margin: 0 auto .5rem 0; text-align: center">Введите ответ:</p>
-            </div>
+    <div style="margin-left: 1rem; margin-right: 1rem">
+        <form th:action="@{/tasks/submit-answer}" th:object="${answer}"
+              method="post" enctype="multipart/form-data" onsubmit="getUserIP()">
+            <input type="hidden" th:attr="name='param'" th:value="${task.variableNameValue}"/>
+            <input type="hidden" th:attr="name='problemId'" th:value="${task.id}"/>
+            <input id="userIP" type="hidden" th:attr="name='ip'"/>
+            <input type="hidden" th:attr="name='answerNote'" th:value="${task.answerNote}"/>
+            <input type="hidden" th:attr="name='taskStartDateTime'" th:value="${task.currentServerDateTime}">
+            <div>
+                <div style="display: flex">
+                    <p th:text="${task.answerNote != 4} ? 'Введите ответ:' : 'Прикрепите файл:'"
+                       style="margin: 0 auto .5rem 0; text-align: center">Введите ответ:</p>
+                </div>
 
-            <div class="text-left align-items-center" style="margin-bottom: .25rem"
-                 th:if="${task.answerNote == 0 or task.answerNote == 1}"
-                 th:each="ansName, iter : ${task.answerNameList}">
+                <div class="text-left align-items-center" style="margin-bottom: .25rem"
+                     th:if="${task.answerNote == 0 or task.answerNote == 1}"
+                     th:each="ansName, iter : ${task.answerNameList}">
                 <span>
                     <label th:for="${ansName} + 'Input'"
                            th:utext="${task.variableNameComment.keySet().contains('comment_' + ansName)} ?
                            ${task.variableNameComment.get('comment_' + ansName)} : ${ansName} + ' = '"
                            style="margin-bottom: 0; width: auto"></label>
                     </span>
-                <span>
+                    <span>
                     <input th:id="${ansName} + 'Input'" type="number" step="any" maxlength="4368"
                            class="form-control form-control-sm text-dark digit" placeholder="Введите ответ"
                            autocomplete="off" required th:field="*{userAnswers[__${iter.index}__]}"
                            style="width: 25%; min-width: 10rem; display: inline"/>
                     </span>
-                <span>
+                    <span>
                     <label th:utext="${task.variableNameComment.keySet().contains('commentAfter_' + ansName)} ?
                            ${task.variableNameComment.get('commentAfter_' + ansName)}"
                            style="margin-bottom: 0; width: auto"></label>
                     </span>
-                <span th:if="${result.correctness != null and not #bools.setAnd(result.correctness.values())
+                    <span th:if="${result.correctness != null and not #bools.setAnd(result.correctness.values())
                      and #bools.setOr(result.correctness.values())}" class="col">
                     <span th:if="${result.correctness.get(ansName)}" style="color: #28A745;
                          text-decoration-line: underline">Правильно</span>
                     <span th:unless="${result.correctness.get(ansName)}" style="color: #DC3545;
                          text-decoration-line: underline">Неправильно</span>
                 </span>
-            </div>
-
-            <div class="form-row text-left align-items-center" style="margin-bottom: .25rem"
-                 th:if="${task.answerNote == 1 or task.answerNote == 2 or task.answerNote == 3}">
-                <div class="col was-validated">
-                    <textarea class="form-control form-control-sm text-dark" maxlength="65535" rows="8"
-                              style="width: 95%; min-width: 10rem" th:field="*{userNotes}"></textarea>
                 </div>
-            </div>
 
-            <div class="form-row text-left align-items-center" style="margin-bottom: .25rem"
-                 th:if="${task.answerNote == 3 or task.answerNote == 4}">
-                <div class="col">
-                    <input id="file" type="file" th:field="*{userFile}"
-                           onchange="fileOnChange()" style="width: 95%; min-width: 10rem"/>
-                    <div id="fileSizeError" class="invalid-feedback" style="display: none">
-                        Размер файла не должен превышать 10 Мб
+                <div class="form-row text-left align-items-center" style="margin-bottom: .25rem"
+                     th:if="${task.answerNote == 1 or task.answerNote == 2 or task.answerNote == 3}">
+                    <div class="col was-validated">
+                    <textarea class="form-control form-control-sm text-dark" maxlength="65535" rows="8"
+                              style="min-width: 10rem;" th:field="*{userNotes}"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-row text-left align-items-center" style="margin-bottom: .25rem"
+                     th:if="${task.answerNote == 3 or task.answerNote == 4}">
+                    <div class="col">
+                        <input id="file" type="file" th:field="*{userFile}"
+                               onchange="fileOnChange()" style="width: 95%; min-width: 10rem"/>
+                        <div id="fileSizeError" class="invalid-feedback" style="display: none">
+                            Размер файла не должен превышать 10 Мб
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div style="text-align: center; margin-top: .5rem">
-            <br>
-            <button type="submit" class="btn btn-light border-dark"
-                    style="width: 25%; min-width: 13rem; padding-bottom: .1rem; padding-top: .1rem">
-                Отправить результаты
-            </button>
-        </div>
-    </form>
+            <div style="text-align: center; margin-top: .5rem">
+                <br>
+                <button type="submit" class="btn btn-light border-dark"
+                        style="width: 25%; min-width: 13rem; padding-bottom: .1rem; padding-top: .1rem">
+                    Отправить результаты
+                </button>
+            </div>
+        </form>
+    </div>
 
     <div id="preview-results" style="display: none; width: 75%; min-width: 36rem; margin-top: 1rem;
          margin-left: auto; margin-right: auto;" th:styleappend="${result.answerNote != null} ? 'display: block'">
