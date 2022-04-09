@@ -21,6 +21,29 @@
             color: #FF0000;
             font-weight: bold;
         }
+        .symbolactions {
+            color: #212529;
+        }
+        .symbolactions:hover {
+            color: #FF0000;
+        }
+        .symbol table td {
+            vertical-align: middle;
+            text-align: center;
+            user-select: none;
+            cursor: pointer;
+        }
+        .symbol table td:hover {
+            background-color: #EAEAEB;
+        }
+        summary {
+            color: #552000;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        summary:hover {
+            color: #FF0000;
+        }
     </style>
 </head>
 
@@ -82,6 +105,60 @@
                 <textarea id="problemText" class="form-control form-control-sm text-dark" maxlength="65535"
                           th:field="*{problemText}" rows="8" style="width: inherit" required></textarea>
                 <div class="invalid-feedback">Пожалуйста, введите задание теста</div>
+                <details class="symbol">
+                    <summary>Специальные символы</summary>
+                    <table id="specialSymbols" class="table table-bordered table-light table-sm"
+                           style="margin-bottom: .2em">
+                        <tbody>
+                        <tr>
+                            <td id="lt" class="symbolactions" style="border-color: #DEE2E6">&lt;</td>
+                            <td id="gt" class="symbolactions" style="border-color: #DEE2E6">&gt;</td>
+                            <td id="deg" class="symbolactions" style="border-color: #DEE2E6">&deg;</td>
+                            <td id="plusmn" class="symbolactions" style="border-color: #DEE2E6">&plusmn;</td>
+                            <td id="middot" class="symbolactions" style="border-color: #DEE2E6">&middot;</td>
+                            <td id="times" class="symbolactions" style="border-color: #DEE2E6">&times;</td>
+                            <td id="divide" class="symbolactions" style="border-color: #DEE2E6">&divide;</td>
+                            <td id="sup2" class="symbolactions" style="border-color: #DEE2E6">&sup2;</td>
+                            <td id="sup3" class="symbolactions" style="border-color: #DEE2E6">&sup3;</td>
+                            <td id="sup" class="symbolactions" style="border-color: #DEE2E6"><span style="color: #212529">x</span><sup>y</sup></td>
+                            <td id="sub" class="symbolactions" style="border-color: #DEE2E6"><span style="color: #212529">x</span><sub>y</sub></td>
+                            <td id="sqrt" class="symbolactions" style="border-color: #DEE2E6">&radic;</td>
+                            <td id="quot" class="symbolactions" style="border-color: #DEE2E6">&quot;</td>
+                            <td id="prime" class="symbolactions" style="border-color: #DEE2E6">&prime;</td>
+                            <td id="sect" class="symbolactions" style="border-color: #DEE2E6">&sect;</td>
+                            <td id="nbsp" class="symbolactions" style="border-color: #DEE2E6">&#9251;</td>
+                            <td id="bslash" class="symbolactions" style="border-color: #DEE2E6">&#0092;</td>
+                            <td id="bold" class="symbolactions" style="border-color: #DEE2E6"><b>Ж</b></td>
+                            <td id="ital" class="symbolactions" style="border-color: #DEE2E6"><i>К</i></td>
+                            <td id="ulined" class="symbolactions" style="border-color: #DEE2E6"><u>Ч</u></td>
+                            <td id="br" class="symbolactions" style="border-color: #DEE2E6">&ldca;</td>
+                        </tr>
+                        <tr>
+                            <td id="alpha" class="symbolactions" style="border-color: #DEE2E6">&alpha;</td>
+                            <td id="beta" class="symbolactions" style="border-color: #DEE2E6">&beta;</td>
+                            <td id="gamma" class="symbolactions" style="border-color: #DEE2E6">&gamma;</td>
+                            <td id="delta" class="symbolactions" style="border-color: #DEE2E6">&delta;</td>
+                            <td id="epsilon" class="symbolactions" style="border-color: #DEE2E6">&epsilon;</td>
+                            <td id="eta" class="symbolactions" style="border-color: #DEE2E6">&eta;</td>
+                            <td id="theta" class="symbolactions" style="border-color: #DEE2E6">&theta;</td>
+                            <td id="lambda" class="symbolactions" style="border-color: #DEE2E6">&lambda;</td>
+                            <td id="mu" class="symbolactions" style="border-color: #DEE2E6">&mu;</td>
+                            <td id="nu" class="symbolactions" style="border-color: #DEE2E6">&nu;</td>
+                            <td id="xi" class="symbolactions" style="border-color: #DEE2E6">&xi;</td>
+                            <td id="pi" class="symbolactions" style="border-color: #DEE2E6">&pi;</td>
+                            <td id="rho" class="symbolactions" style="border-color: #DEE2E6">&rho;</td>
+                            <td id="sigma" class="symbolactions" style="border-color: #DEE2E6">&sigma;</td>
+                            <td id="tau" class="symbolactions" style="border-color: #DEE2E6">&tau;</td>
+                            <td id="phi" class="symbolactions" style="border-color: #DEE2E6">&phi;</td>
+                            <td id="omega" class="symbolactions" style="border-color: #DEE2E6">&omega;</td>
+                            <td id="cdelta" class="symbolactions" style="border-color: #DEE2E6">&Delta;</td>
+                            <td id="cphi" class="symbolactions" style="border-color: #DEE2E6">&Phi;</td>
+                            <td id="cpsi" class="symbolactions" style="border-color: #DEE2E6">&Psi;</td>
+                            <td id="comega" class="symbolactions" style="border-color: #DEE2E6">&Omega;</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </details>
             </div>
         </div>
 

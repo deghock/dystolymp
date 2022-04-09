@@ -13,19 +13,28 @@
         textarea {
             min-height: 2rem;
         }
-        .tableactions {
+        .symbolactions {
             color: #212529;
         }
-        .tableactions:hover {
+        .symbolactions:hover {
             color: #FF0000;
         }
-        table td {
+        .symbol table td {
             vertical-align: middle;
             text-align: center;
             user-select: none;
+            cursor: pointer;
         }
-        .table td:hover {
+        .symbol table td:hover {
             background-color: #EAEAEB;
+        }
+        summary {
+            color: #552000;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        summary:hover {
+            color: #FF0000;
         }
     </style>
 </head>
@@ -44,7 +53,7 @@
 <!--/*@thymesVar id="questionNumber" type="java.lang.Integer"*/-->
 <form th:action="@{/tests/edit/save-or-edit-question}" th:object="${question}" method="post" enctype="multipart/form-data"
       class="needs-validation" novalidate>
-    <div class="infoForm container p-2 text-center" style="width: 60%; padding: 1rem !important; min-width: 36rem">
+    <div class="infoForm container p-2 text-center" style="width: 60%; padding: 1rem !important; min-width: 38rem">
         <input type="hidden" th:field="*{imageName}"/>
         <input type="hidden" th:field="*{testId}"/>
         <input type="hidden" th:field="*{folderName}"/>
@@ -155,66 +164,74 @@
         <div class="form-row text-left align-items-center">
             <div class="col-3"><label for="text" style="width: auto">Текст вопроса</label></div>
             <div class="col-9 was-validated">
-                <textarea id="text" class="form-control form-control-sm text-dark" maxlength="65535"
-                          th:field="*{text}" rows="8" style="width: inherit" required></textarea>
-                <div class="invalid-feedback">Пожалуйста, введите текст вопроса</div>
+                <div class="form-row align-items-center">
+                    <div class="col-12">
+                        <textarea id="text" class="form-control form-control-sm text-dark" maxlength="65535"
+                                  th:field="*{text}" rows="8" style="width: inherit" required></textarea>
+                        <div class="invalid-feedback">Пожалуйста, введите текст вопроса</div>
+                        <details class="symbol">
+                            <summary>Специальные символы</summary>
+                            <table id="specialSymbols" class="table table-bordered table-light table-sm"
+                                   style="margin-bottom: 0">
+                                <tbody>
+                                <tr>
+                                    <td id="lt" class="symbolactions" style="border-color: #DEE2E6">&lt;</td>
+                                    <td id="gt" class="symbolactions" style="border-color: #DEE2E6">&gt;</td>
+                                    <td id="deg" class="symbolactions" style="border-color: #DEE2E6">&deg;</td>
+                                    <td id="plusmn" class="symbolactions" style="border-color: #DEE2E6">&plusmn;</td>
+                                    <td id="middot" class="symbolactions" style="border-color: #DEE2E6">&middot;</td>
+                                    <td id="times" class="symbolactions" style="border-color: #DEE2E6">&times;</td>
+                                    <td id="divide" class="symbolactions" style="border-color: #DEE2E6">&divide;</td>
+                                    <td id="sup2" class="symbolactions" style="border-color: #DEE2E6">&sup2;</td>
+                                    <td id="sup3" class="symbolactions" style="border-color: #DEE2E6">&sup3;</td>
+                                    <td id="sup" class="symbolactions" style="border-color: #DEE2E6"><span style="color: #212529">x</span><sup>y</sup></td>
+                                    <td id="sub" class="symbolactions" style="border-color: #DEE2E6"><span style="color: #212529">x</span><sub>y</sub></td>
+                                    <td id="sqrt" class="symbolactions" style="border-color: #DEE2E6">&radic;</td>
+                                    <td id="quot" class="symbolactions" style="border-color: #DEE2E6">&quot;</td>
+                                    <td id="prime" class="symbolactions" style="border-color: #DEE2E6">&prime;</td>
+                                    <td id="sect" class="symbolactions" style="border-color: #DEE2E6">&sect;</td>
+                                    <td id="nbsp" class="symbolactions" style="border-color: #DEE2E6">&#9251;</td>
+                                    <td id="bslash" class="symbolactions" style="border-color: #DEE2E6">&#0092;</td>
+                                    <td id="bold" class="symbolactions" style="border-color: #DEE2E6"><b>Ж</b></td>
+                                    <td id="ital" class="symbolactions" style="border-color: #DEE2E6"><i>К</i></td>
+                                    <td id="ulined" class="symbolactions" style="border-color: #DEE2E6"><u>Ч</u></td>
+                                    <td id="br" class="symbolactions" style="border-color: #DEE2E6">&ldca;</td>
+                                </tr>
+                                <tr>
+                                    <td id="alpha" class="symbolactions" style="border-color: #DEE2E6">&alpha;</td>
+                                    <td id="beta" class="symbolactions" style="border-color: #DEE2E6">&beta;</td>
+                                    <td id="gamma" class="symbolactions" style="border-color: #DEE2E6">&gamma;</td>
+                                    <td id="delta" class="symbolactions" style="border-color: #DEE2E6">&delta;</td>
+                                    <td id="epsilon" class="symbolactions" style="border-color: #DEE2E6">&epsilon;</td>
+                                    <td id="eta" class="symbolactions" style="border-color: #DEE2E6">&eta;</td>
+                                    <td id="theta" class="symbolactions" style="border-color: #DEE2E6">&theta;</td>
+                                    <td id="lambda" class="symbolactions" style="border-color: #DEE2E6">&lambda;</td>
+                                    <td id="mu" class="symbolactions" style="border-color: #DEE2E6">&mu;</td>
+                                    <td id="nu" class="symbolactions" style="border-color: #DEE2E6">&nu;</td>
+                                    <td id="xi" class="symbolactions" style="border-color: #DEE2E6">&xi;</td>
+                                    <td id="pi" class="symbolactions" style="border-color: #DEE2E6">&pi;</td>
+                                    <td id="rho" class="symbolactions" style="border-color: #DEE2E6">&rho;</td>
+                                    <td id="sigma" class="symbolactions" style="border-color: #DEE2E6">&sigma;</td>
+                                    <td id="tau" class="symbolactions" style="border-color: #DEE2E6">&tau;</td>
+                                    <td id="phi" class="symbolactions" style="border-color: #DEE2E6">&phi;</td>
+                                    <td id="omega" class="symbolactions" style="border-color: #DEE2E6">&omega;</td>
+                                    <td id="cdelta" class="symbolactions" style="border-color: #DEE2E6">&Delta;</td>
+                                    <td id="cphi" class="symbolactions" style="border-color: #DEE2E6">&Phi;</td>
+                                    <td id="cpsi" class="symbolactions" style="border-color: #DEE2E6">&Psi;</td>
+                                    <td id="comega" class="symbolactions" style="border-color: #DEE2E6">&Omega;</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </details>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="form-row text-left align-items-center" style="margin-top: .25rem; margin-bottom: .25rem">
-            <div class="col-3">Специальные символы</div>
+            <div class="col-3"></div>
             <div class="col-9" style="overflow: auto">
-                <table id="specialSymbols" class="table table-bordered table-light table-sm"
-                       style="margin-bottom: 0">
-                    <tbody>
-                    <tr>
-                        <td id="lt" class="tableactions" style="border-color: #DEE2E6">&lt;</td>
-                        <td id="gt" class="tableactions" style="border-color: #DEE2E6">&gt;</td>
-                        <td id="deg" class="tableactions" style="border-color: #DEE2E6">&deg;</td>
-                        <td id="plusmn" class="tableactions" style="border-color: #DEE2E6">&plusmn;</td>
-                        <td id="middot" class="tableactions" style="border-color: #DEE2E6">&middot;</td>
-                        <td id="times" class="tableactions" style="border-color: #DEE2E6">&times;</td>
-                        <td id="divide" class="tableactions" style="border-color: #DEE2E6">&divide;</td>
-                        <td id="sup2" class="tableactions" style="border-color: #DEE2E6">&sup2;</td>
-                        <td id="sup3" class="tableactions" style="border-color: #DEE2E6">&sup3;</td>
-                        <td id="sup" class="tableactions" style="border-color: #DEE2E6"><span style="color: #212529">x</span><sup>y</sup></td>
-                        <td id="sub" class="tableactions" style="border-color: #DEE2E6"><span style="color: #212529">x</span><sub>y</sub></td>
-                        <td id="sqrt" class="tableactions" style="border-color: #DEE2E6">&radic;</td>
-                        <td id="quot" class="tableactions" style="border-color: #DEE2E6">&quot;</td>
-                        <td id="prime" class="tableactions" style="border-color: #DEE2E6">&prime;</td>
-                        <td id="sect" class="tableactions" style="border-color: #DEE2E6">&sect;</td>
-                        <td id="nbsp" class="tableactions" style="border-color: #DEE2E6">&#9251;</td>
-                        <td id="bslash" class="tableactions" style="border-color: #DEE2E6">&#0092;</td>
-                        <td id="bold" class="tableactions" style="border-color: #DEE2E6"><b>Ж</b></td>
-                        <td id="ital" class="tableactions" style="border-color: #DEE2E6"><i>К</i></td>
-                        <td id="ulined" class="tableactions" style="border-color: #DEE2E6"><u>Ч</u></td>
-                        <td id="br" class="tableactions" style="border-color: #DEE2E6">&ldca;</td>
-                    </tr>
-                    <tr>
-                        <td id="alpha" class="tableactions" style="border-color: #DEE2E6">&alpha;</td>
-                        <td id="beta" class="tableactions" style="border-color: #DEE2E6">&beta;</td>
-                        <td id="gamma" class="tableactions" style="border-color: #DEE2E6">&gamma;</td>
-                        <td id="delta" class="tableactions" style="border-color: #DEE2E6">&delta;</td>
-                        <td id="epsilon" class="tableactions" style="border-color: #DEE2E6">&epsilon;</td>
-                        <td id="eta" class="tableactions" style="border-color: #DEE2E6">&eta;</td>
-                        <td id="theta" class="tableactions" style="border-color: #DEE2E6">&theta;</td>
-                        <td id="lambda" class="tableactions" style="border-color: #DEE2E6">&lambda;</td>
-                        <td id="mu" class="tableactions" style="border-color: #DEE2E6">&mu;</td>
-                        <td id="nu" class="tableactions" style="border-color: #DEE2E6">&nu;</td>
-                        <td id="xi" class="tableactions" style="border-color: #DEE2E6">&xi;</td>
-                        <td id="pi" class="tableactions" style="border-color: #DEE2E6">&pi;</td>
-                        <td id="rho" class="tableactions" style="border-color: #DEE2E6">&rho;</td>
-                        <td id="sigma" class="tableactions" style="border-color: #DEE2E6">&sigma;</td>
-                        <td id="tau" class="tableactions" style="border-color: #DEE2E6">&tau;</td>
-                        <td id="phi" class="tableactions" style="border-color: #DEE2E6">&phi;</td>
-                        <td id="omega" class="tableactions" style="border-color: #DEE2E6">&omega;</td>
-                        <td id="cdelta" class="tableactions" style="border-color: #DEE2E6">&Delta;</td>
-                        <td id="cphi" class="tableactions" style="border-color: #DEE2E6">&Phi;</td>
-                        <td id="cpsi" class="tableactions" style="border-color: #DEE2E6">&Psi;</td>
-                        <td id="comega" class="tableactions" style="border-color: #DEE2E6">&Omega;</td>
-                    </tr>
-                    </tbody>
-                </table>
+
             </div>
         </div>
 
