@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.web.multipart.MultipartFile;
 import ru.spbu.distolymp.common.tasks.auxiliary.QuestionDto;
 import ru.spbu.distolymp.validation.files.annotation.ImageMimeType;
+import ru.spbu.distolymp.validation.files.annotation.ParamFileMimeType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
@@ -54,6 +55,15 @@ public class TestDto {
 
     @NotNull
     @Range(max = 65535)
+    private Double points;
+
+    @ParamFileMimeType
+    private MultipartFile paramFile;
+
+    private String paramFileName;
+
+    @NotNull
+    @Range(max = 65535)
     private Double minusPoints;
 
     private List<QuestionDto> questionList;
@@ -63,6 +73,4 @@ public class TestDto {
     private String testFolder;
 
     private String brcFileName;
-
-    private String parFileName;
 }

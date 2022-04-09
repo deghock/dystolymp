@@ -49,7 +49,7 @@
 
 <div th:replace="fragments/header :: #header"></div>
 
-<body class="bgGrey" th:attr="onload=|onUpdateImage('${test.imageFileName}', '${test.randomOrder}')|"
+<body class="bgGrey" th:attr="onload=|onUpdate('${test.imageFileName}', '${test.randomOrder}', '${test.paramFileName}')|"
       style="min-width: 612px; font-family: sans-serif; font-size: 11pt">
 
 <div th:replace="fragments/menu-staff :: #menustaff"></div>
@@ -74,13 +74,13 @@
 <!--/*@thymesVar id="test" type="ru.spbu.distolymp.dto.entity.tasks.TestDto"*/-->
 <form th:action="@{/tests/save-or-edit}" th:object="${test}" method="post" enctype="multipart/form-data"
       class="needs-validation" novalidate>
-    <div class="infoForm container p-2 text-center" style="width: 60%; padding: 1rem !important; min-width: 36rem">
+    <div class="infoForm container p-2 text-center" style="width: 60%; padding: 1rem !important; min-width: 38rem">
         <input type="hidden" th:field="*{id}"/>
         <input type="hidden" th:field="*{status}"/>
         <input type="hidden" th:field="*{imageFileName}"/>
         <input type="hidden" th:field="*{testFolder}"/>
         <input type="hidden" th:field="*{brcFileName}"/>
-        <input type="hidden" th:field="*{parFileName}"/>
+        <input type="hidden" th:field="*{paramFileName}"/>
 
         <div class="form-row text-left align-items-center">
             <div class="col-3"><label for="prefix" style="width: auto">Префикс</label></div>
@@ -258,7 +258,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="form-row align-items-center" th:attr="onclick=|onUpdateImage('${test.imageFileName}', '${test.randomOrder}')|">
+                <div class="form-row align-items-center" th:attr="onclick=|onUpdate('${test.imageFileName}', '${test.randomOrder}', '${test.paramFileName}')|">
                     <div class="col-xl-0 form-check">
                         <input id="randomOrder" type="checkbox" class="form-check-input"
                                th:field="*{randomOrder}" autocomplete="off" style="position: inherit"/>
@@ -306,7 +306,7 @@
                 </div>
                 <div class="form-row align-items-center">
                     <div class="col-12 form-check">
-                        <div id="points">Количество баллов за тест:</div>
+                        <div id="points">Количество баллов в тесте:</div>
                     </div>
                 </div>
                 <div class="form-row align-items-center">
@@ -324,11 +324,48 @@
         </div>
 
         <div class="form-row text-left align-items-center">
+            <div class="col-3"><label for="gradePoints" style="width: auto">Количество баллов за весь тест</label></div>
+            <div class="col-9 was-validated">
+                <input id="gradePoints" type="number" step="any" min="0" max="65535" class="form-control form-control-sm text-dark"
+                       th:field="*{points}" required/>
+                <div class="invalid-feedback">Количество баллов за тест должно быть от 0 до 65535</div>
+            </div>
+        </div>
+
+        <div class="form-row text-left align-items-center">
             <div class="col-3"><label for="minusPoints" style="width: auto">Штраф за неправильный ответ</label></div>
             <div class="col-9 was-validated">
                 <input id="minusPoints" type="number" step="any" min="0" max="65535" class="form-control form-control-sm text-dark"
                        th:field="*{minusPoints}" required/>
                 <div class="invalid-feedback">Штрафной балл должен быть от 0 до 65535</div>
+            </div>
+        </div>
+
+        <div class="form-row text-left align-items-center">
+            <div class="col-3"><label for="paramFile" style="width: auto">Файл с тестом</label></div>
+            <div class="col-9">
+                <div class="form-row align-items-center">
+                    <div class="col-12 was-validated">
+                        <input type="file" id="paramFile" class="custom-file-input"
+                               th:field="*{paramFile}" accept=".php">
+                        <label class="custom-file-label text-dark" data-browse="Обзор" for="paramFile"
+                               style="width: initial; margin-left: .3rem; margin-right: .3rem">
+                            Файл не выбран
+                        </label>
+                        <div id="paramExtError" class="invalid-feedback" style="display: none">
+                            Файл с тестом должен иметь расширение php
+                        </div>
+                        <div id="paramSizeError" class="invalid-feedback" style="display: none">
+                            Размер файла с тестом не должен превышать 10 Мб
+                        </div>
+                    </div>
+                </div>
+                <div id="paramFileAttr" class="form-row align-items-center" style="display: none">
+                    <div class="col-12">
+                        <a th:href="@{/data/tests/{paramFileName}(paramFileName=${test.testFolder + '/' + test.paramFileName})}"
+                           th:text="'Скачать файл с тестом'" class="abutton"></a>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -345,7 +382,7 @@
 
 <div class="form-row align-items-center" style="margin-top: .5rem; margin-bottom: .5rem">
     <div class="col-12">
-        <div class="infoForm container p-2 text-center" style="width: 60%; padding: 1rem !important; min-width: 36rem">
+        <div class="infoForm container p-2 text-center" style="width: 60%; padding: 1rem !important; min-width: 38rem">
             <div th:if="${test.id == null}" class="form-row align-items-center">
                 <div class="col-12 invalid-feedback" style="display: block; color: #212529; font-size: 11pt">
                     <strong>Для редактирования вопросов необходимо сохранить тест</strong>
@@ -428,7 +465,7 @@
         var label = document.getElementById('points')
 
         var result = 2 * eqc + 4 * nqc + 6 * hqc
-        label.innerHTML = 'Количество баллов за тест: <b>' + result + '</b>'
+        label.innerHTML = 'Количество баллов в тесте: <b>' + result + '</b>'
     }
 
     $('#image').on('change', function() {
@@ -455,6 +492,88 @@
         }
     });
 
+    $('#paramFile').on('change', function() {
+        var paramName = $(this).val().replace(/C:\\fakepath\\/i, '')
+        var sizeErrMsg = document.getElementById('paramSizeError')
+        var extErrMsg = document.getElementById('paramExtError')
+        var exts = /(\.php)$/i
+        var isExt = exts.exec(this.files[0].name) != null
+        var isSize = this.files[0].size <= 10485760
+        if (isExt && isSize) {
+            $(this).next('.custom-file-label').html(paramName)
+            sizeErrMsg.style.display = 'none'
+            if (extErrMsg !== null) extErrMsg.style.display = 'none'
+        } else if (!isExt) {
+            $(this).next('.custom-file-label').html('Файл не выбран')
+            $(this).val(null)
+            if (extErrMsg !== null) extErrMsg.style.display = 'block'
+            sizeErrMsg.style.display = 'none'
+        } else if (!isSize) {
+            $(this).next('.custom-file-label').html('Файл не выбран')
+            $(this).val(null)
+            sizeErrMsg.style.display = 'block'
+            if (extErrMsg !== null) extErrMsg.style.display = 'none'
+        }
+    });
+
+    $('#lt, #gt, #deg, #plusmn, #middot, #times, #divide, #sup2, #sup3, #sup, #sub, #sqrt, #quot, #prime, #sect, #nbsp, #bslash, #bold, #ital, #ulined, #br, #alpha, #beta, #gamma, #delta, #epsilon, #eta, #theta, #lambda, #mu, #nu, #xi, #pi, #rho, #sigma, #tau, #phi, #omega, #cdelta, #cphi, #cpsi, #comega')
+        .on('mousedown', function(event) {
+            event.preventDefault();
+            var focusedId = $(':focus').attr('id');
+            var clickedId = $(this).attr('id');
+            var inputIds = ['problemText'];
+            if (inputIds.includes(focusedId)) {
+                var element = document.getElementById(focusedId);
+                var elementValue = element.value;
+                var value = '';
+                switch (clickedId) {
+                    case 'sup':
+                        value = '<sup></sup>';
+                        break;
+                    case 'sub':
+                        value = '<sub></sub>';
+                        break;
+                    case 'sqrt':
+                        value = '&radic;<font style="text-decoration: overline"></font>';
+                        break;
+                    case 'nbsp':
+                        value = '&nbsp;';
+                        break;
+                    case 'bslash':
+                        value = '&#0092;';
+                        break;
+                    case 'bold':
+                        value = '<b></b>';
+                        break;
+                    case 'ital':
+                        value = '<i></i>';
+                        break;
+                    case 'ulined':
+                        value = '<u></u>';
+                        break;
+                    case 'br':
+                        value = '<br>';
+                        break;
+                    case 'cdelta':
+                        value = '&Delta;';
+                        break;
+                    case 'cphi':
+                        value = '&Phi;';
+                        break;
+                    case 'cpsi':
+                        value = '&Psi;';
+                        break;
+                    case 'comega':
+                        value = '&Omega;';
+                        break;
+                    default:
+                        value = '&' + clickedId + ';';
+                        break;
+                }
+                element.value = elementValue + value;
+            }
+        });
+
     (function() {
         'use strict';
         window.addEventListener('load', function() {
@@ -478,11 +597,17 @@
         }
     }
 
-    function onUpdateImage(imageFileName, randomOrder) {
+    function onUpdate(imageFileName, randomOrder, paramFileName) {
         if (imageFileName === "null" || imageFileName === "") {
             document.getElementById('imageAttr').style.display = "none";
         } else {
             document.getElementById('imageAttr').style.display = "block";
+        }
+
+        if (paramFileName === "null" || paramFileName === "") {
+            document.getElementById('paramFileAttr').style.display = "none";
+        } else {
+            document.getElementById('paramFileAttr').style.display = "block";
         }
 
         if (document.getElementById('randomOrder').checked || randomOrder === 1) {

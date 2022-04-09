@@ -107,24 +107,55 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
         initFields(test);
 
         MultipartFile image = testDto.getImage();
+        MultipartFile paramFile = testDto.getParamFile();
         String oldImageName = test.getImageFileName();
+        String oldParamFileName = test.getParFileName();
 
         boolean newImageUpload = !"".equals(image.getOriginalFilename());
+        boolean newParamFileUpload = !"".equals(paramFile.getOriginalFilename());
         boolean oldImageExists = (oldImageName != null) && (!"".equals(oldImageName));
+        boolean oldParamFileExists = (oldParamFileName != null) && (!"".equals(oldParamFileName));
+        boolean sameParamFileName = false;
         boolean deleteImage = testDto.isDeleteImage();
 
         Map<String, byte[]> filesWithNames = new HashMap<>();
 
-        if (testDto.getId() == null) {
-            initEnvironment(test, testDto, filesWithNames);
+        if (newParamFileUpload) {
+            if (testDto.getId() == null) {
+                String dirName = FileNameGenerator.generateFileName("");
+                test.setTestFolder(dirName);
+            }
+            String fileName = paramFile.getOriginalFilename();
+            String testFileName = fileName;
+            int index = fileName.lastIndexOf("_param.php");
+            if (index != -1) {
+                testFileName = fileName.substring(0, index) + ".php";
+            } else {
+                fileName = fileName.substring(0, fileName.length() - 4) + "_param.php";
+            }
+
+            test.setParFileName(fileName);
+            test.setBrcFileName(testFileName);
+
+            if (fileName.equals(testDto.getParamFileName())) sameParamFileName = true;
+
+            fileName = test.getTestFolder() + "/" + fileName;
+            testFileName = test.getTestFolder() + "/" + testFileName;
+
+            filesWithNames.put(testFileName, fileService.getFileWithName("testmain"));
+            filesWithNames.put(fileName, FileUtils.getFileBytes(paramFile));
         } else {
-            String fileName = testDto.getTestFolder() + "/" + testDto.getParFileName();
-            byte[] file = fileService.getFileWithName(fileName);
-            String fileContent = new String(file, CHARSET);
-            List<QuestionDto> questions = TestParser.getQuestions(fileContent);
-            testDto.setQuestionList(questions);
-            byte[] newFile = TestFileGenerator.generateParamFile(testDto, questions);
-            filesWithNames.put(testDto.getTestFolder() + "/" + testDto.getParFileName(), newFile);
+            if (testDto.getId() == null) {
+                initEnvironment(test, testDto, filesWithNames);
+            } else {
+                String fileName = testDto.getTestFolder() + "/" + testDto.getParamFileName();
+                byte[] file = fileService.getFileWithName(fileName);
+                String fileContent = new String(file, CHARSET);
+                List<QuestionDto> questions = TestParser.getQuestions(fileContent);
+                testDto.setQuestionList(questions);
+                byte[] newFile = TestFileGenerator.generateParamFile(testDto, questions);
+                filesWithNames.put(testDto.getTestFolder() + "/" + testDto.getParamFileName(), newFile);
+            }
         }
 
         if (newImageUpload && !deleteImage) {
@@ -139,6 +170,10 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
 
         if ((newImageUpload && oldImageExists) || deleteImage)
             fileService.deleteFile(test.getTestFolder() + "/" + oldImageName);
+        if (newParamFileUpload && oldParamFileExists && !sameParamFileName) {
+            fileService.deleteFile(test.getTestFolder() + "/" + oldParamFileName);
+            fileService.deleteFile(test.getTestFolder() + "/" + testDto.getBrcFileName());
+        }
     }
 
     private void initFields(Test test) {

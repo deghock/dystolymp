@@ -35,7 +35,8 @@ public class TestMapperImpl implements TestMapper {
         testDto.setMinusPoints(test.getMinusPoints());
         testDto.setTestFolder(test.getTestFolder());
         testDto.setBrcFileName(test.getBrcFileName());
-        testDto.setParFileName(test.getParFileName());
+        testDto.setParamFileName(test.getParFileName());
+        testDto.setPoints(test.getPoints());
 
         if (paramFileContent != null) {
             testDto.setRandomOrder(TestParser.getRandomOrder(paramFileContent));
@@ -64,8 +65,9 @@ public class TestMapperImpl implements TestMapper {
         test.setMinusPoints(testDto.getMinusPoints());
         test.setTestFolder(testDto.getTestFolder());
         test.setBrcFileName(testDto.getBrcFileName());
-        test.setParFileName(testDto.getParFileName());
+        test.setParFileName(testDto.getParamFileName());
         test.setShowResult(testDto.isShowResult());
+        test.setPoints(testDto.getPoints());
 
         return test;
     }
