@@ -14,13 +14,13 @@ import ru.spbu.distolymp.common.tasks.filegenerator.TestFileGenerator;
 import ru.spbu.distolymp.common.tasks.parser.TestParser;
 import ru.spbu.distolymp.dto.admin.tests.TestFilter;
 import ru.spbu.distolymp.dto.admin.tests.TestListDto;
-import ru.spbu.distolymp.dto.admin.tests.TestViewDto;
+import ru.spbu.distolymp.dto.admin.tests.TestPreviewDto;
 import ru.spbu.distolymp.dto.entity.tasks.TestDto;
 import ru.spbu.distolymp.entity.tasks.Test;
 import ru.spbu.distolymp.exception.common.ResourceNotFoundException;
 import ru.spbu.distolymp.exception.common.TechnicalException;
 import ru.spbu.distolymp.mapper.admin.tests.api.TestListMapper;
-import ru.spbu.distolymp.mapper.admin.tests.api.TestViewMapper;
+import ru.spbu.distolymp.mapper.admin.tests.api.TestPreviewMapper;
 import ru.spbu.distolymp.mapper.entity.tasks.api.TestMapper;
 import ru.spbu.distolymp.repository.tasks.TestRepository;
 import ru.spbu.distolymp.service.admin.tests.api.TestService;
@@ -37,7 +37,7 @@ import java.util.*;
  */
 @Service
 public class TestServiceImpl extends TestCrudServiceImpl implements TestService {
-    private final TestViewMapper testViewMapper;
+    private final TestPreviewMapper testViewMapper;
     private static final Sort SORT_BY_ID_DESC = Sort.by("id").descending();
     private static final String TESTS_PARAM = "testList";
     private static final String QUESTION_NUMBER_PARAM = "questionNumber";
@@ -47,7 +47,7 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
                            TestListMapper testListMapper,
                            ListingProblemCrudService listingProblemCrudService,
                            TestMapper testMapper,
-                           TestViewMapper testViewMapper) {
+                           TestPreviewMapper testViewMapper) {
         super(testRepository, testListMapper, listingProblemCrudService, testMapper);
         this.testViewMapper = testViewMapper;
     }
@@ -468,7 +468,7 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
     @Override
     @Transactional(readOnly = true)
     public void fillShowPreviewPageModelMap(Long id, ModelMap modelMap) {
-        TestViewDto testDto = getTestById(id)
+        TestPreviewDto testDto = getTestById(id)
                 .map(testViewMapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
 

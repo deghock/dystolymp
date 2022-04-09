@@ -2,9 +2,9 @@ package ru.spbu.distolymp.mapper.admin.tests.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.spbu.distolymp.dto.admin.tests.TestViewDto;
+import ru.spbu.distolymp.dto.admin.tests.TestPreviewDto;
 import ru.spbu.distolymp.entity.tasks.Test;
-import ru.spbu.distolymp.mapper.admin.tests.api.TestViewMapper;
+import ru.spbu.distolymp.mapper.admin.tests.api.TestPreviewMapper;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -13,11 +13,11 @@ import java.time.format.DateTimeFormatter;
  */
 @Component
 @RequiredArgsConstructor
-public class TestViewMapperImpl implements TestViewMapper {
+public class TestPreviewMapperImpl implements TestPreviewMapper {
     @Override
-    public TestViewDto toDto(Test test) {
+    public TestPreviewDto toDto(Test test) {
         if (test == null) return null;
-        TestViewDto testDto = new TestViewDto();
+        TestPreviewDto testDto = new TestPreviewDto();
         LocalDateTime dateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy kk:mm");
 

@@ -33,7 +33,7 @@
 </p>
 
 <div class="container" style="min-width: 38rem; padding: 0; margin: auto; max-width: 1140px">
-    <!--/*@thymesVar id="test" type="ru.spbu.distolymp.dto.admin.tests.TestViewDto"*/-->
+    <!--/*@thymesVar id="test" type="ru.spbu.distolymp.dto.admin.tests.TestPreviewDto"*/-->
     <div style="border-color: black; border-width: 1px; border-style: solid">
         <div style="margin: .5rem; overflow-wrap: anywhere; overflow: auto">
             <img th:src="@{/data/tests/{imageName}(imageName=${test.testFolder + '/' + test.imageName})}"
@@ -56,7 +56,7 @@
     </div>
 
     <div style="text-align: center; margin-top: 1rem">
-        <a href="#" class="pbutton">Начать выполнение теста</a>
+        <a th:href="@{/tests/view/{id}(id=${test.id})}" class="pbutton">Начать выполнение теста</a>
     </div>
 
     <div style="margin-top: 1rem; margin-bottom: .5rem"
