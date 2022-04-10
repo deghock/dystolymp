@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+
+    <style>
+        h3 {
+            font-weight: bold;
+            font-size: 12pt;
+            text-align: center;
+        }
+        p {
+            margin-top: 1rem;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey" style="min-width: 612px">
+
+<p id="title" style="margin-top: 1rem; margin-bottom: .5rem; font-weight: bold; text-align: center">
+    Система Интернет-олимпиад СПбГУ
+</p>
+
+<div class="container" style="min-width: 38rem; padding: 0; margin: auto; max-width: 1140px">
+    <!--/*@thymesVar id="test" type="ru.spbu.distolymp.dto.admin.tests.TestViewDto"*/-->
+    <div style="margin: 1rem">
+        <div>Название теста: <span style="font-weight: bold" th:text="${test.getTitle()}"></span></div>
+        <div>Задание: <span id="questionsNumber" style="font-weight: bold">1</span></div>
+        <div>Всего заданий: <span style="font-weight: bold" th:text="${test.getQuestionNumber()}"></span></div>
+        <div>Осталось заданий: <span id="questionsToGo" style="font-weight: bold" th:text="${test.getQuestionNumber()}"></span></div>
+        <form>
+            <input id="userIP" type="hidden" th:attr="name='ip'"/>
+
+            <div style="background-color: white; border-style: solid; border-width: 1px; border-color: black;
+             padding: 1rem; margin-top: 1rem;" th:each="question, iter : ${test.getQuestionList()}"
+                 th:id="'question' + ${iter.count}" th:styleappend="${iter.count == 1 ? 'display: block' : 'display: none'}">
+                <img th:src="@{/data/tests/{imageName}(imageName=${test.testFolder + '/' + question.getImageName()})}"
+                     th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
+                     th:unless="${question.getImageName().isEmpty() or question.getImageName() == null}"
+                     alt="Image not found" style="border-style: solid; border-width: 2px; border-color: black;
+                 margin-bottom: 1rem"/>
+                <div style="margin-bottom: 1rem" th:utext="${question.getText()}"></div>
+                <div>
+                    <div class="text-left align-items-center"
+                         th:text="${question.getType() == T(ru.spbu.distolymp.common.tasks.auxiliary.QuestionType).S or
+                                    question.getType() == T(ru.spbu.distolymp.common.tasks.auxiliary.QuestionType).C or
+                                    question.getType() == T(ru.spbu.distolymp.common.tasks.auxiliary.QuestionType).L ? 'Варианты ответов:' : 'Введите ответ:'}">
+                    </div>
+
+                    <div class="text-left align-items-center" th:if="${question.getType() == T(ru.spbu.distolymp.common.tasks.auxiliary.QuestionType).S}">
+                        <div th:each="answer, i : ${question.getAnswers()}" th:unless="${answer.isEmpty()}" style="margin-bottom: .2rem">
+                            <input th:id="${'q' + iter.count + 'a' + i.count}" type="radio" style="margin-right: .5rem" autocomplete="off"/>
+                            <label th:for="${'q' + iter.count + 'a' + i.count}" th:utext="${answer}" style="margin-bottom: 0"></label>
+                        </div>
+                    </div>
+
+                    <div class="text-left align-items-center" th:if="${question.getType() == T(ru.spbu.distolymp.common.tasks.auxiliary.QuestionType).C}">
+                        <div th:each="answer, i : ${question.getAnswers()}" th:unless="${answer.isEmpty()}" style="margin-bottom: .2rem">
+                            <input th:id="${'q' + iter.count + 'a' + i.count}" type="checkbox" style="margin-right: .5rem" autocomplete="off"/>
+                            <label th:for="${'q' + iter.count + 'a' + i.count}" th:utext="${answer}" style="margin-bottom: 0"></label>
+                        </div>
+                    </div>
+
+                    <div class="text-left align-items-center" th:if="${question.getType() == T(ru.spbu.distolymp.common.tasks.auxiliary.QuestionType).L}">
+                        <div th:each="answer, i : ${question.getAnswers()}" th:unless="${answer.isEmpty()}" style="margin-bottom: .2rem">
+                            <label th:utext="${answer}" style="margin-right: .2rem; margin-bottom: 0"></label>
+                            <select th:id="${'q' + iter.count + 'a' + i.count}" autocomplete="off">
+                                <option th:value="''"></option>
+                                <option th:each="trueAnswer : ${question.getTrueAnswers()}"
+                                        th:utext="${trueAnswer}" th:unless="${trueAnswer.isEmpty()}"
+                                        th:value="${trueAnswer}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="text-left align-items-center" th:if="${question.getType() == T(ru.spbu.distolymp.common.tasks.auxiliary.QuestionType).I}">
+                        <div style="margin-bottom: .2rem">
+                            <span><label th:utext="${question.getAnswers()[2]}" style="margin-right: .2rem"></label></span>
+                            <span><input th:id="${'q' + iter.count + 'a1'}" class="form-control form-control-sm text-dark"
+                                         type="number" step="1" maxlength="255" autocomplete="off"
+                                         style="margin-right: .2rem; width: 25%; min-width: 10rem; display: inline"/></span>
+                            <span><label th:utext="${question.getAnswers()[1]}"></label></span>
+                        </div>
+                    </div>
+
+                    <div class="text-left align-items-center" th:if="${question.getType() == T(ru.spbu.distolymp.common.tasks.auxiliary.QuestionType).F}">
+                        <div style="margin-bottom: .2rem">
+                            <span><label th:utext="${question.getAnswers()[4]}" style="margin-right: .2rem"></label></span>
+                            <span><input th:id="${'q' + iter.count + 'a1'}" class="form-control form-control-sm text-dark"
+                                         type="number" step="any" maxlength="255" autocomplete="off"
+                                         style="margin-right: .2rem; width: 25%; min-width: 10rem; display: inline"/></span>
+                            <span><label th:utext="${question.getAnswers()[3]}"></label></span>
+                        </div>
+                    </div>
+
+                    <div class="align-items-center" style="margin-top: .5rem; width: 100%">
+                        <span class="text-center">
+                            <button th:type="${iter.count == test.getQuestionNumber()} ? 'submit' : 'button'"
+                                    class="btn btn-sm btn-light border-dark"
+                                    style="width: 10rem; display: inline"
+                                    th:attr="onclick=|next('${iter.count}', '${test.getQuestionNumber()}')|">Ответить</button>
+                        </span>
+                        <span th:if="${test.isQuestionSkip()}">
+                            <button th:type="${iter.count == test.getQuestionNumber()} ? 'submit' : 'button'"
+                                    class="btn btn-sm btn-warning"
+                                    style="width: 10rem; display: inline"
+                                    th:attr="onclick=|nextSkip('${iter.count}', '${test.getQuestionNumber()}')|">Пропустить</button>
+                        </span>
+                        <span class="text-right">
+                            <button type="submit" class="btn btn-sm btn-danger" style="display: inline; float: right">Прервать работу</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: #footer"></div>
+</body>
+<script type="text/javascript">
+    function getUserIP(json) {
+        if (json != null)
+            document.getElementById('userIP').value = json.ip
+    }
+
+    function next(count, number) {
+        if (count !== number) {
+            document.getElementById('question' + count).style.display = 'none';
+            count = eval(count) + 1;
+            document.getElementById('question' + count).style.display = 'block';
+            document.getElementById('questionsNumber').innerText = count;
+            document.getElementById('questionsToGo').innerText = eval(eval(number) - count + 1);
+        }
+    }
+
+    function nextSkip(count, number) {
+        for (var i = 1; i < 6; i++) {
+            var ans = document.getElementById('q' + count + 'a' + i);
+            if (ans != null) {
+                ans.value = '';
+            }
+        }
+        next(count, number);
+    }
+</script>
+<script type="text/javascript" src="https://api.ipify.org?format=jsonp&callback=getUserIP"></script>
+</html>

@@ -29,6 +29,7 @@ public class TestController {
     private static final String EDIT_PAGE = ROOT_DIR + "edit";
     private static final String EDIT_QUESTION_PAGE = ROOT_DIR + "question-edit";
     private static final String PREVIEW_PAGE = ROOT_DIR + "preview";
+    private static final String VIEW_PAGE = ROOT_DIR + "view";
     private static final String SUCCESS_PARAM = "success";
     private final TestService testService;
 
@@ -124,6 +125,12 @@ public class TestController {
     public String previewTest(@PathVariable("id") Long id, ModelMap modelMap) {
         testService.fillShowPreviewPageModelMap(id, modelMap);
         return PREVIEW_PAGE;
+    }
+
+    @GetMapping("/view/{id}")
+    public String viewTest(@PathVariable("id") Long id, ModelMap modelMap) {
+        testService.fillShowViewPageModelMap(id, modelMap);
+        return VIEW_PAGE;
     }
 
     @ExceptionHandler(TechnicalException.class)

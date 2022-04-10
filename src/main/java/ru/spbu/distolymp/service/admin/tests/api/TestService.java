@@ -24,4 +24,5 @@ public interface TestService {
     void fillUpdateQuestionFailedModelMap(Long testId, ModelMap modelMap);
     void fillShowEditQuestionPageModelMap(Long testId, int number, ModelMap modelMap);
     void fillShowPreviewPageModelMap(Long id, ModelMap modelMap);
+    void fillShowViewPageModelMap(Long id, ModelMap modelMap);
 }
