@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.spbu.distolymp.common.tasks.auxiliary.QuestionDto;
+import ru.spbu.distolymp.dto.admin.tests.TestAnswerDto;
 import ru.spbu.distolymp.dto.admin.tests.TestFilter;
 import ru.spbu.distolymp.dto.admin.tests.TestListDto;
 import ru.spbu.distolymp.dto.entity.tasks.TestDto;
@@ -30,6 +31,7 @@ public class TestController {
     private static final String EDIT_QUESTION_PAGE = ROOT_DIR + "question-edit";
     private static final String PREVIEW_PAGE = ROOT_DIR + "preview";
     private static final String VIEW_PAGE = ROOT_DIR + "view";
+    private static final String TEST_RESULT_PAGE = ROOT_DIR + "result";
     private static final String SUCCESS_PARAM = "success";
     private final TestService testService;
 
@@ -131,6 +133,12 @@ public class TestController {
     public String viewTest(@PathVariable("id") Long id, ModelMap modelMap) {
         testService.fillShowViewPageModelMap(id, modelMap);
         return VIEW_PAGE;
+    }
+
+    @PostMapping("/submit-test")
+    public String submitTest(@Valid @ModelAttribute("userAnswer") TestAnswerDto answerDto,
+                             BindingResult br, ModelMap modelMap) {
+        return TEST_RESULT_PAGE;
     }
 
     @ExceptionHandler(TechnicalException.class)

@@ -12,10 +12,7 @@ import ru.spbu.distolymp.common.tasks.auxiliary.QuestionDto;
 import ru.spbu.distolymp.common.tasks.auxiliary.QuestionType;
 import ru.spbu.distolymp.common.tasks.filegenerator.TestFileGenerator;
 import ru.spbu.distolymp.common.tasks.parser.TestParser;
-import ru.spbu.distolymp.dto.admin.tests.TestFilter;
-import ru.spbu.distolymp.dto.admin.tests.TestListDto;
-import ru.spbu.distolymp.dto.admin.tests.TestPreviewDto;
-import ru.spbu.distolymp.dto.admin.tests.TestViewDto;
+import ru.spbu.distolymp.dto.admin.tests.*;
 import ru.spbu.distolymp.dto.entity.tasks.TestDto;
 import ru.spbu.distolymp.entity.tasks.Test;
 import ru.spbu.distolymp.exception.common.ResourceNotFoundException;
@@ -491,6 +488,13 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
         String fileContent = new String(file, CHARSET);
         TestViewDto testDto = testViewMapper.toDto(test, fileContent);
 
+        TestAnswerDto answerDto = new TestAnswerDto();
+        String[] array = new String[testDto.getQuestionNumber()];
+        answerDto.setQuestions(array);
+        answerDto.setUserAnswers(array);
+        answerDto.setTypes(array);
+
         modelMap.put("test", testDto);
+        modelMap.put("userAnswer", answerDto);
     }
 }

@@ -32,13 +32,16 @@
 
 <div class="container" style="min-width: 38rem; padding: 0; margin: auto; max-width: 1140px">
     <!--/*@thymesVar id="test" type="ru.spbu.distolymp.dto.admin.tests.TestViewDto"*/-->
+    <!--/*@thymesVar id="userAnswer" type="ru.spbu.distolymp.dto.admin.tests.TestAnswerDto"*/-->
     <div style="margin: 1rem">
         <div>Название теста: <span style="font-weight: bold" th:text="${test.getTitle()}"></span></div>
         <div>Задание: <span id="questionsNumber" style="font-weight: bold">1</span></div>
         <div>Всего заданий: <span style="font-weight: bold" th:text="${test.getQuestionNumber()}"></span></div>
         <div>Осталось заданий: <span id="questionsToGo" style="font-weight: bold" th:text="${test.getQuestionNumber()}"></span></div>
-        <form>
+        <form th:action="@{/tests/submit-test}" th:object="${userAnswer}" method="post" onsubmit="getUserIP()" onkeydown="return event.key != 'Enter';">
+            <input type="hidden" th:attr="name='problemId'" th:value="${test.getId()}">
             <input id="userIP" type="hidden" th:attr="name='ip'"/>
+            <input type="hidden" th:attr="name='testStartDateTime'" th:value="${test.getCurrentServerDateTime()}"/>
 
             <div style="background-color: white; border-style: solid; border-width: 1px; border-color: black;
              padding: 1rem; margin-top: 1rem;" th:each="question, iter : ${test.getQuestionList()}"
@@ -57,46 +60,57 @@
                     </div>
 
                     <div class="text-left align-items-center" th:if="${question.getType() == T(ru.spbu.distolymp.common.tasks.auxiliary.QuestionType).S}">
+                        <input type="hidden" th:attr="name='types[' + ${iter.index} + ']'" th:value="${question.getType().getShortName()}"/>
                         <div th:each="answer, i : ${question.getAnswers()}" th:unless="${answer.isEmpty()}" style="margin-bottom: .2rem">
-                            <input th:id="${'q' + iter.count + 'a' + i.count}" type="radio" style="margin-right: .5rem" autocomplete="off"/>
+                            <input type="hidden" th:attr="name='questions[' + ${iter.index} + ']'" th:value="${answer} + '~;{>/:$^)-'"/>
+                            <input th:id="${'q' + iter.count + 'a' + i.count}" type="radio" style="margin-right: .5rem" autocomplete="off"
+                                   th:field="*{userAnswers[__${iter.index}__]}" th:value="${i.count}"/>
                             <label th:for="${'q' + iter.count + 'a' + i.count}" th:utext="${answer}" style="margin-bottom: 0"></label>
                         </div>
                     </div>
 
                     <div class="text-left align-items-center" th:if="${question.getType() == T(ru.spbu.distolymp.common.tasks.auxiliary.QuestionType).C}">
+                        <input type="hidden" th:attr="name='types[' + ${iter.index} + ']'" th:value="${question.getType().getShortName()}"/>
                         <div th:each="answer, i : ${question.getAnswers()}" th:unless="${answer.isEmpty()}" style="margin-bottom: .2rem">
-                            <input th:id="${'q' + iter.count + 'a' + i.count}" type="checkbox" style="margin-right: .5rem" autocomplete="off"/>
+                            <input type="hidden" th:attr="name='questions[' + ${iter.index} + ']'" th:value="${answer} + '~;{>/:$^)-'"/>
+                            <input th:id="${'q' + iter.count + 'a' + i.count}" type="checkbox" style="margin-right: .5rem" autocomplete="off"
+                                   th:field="*{userAnswers[__${iter.index}__]}" th:value="${i.count}"/>
                             <label th:for="${'q' + iter.count + 'a' + i.count}" th:utext="${answer}" style="margin-bottom: 0"></label>
                         </div>
                     </div>
 
                     <div class="text-left align-items-center" th:if="${question.getType() == T(ru.spbu.distolymp.common.tasks.auxiliary.QuestionType).L}">
+                        <input type="hidden" th:attr="name='types[' + ${iter.index} + ']'" th:value="${question.getType().getShortName()}"/>
                         <div th:each="answer, i : ${question.getAnswers()}" th:unless="${answer.isEmpty()}" style="margin-bottom: .2rem">
+                            <input type="hidden" th:attr="name='questions[' + ${iter.index} + ']'" th:value="${answer} + '~;{>/:$^)-'"/>
                             <label th:utext="${answer}" style="margin-right: .2rem; margin-bottom: 0"></label>
-                            <select th:id="${'q' + iter.count + 'a' + i.count}" autocomplete="off">
-                                <option th:value="''"></option>
+                            <select th:id="${'q' + iter.count + 'a' + i.count}" autocomplete="off"
+                                    th:field="*{userAnswers[__${iter.index}__]}">
+                                <option th:value="'~;{>/:$^)-'"></option>
                                 <option th:each="trueAnswer : ${question.getTrueAnswers()}"
                                         th:utext="${trueAnswer}" th:unless="${trueAnswer.isEmpty()}"
-                                        th:value="${trueAnswer}"></option>
+                                        th:value="${trueAnswer} + '~;{>/:$^)-'"></option>
                             </select>
                         </div>
                     </div>
 
                     <div class="text-left align-items-center" th:if="${question.getType() == T(ru.spbu.distolymp.common.tasks.auxiliary.QuestionType).I}">
+                        <input type="hidden" th:attr="name='types[' + ${iter.index} + ']'" th:value="${question.getType().getShortName()}"/>
                         <div style="margin-bottom: .2rem">
                             <span><label th:utext="${question.getAnswers()[2]}" style="margin-right: .2rem"></label></span>
                             <span><input th:id="${'q' + iter.count + 'a1'}" class="form-control form-control-sm text-dark"
-                                         type="number" step="1" maxlength="255" autocomplete="off"
+                                         type="number" step="1" maxlength="255" autocomplete="off" th:field="*{userAnswers[__${iter.index}__]}"
                                          style="margin-right: .2rem; width: 25%; min-width: 10rem; display: inline"/></span>
                             <span><label th:utext="${question.getAnswers()[1]}"></label></span>
                         </div>
                     </div>
 
                     <div class="text-left align-items-center" th:if="${question.getType() == T(ru.spbu.distolymp.common.tasks.auxiliary.QuestionType).F}">
+                        <input type="hidden" th:attr="name='types[' + ${iter.index} + ']'" th:value="${question.getType().getShortName()}"/>
                         <div style="margin-bottom: .2rem">
                             <span><label th:utext="${question.getAnswers()[4]}" style="margin-right: .2rem"></label></span>
                             <span><input th:id="${'q' + iter.count + 'a1'}" class="form-control form-control-sm text-dark"
-                                         type="number" step="any" maxlength="255" autocomplete="off"
+                                         type="number" step="any" maxlength="255" autocomplete="off" th:field="*{userAnswers[__${iter.index}__]}"
                                          style="margin-right: .2rem; width: 25%; min-width: 10rem; display: inline"/></span>
                             <span><label th:utext="${question.getAnswers()[3]}"></label></span>
                         </div>
@@ -104,7 +118,7 @@
 
                     <div class="align-items-center" style="margin-top: .5rem; width: 100%">
                         <span class="text-center">
-                            <button th:type="${iter.count == test.getQuestionNumber()} ? 'submit' : 'button'"
+                            <button th:id="${'button' + iter.count}" th:type="${iter.count == test.getQuestionNumber()} ? 'submit' : 'button'"
                                     class="btn btn-sm btn-light border-dark"
                                     style="width: 10rem; display: inline"
                                     th:attr="onclick=|next('${iter.count}', '${test.getQuestionNumber()}')|">Ответить</button>
