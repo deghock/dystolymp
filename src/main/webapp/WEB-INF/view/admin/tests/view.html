@@ -42,6 +42,7 @@
             <input type="hidden" th:attr="name='problemId'" th:value="${test.getId()}">
             <input id="userIP" type="hidden" th:attr="name='ip'"/>
             <input type="hidden" th:attr="name='testStartDateTime'" th:value="${test.getCurrentServerDateTime()}"/>
+            <input type="hidden" th:attr="name='interrupted'" th:value="false" id="interrupted"/>
 
             <div style="background-color: white; border-style: solid; border-width: 1px; border-color: black;
              padding: 1rem; margin-top: 1rem;" th:each="question, iter : ${test.getQuestionList()}"
@@ -130,7 +131,7 @@
                                     th:attr="onclick=|nextSkip('${iter.count}', '${test.getQuestionNumber()}')|">Пропустить</button>
                         </span>
                         <span class="text-right">
-                            <button type="submit" class="btn btn-sm btn-danger" style="display: inline; float: right">Прервать работу</button>
+                            <button type="submit" class="btn btn-sm btn-danger" style="display: inline; float: right" onmousedown="interrupt()">Прервать работу</button>
                         </span>
                     </div>
                 </div>
@@ -165,6 +166,10 @@
             }
         }
         next(count, number);
+    }
+
+    function interrupt() {
+        document.getElementById('interrupted').value = true;
     }
 </script>
 <script type="text/javascript" src="https://api.ipify.org?format=jsonp&callback=getUserIP"></script>

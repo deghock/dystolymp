@@ -14,4 +14,5 @@ public class TestAnswerDto {
     private String[] questions;
     private String[] userAnswers;
     private String[] types;
+    private boolean interrupted;
 }
