@@ -228,7 +228,7 @@ public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelServi
         int startIndex = fileContent.indexOf("<input id=\"answerNumber\" type=\"hidden\" value=\"");
         int endIndex = fileContent.indexOf("\"/>", startIndex);
         int userAnswerNumber = Integer.parseInt(fileContent.substring(startIndex + 46, endIndex));
-        Number[] userAnswers = new Number[userAnswerNumber];
+        String[] userAnswers = new String[userAnswerNumber];
         answerDto.setUserAnswers(userAnswers);
         modelMap.put("answer", answerDto);
         modelMap.put("result", new ModelResultDto());

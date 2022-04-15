@@ -10,7 +10,7 @@ import java.util.Map;
 @Data
 public class ModelResultDto {
     private List<String> answerNameList;
-    private Map<String, Number> userAnswerMap;
+    private Map<String, String> userAnswerMap;
     private Map<String, Boolean> correctness;
     private List<String> points;
     private Double maxPoint;

@@ -174,7 +174,7 @@ public class ModelFileGenerator {
                     .append("<input id=\"")
                     .append(ansName)
                     .append("Input\"")
-                    .append(" type=\"number\" step=\"any\" maxlength=\"4368\"\n")
+                    .append(" type=\"text\" maxlength=\"255\"\n")
                     .append("th:field=\"*{userAnswers[")
                     .append(i)
                     .append("]}\" required/>\n")

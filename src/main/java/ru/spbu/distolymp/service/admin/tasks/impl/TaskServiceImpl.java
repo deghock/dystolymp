@@ -116,7 +116,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
                 .map(taskViewMapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
         AnswerDto answerDto = new AnswerDto();
-        Number[] userAnswers = new Number[taskDto.getAnswerNameList().size()];
+        String[] userAnswers = new String[taskDto.getAnswerNameList().size()];
         answerDto.setUserAnswers(userAnswers);
         modelMap.put(TASK_PARAM, taskDto);
         modelMap.put("answer", answerDto);

@@ -14,7 +14,7 @@ public class ModelResultHandler {
     private ModelResultHandler() {}
 
     public static ModelResultDto toResultDto(ModelViewDto modelDto,
-                                             Number[] userAnswers,
+                                             String[] userAnswers,
                                              String answersString,
                                              List<String> points,
                                              double maxPoint) {
@@ -26,7 +26,7 @@ public class ModelResultHandler {
         List<String> answerNameList = modelDto.getAnswerNameList();
         resultDto.setAnswerNameList(answerNameList);
 
-        Map<String, Number> userAnswerMap = new HashMap<>();
+        Map<String, String> userAnswerMap = new HashMap<>();
         if (userAnswers != null) {
             for (int i = 0; i < userAnswers.length; i++) {
                 userAnswerMap.put(answerNameList.get(i), userAnswers[i]);

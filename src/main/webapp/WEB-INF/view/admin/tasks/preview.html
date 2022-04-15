@@ -44,7 +44,6 @@
             margin-bottom: 0;
         }
         .form-control::placeholder {
-            color: #DC3545;
             opacity: .5;
         }
         .form-control:valid {
@@ -144,7 +143,7 @@
                            style="margin-bottom: 0; width: auto"></label>
                     </span>
                     <span>
-                    <input th:id="${ansName} + 'Input'" type="number" step="any" maxlength="4368"
+                    <input th:id="${ansName} + 'Input'" type="text" maxlength="255"
                            class="form-control form-control-sm text-dark digit" placeholder="Введите ответ"
                            autocomplete="off" required th:field="*{userAnswers[__${iter.index}__]}"
                            style="width: 25%; min-width: 10rem; display: inline"/>
@@ -207,7 +206,7 @@
                 </tr>
                 <tr th:each="ansName, iter : ${result.answerNameList}">
                     <td th:text="${ansName}"></td>
-                    <td th:text="${result.userAnswerMap.get(ansName)}"></td>
+                    <td th:text="${result.userAnswerMap.get(ansName) == null ? '' : result.userAnswerMap.get(ansName)}"></td>
                     <td th:text="${result.answerWithErrorMap.get(ansName).key} + ' ± ' +
                         ${result.answerWithErrorMap.get(ansName).value}"></td>
                     <td th:text="${result.correctness.get(ansName)} ? 'Правильно' : 'Неправильно'"

@@ -13,7 +13,7 @@ public class TaskResultHandler {
     private TaskResultHandler() {}
 
     public static TaskResultDto toResultDto(TaskViewDto taskDto,
-                                            Number[] userAnswers,
+                                            String[] userAnswers,
                                             String answersString,
                                             List<String> points,
                                             double maxPoint) {
@@ -40,9 +40,9 @@ public class TaskResultHandler {
         List<String> answerNameList = taskDto.getAnswerNameList();
         resultDto.setAnswerNameList(answerNameList);
 
-        Map<String, Number> userAnswerMap = new HashMap<>();
+        Map<String, String> userAnswerMap = new HashMap<>();
         if (userAnswers != null) {
-            for (int i = 0; i < userAnswers.length; i++) {
+            for (int i = 0; i < answerNameList.size(); i++) {
                 userAnswerMap.put(answerNameList.get(i), userAnswers[i]);
             }
         }

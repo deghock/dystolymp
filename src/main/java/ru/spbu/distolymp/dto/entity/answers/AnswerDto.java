@@ -15,7 +15,7 @@ public class AnswerDto {
 
     private String param;
 
-    private Number[] userAnswers;
+    private String[] userAnswers;
 
     @Size(max = 65535)
     private String userNotes;
