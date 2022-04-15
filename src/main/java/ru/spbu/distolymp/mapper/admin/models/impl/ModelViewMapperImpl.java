@@ -2,9 +2,9 @@ package ru.spbu.distolymp.mapper.admin.models.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.spbu.distolymp.common.tasks.TaskEvaluator;
-import ru.spbu.distolymp.common.tasks.TaskParser;
-import ru.spbu.distolymp.common.tasks.TaskTextParser;
+import ru.spbu.distolymp.common.tasks.parser.TaskEvaluator;
+import ru.spbu.distolymp.common.tasks.parser.TaskParser;
+import ru.spbu.distolymp.common.tasks.parser.TaskTextParser;
 import ru.spbu.distolymp.dto.admin.models.ModelViewDto;
 import ru.spbu.distolymp.entity.tasks.Model;
 import ru.spbu.distolymp.mapper.admin.models.api.ModelViewMapper;

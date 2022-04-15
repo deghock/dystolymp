@@ -10,8 +10,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
 import ru.spbu.distolymp.common.files.FileNameGenerator;
 import ru.spbu.distolymp.common.files.FileUtils;
-import ru.spbu.distolymp.common.tasks.PointParser;
-import ru.spbu.distolymp.common.tasks.TaskResultHandler;
+import ru.spbu.distolymp.common.tasks.parser.PointParser;
+import ru.spbu.distolymp.common.tasks.resulthandler.TaskResultHandler;
 import ru.spbu.distolymp.dto.entity.answers.AnswerDto;
 import ru.spbu.distolymp.dto.admin.tasks.TaskFilter;
 import ru.spbu.distolymp.dto.admin.tasks.TaskListDto;
@@ -22,7 +22,7 @@ import ru.spbu.distolymp.entity.tasks.Task;
 import ru.spbu.distolymp.exception.common.ResourceNotFoundException;
 import ru.spbu.distolymp.mapper.admin.tasks.api.TaskListMapper;
 import ru.spbu.distolymp.mapper.admin.tasks.api.TaskViewMapper;
-import ru.spbu.distolymp.mapper.entity.tasks.TaskMapper;
+import ru.spbu.distolymp.mapper.entity.tasks.api.TaskMapper;
 import ru.spbu.distolymp.repository.tasks.TaskRepository;
 import ru.spbu.distolymp.service.admin.tasks.api.TaskService;
 import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
@@ -116,7 +116,7 @@ public class TaskServiceImpl extends TaskCrudServiceImpl implements TaskService 
                 .map(taskViewMapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
         AnswerDto answerDto = new AnswerDto();
-        Number[] userAnswers = new Number[taskDto.getAnswerNameList().size()];
+        String[] userAnswers = new String[taskDto.getAnswerNameList().size()];
         answerDto.setUserAnswers(userAnswers);
         modelMap.put(TASK_PARAM, taskDto);
         modelMap.put("answer", answerDto);

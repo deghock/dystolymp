@@ -3,9 +3,12 @@ package ru.spbu.distolymp.dto.entity.tasks;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.web.multipart.MultipartFile;
+import ru.spbu.distolymp.common.tasks.auxiliary.QuestionDto;
 import ru.spbu.distolymp.validation.files.annotation.ImageMimeType;
+import ru.spbu.distolymp.validation.files.annotation.ParamFileMimeType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * @author Vladislav Konovalov
@@ -42,17 +45,32 @@ public class TestDto {
     @Range(max = 65535)
     private Integer height;
 
-    private boolean hideResult;
+    private boolean showResult;
+
+    private boolean randomOrder;
+
+    private int[] questionsNumber;
+
+    private boolean questionSkip;
 
     @NotNull
     @Range(max = 65535)
     private Double points;
 
+    @ParamFileMimeType
+    private MultipartFile paramFile;
+
+    private String paramFileName;
+
     @NotNull
     @Range(max = 65535)
     private Double minusPoints;
 
-    @NotNull
-    @Range(max = 65535)
-    private Double minPoints;
+    private List<QuestionDto> questionList;
+
+    private int[] allQuestionsNumber;
+
+    private String testFolder;
+
+    private String brcFileName;
 }

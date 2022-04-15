@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+
+    <style>
+        h3 {
+            font-weight: bold;
+            font-size: 12pt;
+            text-align: center;
+        }
+        p {
+            margin-top: 1rem;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey" style="min-width: 612px">
+
+<p id="title" style="margin-top: 1rem; margin-bottom: .5rem; font-weight: bold; text-align: center">
+    Система Интернет-олимпиад СПбГУ
+</p>
+
+<div class="container" style="min-width: 38rem; padding: 0; margin: auto; max-width: 1140px">
+    <!--/*@thymesVar id="test" type="ru.spbu.distolymp.dto.admin.tests.TestViewDto"*/-->
+    <!--/*@thymesVar id="userAnswer" type="ru.spbu.distolymp.dto.admin.tests.TestAnswerDto"*/-->
+    <div style="margin: 1rem">
+        <div>Название теста: <span style="font-weight: bold" th:text="${test.getTitle()}"></span></div>
+        <div>Задание: <span id="questionsNumber" style="font-weight: bold">1</span></div>
+        <div>Всего заданий: <span style="font-weight: bold" th:text="${test.getQuestionNumber()}"></span></div>
+        <div>Осталось заданий: <span id="questionsToGo" style="font-weight: bold" th:text="${test.getQuestionNumber()}"></span></div>
+        <form id="form" th:action="@{/tests/submit-test}" th:object="${userAnswer}" method="post" onsubmit="getUserIP()" onkeydown="return event.key != 'Enter';">
+            <input type="hidden" th:attr="name='problemId'" th:value="${test.getId()}">
+            <input id="userIP" type="hidden" th:attr="name='ip'"/>
+            <input type="hidden" th:attr="name='testStartDateTime'" th:value="${test.getCurrentServerDateTime()}"/>
+            <input type="hidden" th:attr="name='interrupted'" th:value="${test.getQuestionList().size()}" id="interrupted"/>
+
+            <div style="background-color: white; border-style: solid; border-width: 1px; border-color: black;
+             padding: 1rem; margin-top: 1rem;" th:each="question, iter : ${test.getQuestionList()}"
+                 th:id="'question' + ${iter.count}" th:styleappend="${iter.count == 1 ? 'display: block' : 'display: none'}">
+                <img th:src="@{/data/tests/{imageName}(imageName=${test.testFolder + '/' + question.getImageName()})}"
+                     th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
+                     th:unless="${question.getImageName().isEmpty() or question.getImageName() == null}"
+                     alt="Image not found" style="border-style: solid; border-width: 2px; border-color: black;
+                 margin-bottom: 1rem"/>
+                <div style="margin-bottom: 1rem" th:utext="${question.getText()}"></div>
+                <div>
+                    <div class="text-left align-items-center"
+                         th:text="${question.getType() == T(ru.spbu.distolymp.common.tasks.auxiliary.QuestionType).S or
+                                    question.getType() == T(ru.spbu.distolymp.common.tasks.auxiliary.QuestionType).C or
+                                    question.getType() == T(ru.spbu.distolymp.common.tasks.auxiliary.QuestionType).L ? 'Варианты ответов:' : 'Введите ответ:'}">
+                    </div>
+
+                    <div class="text-left align-items-center" th:if="${question.getType() == T(ru.spbu.distolymp.common.tasks.auxiliary.QuestionType).S}">
+                        <input type="hidden" th:attr="name='questionNumbers[' + ${iter.index} + ']'" th:value="${question.getNumber()}"/>
+                        <div th:each="answer, i : ${question.getAnswers()}" th:unless="${answer.isEmpty()}" style="margin-bottom: .2rem">
+                            <input type="hidden" th:attr="name='questions[' + ${iter.index} + ']'" th:value="${answer} + '~;{>/:$^)-'"/>
+                            <input th:id="${'q' + iter.count + 'a' + i.count}" type="radio" style="margin-right: .5rem" autocomplete="off"
+                                   th:field="*{userAnswers[__${iter.index}__]}" th:value="${i.count}" onkeydown="return event.key != 'Enter';"/>
+                            <label th:for="${'q' + iter.count + 'a' + i.count}" th:utext="${answer}" style="margin-bottom: 0"></label>
+                        </div>
+                    </div>
+
+                    <div class="text-left align-items-center" th:if="${question.getType() == T(ru.spbu.distolymp.common.tasks.auxiliary.QuestionType).C}">
+                        <input type="hidden" th:attr="name='questionNumbers[' + ${iter.index} + ']'" th:value="${question.getNumber()}"/>
+                        <div th:each="answer, i : ${question.getAnswers()}" th:unless="${answer.isEmpty()}" style="margin-bottom: .2rem">
+                            <input type="hidden" th:attr="name='questions[' + ${iter.index} + ']'" th:value="${answer} + '~;{>/:$^)-'"/>
+                            <input th:id="${'q' + iter.count + 'a' + i.count}" type="checkbox" style="margin-right: .5rem" autocomplete="off"
+                                   th:field="*{userAnswers[__${iter.index}__]}" th:value="${i.count} + '~;{>/:$^)-'" onkeydown="return event.key != 'Enter';"/>
+                            <label th:for="${'q' + iter.count + 'a' + i.count}" th:utext="${answer}" style="margin-bottom: 0"></label>
+                        </div>
+                    </div>
+
+                    <div class="text-left align-items-center" th:if="${question.getType() == T(ru.spbu.distolymp.common.tasks.auxiliary.QuestionType).L}">
+                        <input type="hidden" th:attr="name='questionNumbers[' + ${iter.index} + ']'" th:value="${question.getNumber()}"/>
+                        <div th:each="answer, i : ${question.getAnswers()}" th:unless="${answer.isEmpty()}" style="margin-bottom: .2rem">
+                            <input type="hidden" th:attr="name='questions[' + ${iter.index} + ']'" th:value="${answer} + '~;{>/:$^)-'"/>
+                            <label th:utext="${answer}" style="margin-right: .2rem; margin-bottom: 0"></label>
+                            <select th:id="${'q' + iter.count + 'a' + i.count}" autocomplete="off"
+                                    th:field="*{userAnswers[__${iter.index}__]}" onkeydown="return event.key != 'Enter';">
+                                <option th:value="'~;{>/:$^)-'" onkeydown="return event.key != 'Enter';"></option>
+                                <option th:each="trueAnswer : ${question.getTrueAnswers()}"
+                                        th:utext="${trueAnswer}" th:unless="${trueAnswer.isEmpty()}"
+                                        th:value="${trueAnswer} + '~;{>/:$^)-'" onkeydown="return event.key != 'Enter';"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="text-left align-items-center" th:if="${question.getType() == T(ru.spbu.distolymp.common.tasks.auxiliary.QuestionType).I}">
+                        <input type="hidden" th:attr="name='questionNumbers[' + ${iter.index} + ']'" th:value="${question.getNumber()}"/>
+                        <div style="margin-bottom: .2rem">
+                            <span><label th:utext="${question.getAnswers()[2]}" style="margin-right: .2rem"></label></span>
+                            <span><input th:id="${'q' + iter.count + 'a1'}" class="form-control form-control-sm text-dark"
+                                         type="text" maxlength="255" autocomplete="off" th:field="*{userAnswers[__${iter.index}__]}"
+                                         style="margin-right: .2rem; width: 25%; min-width: 10rem; display: inline" onkeydown="return event.key != 'Enter';"
+                                         th:attr="onchange=|setNeutral('${iter.count}', '${question.getType().getShortName()}')|"/></span>
+                            <span><label th:utext="${question.getAnswers()[1]}"></label></span>
+                            <div th:id="'integerError' + ${iter.count}" class="invalid-feedback" style="display: none">Пожалуйста, введите целое число</div>
+                        </div>
+                    </div>
+
+                    <div class="text-left align-items-center" th:if="${question.getType() == T(ru.spbu.distolymp.common.tasks.auxiliary.QuestionType).F}">
+                        <input type="hidden" th:attr="name='questionNumbers[' + ${iter.index} + ']'" th:value="${question.getNumber()}"/>
+                        <div style="margin-bottom: .2rem">
+                            <span><label th:utext="${question.getAnswers()[4]}" style="margin-right: .2rem"></label></span>
+                            <span><input th:id="${'q' + iter.count + 'a1'}" class="form-control form-control-sm text-dark"
+                                         type="text" maxlength="255" autocomplete="off" th:field="*{userAnswers[__${iter.index}__]}"
+                                         style="margin-right: .2rem; width: 25%; min-width: 10rem; display: inline" onkeydown="return event.key != 'Enter';"
+                                         th:attr="onchange=|setNeutral('${iter.count}', '${question.getType().getShortName()}')|"/></span>
+                            <span><label th:utext="${question.getAnswers()[3]}"></label></span>
+                            <div th:id="'floatError' + ${iter.count}" class="invalid-feedback" style="display: none">Пожалуйста, введите число</div>
+                        </div>
+                    </div>
+
+                    <div class="align-items-center" style="margin-top: .5rem; width: 100%">
+                        <span class="text-center">
+                            <button th:id="${'button' + iter.count}" type="button"
+                                    class="btn btn-sm btn-light border-dark"
+                                    style="width: 10rem; display: inline"
+                                    th:attr="onclick=|next('${iter.count}', '${test.getQuestionNumber()}', '${question.getType().getShortName()}')|">Ответить</button>
+                        </span>
+                        <span class="text-right">
+                            <button type="button" class="btn btn-sm btn-danger" style="display: inline; float: right; width: 9rem; margin-left: .5rem"
+                                    th:attr="onmousedown=|interrupt('${iter.count}', '${question.getType().getShortName()}')|">Прервать работу</button>
+                        </span>
+                        <span th:if="${test.isQuestionSkip()}">
+                            <button type="button"
+                                    class="btn btn-sm btn-warning"
+                                    style="width: 9rem; display: inline; float: right"
+                                    th:attr="onclick=|nextSkip('${iter.count}', '${test.getQuestionNumber()}', '${question.getType().getShortName()}')|">Пропустить</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: #footer"></div>
+</body>
+<script type="text/javascript">
+    function getUserIP(json) {
+        if (json != null)
+            document.getElementById('userIP').value = json.ip
+    }
+
+    function isInt(value) {
+        if (typeof value != "string") return false;
+        if (value.length === 0) return true;
+        value = value.replace(',', '.');
+        return !isNaN(value) &&
+            parseInt(Number(value)) == value &&
+            !isNaN(parseInt(value, 10));
+    }
+
+    function isNumeric(str) {
+        if (typeof str != "string") return false;
+        if (str.length === 0) return true;
+        str = str.replace(',', '.');
+        return !isNaN(str) &&
+            !isNaN(parseFloat(str));
+    }
+
+    function next(count, number, type) {
+        if (type == 'I' && !isInt(document.getElementById('q' + count + 'a1').value)) {
+            document.getElementById('integerError' + count).style.display = 'block';
+            return;
+        }
+        if (type == 'F' && !isNumeric(document.getElementById('q' + count + 'a1').value)) {
+            document.getElementById('floatError' + count).style.display = 'block';
+            return;
+        }
+        if (count !== number) {
+            document.getElementById('question' + count).style.display = 'none';
+            count = eval(count) + 1;
+            document.getElementById('question' + count).style.display = 'block';
+            document.getElementById('questionsNumber').innerText = count;
+            document.getElementById('questionsToGo').innerText = eval(eval(number) - count + 1);
+        }
+        if (count === number) {
+            document.getElementById('form').submit();
+        }
+    }
+
+    function nextSkip(count, number, type) {
+        for (var i = 1; i < 6; i++) {
+            var ans = document.getElementById('q' + count + 'a' + i);
+            if (ans != null) {
+                ans.value = '';
+            }
+        }
+        next(count, number, type);
+    }
+
+    function setNeutral(count, type) {
+        if (type == 'I')
+            document.getElementById('integerError' + count).style.display = 'none';
+        if (type == 'F')
+            document.getElementById('floatError' + count).style.display = 'none';
+    }
+
+    function interrupt(count, type) {
+        if (type == 'I' && !isInt(document.getElementById('q' + count + 'a1').value)) {
+            document.getElementById('integerError').style.display = 'block';
+            return;
+        }
+        if (type == 'F' && !isNumeric(document.getElementById('q' + count + 'a1').value)) {
+            document.getElementById('floatError').style.display = 'block';
+            return;
+        }
+        document.getElementById('interrupted').value = count;
+        document.getElementById('form').submit();
+    }
+</script>
+<script type="text/javascript" src="https://api.ipify.org?format=jsonp&callback=getUserIP"></script>
+</html>

@@ -1,11 +1,11 @@
-package ru.spbu.distolymp.common.tasks;
+package ru.spbu.distolymp.common.tasks.parser;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.util.*;
 import java.util.Map.Entry;
-import static ru.spbu.distolymp.common.tasks.TaskParser.*;
+import static ru.spbu.distolymp.common.tasks.parser.TaskParser.*;
 
 /**
  * @author Vladislav Konovalov
@@ -84,15 +84,22 @@ public class TaskEvaluator {
         return commentNameValueMap;
     }
 
-    public Map<String, Boolean> checkTaskCorrectness(Map<String, Number> userAnswerMap) {
+    public Map<String, Boolean> checkTaskCorrectness(Map<String, String> userAnswerMap) {
         Map<String, Boolean> correctnessMap = new HashMap<>();
-        for (Entry<String, Number> userAnswer : userAnswerMap.entrySet()) {
+        for (Entry<String, String> userAnswer : userAnswerMap.entrySet()) {
             String name = userAnswer.getKey();
             if (userAnswer.getValue() == null) {
                 correctnessMap.put(name, false);
                 continue;
             }
-            double userValue = userAnswer.getValue().doubleValue();
+            String userValueString = userAnswer.getValue().replace(",", ".");
+            double userValue;
+            try {
+                userValue = Double.parseDouble(userValueString);
+            } catch (NumberFormatException e) {
+                correctnessMap.put(name, false);
+                continue;
+            }
             if (answers.containsKey(name)) {
                 double correctValue = answers.get(name).getKey().doubleValue();
                 double error = answers.get(name).getValue().doubleValue();

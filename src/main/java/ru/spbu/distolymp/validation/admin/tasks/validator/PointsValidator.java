@@ -3,7 +3,7 @@ package ru.spbu.distolymp.validation.admin.tasks.validator;
 import ru.spbu.distolymp.validation.admin.tasks.annotation.Points;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import static ru.spbu.distolymp.common.tasks.PointParser.parsePoints;
+import static ru.spbu.distolymp.common.tasks.parser.PointParser.parsePoints;
 
 /**
  * @author Vladislav Konovalov

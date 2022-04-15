@@ -1,4 +1,4 @@
-package ru.spbu.distolymp.mapper.entity.tasks;
+package ru.spbu.distolymp.mapper.entity.tasks.api;
 
 import org.mapstruct.Mapper;
 import ru.spbu.distolymp.dto.entity.tasks.TaskDto;

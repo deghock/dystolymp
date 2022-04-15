@@ -15,7 +15,7 @@ import ru.spbu.distolymp.dto.admin.tasks.TaskListDto;
 import ru.spbu.distolymp.entity.tasks.Task;
 import ru.spbu.distolymp.exception.common.TechnicalException;
 import ru.spbu.distolymp.mapper.admin.tasks.api.TaskListMapper;
-import ru.spbu.distolymp.mapper.entity.tasks.TaskMapper;
+import ru.spbu.distolymp.mapper.entity.tasks.api.TaskMapper;
 import ru.spbu.distolymp.repository.tasks.TaskRepository;
 import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
 import ru.spbu.distolymp.service.crud.api.tasks.TaskCrudService;

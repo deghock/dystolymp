@@ -1,8 +1,8 @@
 package ru.spbu.distolymp.validation.admin.tasks.validator;
 
-import ru.spbu.distolymp.common.tasks.TaskEvaluator;
-import static ru.spbu.distolymp.common.tasks.PointParser.parsePoints;
-import static ru.spbu.distolymp.common.tasks.TaskParser.parseTaskConditionToLines;
+import ru.spbu.distolymp.common.tasks.parser.TaskEvaluator;
+import static ru.spbu.distolymp.common.tasks.parser.PointParser.parsePoints;
+import static ru.spbu.distolymp.common.tasks.parser.TaskParser.parseTaskConditionToLines;
 
 /**
  * @author Vladislav Konovalov

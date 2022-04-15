@@ -2,14 +2,14 @@ package ru.spbu.distolymp.mapper.admin.tasks.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.spbu.distolymp.common.tasks.TaskEvaluator;
-import ru.spbu.distolymp.common.tasks.TaskParser;
+import ru.spbu.distolymp.common.tasks.parser.TaskEvaluator;
+import ru.spbu.distolymp.common.tasks.parser.TaskParser;
 import ru.spbu.distolymp.dto.admin.tasks.TaskViewDto;
 import ru.spbu.distolymp.entity.tasks.Task;
 import ru.spbu.distolymp.mapper.admin.tasks.api.TaskViewMapper;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import static ru.spbu.distolymp.common.tasks.TaskTextParser.parse;
+import static ru.spbu.distolymp.common.tasks.parser.TaskTextParser.parse;
 
 /**
  * @author Vladislav Konovalov
@@ -37,9 +37,10 @@ public class TaskViewMapperImpl implements TaskViewMapper {
         taskDto.setAnswerNote(task.getAnswerNote());
         taskDto.setParsedProblemText(parse(task.getProblemText(), evaluator.getVariableMap()));
         taskDto.setCurrentServerDateTime(dateTime.format(formatter));
-        taskDto.setVariableNameComment(evaluator.getCommentForVariableMap());
         taskDto.setAnswerNameList(TaskParser.getVarNames(task.getCorrectAnswer()));
         taskDto.setVariableNameValue(evaluator.getVariableString(false));
+        evaluator = new TaskEvaluator(task.getVariables());
+        taskDto.setVariableNameComment(evaluator.getCommentForVariableMap());
 
         return taskDto;
     }

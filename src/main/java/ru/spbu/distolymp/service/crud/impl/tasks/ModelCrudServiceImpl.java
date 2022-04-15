@@ -14,7 +14,7 @@ import ru.spbu.distolymp.dto.admin.models.ModelListDto;
 import ru.spbu.distolymp.entity.tasks.Model;
 import ru.spbu.distolymp.exception.common.TechnicalException;
 import ru.spbu.distolymp.mapper.admin.models.api.ModelListMapper;
-import ru.spbu.distolymp.mapper.entity.tasks.ModelMapper;
+import ru.spbu.distolymp.mapper.entity.tasks.api.ModelMapper;
 import ru.spbu.distolymp.repository.tasks.ModelRepository;
 import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
 import ru.spbu.distolymp.service.crud.api.tasks.ModelCrudService;

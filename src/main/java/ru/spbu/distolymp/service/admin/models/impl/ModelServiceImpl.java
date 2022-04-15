@@ -8,9 +8,9 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
 import ru.spbu.distolymp.common.files.FileNameGenerator;
 import ru.spbu.distolymp.common.files.FileUtils;
-import ru.spbu.distolymp.common.tasks.ModelFileContentGenerator;
-import ru.spbu.distolymp.common.tasks.ModelResultHandler;
-import ru.spbu.distolymp.common.tasks.PointParser;
+import ru.spbu.distolymp.common.tasks.filegenerator.ModelFileGenerator;
+import ru.spbu.distolymp.common.tasks.resulthandler.ModelResultHandler;
+import ru.spbu.distolymp.common.tasks.parser.PointParser;
 import ru.spbu.distolymp.dto.admin.models.ModelFilter;
 import ru.spbu.distolymp.dto.admin.models.ModelListDto;
 import ru.spbu.distolymp.dto.admin.models.ModelResultDto;
@@ -22,7 +22,7 @@ import ru.spbu.distolymp.exception.common.ResourceNotFoundException;
 import ru.spbu.distolymp.exception.common.TechnicalException;
 import ru.spbu.distolymp.mapper.admin.models.api.ModelListMapper;
 import ru.spbu.distolymp.mapper.admin.models.api.ModelViewMapper;
-import ru.spbu.distolymp.mapper.entity.tasks.ModelMapper;
+import ru.spbu.distolymp.mapper.entity.tasks.api.ModelMapper;
 import ru.spbu.distolymp.repository.tasks.ModelRepository;
 import ru.spbu.distolymp.service.admin.models.api.ModelService;
 import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
@@ -95,6 +95,13 @@ public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelServi
     @Transactional
     public void updateModel(ModelDto modelDto) {
         Model model = modelMapper.toEntity(modelDto);
+
+        if (modelDto.getId() != null) {
+            String problemForm = getModelById(modelDto.getId())
+                    .orElseThrow(ResourceNotFoundException::new)
+                    .getProblemForm();
+            model.setProblemForm(problemForm);
+        }
         initFields(model);
 
         MultipartFile image = modelDto.getImage();
@@ -154,15 +161,15 @@ public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelServi
     @Override
     @Transactional
     public void copyModel(ModelListDto modelTitleDto) {
-        Model model = getModelById(modelTitleDto.getId())
-                .map(modelMapper::toDto)
-                .map(modelMapper::toEntity)
+        Model originModel = getModelById(modelTitleDto.getId())
                 .orElseThrow(ResourceNotFoundException::new);
+        Model model = modelMapper.toEntity(modelMapper.toDto(originModel));
         model.setId(null);
         model.setTitle(modelTitleDto.getTitle());
         model.setType(1);
         model.setStatus(1);
         model.setMaxPoints(PointParser.calculatePoints(model.getGradePoints()));
+        model.setProblemForm(originModel.getProblemForm());
 
         String imageName = model.getImageFileName();
         String barsicFileName = model.getBarsicFileName();
@@ -199,9 +206,9 @@ public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelServi
                 .map(modelViewMapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
 
-        byte[] paramFile = ModelFileContentGenerator.generateParamFileContent(modelDto.getVariableNameValue());
-        byte[] textFile = ModelFileContentGenerator.generateTextFileContent(modelDto.getParsedProblemText());
-        byte[] resultFile = ModelFileContentGenerator.generateResultFileContent(modelDto);
+        byte[] paramFile = ModelFileGenerator.generateParamFile(modelDto.getVariableNameValue());
+        byte[] textFile = ModelFileGenerator.generateTextFile(modelDto.getParsedProblemText());
+        byte[] resultFile = ModelFileGenerator.generateResultFile(modelDto);
         boolean fileSaved = fileService.saveFile(paramFile, "p-model/param.html");
         if (!fileSaved) throw new TechnicalException();
         fileSaved = fileService.saveFile(textFile, "p-model/text.html");
@@ -221,7 +228,7 @@ public class ModelServiceImpl extends ModelCrudServiceImpl implements ModelServi
         int startIndex = fileContent.indexOf("<input id=\"answerNumber\" type=\"hidden\" value=\"");
         int endIndex = fileContent.indexOf("\"/>", startIndex);
         int userAnswerNumber = Integer.parseInt(fileContent.substring(startIndex + 46, endIndex));
-        Number[] userAnswers = new Number[userAnswerNumber];
+        String[] userAnswers = new String[userAnswerNumber];
         answerDto.setUserAnswers(userAnswers);
         modelMap.put("answer", answerDto);
         modelMap.put("result", new ModelResultDto());
