@@ -12,6 +12,7 @@ import ru.spbu.distolymp.common.tasks.auxiliary.QuestionDto;
 import ru.spbu.distolymp.common.tasks.auxiliary.QuestionType;
 import ru.spbu.distolymp.common.tasks.filegenerator.TestFileGenerator;
 import ru.spbu.distolymp.common.tasks.parser.TestParser;
+import ru.spbu.distolymp.common.tasks.resulthandler.TestResultHandler;
 import ru.spbu.distolymp.dto.admin.tests.*;
 import ru.spbu.distolymp.dto.entity.tasks.TestDto;
 import ru.spbu.distolymp.entity.tasks.Test;
@@ -489,12 +490,32 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
         TestViewDto testDto = testViewMapper.toDto(test, fileContent);
 
         TestAnswerDto answerDto = new TestAnswerDto();
+        int[] questionNumbers = new int[testDto.getQuestionNumber()];
+        for (int i = 0; i < questionNumbers.length; i++) {
+            questionNumbers[i] = testDto.getQuestionList().get(i).getNumber();
+        }
         String[] array = new String[testDto.getQuestionNumber()];
-        answerDto.setQuestions(array);
         answerDto.setUserAnswers(array);
-        answerDto.setTypes(array);
+        answerDto.setQuestions(array);
+        answerDto.setQuestionNumbers(questionNumbers);
 
         modelMap.put("test", testDto);
         modelMap.put("userAnswer", answerDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void fillShowResultPageModelMap(TestAnswerDto answerDto, ModelMap modelMap) {
+        Test test = getTestById(answerDto.getProblemId()).orElseThrow(ResourceNotFoundException::new);
+        String folderName = test.getTestFolder();
+        String parName = test.getParFileName();
+        String fileName = folderName + "/" + parName;
+        byte[] file = fileService.getFileWithName(fileName);
+        String fileContent = new String(file, CHARSET);
+        List<QuestionDto> questionList = TestParser.getQuestions(fileContent);
+        TestResultDto resultDto =
+                TestResultHandler.toResultDto(answerDto, test.isShowResult(), questionList);
+
+        modelMap.put("result", resultDto);
     }
 }

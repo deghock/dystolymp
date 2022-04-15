@@ -138,6 +138,7 @@ public class TestController {
     @PostMapping("/submit-test")
     public String submitTest(@Valid @ModelAttribute("userAnswer") TestAnswerDto answerDto,
                              BindingResult br, ModelMap modelMap) {
+        testService.fillShowResultPageModelMap(answerDto, modelMap);
         return TEST_RESULT_PAGE;
     }
 

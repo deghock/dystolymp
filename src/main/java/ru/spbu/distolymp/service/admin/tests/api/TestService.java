@@ -2,6 +2,7 @@ package ru.spbu.distolymp.service.admin.tests.api;
 
 import org.springframework.ui.ModelMap;
 import ru.spbu.distolymp.common.tasks.auxiliary.QuestionDto;
+import ru.spbu.distolymp.dto.admin.tests.TestAnswerDto;
 import ru.spbu.distolymp.dto.admin.tests.TestFilter;
 import ru.spbu.distolymp.dto.admin.tests.TestListDto;
 import ru.spbu.distolymp.dto.entity.tasks.TestDto;
@@ -25,4 +26,5 @@ public interface TestService {
     void fillShowEditQuestionPageModelMap(Long testId, int number, ModelMap modelMap);
     void fillShowPreviewPageModelMap(Long id, ModelMap modelMap);
     void fillShowViewPageModelMap(Long id, ModelMap modelMap);
+    void fillShowResultPageModelMap(TestAnswerDto answerDto, ModelMap modelMap);
 }

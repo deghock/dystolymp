@@ -11,8 +11,8 @@ public class TestAnswerDto {
     private Long userId;
     private String testStartDateTime;
     private String ip;
-    private String[] questions;
     private String[] userAnswers;
-    private String[] types;
-    private boolean interrupted;
+    private int[] questionNumbers;
+    private String[] questions;
+    private int interrupted;
 }
