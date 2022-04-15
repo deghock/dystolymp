@@ -127,6 +127,16 @@ public class TestServiceImpl extends TestCrudServiceImpl implements TestService 
             if (testDto.getId() == null) {
                 String dirName = FileNameGenerator.generateFileName("");
                 test.setTestFolder(dirName);
+            } else {
+                String oldParamFilePath = test.getTestFolder() + "/" + oldParamFileName;
+                byte[] oldParamFile = fileService.getFileWithName(oldParamFilePath);
+                String oldParamFileContent = new String(oldParamFile, CHARSET);
+                Set<String> oldImagePaths = new HashSet<>();
+                for (QuestionDto question : TestParser.getQuestions(oldParamFileContent)) {
+                    if (!"".equals(question.getImageName().trim()))
+                        oldImagePaths.add(test.getTestFolder() + "/" + question.getImageName());
+                }
+                fileService.deleteFiles(oldImagePaths);
             }
             String fileName = paramFile.getOriginalFilename();
             String testFileName = fileName;
