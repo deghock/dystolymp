@@ -63,7 +63,7 @@
             <div class="input-group" style="align-items: center">
             <label for="limit">На странице:</label>
             <select id="limit">
-                <option value="5">5</option>
+                <option value="10">10</option>
                 <option value="20" selected>20</option>
                 <option value="50">50</option>
                 <option value="100">100</option>
@@ -89,6 +89,9 @@
     <ul class="actions">
         <li>
             <a th:href="@{/towns/add}" class="abutton">Зарегистрировать новый город</a>
+        </li>
+        <li>
+            <a href="#" class="abutton">Назначить видимость выбранным городам</a>
         </li>
         <li>
             <a href="#" onclick="return delTowns()" class="abutton">Удалить выбранные города</a>
