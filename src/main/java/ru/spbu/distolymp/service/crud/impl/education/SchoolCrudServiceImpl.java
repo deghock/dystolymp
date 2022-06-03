@@ -78,7 +78,7 @@ public class SchoolCrudServiceImpl implements SchoolCrudService {
             return schoolMapper.toDtoList(schools);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting schools", e);
-            throw new SchoolCrudException();
+            return new ArrayList<>();
         }
     }
 
@@ -90,7 +90,7 @@ public class SchoolCrudServiceImpl implements SchoolCrudService {
             return schoolMapper.toDtoList(schools);
         } catch (DataAccessException e) {
             log.error("An error occurred while getting schools", e);
-            throw new SchoolCrudException();
+            return new ArrayList<>();
         }
     }
 
