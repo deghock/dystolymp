@@ -34,7 +34,7 @@ public class SchoolSpecsConverter {
         specs.add(countrySpec);
         specs.add(regionSpec);
         specs.add(townSpec);
-        
+
         return specs.stream()
                 .filter(Objects::nonNull)
                 .reduce(Specification::and)

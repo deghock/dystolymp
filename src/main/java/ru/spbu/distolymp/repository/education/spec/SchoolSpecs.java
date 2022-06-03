@@ -34,10 +34,4 @@ public class SchoolSpecs {
         return (root, query, builder) ->
                 builder.equal(root.get("town").<Long> get("id"), townId);
     }
-
-    /*public static Specification<School> containsDistrictId(Long districtId) {
-        return (root, query, builder) ->
-                builder.equal(root.get("district"), districtId);
-    }*/
-
 }
