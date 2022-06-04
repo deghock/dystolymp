@@ -1,0 +1,441 @@
+html {
+  color: #000000;
+  background-image:url(../img/bg.gif);
+}
+body {
+  width: available;
+  font-family: Arial, Helvetica;
+  font-size: 10pt;
+  margin: 0 auto;
+  border: 1px solid #B6A8A5;
+}
+body  {
+/*        scrollbar-face-color:#E9F5FE;
+        scrollbar-highlight-color:#510099;
+        scrollbar-3dlight-color:#FBFDFF;
+        scrollbar-darkshadow-color:#FBFDFF;
+        scrollbar-shadow-color:#510099;
+        scrollbar-arrow-color:#510099;
+        scrollbar-track-color:#FBFDFF; */
+}
+
+#header{
+  background-color: #e3af8b;
+  border-bottom: 1px solid #B6A8A5;
+  overflow:hidden;
+  padding:2px 0;
+}
+#header div{
+  width:45%;
+  float:left;
+  color:#552000;
+  font-weight:bold;
+  text-align:left;
+  margin:0 4px;
+}
+#header ul{
+  float:right;
+  text-align:right;
+  margin:0;
+  padding:0;
+}
+#header ul li{
+  display:inline;
+  color:#552000;
+  font-weight:bold;
+  margin:0 4px;
+}
+#header a:link ,
+#header a:visited{
+  font-weight: normal;
+  text-decoration: none;
+  color: #7D2E00;
+}
+#header a:hover,
+#header a:active {
+  font-weight: normal;
+  text-decoration: none;
+  color: #FF0000;
+}
+
+#footer{
+  background-color: #e3af8b;
+  border-top: 1px solid #B6A8A5;
+  overflow:hidden;
+  padding:2px 0;
+}
+
+#page{
+  margin:10px;
+}
+
+#menustaff{
+  width: 625px;
+  margin: 5px auto;
+  padding: 0px;
+  overflow: hidden;
+}
+#menustaff li{
+  list-style: none;
+  float: left;
+  width: 200px;
+  margin: 1px;
+  padding: 0px;
+  background-color: #e3af8b;
+  text-align: center;
+}
+#menustaff li a{
+  padding: 3px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #552000;
+  display: block;
+}
+#menustaff li a.selected {
+  color:white;
+}
+#menustaff li a:hover,
+#menustaff li a:active  {
+  color: #FF0000;
+}
+
+#menuregistrator{
+  width: 625px;
+  margin: 5px auto;
+  padding: 0px;
+  overflow: hidden;
+}
+#menuregistrator li{
+  list-style: none;
+  float: left;
+  width: 200px;
+  margin: 1px;
+  padding: 0px;
+  background-color: #e3af8b;
+  text-align: center;
+}
+#menuregistrator li a{
+  padding: 3px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #552000;
+  display: block;
+}
+#menuregistrator li a.selected {
+  color:white;
+}
+#menuregistrator li a:hover,
+#menuregistrator li a:active  {
+  color: #FF0000;
+}
+
+#menuuser{
+  width: 625px;
+  margin: 5px auto;
+  padding: 0px;
+  overflow: hidden;
+}
+#menuuser li{
+  list-style: none;
+  float: left;
+  width: 304px;
+  margin: 1px;
+  padding: 0;
+  background-color: #e3af8b;
+  text-align: center;
+}
+#menuuser li a{
+  padding: 3px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #552000;
+  display: block;
+}
+#menuuser li a.selected {
+  color:white;
+}
+#menuuser li a:hover,
+#menuuser li a:active  {
+  color: #FF0000;
+}
+
+#nav{
+  width: 624px;
+  border: 1px solid #B6A8A5;
+  text-align: center;
+  font-style: italic;
+  border-spacing: 1px;
+}
+
+#nav td{
+  border: 1px solid #B6A8A5;
+  padding: 2px;
+}
+
+.footline{
+  font-size:10pt;
+  margin: 2px 0;
+  padding: 0;
+}
+
+h1 {
+  font-size:12pt;
+  color:#000015;
+  text-align:center;
+  font-weight:bold;
+  margin:20px 0 15px;
+}
+
+h3 {
+  font-size:10pt;
+  color:#000015;
+  text-align:center;
+  font-weight:normal;
+}
+
+h3 strong{
+  color:#FF0000;
+  font-weight:normal;
+}
+
+li strong{
+  color:#0000FF;
+  font-size:12pt;
+}
+
+.errorlist {
+  border: 1px solid #FF0000;
+}
+.errorlist li strong{
+  color: #FF0000;
+  font-weight: normal;
+  font-size:1em;
+}
+
+
+table.border   { border-collapse: collapse; border: 1px solid #B6A8A5}
+table.border th  { padding: 2px; border: 1px solid #B6A8A5; background-color: #e3af8b}
+table.border td  { padding: 2px; border: 1px solid #B6A8A5; background-color: #ece5e1}
+table.border td.selcell  {  background-color: #F7E9FE;}
+.attention {color:#FF0000}
+.correctly {color:#008000}
+.partially {color:#0000FF}
+.incorrectly {color:#FF0000}
+.unapproved {color:#000000}
+.canceled {color:#FF0000}
+.alogin, .alogout  {color:#FF0000}
+.aentry, .aexit, .astart {color:#FF0000}
+.aparams {color:#0000FF}
+.aanswer {color:#008000}
+.aerror {color:#FF0000}
+
+table.valueList { border-collapse: collapse;}
+table.valueList th {text-align:left; white-space: nowrap; font-weight:bold; padding:0.1em 0.5em}
+table.valueList td {text-align:left; white-space: nowrap; padding:0.1em 0.5em}
+
+div.bgForm {width:710px; margin:0.5em auto; padding:0.2em; background-color:#E3AF8B}
+
+#registration  label {width: 180px; display:block; float:left; clear:left; margin:0.1em 0}
+#registration label.radio{display:inline; float:none; clear:none; margin:0.1em 1em 0.1em 0.1em}
+#registration legend {color:#000015}
+#registration form .wide {width: 450px}
+#registration input, #registration select {margin:0.1em 0}
+#registration fieldset {margin:0.2em}
+#registration input {border:1px solid #B6A8A5}
+#registration input.error {border:1px solid red}
+
+.tabs{
+  margin: 0 ;
+  padding: 0 0 21px;
+  border-bottom:1px solid black;
+  text-align:center;
+}
+.tabs li{
+  list-style: none;
+  margin:0 5px;
+  padding: 2px;
+  border:1px solid #000015;
+  cursor:pointer;
+  float:left;
+  width:150px;
+  height:16px;
+}
+.tabs li.selected{
+  border-bottom:1px solid #ece5e1;
+}
+
+.infoForm {width:80%; margin:0.5em auto; padding:0.2em; background-color:#E3AF8B}
+.infoForm label {width: 180px; display:block; float:left; clear:left; margin:0.1em 0; font-weight:normal;}
+.infoForm label.radio{display:inline; float:none; clear:none; margin:0.1em 1em 0.1em 0.1em}
+.infoForm legend {color:#000015}
+.infoForm .wide {width: 450px}
+.infoForm input, .infoForm select, .infoForm textarea{margin:0.1em 0}
+.infoForm fieldset {margin:0.2em}
+.infoForm input {border:1px solid #B6A8A5}
+.infoForm input.error {border:1px solid red}
+.infoForm textarea {width:450px; height:100px; border:1px solid #B6A8A5}
+.infoForm  div.property {position:relative;overflow:hidden; font-weight:bold;}
+.infoForm div.property label {width: 200px;}
+.infoForm a.stealth {font-weight: inherit;}
+.infoForm .help {position:relative;}
+.infoForm .help .hint {
+  display:none;
+  position:absolute;
+  left:0;
+  top:0;
+  border:1px solid #B6A8A5;
+  padding:3px;
+  background-color:#ece5e1;
+}
+.infoForm .help:hover .hint {display:block;}
+
+.selectForm {width:80%; margin:0.5em auto; padding:0.2em; background-color:#E3AF8B}
+.selectForm label {width: 100px; display:block; float:left; margin:0.1em 0}
+.selectForm label.radio{display:inline; float:none; margin:0.1em 1em 0.1em 0.1em}
+.selectForm select {width: 590px; margin:0.1em 0}
+.selectForm input {margin:0.1em 0 0.1em 0}
+.selectForm input.value {margin-left: 100px}
+
+.inputForm {width:50%; margin:0.5em auto; padding:0.2em; background-color:#E3AF8B}
+.inputForm label {width: 200px; display:block; float:left; margin:0.1em 0}
+
+.searchForm {width:710px; margin:0.5em auto}
+.searchForm legend {color:#000015}
+.searchForm label {width: 150px; display:block; float:left; margin:0.1em 0}
+.searchForm label.radio{display:inline; float:none; margin:0.1em 1em 0.1em 0.1em}
+.searchForm .wide {width: 550px}
+.searchForm input, .searchForm select {margin:0.1em 0}
+.searchForm input {border:1px solid #B6A8A5}
+
+fieldset.answer { border:1px solid #B6A8A5; padding:0.5em; margin: auto; width:90%}
+fieldset.answer legend { font-size:10pt; color:#000015}
+
+.actions {
+  width: 400px;
+  margin: 5px auto;
+  padding: 0px;
+  overflow: hidden;
+}
+.actions  li{
+  list-style: none;
+  float: left;
+  width: 398px;
+  margin: 1px;
+  padding: 0px;
+  background-color: #e3af8b;
+  text-align: center;
+}
+.actions  li a{
+  padding: 3px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #552000;
+  display: block;
+}
+.actions  li a:hover  {
+/*  color: #FF0000;*/
+  color: #552000;
+  background: #e3af8b url(../img/btn_bg.gif) repeat-x 0 0;
+  padding: 2px 4px 4px 2px;
+  border-left:1px solid #B6A8A5;
+  border-right:1px solid #B6A8A5;
+}
+.actions  li a:active  {
+  color: #552000;
+  background: #e3af8b url(../img/btn_bg.gif) repeat-x 0 -22px;
+  padding: 4px 2px 2px 4px;
+  border-left:1px solid #B6A8A5;
+  border-right:1px solid #B6A8A5;
+}
+
+#error{
+  width:300px;
+  border:1px solid #FF0000;
+  background-color:#FFA8A8;
+  margin:10px auto;
+  padding:10px;
+  text-align:center;
+}
+#message{
+  width:340px;
+  border:1px solid #008800;
+  background-color:#3DEF3C;
+  margin:10px auto;
+  padding:10px;
+  text-align:center;
+}
+
+.loginf   { color: #000000; font-size: 11px; font-family: Verdana,geneva,arial,helvetica; width: 99%;}
+.code    { color: #000000; font-size: 11px; font-family: Verdana,geneva,arial,helvetica; width: 50px;}
+.border   { background-color: #B6A8A5; border-width: 0px;}
+
+
+fieldset.fsborder { border:1px solid #B6A8A5; padding:8px}
+
+.bgLight { background-color: #ece5e1;}
+.bgGrey { background-color: #ece5e1;}
+.bgForm { background-color: #e3af8b;}
+.bgButton { background-color: #e3af8b}
+
+a.stealth {
+  font-weight: normal;
+  text-decoration: none;
+  color: #000000;
+}
+a.stealth:hover,
+a.stealth:active  {
+  text-decoration: underline;
+  color: #FF0000;
+}
+
+a.abutton {
+  font-weight: bold;
+  text-decoration: none;
+  color: #552000;
+}
+a.abutton:hover ,
+a.abutton:active  {
+  color: #FF0000;
+}
+
+a.pbutton {
+  font-weight: bold;
+  font-size: 12pt;
+  text-decoration: underline;
+  color: #0000FF;
+}
+a.pbutton:hover ,
+a.pbutton:active  {
+  text-decoration: none;
+  color: #FF0000;
+}
+
+table#problemText{
+  border:1px solid #000000;
+  border-collapse: collapse;
+  margin:5px 0;
+  width:100%;
+}
+
+table#problemText td{
+  margin:0;
+  padding:3px;
+}
+
+table#problemText h1{
+  font-size:16pt;
+  font-weight:bold;
+}
+table#problemText h2{
+  font-size:14pt;
+  font-weight:bold;
+}
+table#problemText h3{
+  font-size:12pt;
+  font-weight:bold;
+}
+table#problemText h4{
+  font-size:10pt;
+  font-weight:bold;
+  font-style:italic;
+}

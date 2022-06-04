@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <style>
+        p {
+            text-align: center;
+        }
+
+        .center {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+<body class="bgGrey">
+<div th:replace="fragments/menu-staff :: #menustaff"></div>
+
+<div class="container">
+    <p id="title">Списки и преподаватели, автоматически назначаемые группам при регистрации</p>
+    <div class="center">
+        <div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
+
+        <table class="table border center" aria-describedby="title">
+            <tr style="text-align: center">
+                <th id="grade">Класс</th>
+                <th id="list">Cписок</th>
+                <th id="teacher">Преподаватель</th>
+                <th id="registration">Регистрация</th>
+                <th id="codePhrase">Кодовая фраза</th>
+                <th id="replyName">Письмо участнику от имени (email)</th>
+                <th id="serviceEmail">Служебная почта</th>
+                <th id="actions">Действия</th>
+            </tr>
+
+            <!--/*@thymesVar id="grades" type="java.util.List<ru.spbu.distolymp.dto.admin.directories.grades.GradeListDto>"*/-->
+            <tr th:each="grade : ${grades}">
+                <td th:text="${grade.name}"></td>
+                <td>
+                    <span th:if="${grade.listingName} != null">
+                        <a href="#" th:text="${grade.listingName}" class="stealth"></a>
+                    </span>
+                    <span th:unless="${grade.listingName} != null" style="color: red">Не назначен</span>
+                </td>
+                <td>
+                    <span th:if="${grade.staffLogin} != null">
+                        <a href="#" th:text="${grade.staffLogin}" class="stealth"></a>
+                    </span>
+                    <span th:unless="${grade.staffLogin} != null" style="color: red">Не назначен</span>
+                </td>
+                <td>
+                    <span th:if="${grade.registrationStatus} == 'open'">доступна</span>
+                    <span th:unless="${grade.registrationStatus} == 'open'" style="color: red">закрыта</span>
+                </td>
+                <td>
+                    <span th:if="${grade.codePhrase} != null" th:text="${grade.codePhrase}"></span>
+                    <span th:unless="${grade.codePhrase} != null" style="color: red">Не назначена</span>
+                </td>
+                <td>
+                    <span th:if="${grade.replyTo} != null" th:text="${grade.replyTo}"></span>
+                    <span th:unless="${grade.replyTo} != null" style="color: red">Не назначен</span>
+                </td>
+                <td>
+                    <span th:if="${grade.serviceEmail} != null" th:text="${grade.serviceEmail}"></span>
+                    <span th:unless="${grade.serviceEmail} != null" style="color: red">Не назначен</span>
+                </td>
+                <td style="text-align: center">
+                    <a href="#" class="abutton" data-toggle="modal" data-target=".rename-grade"
+                       th:attr="data-id=${grade.id}, data-name=${grade.name}">переименовать</a>
+                    <a th:href="@{/grades/edit/{id}(id=${grade.id})}" class="abutton">изменить</a>
+                    <a th:href="@{/grades/delete/{id}(id=${grade.id})}" class="abutton"
+                       onclick="return window.confirm('Вы уверены?')">удалить</a>
+                </td>
+            </tr>
+        </table>
+
+        <div style="text-align:center; margin:0.5em;">
+            <button type="button" class="btn btn-light border border-dark"
+                    data-toggle="modal" data-target=".new-grade">Добавить новый класс
+            </button>
+        </div>
+
+    </div>
+
+    <div class="modal fade new-grade" id="new-grade-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Добавление нового класса</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!--/*@thymesVar id="grade" type="ru.spbu.distolymp.dto.entity.education.grade.GradeNameDto"*/-->
+                    <form id="new-grade-form" th:object="${grade}"
+                          th:action="@{/grades/add}" method="post">
+                        <div class="form-group">
+                            <label for="new-grade-name">Имя класса</label>
+                            <input th:field="*{name}" placeholder="Новый класс"
+                                   type="text" class="form-control" id="new-grade-name"
+                                   aria-describedby="categoryHelp">
+                            <small id="gradeHelp" class="form-text text-muted">Если имя будет пустым, новый
+                                класс не будет создан.
+                            </small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn  btn-light border border-dark" data-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-light border border-dark" form="new-grade-form">Ок
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade rename-grade" id="rename-grade-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Переименовать класс</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!--/*@thymesVar id="grade" type="ru.spbu.distolymp.dto.entity.education.grade.GradeNameDto"*/-->
+                    <form id="rename-grade-form" th:object="${grade}"
+                          th:action="@{/grades/rename}" method="post">
+                        <div class="form-group">
+                            <label for="update-grade-name">Имя класса</label>
+                            <input th:field="*{name}" placeholder="Новое имя класса"
+                                   type="text" class="form-control" id="update-grade-name"
+                                   aria-describedby="updateGradeHelp">
+                            <small id="updateGradeHelp" class="form-text text-muted">Если имя будет пустым, класс
+                                не будет переименован.
+                            </small>
+                            <label>
+                                <input hidden type="number" th:value="*{id}" th:field="*{id}" id="grade-id">
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn  btn-light border border-dark" data-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-light border border-dark" form="rename-grade-form">Ок
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: #footer"></div>
+</body>
+
+<script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+<script type="text/javascript">
+    $('#new-grade-modal').on('show.bs.modal', function (event) {
+        $('#new-grade-name').val("");
+    });
+
+    $('#rename-grade-modal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var id = button.data('id')
+        var name = button.data('name')
+
+        var modal = $(this)
+        modal.find('.modal-body #update-grade-name').val(name)
+        modal.find('.modal-body #grade-id').val(id)
+    })
+</script>
+
+</html>
