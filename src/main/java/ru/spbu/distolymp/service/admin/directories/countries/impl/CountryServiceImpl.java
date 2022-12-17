@@ -11,16 +11,18 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import ru.spbu.distolymp.dto.admin.directories.countries.CountryDetailsDto;
 import ru.spbu.distolymp.dto.admin.directories.countries.CountryFilter;
-import ru.spbu.distolymp.dto.entity.geography.country.CountryDto;
 import ru.spbu.distolymp.dto.entity.geography.region.RegionNameCodeDto;
+import ru.spbu.distolymp.dto.entity.geography.country.CountryDto;
 import ru.spbu.distolymp.dto.entity.geography.town.TownNameDto;
 import ru.spbu.distolymp.entity.geography.Country;
 import ru.spbu.distolymp.exception.admin.directories.countries.CountryServiceException;
 import ru.spbu.distolymp.mapper.admin.directories.countries.CountryDetailsMapper;
+import ru.spbu.distolymp.mapper.entity.geography.CountryMapper;
+import ru.spbu.distolymp.repository.geography.CountryRepository;
 import ru.spbu.distolymp.repository.geography.RegionRepository;
 import ru.spbu.distolymp.repository.geography.TownRepository;
 import ru.spbu.distolymp.service.admin.directories.countries.api.CountryService;
-import ru.spbu.distolymp.service.crud.api.geography.CountryCrudService;
+import ru.spbu.distolymp.service.crud.impl.geography.CountryCrudServiceImpl;
 import ru.spbu.distolymp.util.admin.directories.countries.CountrySpecsConverter;
 
 import javax.persistence.EntityNotFoundException;
@@ -33,21 +35,20 @@ import java.util.List;
  */
 @Log4j
 @Service
-public class CountryServiceImpl implements CountryService {
+public class CountryServiceImpl extends CountryCrudServiceImpl implements CountryService {
 
     private static final Sort SORT_BY_NAME_ASC = Sort.by("name").ascending();
     private final CountryDetailsMapper countryDetailsMapper;
     private final RegionRepository regionRepository;
     private final TownRepository townRepository;
-    private final CountryCrudService countryCrudService;
 
-    public CountryServiceImpl(CountryDetailsMapper countryDetailsMapper,
-                              RegionRepository regionRepository, TownRepository townRepository,
-                              CountryCrudService countryCrudService) {
+    public CountryServiceImpl(CountryRepository countryRepository, CountryMapper countryMapper,
+                              CountryDetailsMapper countryDetailsMapper, RegionRepository regionRepository,
+                              TownRepository townRepository) {
+        super(countryRepository, countryMapper);
         this.countryDetailsMapper = countryDetailsMapper;
         this.regionRepository = regionRepository;
         this.townRepository = townRepository;
-        this.countryCrudService = countryCrudService;
     }
 
     @Override
@@ -75,20 +76,20 @@ public class CountryServiceImpl implements CountryService {
         }
 
         if (resultSize <= 0) {
-            return countryCrudService.getCountries(specs, SORT_BY_NAME_ASC);
+            return getCountries(specs, SORT_BY_NAME_ASC);
         }
 
         Pageable sortedByNameAsc = getPageableSortedByName(resultSize);
-        return countryCrudService.getCountries(specs, sortedByNameAsc);
+        return getCountries(specs, sortedByNameAsc);
     }
 
     private List<CountryDto> getCountries(int resultSize) {
         if (resultSize <= 0) {
-            return countryCrudService.getCountries(SORT_BY_NAME_ASC);
+            return getCountries(SORT_BY_NAME_ASC);
         }
 
         Pageable pageable = getPageableSortedByName(resultSize);
-        return countryCrudService.getCountries(pageable);
+        return getCountries(pageable);
     }
 
     @Override
@@ -100,15 +101,10 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public void saveOrUpdate(CountryDto countryDto) {
-        countryCrudService.saveOrUpdate(countryDto);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public CountryDetailsDto getCountryDetailsById(Long id) {
         try {
-            Country country = countryCrudService.getCountryById(id)
+            Country country = countryRepository.findById(id)
                     .orElseThrow(EntityNotFoundException::new);
 
             CountryDetailsDto countryDetails = countryDetailsMapper.toDto(country);
@@ -142,7 +138,7 @@ public class CountryServiceImpl implements CountryService {
             throw new CountryServiceException();
         }
 
-        CountryDto country = countryCrudService.getCountryByIdOrNull(id);
+        CountryDto country = getCountryByIdOrNull(id);
         if (country == null) {
             throw new CountryServiceException();
         }
@@ -154,7 +150,7 @@ public class CountryServiceImpl implements CountryService {
     @Transactional
     public void deleteCountriesWithIdIn(Long[] idList) {
         if (idList.length > 0) {
-            countryCrudService.deleteCountriesByIdIn(Arrays.asList(idList));
+            deleteCountriesByIdIn(Arrays.asList(idList));
         }
     }
 

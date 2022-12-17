@@ -10,7 +10,9 @@ import ru.spbu.distolymp.entity.users.Staff;
 import ru.spbu.distolymp.exception.crud.users.staff.StaffCrudServiceException;
 import ru.spbu.distolymp.mapper.entity.users.staff.StaffLoginMapper;
 import ru.spbu.distolymp.repository.users.StaffRepository;
+import ru.spbu.distolymp.service.crud.api.division.DivisionCrudService;
 import ru.spbu.distolymp.service.crud.api.users.StaffCrudService;
+
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
@@ -21,20 +23,17 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class StaffCrudServiceImpl implements StaffCrudService {
+
     private final StaffLoginMapper staffLoginMapper;
+    private final DivisionCrudService divisionCrudService;
     protected final StaffRepository staffRepository;
 
     @Override
     @Transactional(readOnly = true)
-    public Staff getStaffByIdOrNull(Long id) {
-        if (id == null)
-            return null;
-        try {
-            return staffRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        } catch (DataAccessException | EntityNotFoundException e) {
-            log.error("An error occurred while getting staff with id=" + id, e);
-            throw new StaffCrudServiceException();
-        }
+    public Staff getStaffById(Long id) {
+        if (id == null) return null;
+        return staffRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Staff with id=" + id + " was not found"));
     }
 
     @Override
@@ -48,4 +47,5 @@ public class StaffCrudServiceImpl implements StaffCrudService {
             throw new StaffCrudServiceException();
         }
     }
+
 }

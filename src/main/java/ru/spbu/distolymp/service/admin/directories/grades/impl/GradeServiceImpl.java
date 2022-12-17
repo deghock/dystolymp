@@ -69,14 +69,4 @@ public class GradeServiceImpl extends GradeCrudServiceImpl implements GradeServi
         modelMap.put("listingList", listingDtoList);
     }
 
-    @Override
-    public void fillShowChangeRegistrationStatus(ModelMap modelMap, String registrationStatus) {
-        List<GradeListDto> grades = getAllGrades();
-        for (GradeListDto grade : grades) {
-            grade.setRegistrationStatus(registrationStatus);
-            updateGrade(grade);
-        }
-
-        modelMap.put("grades", grades);
-    }
 }
