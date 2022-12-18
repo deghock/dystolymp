@@ -2,16 +2,19 @@ package ru.spbu.distolymp.service.crud.impl.lists;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
+import ru.spbu.distolymp.entity.division.Division;
 import ru.spbu.distolymp.entity.lists.Listing;
 import ru.spbu.distolymp.exception.crud.lists.ListingCrudServiceException;
 import ru.spbu.distolymp.mapper.entity.lists.listing.ListingNameMapper;
 import ru.spbu.distolymp.repository.lists.ListingRepository;
+import ru.spbu.distolymp.service.crud.api.division.DivisionCrudService;
 import ru.spbu.distolymp.service.crud.api.lists.ListingCrudService;
 
 import javax.persistence.EntityNotFoundException;
@@ -22,10 +25,12 @@ import java.util.List;
  */
 @Log4j
 @Service
+@Primary
 @RequiredArgsConstructor
 public class ListingCrudServiceImpl implements ListingCrudService {
     private final ListingNameMapper listingNameMapper;
     protected final ListingRepository listingRepository;
+    private final DivisionCrudService divisionCrudService;
 
     @Override
     @Transactional(readOnly = true)
@@ -58,6 +63,8 @@ public class ListingCrudServiceImpl implements ListingCrudService {
     public void saveNewListing(ListingNameDto listingNameDto) {
         try{
             Listing listing = listingNameMapper.toEntity(listingNameDto);
+            Division division = divisionCrudService.getAnyDivision();
+            listing.setDivision(division);
             listingRepository.save(listing);
         } catch (DataAccessException e){
             log.error("An error occurred while adding a new grade", e);

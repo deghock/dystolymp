@@ -9,18 +9,21 @@ import ru.spbu.distolymp.entity.lists.Listing;
 import ru.spbu.distolymp.mapper.entity.lists.listing.ListingNameMapper;
 import ru.spbu.distolymp.repository.lists.ListingRepository;
 import ru.spbu.distolymp.service.admin.directories.lists.api.ListingService;
+import ru.spbu.distolymp.service.crud.api.division.DivisionCrudService;
 import ru.spbu.distolymp.service.crud.impl.lists.ListingCrudServiceImpl;
 import ru.spbu.distolymp.util.admin.directories.lists.ListingsSpecConverter;
 
 import java.util.List;
+
 
 @Service
 public class ListingServiceImpl extends ListingCrudServiceImpl implements ListingService {
 
     private static final Sort SORT_BY_NAME_ASC = Sort.by("name").ascending();
 
-    public ListingServiceImpl(ListingRepository listingRepository, ListingNameMapper listingNameMapper) {
-        super(listingNameMapper, listingRepository);
+    public ListingServiceImpl(ListingRepository listingRepository, ListingNameMapper listingNameMapper,
+                              DivisionCrudService divisionCrudService) {
+        super(listingNameMapper, listingRepository, divisionCrudService);
     }
 
     @Override
