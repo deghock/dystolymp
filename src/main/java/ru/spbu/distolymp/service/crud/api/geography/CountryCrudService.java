@@ -3,17 +3,21 @@ package ru.spbu.distolymp.service.crud.api.geography;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import ru.spbu.distolymp.dto.admin.directories.countries.CountryNameDto;
 import ru.spbu.distolymp.dto.entity.geography.country.CountryDto;
 import ru.spbu.distolymp.entity.geography.Country;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Daria Usova
  */
 public interface CountryCrudService {
 
-    void save(CountryDto countryDto);
+    Country save(CountryDto countryDto);
+
+    Optional<Country> getCountryById(Long id);
 
     CountryDto getCountryByIdOrNull(Long id);
 
@@ -30,5 +34,9 @@ public interface CountryCrudService {
     void saveOrUpdate(CountryDto countryDto);
 
     void deleteCountriesByIdIn(List<Long> ids);
+
+    List<CountryNameDto> getAllCountries();
+
+    Optional<Country> getCountryByName(String name);
 
 }

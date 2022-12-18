@@ -1,0 +1,29 @@
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+
+<div id="towns-table">
+    <form th:action="@{/towns/delete}" method="post" id="towns">
+        <table class="border center" aria-describedby="title">
+            <tr style="text-align: center">
+                <th id="index">№</th>
+                <th id="check-column">
+                    <input type="checkbox" onclick="checkAll(this.checked);"/>
+                </th>
+                <th id="name">Город</th>
+            </tr>
+
+            <!--/*@thymesVar id="towns" type="java.util.List<ru.spbu.distolymp.dto.entity.geography.town.TownDto>"*/-->
+            <tr th:each="town, iter : ${towns}">
+                <td th:text="${iter.index + 1}"></td>
+                <td>
+                    <input type="checkbox" name="ids" th:value="${town.id}"/>
+                </td>
+                <td>
+                    <a th:href="@{/towns/details/{id}(id=${town.id})}" th:text="${town.name}"
+                       class="stealth"></a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+</html>

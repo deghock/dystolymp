@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <style>
+        p {
+            text-align: center;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey" th:attr="onload=|regionVisibility('${town.region.country.name}')|">
+
+<div th:replace="fragments/menu-staff :: #menustaff"></div>
+
+<!--/*@thymesVar id="town" type="ru.spbu.distolymp.dto.admin.directories.towns.TownDetailsDto"*/-->
+<!--/*@thymesVar id="countries" type="java.util.List<ru.spbu.distolymp.dto.admin.directories.countries.CountryNameDto>"*/-->
+<!--/*@thymesVar id="regions" type="java.util.List<ru.spbu.distolymp.dto.entity.geography.region.RegionNameCodeDto>"*/-->
+<h3>Город
+    <a th:href="@{/towns/details/{id}(id=${town.id})}" class="stealth"><strong
+            th:text="${town.name}">Town_name</strong></a>
+</h3>
+
+<form th:action="@{/towns/save-or-edit}" th:object="${town}" method="post">
+    <div class="infoForm">
+        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{countryName}" id="countryName"/>
+        <fieldset>
+            <legend>Город</legend>
+            <label for="country">Страна:</label>
+            <select th:field="*{region.country.id}" id="country" autocomplete="off">
+                <option th:each="country : ${countries}"
+                        th:value="${country.id}" th:text="${country.name}"
+                        th:attr="onclick=|regionVisibility('${country.name}')|"></option>
+            </select>
+            <br/>
+
+            <div id="regionDiv">
+                <label for="region">Регион РФ:</label>
+                <select th:field="*{region.id}" id="region">
+                    <option th:each="region : ${regions}"
+                            th:value="${region.id}" th:text="${region.code + '. ' + region.name}"></option>
+                </select>
+                <br/>
+            </div>
+
+            <label for="name">Город:</label>
+            <input type="text" class="small" th:field="*{name}" id="name"/>
+            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error">Town name error</span>
+            <br/>
+
+            <label for="visible">Отображение:</label>
+            <select th:field="*{visible}" id="visible">
+                <option th:value="true" th:text="показывается"></option>
+                <option th:value="false" th:text="скрыт"></option>
+            </select>
+            <br/>
+
+            <label for="editing">Добавление районов:</label>
+            <select th:field="*{editing}" id="editing">
+                <option th:value="true" th:text="открыто"></option>
+                <option th:value="false" th:text="закрыто"></option>
+            </select>
+        </fieldset>
+    </div>
+    <div style="text-align:center">
+        <button type="submit">Сохранить</button>
+    </div>
+</form>
+
+<br/>
+
+<div th:replace="fragments/footer :: #footer"></div>
+</body>
+<script type="text/javascript">
+    function regionVisibility(countryName) {
+        setValue();
+        if (countryName === 'Россия' || countryValue() === 'Россия') {
+            document.getElementById('regionDiv').style.display = "block";
+        } else {
+            document.getElementById('regionDiv').style.display = "none";
+        }
+    }
+
+    function countryValue() {
+        return document.getElementById('country').options[document.getElementById('country').selectedIndex].text;
+    }
+
+    function setValue() {
+        document.getElementById('countryName').setAttribute('value', countryValue());
+    }
+</script>
+</html>
