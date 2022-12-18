@@ -1,5 +1,6 @@
 package ru.spbu.distolymp.service.admin.directories.grades.impl;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
@@ -32,7 +33,7 @@ public class GradeServiceImpl extends GradeCrudServiceImpl implements GradeServi
     public GradeServiceImpl(GradeListMapper gradeListMapper, GradeNameMapper gradeNameMapper,
                             GradeMapper gradeMapper, GradeRepository gradeRepository,
                             DivisionCrudService divisionCrudService, StaffCrudService staffCrudService,
-                            ListingCrudService listingCrudService) {
+                            @Qualifier("listingCrudServiceImpl") ListingCrudService listingCrudService) {
         super(gradeListMapper, gradeNameMapper, gradeMapper, gradeRepository, divisionCrudService);
         this.staffCrudService = staffCrudService;
         this.listingCrudService = listingCrudService;

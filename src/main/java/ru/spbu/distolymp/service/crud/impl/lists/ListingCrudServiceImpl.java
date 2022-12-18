@@ -3,6 +3,8 @@ package ru.spbu.distolymp.service.crud.impl.lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
@@ -11,6 +13,7 @@ import ru.spbu.distolymp.exception.crud.lists.ListingCrudServiceException;
 import ru.spbu.distolymp.mapper.entity.lists.listing.ListingNameMapper;
 import ru.spbu.distolymp.repository.lists.ListingRepository;
 import ru.spbu.distolymp.service.crud.api.lists.ListingCrudService;
+
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
@@ -46,6 +49,53 @@ public class ListingCrudServiceImpl implements ListingCrudService {
         } catch (DataAccessException e) {
             log.error("An error occurred while getting all listings", e);
             throw new ListingCrudServiceException();
+        }
+    }
+
+
+    @Override
+    @Transactional
+    public void saveNewListing(ListingNameDto listingNameDto) {
+        try{
+            Listing listing = listingNameMapper.toEntity(listingNameDto);
+            listingRepository.save(listing);
+        } catch (DataAccessException e){
+            log.error("An error occurred while adding a new grade", e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteListing(Long id) {
+        try{
+            Listing listing = getListingByIdOrNull(id);
+            listingRepository.delete(listing);
+        }catch (Exception e){
+
+        }
+    }
+
+    @Override
+    @Transactional
+    public void renameListing(ListingNameDto listingNameDto) {
+        try{
+            Long id = listingNameDto.getId();
+            Listing listing = getListingByIdOrNull(id);
+            listing.setName(listingNameDto.getName());
+            listingRepository.save(listing);
+        }catch (Exception e){
+
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ListingNameDto> getListings(Specification<Listing> specs, Sort sort) {
+        try {
+            List<Listing> listings = listingRepository.findAll(specs, sort);
+            return listingNameMapper.toDtoList(listings);
+        } catch (DataAccessException e) {
+            throw e;
         }
     }
 }
