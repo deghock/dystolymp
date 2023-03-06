@@ -67,7 +67,7 @@ public class ListingCrudServiceImpl implements ListingCrudService {
             listing.setDivision(division);
             listingRepository.save(listing);
         } catch (DataAccessException e){
-            log.error("An error occurred while adding a new grade", e);
+            log.error("An error occurred while adding a new list", e);
         }
     }
 
@@ -78,7 +78,7 @@ public class ListingCrudServiceImpl implements ListingCrudService {
             Listing listing = getListingByIdOrNull(id);
             listingRepository.delete(listing);
         }catch (Exception e){
-
+            log.error("An error occurred while deleting a list", e);
         }
     }
 
@@ -91,7 +91,7 @@ public class ListingCrudServiceImpl implements ListingCrudService {
             listing.setName(listingNameDto.getName());
             listingRepository.save(listing);
         }catch (Exception e){
-
+            log.error("An error occurred while renaming a list", e);
         }
     }
 
@@ -102,6 +102,7 @@ public class ListingCrudServiceImpl implements ListingCrudService {
             List<Listing> listings = listingRepository.findAll(specs, sort);
             return listingNameMapper.toDtoList(listings);
         } catch (DataAccessException e) {
+            log.error("An error occurred while renaming get listings", e);
             throw e;
         }
     }
