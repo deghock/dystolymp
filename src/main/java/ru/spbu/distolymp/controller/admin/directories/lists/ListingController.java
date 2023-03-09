@@ -7,12 +7,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.spbu.distolymp.dto.admin.directories.groups.ConstraintDto;
 import ru.spbu.distolymp.dto.admin.directories.lists.ListingFilter;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
+import ru.spbu.distolymp.dto.entity.tasks.ProblemDto;
 import ru.spbu.distolymp.service.admin.directories.lists.api.ListingService;
 
-
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -53,5 +55,45 @@ public class ListingController {
     public String renameListing(@Valid ListingNameDto listingNameDto) {
         listingService.renameListing(listingNameDto);
         return REDIRECT_LIST;
+    }
+
+    @GetMapping("/available_problems")
+    public String getAvailableProblems(){
+        return "";
+    }
+
+    @PostMapping("/add_problems")
+    public String addProblems(@Valid List<ProblemDto> problemDtoList, Long id){
+        return "";
+    }
+
+    @PostMapping("/add_problems_from")
+    public String addAllFromList(@Valid Long copyId, Long id){
+        return "";
+    }
+
+    @PostMapping("/copy_list")
+    public String copyList(@RequestParam(value = "id") Long id){
+        return "";
+    }
+
+    @PostMapping("/set_constraint")
+    public String setConstraint(@Valid ConstraintDto constraintDto, Long id){
+        return "";
+    }
+
+    @PostMapping("/remove_constraint")
+    public String removeConstraint(@Valid Long id){
+        return "";
+    }
+
+    @PostMapping("/remove_problem")
+    public String removeProblem(@Valid Long id, Long problemId){
+        return "";
+    }
+
+    @PostMapping ("/update_order")
+    String updateOrder(@Valid Long id, Long problemId, String direction){
+        return  "";
     }
 }

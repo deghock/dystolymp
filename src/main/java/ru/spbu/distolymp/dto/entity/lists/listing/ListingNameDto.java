@@ -1,6 +1,7 @@
 package ru.spbu.distolymp.dto.entity.lists.listing;
 
 import lombok.Data;
+import ru.spbu.distolymp.dto.admin.directories.groups.ConstraintDto;
 
 import java.util.List;
 
@@ -9,8 +10,8 @@ import java.util.List;
  */
 @Data
 public class ListingNameDto {
-
     private Long id;
     private String name;
     private List<ListingProblemDto> problemList;
+    private ConstraintDto constraint;
 }
