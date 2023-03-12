@@ -41,4 +41,29 @@ public class ListingServiceImpl extends ListingCrudServiceImpl implements Listin
         Specification<Listing> specs = ListingsSpecConverter.toSpecs(listingFilter);
         return getListings(specs, SORT_BY_NAME_ASC);
     }
+
+    @Override
+    public List<ProblemDto> getAvailableProblems() {
+        return null;
+    }
+
+    @Override
+    public void addProblems(List<ProblemDto> problemDtoList, Long id) {
+
+    }
+
+    @Override
+    public void copyList(Long copyId, Long id) {
+
+    }
+
+    @Override
+    public void removeConstraint(Long id) {
+
+    }
+
+    @Override
+    public void setConstraint(Long id, ConstraintDto constraintDto) {
+
+    }
 }
