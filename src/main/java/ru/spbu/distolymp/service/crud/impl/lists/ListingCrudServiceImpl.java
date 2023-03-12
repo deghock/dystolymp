@@ -15,7 +15,9 @@ import ru.spbu.distolymp.exception.crud.lists.ListingCrudServiceException;
 import ru.spbu.distolymp.mapper.entity.lists.listing.ListingNameMapper;
 import ru.spbu.distolymp.repository.lists.ListingRepository;
 import ru.spbu.distolymp.service.crud.api.division.DivisionCrudService;
+import ru.spbu.distolymp.service.crud.api.groups.ConstraintCrudService;
 import ru.spbu.distolymp.service.crud.api.lists.ListingCrudService;
+import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -31,6 +33,8 @@ public class ListingCrudServiceImpl implements ListingCrudService {
     private final ListingNameMapper listingNameMapper;
     protected final ListingRepository listingRepository;
     private final DivisionCrudService divisionCrudService;
+    private final ListingProblemCrudService listingProblemCrudService;
+    private final ConstraintCrudService constraintCrudService;
 
     @Override
     @Transactional(readOnly = true)
