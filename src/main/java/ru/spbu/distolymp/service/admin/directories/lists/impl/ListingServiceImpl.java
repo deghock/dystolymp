@@ -2,6 +2,7 @@ package ru.spbu.distolymp.service.admin.directories.lists.impl;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import ru.spbu.distolymp.dto.admin.directories.groups.ConstraintDto;
 import ru.spbu.distolymp.dto.admin.directories.lists.ListingFilter;
@@ -31,6 +32,7 @@ public class ListingServiceImpl extends ListingCrudServiceImpl implements Listin
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void fillShowAllListingsModelMap(ModelMap modelMap) {
         modelMap.put("listing", new ListingNameDto());
         modelMap.put("listings", getAllListings());

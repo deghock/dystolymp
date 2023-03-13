@@ -5,8 +5,7 @@ import ru.spbu.distolymp.dto.entity.tasks.ProblemDto;
 
 @Data
 public class ListingProblemDto {
-    private long id;
-    private int order;
-    private ListingNameDto listing;
+    private Long id;
+    private Integer order;
     private ProblemDto problem;
 }

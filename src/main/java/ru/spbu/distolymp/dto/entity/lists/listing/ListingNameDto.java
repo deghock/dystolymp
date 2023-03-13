@@ -12,6 +12,6 @@ import java.util.List;
 public class ListingNameDto {
     private Long id;
     private String name;
-    private List<ListingProblemDto> problemList;
     private ConstraintDto constraint;
+    private List<ListingProblemDto> problemList;
 }
