@@ -147,7 +147,7 @@ public class TaskCrudServiceImpl implements TaskCrudService {
     public void deleteTaskById(Long id) {
         try {
             Task task = taskRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-            if (task.getStatus() == 2) listingProblemCrudService.deleteByProblemId(id);
+            listingProblemCrudService.deleteByProblemId(id);
             taskRepository.delete(task);
         } catch (DataAccessException | EntityNotFoundException e) {
             log.error("An error occurred while deleting a task with id=" + id, e);

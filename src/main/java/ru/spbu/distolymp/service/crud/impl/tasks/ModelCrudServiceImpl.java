@@ -103,7 +103,7 @@ public class ModelCrudServiceImpl implements ModelCrudService {
     public void deleteModelById(Long id) {
         try {
             Model model = getModelById(id).orElseThrow(EntityNotFoundException::new);
-            if (model.getStatus() == 2) listingProblemCrudService.deleteByProblemId(id);
+            listingProblemCrudService.deleteByProblemId(id);
             modelRepository.delete(model);
         } catch (DataAccessException | EntityNotFoundException e) {
             log.error("An error occurred while deleting a model with id=" + id, e);

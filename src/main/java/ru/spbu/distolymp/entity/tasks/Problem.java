@@ -42,5 +42,4 @@ public class Problem {
 
     @OneToMany(mappedBy = "problem", cascade = CascadeType.REMOVE)
     private List<Answer> answerList;
-
 }

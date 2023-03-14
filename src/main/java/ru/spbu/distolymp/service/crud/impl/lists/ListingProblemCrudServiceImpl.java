@@ -24,6 +24,7 @@ public class ListingProblemCrudServiceImpl implements ListingProblemCrudService 
     @Override
     @Transactional
     public void deleteByProblemId(Long problemId) {
+        System.out.println("deleted");
         try {
             listingProblemRepository.deleteAllByProblemId(problemId);
             updateProblemOrder();

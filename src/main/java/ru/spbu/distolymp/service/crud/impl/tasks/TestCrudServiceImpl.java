@@ -106,7 +106,7 @@ public class TestCrudServiceImpl implements TestCrudService {
     public void deleteTestById(Long id) {
         try {
             Test test = getTestById(id).orElseThrow(EntityNotFoundException::new);
-            if (test.getStatus() == 2) listingProblemCrudService.deleteByProblemId(id);
+            listingProblemCrudService.deleteByProblemId(id);
             testRepository.delete(test);
         } catch (DataAccessException | EntityNotFoundException e) {
             log.error("An error occurred while deleting a test with id=" + id, e);
