@@ -182,11 +182,23 @@ public class ListingCrudServiceImpl implements ListingCrudService {
     public void updateOrder(Long id, Long problemId, Integer direction){
         try{
             Listing listing = getListingByIdOrNull(id);
-            List<ListingProblems> listingProblemsList = listing.getProblemList();
-            ListingProblems listingProblems = listingProblemCrudService.findByIdOrNull(problemId);
-            listingProblemsList.sort(ListingProblems::compareTo);
+            if(listing != null){
+                listing.setProblemList(updateProblemOrder(listingProblemCrudService.findByIdOrNull(problemId), listing.getProblemList(), direction));
+                listingRepository.save(listing);
+            }else{
+                throw new EntityNotFoundException();
+            }
+        }catch (Exception e){
+            log.error("An error occurred while updating order in list", e);
+            throw e;
+        }
+    }
 
-            int index = listingProblemsList.indexOf(listingProblems);
+    private List<ListingProblems> updateProblemOrder(ListingProblems listingProblems, List<ListingProblems> listingProblemsList, Integer direction){
+        listingProblemsList.sort(ListingProblems::compareTo);
+        int index = listingProblemsList.indexOf(listingProblems);
+        if(index != -1)
+        {
             if(direction == 1){
                 if(index != 0){
                     listingProblemsList.get(index).setOrder(listingProblemsList.get(index).getOrder() - 1);
@@ -197,12 +209,7 @@ public class ListingCrudServiceImpl implements ListingCrudService {
                 listingProblemsList.get(index).setOrder(listingProblemsList.get(index).getOrder() + 1);
                 listingProblemsList.get(index - 1).setOrder(listingProblemsList.get(index).getOrder() - 1);
             }
-            listing.setProblemList(listingProblemsList);
-            listingRepository.save(listing);
-
-        }catch (Exception e){
-            log.error("An error occurred while updating order in list", e);
-            throw e;
         }
+        return listingProblemsList;
     }
 }
