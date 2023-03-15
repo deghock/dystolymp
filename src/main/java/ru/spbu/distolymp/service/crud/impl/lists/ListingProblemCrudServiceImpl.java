@@ -41,4 +41,20 @@ public class ListingProblemCrudServiceImpl implements ListingProblemCrudService 
                 problemList.get(i).setOrder(i + 1);
         }
     }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public ListingProblems findByIdOrNull(Long id){
+        if(id == null){
+            return null;
+        }
+        try {
+            return listingProblemRepository.findFirstById(id);
+        } catch (DataAccessException e) {
+            log.error("An error occurred when finding with id=" + id, e);
+            throw new TechnicalException();
+        }
+
+    }
 }

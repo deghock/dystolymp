@@ -123,14 +123,14 @@ public class ListingCrudServiceImpl implements ListingCrudService {
 
     @Transactional
     public void addProblems(List<ProblemDto> problemDtoList, Long id){
-        List<ListingProblems> problems = getListingByIdOrNull(id).getProblemList();
+        Listing listing = getListingByIdOrNull(id);
+        List<ListingProblems> problems = listing.getProblemList();
         for(int i = 0; i < problemDtoList.size(); i++){
             problems.add(new ListingProblems());
             problems.get(i + problems.size()).setListing(getListingByIdOrNull(id));
             problems.get(i + problems.size()).setProblem(problemCrudService.getProblemById(problemDtoList.get(i).getId()));
             problems.get(i + problems.size()).setOrder(i + problems.size() + 1);
         }
-        Listing listing = getListingByIdOrNull(id);
         listing.setProblemList(problems);
         listingRepository.save(listing);
     }
@@ -148,4 +148,37 @@ public class ListingCrudServiceImpl implements ListingCrudService {
         listing.setConstraint(null);
         listingRepository.save(listing);
     }
+
+    @Transactional
+    public void removeProblem(Long id, Long problemListingId){
+        Listing listing = getListingByIdOrNull(id);
+        ListingProblems listingProblems = listingProblemCrudService.findByIdOrNull(problemListingId);
+        listing.getProblemList().remove(listingProblems);
+        listingRepository.save(listing);
+    }
+
+    @Transactional
+    public void updateOrder(Long id, Long problemId, Integer direction){
+        Listing listing = getListingByIdOrNull(id);
+        List<ListingProblems> listingProblemsList = listing.getProblemList();
+        ListingProblems listingProblems = listingProblemCrudService.findByIdOrNull(problemId);
+        listingProblemsList.sort(ListingProblems::compareTo);
+
+        int index = listingProblemsList.indexOf(listingProblems);
+        if(direction == 1){
+            if(index != 0){
+                listingProblemsList.get(index).setOrder(listingProblemsList.get(index).getOrder() - 1);
+                listingProblemsList.get(index - 1).setOrder(listingProblemsList.get(index).getOrder() + 1);
+            }
+        }
+        else if(index != listingProblemsList.size() - 1){
+            listingProblemsList.get(index).setOrder(listingProblemsList.get(index).getOrder() + 1);
+            listingProblemsList.get(index - 1).setOrder(listingProblemsList.get(index).getOrder() - 1);
+        }
+        listing.setProblemList(listingProblemsList);
+
+        listingRepository.save(listing);
+    }
+
+
 }

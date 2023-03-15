@@ -10,6 +10,7 @@ import java.util.List;
  */
 public interface ListingProblemRepository extends CrudRepository<ListingProblems, Long> {
     List<ListingProblems> findAllByListingIdOrderByOrder(Long listingId);
+    ListingProblems findFirstById(Long id);
     @Query("select distinct lp.listing.id from ListingProblems lp")
     List<Long> findDistinctListingIds();
     void deleteAllByProblemId(Long problemId);

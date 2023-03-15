@@ -61,12 +61,8 @@ public class ListingServiceImpl extends ListingCrudServiceImpl implements Listin
     }
 
     @Override
-    public void removeProblem(Long problemId, Long id) {
-
-    }
-
-    @Override
     public void addAllFromList(Long copyId, Long id) {
         
     }
+
 }

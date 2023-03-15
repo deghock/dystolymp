@@ -95,11 +95,13 @@ public class ListingController {
 
     @PostMapping("/remove_problem")
     public String removeProblem(@Valid Long id, Long problemId){
+        listingService.removeProblem(id, problemId);
         return "";
     }
 
     @PostMapping ("/update_order")
-    String updateOrder(@Valid Long id, Long problemListingId, String direction){
+    String updateOrder(@Valid Long id, Long problemListingId, int direction){
+        listingService.updateOrder(id, problemListingId, direction);
         return  "";
     }
 }
