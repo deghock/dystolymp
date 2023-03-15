@@ -59,31 +59,37 @@ public class ListingController {
 
     @GetMapping("/available_problems")
     public String getAvailableProblems(){
+        listingService.getAvailableProblems();
         return "";
     }
 
     @PostMapping("/add_problems")
     public String addProblems(@Valid List<ProblemDto> problemDtoList, Long id){
+        listingService.addProblems(problemDtoList, id);
         return "";
     }
 
     @PostMapping("/add_problems_from")
     public String addAllFromList(@Valid Long copyId, Long id){
+        //listingService.addProblems();
         return "";
     }
 
     @PostMapping("/copy_list")
-    public String copyList(@RequestParam(value = "id") Long id){
+    public String copyList(@RequestParam(value = "id") Long id,@RequestParam(value = "copyId") Long copyId, @RequestParam(value = "prefix") String prefix, @RequestParam(value = "newName") String newName){
+        listingService.copyList(id, copyId, newName, prefix);
         return "";
     }
 
     @PostMapping("/set_constraint")
     public String setConstraint(@Valid ConstraintDto constraintDto, Long id){
+        listingService.setConstraint(id, constraintDto);
         return "";
     }
 
     @PostMapping("/remove_constraint")
     public String removeConstraint(@Valid Long id){
+        listingService.removeConstraint(id);
         return "";
     }
 
@@ -93,7 +99,7 @@ public class ListingController {
     }
 
     @PostMapping ("/update_order")
-    String updateOrder(@Valid Long id, Long problemId, String direction){
+    String updateOrder(@Valid Long id, Long problemListingId, String direction){
         return  "";
     }
 }

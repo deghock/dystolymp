@@ -24,9 +24,15 @@ public interface ListingService {
 
     void addProblems(List<ProblemDto> problemDtoList, Long id);
 
-    void copyList(Long copyId, Long id);
+    void copyList(Long copyId, Long id, String newListingName, String prefix);
 
     void removeConstraint(Long id);
 
     void setConstraint(Long id, ConstraintDto constraintDto);
+
+    void updateOrder(Long problemId, Long id, Integer direction);
+
+    void removeProblem(Long problemId, Long id);
+
+    void addAllFromList(Long copyId, Long id);
 }

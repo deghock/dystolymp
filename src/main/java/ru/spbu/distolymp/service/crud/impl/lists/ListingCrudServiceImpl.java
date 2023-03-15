@@ -8,16 +8,20 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.spbu.distolymp.dto.admin.directories.groups.ConstraintDto;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
+import ru.spbu.distolymp.dto.entity.tasks.ProblemDto;
 import ru.spbu.distolymp.entity.division.Division;
 import ru.spbu.distolymp.entity.lists.Listing;
+import ru.spbu.distolymp.entity.lists.ListingProblems;
 import ru.spbu.distolymp.exception.crud.lists.ListingCrudServiceException;
+import ru.spbu.distolymp.mapper.admin.directories.groups.ConstraintMapper;
 import ru.spbu.distolymp.mapper.entity.lists.listing.ListingNameMapper;
 import ru.spbu.distolymp.repository.lists.ListingRepository;
 import ru.spbu.distolymp.service.crud.api.division.DivisionCrudService;
-import ru.spbu.distolymp.service.crud.api.groups.ConstraintCrudService;
 import ru.spbu.distolymp.service.crud.api.lists.ListingCrudService;
 import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
+import ru.spbu.distolymp.service.crud.api.tasks.ProblemCrudService;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -34,7 +38,8 @@ public class ListingCrudServiceImpl implements ListingCrudService {
     protected final ListingRepository listingRepository;
     private final DivisionCrudService divisionCrudService;
     private final ListingProblemCrudService listingProblemCrudService;
-    private final ConstraintCrudService constraintCrudService;
+    private final ConstraintMapper constraintMapper;
+    private final ProblemCrudService problemCrudService;
 
     @Override
     @Transactional(readOnly = true)
@@ -109,5 +114,38 @@ public class ListingCrudServiceImpl implements ListingCrudService {
             log.error("An error occurred while renaming get listings", e);
             throw e;
         }
+    }
+
+    @Transactional(readOnly = true)
+    protected List<ProblemDto> getProblems(){
+        return problemCrudService.getAvailableProblems();
+    }
+
+    @Transactional
+    public void addProblems(List<ProblemDto> problemDtoList, Long id){
+        List<ListingProblems> problems = getListingByIdOrNull(id).getProblemList();
+        for(int i = 0; i < problemDtoList.size(); i++){
+            problems.add(new ListingProblems());
+            problems.get(i + problems.size()).setListing(getListingByIdOrNull(id));
+            problems.get(i + problems.size()).setProblem(problemCrudService.getProblemById(problemDtoList.get(i).getId()));
+            problems.get(i + problems.size()).setOrder(i + problems.size() + 1);
+        }
+        Listing listing = getListingByIdOrNull(id);
+        listing.setProblemList(problems);
+        listingRepository.save(listing);
+    }
+
+    @Transactional
+    public void setConstraint(Long id, ConstraintDto constraintDto) {
+        Listing listing = getListingByIdOrNull(id);
+        listing.setConstraint(constraintMapper.toEntity(constraintDto));
+        listingRepository.save(listing);
+    }
+
+    @Transactional
+    public void removeConstraint(Long id){
+        Listing listing = getListingByIdOrNull(id);
+        listing.setConstraint(null);
+        listingRepository.save(listing);
     }
 }
