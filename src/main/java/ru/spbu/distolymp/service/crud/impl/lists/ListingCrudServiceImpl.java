@@ -2,6 +2,7 @@ package ru.spbu.distolymp.service.crud.impl.lists;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import org.hibernate.exception.DataException;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
@@ -75,7 +76,7 @@ public class ListingCrudServiceImpl implements ListingCrudService {
             Division division = divisionCrudService.getAnyDivision();
             listing.setDivision(division);
             listingRepository.save(listing);
-        } catch (DataAccessException e){
+        } catch (DataException e){
             log.error("An error occurred while adding a new list", e);
         }
     }
@@ -123,62 +124,85 @@ public class ListingCrudServiceImpl implements ListingCrudService {
 
     @Transactional
     public void addProblems(List<ProblemDto> problemDtoList, Long id){
-        Listing listing = getListingByIdOrNull(id);
-        List<ListingProblems> problems = listing.getProblemList();
-        for(int i = 0; i < problemDtoList.size(); i++){
-            problems.add(new ListingProblems());
-            problems.get(i + problems.size()).setListing(getListingByIdOrNull(id));
-            problems.get(i + problems.size()).setProblem(problemCrudService.getProblemById(problemDtoList.get(i).getId()));
-            problems.get(i + problems.size()).setOrder(i + problems.size() + 1);
+        try{
+            Listing listing = getListingByIdOrNull(id);
+            List<ListingProblems> problems = listing.getProblemList();
+            for(int i = 0; i < problemDtoList.size(); i++){
+                problems.add(new ListingProblems());
+                problems.get(i + problems.size()).setListing(getListingByIdOrNull(id));
+                problems.get(i + problems.size()).setProblem(problemCrudService.getProblemById(problemDtoList.get(i).getId()));
+                problems.get(i + problems.size()).setOrder(i + problems.size() + 1);
+            }
+            listing.setProblemList(problems);
+            listingRepository.save(listing);
+        }catch (DataAccessException e){
+            log.error("An error occurred while adding problems to list", e);
+            throw e;
         }
-        listing.setProblemList(problems);
-        listingRepository.save(listing);
     }
 
     @Transactional
     public void setConstraint(Long id, ConstraintDto constraintDto) {
-        Listing listing = getListingByIdOrNull(id);
-        listing.setConstraint(constraintMapper.toEntity(constraintDto));
-        listingRepository.save(listing);
+        try{
+            Listing listing = getListingByIdOrNull(id);
+            listing.setConstraint(constraintMapper.toEntity(constraintDto));
+            listingRepository.save(listing);
+        }catch (Exception e){
+            log.error("An error occurred while setting constraint to list", e);
+            throw e;
+        }
     }
 
     @Transactional
     public void removeConstraint(Long id){
-        Listing listing = getListingByIdOrNull(id);
-        listing.setConstraint(null);
-        listingRepository.save(listing);
+        try{
+            Listing listing = getListingByIdOrNull(id);
+            listing.setConstraint(null);
+            listingRepository.save(listing);
+        }catch (Exception e){
+            log.error("An error occurred while removing constraint from list", e);
+            throw e;
+        }
     }
 
     @Transactional
     public void removeProblem(Long id, Long problemListingId){
-        Listing listing = getListingByIdOrNull(id);
-        ListingProblems listingProblems = listingProblemCrudService.findByIdOrNull(problemListingId);
-        listing.getProblemList().remove(listingProblems);
-        listingRepository.save(listing);
+        try{
+            Listing listing = getListingByIdOrNull(id);
+            ListingProblems listingProblems = listingProblemCrudService.findByIdOrNull(problemListingId);
+            listing.getProblemList().remove(listingProblems);
+            listingRepository.save(listing);
+        }catch (Exception e){
+            log.error("An error occurred while removing problem from list", e);
+            throw e;
+        }
     }
 
     @Transactional
     public void updateOrder(Long id, Long problemId, Integer direction){
-        Listing listing = getListingByIdOrNull(id);
-        List<ListingProblems> listingProblemsList = listing.getProblemList();
-        ListingProblems listingProblems = listingProblemCrudService.findByIdOrNull(problemId);
-        listingProblemsList.sort(ListingProblems::compareTo);
+        try{
+            Listing listing = getListingByIdOrNull(id);
+            List<ListingProblems> listingProblemsList = listing.getProblemList();
+            ListingProblems listingProblems = listingProblemCrudService.findByIdOrNull(problemId);
+            listingProblemsList.sort(ListingProblems::compareTo);
 
-        int index = listingProblemsList.indexOf(listingProblems);
-        if(direction == 1){
-            if(index != 0){
-                listingProblemsList.get(index).setOrder(listingProblemsList.get(index).getOrder() - 1);
-                listingProblemsList.get(index - 1).setOrder(listingProblemsList.get(index).getOrder() + 1);
+            int index = listingProblemsList.indexOf(listingProblems);
+            if(direction == 1){
+                if(index != 0){
+                    listingProblemsList.get(index).setOrder(listingProblemsList.get(index).getOrder() - 1);
+                    listingProblemsList.get(index - 1).setOrder(listingProblemsList.get(index).getOrder() + 1);
+                }
             }
-        }
-        else if(index != listingProblemsList.size() - 1){
-            listingProblemsList.get(index).setOrder(listingProblemsList.get(index).getOrder() + 1);
-            listingProblemsList.get(index - 1).setOrder(listingProblemsList.get(index).getOrder() - 1);
-        }
-        listing.setProblemList(listingProblemsList);
+            else if(index != listingProblemsList.size() - 1){
+                listingProblemsList.get(index).setOrder(listingProblemsList.get(index).getOrder() + 1);
+                listingProblemsList.get(index - 1).setOrder(listingProblemsList.get(index).getOrder() - 1);
+            }
+            listing.setProblemList(listingProblemsList);
+            listingRepository.save(listing);
 
-        listingRepository.save(listing);
+        }catch (Exception e){
+            log.error("An error occurred while updating order in list", e);
+            throw e;
+        }
     }
-
-
 }
