@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import ru.spbu.distolymp.dto.admin.directories.lists.ListingFilter;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
-import ru.spbu.distolymp.dto.entity.tasks.ProblemDto;
 import ru.spbu.distolymp.entity.lists.Listing;
 import ru.spbu.distolymp.mapper.admin.directories.groups.ConstraintMapper;
 import ru.spbu.distolymp.mapper.entity.lists.listing.ListingNameMapper;
@@ -44,10 +43,4 @@ public class ListingServiceImpl extends ListingCrudServiceImpl implements Listin
         Specification<Listing> specs = ListingsSpecConverter.toSpecs(listingFilter);
         return getListings(specs, SORT_BY_NAME_ASC);
     }
-
-    @Override
-    public List<ProblemDto> getAvailableProblems() {
-        return getProblems();
-    }
-
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.dto.admin.directories.groups.ConstraintDto;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
+import ru.spbu.distolymp.dto.entity.lists.listing.ListingProblemDto;
 import ru.spbu.distolymp.dto.entity.tasks.ProblemDto;
 import ru.spbu.distolymp.entity.division.Division;
 import ru.spbu.distolymp.entity.lists.Listing;
@@ -120,13 +121,13 @@ public class ListingCrudServiceImpl implements ListingCrudService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProblemDto> getProblems(){
+    public List<ProblemDto> getAvailableProblems(){
         return problemCrudService.getAvailableProblems();
     }
 
     @Override
     @Transactional
-    public void addProblems(List<Long> problemDtoList, Long id){
+    public List<ListingProblemDto> addProblems(List<Long> problemDtoList, Long id){
         try{
             Listing listing = getListingByIdOrNull(id);
             List<ListingProblems> problems = listing.getProblemList();
@@ -138,6 +139,7 @@ public class ListingCrudServiceImpl implements ListingCrudService {
             }
             listing.setProblemList(problems);
             listingRepository.save(listing);
+            return listingNameMapper.toDto(listing).getProblemList();
         }catch (DataAccessException e){
             log.error("An error occurred while adding problems to list", e);
             throw e;
@@ -146,11 +148,12 @@ public class ListingCrudServiceImpl implements ListingCrudService {
 
     @Override
     @Transactional
-    public void setConstraint(Long id, ConstraintDto constraintDto){
+    public ConstraintDto setConstraint(Long id, ConstraintDto constraintDto){
         try{
             Listing listing = getListingByIdOrNull(id);
             listing.setConstraint(constraintMapper.toEntity(constraintDto));
             listingRepository.save(listing);
+            return listingNameMapper.toDto(listing).getConstraint();
         }catch (Exception e){
             log.error("An error occurred while setting constraint to list", e);
             throw e;
@@ -172,12 +175,13 @@ public class ListingCrudServiceImpl implements ListingCrudService {
 
     @Override
     @Transactional
-    public void removeProblem(Long id, Long problemListingId){
+    public List<ListingProblemDto> removeProblem(Long id, Long problemListingId){
         try{
             Listing listing = getListingByIdOrNull(id);
             ListingProblems listingProblems = listingProblemCrudService.findByIdOrNull(problemListingId);
             listing.getProblemList().remove(listingProblems);
             listingRepository.save(listing);
+            return listingNameMapper.toDto(listing).getProblemList();
         }catch (Exception e){
             log.error("An error occurred while removing problem from list", e);
             throw e;
@@ -186,12 +190,13 @@ public class ListingCrudServiceImpl implements ListingCrudService {
 
     @Override
     @Transactional
-    public void updateOrder(Long id, Long problemId, Integer direction){
+    public List<ListingProblemDto> updateOrder(Long id, Long problemId, Integer direction){
         try{
             Listing listing = getListingByIdOrNull(id);
             if(listing != null){
                 listing.setProblemList(updateProblemOrder(listingProblemCrudService.findByIdOrNull(problemId), listing.getProblemList(), direction));
                 listingRepository.save(listing);
+                return listingNameMapper.toDto(listing).getProblemList();
             }else{
                 throw new EntityNotFoundException();
             }
@@ -232,12 +237,12 @@ public class ListingCrudServiceImpl implements ListingCrudService {
 
     @Override
     @Transactional
-    public void addAllFromList(Long copyId, Long id){
+    public List<ListingProblemDto> addAllFromList(Long copyId, Long id){
         List<ListingProblems> copyListing = getListingByIdOrNull(copyId).getProblemList();
         List<Long> problemIds = new ArrayList<>();
         for (ListingProblems problems : copyListing) {
             problemIds.add(problems.getProblem().getId());
         }
-        addProblems(problemIds, id);
+        return addProblems(problemIds, id);
     }
 }

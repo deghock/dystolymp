@@ -4,6 +4,7 @@ import org.springframework.ui.ModelMap;
 import ru.spbu.distolymp.dto.admin.directories.groups.ConstraintDto;
 import ru.spbu.distolymp.dto.admin.directories.lists.ListingFilter;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
+import ru.spbu.distolymp.dto.entity.lists.listing.ListingProblemDto;
 import ru.spbu.distolymp.dto.entity.tasks.ProblemDto;
 
 import java.util.List;
@@ -24,17 +25,17 @@ public interface ListingService {
 
     List<ProblemDto> getAvailableProblems();
 
-    void addProblems(List<Long> problemIds, Long id);
+    List<ListingProblemDto> addProblems(List<Long> problemIds, Long id);
 
     void copyList(Long copyId, String newListingName, String prefix);
 
     void removeConstraint(Long id);
 
-    void setConstraint(Long id, ConstraintDto constraintDto);
+    ConstraintDto setConstraint(Long id, ConstraintDto constraintDto);
 
-    void updateOrder(Long problemId, Long id, Integer direction);
+    List<ListingProblemDto> updateOrder(Long problemId, Long id, Integer direction);
 
-    void removeProblem(Long problemId, Long id);
+    List<ListingProblemDto> removeProblem(Long problemId, Long id);
 
-    void addAllFromList(Long copyId, Long id);
+    List<ListingProblemDto> addAllFromList(Long copyId, Long id);
 }

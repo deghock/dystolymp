@@ -26,10 +26,25 @@ public class ListingController {
     private static final String REDIRECT_LIST = "redirect:/lists/list";
     private static final String LISTING_SCROLL = ROOT + "listing-scroll :: #listing";
 
+    //TODO: Возможно понадобятся элементы, не до конца понимаю как работает редирект
+    private static final String ADD_FROM_LISTING_SCROLL = ROOT + "listing-from-scroll :: #listing";
+    private static final String LISTING_PROBLEM_TABLE = ROOT + "listing-problem-table :: #listing";
+    private static final String AVAILABLE_PROBLEMS_SCROLL = ROOT + "available-problems-scroll :: #listing";
+    private static final String CONSTRAINT_TABLE = ROOT + "constraint-table :: #listing";
+
+
+    //TODO: Разобраться с вводом данных с фронтэнда
+
     @GetMapping("/list")
     public String showAllListings(ModelMap modelMap) {
         listingService.fillShowAllListingsModelMap(modelMap);
         return LIST;
+    }
+
+    @GetMapping("/lists_available")
+    public String showAvailableListing(ModelMap modelMap){
+        listingService.fillShowAllListingsModelMap(modelMap);
+        return ADD_FROM_LISTING_SCROLL;
     }
 
     @GetMapping("/filter")
@@ -57,50 +72,51 @@ public class ListingController {
     }
 
     @GetMapping("/available_problems")
-    public String getAvailableProblems(){
-        listingService.getAvailableProblems();
-        return "";
-    }
-
-    @PostMapping("/add_problems")
-    public String addProblems(@Valid List<Long> problemIds, Long id){
-        listingService.addProblems(problemIds, id);
-        return "";
-    }
-
-    @PostMapping("/add_problems_from")
-    public String addAllFromList(@Valid Long copyId, Long id){
-        listingService.addAllFromList(copyId, id);
-        return "";
+    public String getAvailableProblems(ModelMap modelMap){
+        modelMap.put("available_problems", listingService.getAvailableProblems());
+        return AVAILABLE_PROBLEMS_SCROLL;
     }
 
     @PostMapping("/copy_list")
-    public String copyList(@RequestParam(value = "copyId") Long copyId, @RequestParam(value = "prefix") String prefix, @RequestParam(value = "newName") String newName){
+    public String copyList(Long copyId, String prefix, String newName){
         listingService.copyList(copyId, newName, prefix);
-        return "";
+        return REDIRECT_LIST;
+    }
+
+    @PostMapping("/add_problems")
+    public String addProblems(ModelMap modelMap, List<Long> problemIds, Long id){
+        modelMap.put("problems", listingService.addProblems(problemIds, id));
+        return LISTING_PROBLEM_TABLE;
     }
 
     @PostMapping("/set_constraint")
-    public String setConstraint(@Valid ConstraintDto constraintDto, Long id){
-        listingService.setConstraint(id, constraintDto);
-        return "";
+    public String setConstraint(ModelMap modelMap, ConstraintDto constraintDto, Long id){
+        modelMap.put("constraint", listingService.setConstraint(id, constraintDto));
+        return CONSTRAINT_TABLE;
     }
 
     @PostMapping("/remove_constraint")
-    public String removeConstraint(@Valid Long id){
+    public String removeConstraint(ModelMap modelMap, Long id){
         listingService.removeConstraint(id);
-        return "";
+        modelMap.put("constraint", null);
+        return CONSTRAINT_TABLE;
+    }
+
+    @PostMapping("/add_problems_from")
+    public String addAllFromList(ModelMap modelMap, Long copyId, Long id){
+        modelMap.put("problems", listingService.addAllFromList(copyId, id));
+        return LISTING_PROBLEM_TABLE;
     }
 
     @PostMapping("/remove_problem")
-    public String removeProblem(@Valid Long id, Long problemId){
-        listingService.removeProblem(id, problemId);
-        return "";
+    public String removeProblem(ModelMap modelMap, Long id, Long problemId){
+        modelMap.put("problems", listingService.removeProblem(id, problemId));
+        return LISTING_PROBLEM_TABLE;
     }
 
     @PostMapping ("/update_order")
-    String updateOrder(@Valid Long id, Long problemListingId, int direction){
-        listingService.updateOrder(id, problemListingId, direction);
-        return  "";
+    String updateOrder(ModelMap modelMap, Long id, Long problemListingId, Integer direction){
+        modelMap.put("problems", listingService.updateOrder(id, problemListingId, direction));
+        return  LISTING_PROBLEM_TABLE;
     }
 }

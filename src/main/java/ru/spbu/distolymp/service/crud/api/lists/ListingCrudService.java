@@ -4,8 +4,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import ru.spbu.distolymp.dto.admin.directories.groups.ConstraintDto;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
+import ru.spbu.distolymp.dto.entity.lists.listing.ListingProblemDto;
 import ru.spbu.distolymp.dto.entity.tasks.ProblemDto;
 import ru.spbu.distolymp.entity.lists.Listing;
+
 import java.util.List;
 
 /**
@@ -24,19 +26,19 @@ public interface ListingCrudService {
 
     List<ListingNameDto> getListings(Specification<Listing> specs, Sort sort);
 
-    void addAllFromList(Long copyId, Long id);
+    List<ListingProblemDto> addProblems(List<Long> problemIds, Long id);
 
-    void copyList(Long copyId, String listingName, String prefix);
-
-    void updateOrder(Long id, Long problemId, Integer direction);
-
-    void removeProblem(Long id, Long problemListingId);
+    void copyList(Long copyId, String newListingName, String prefix);
 
     void removeConstraint(Long id);
 
-    void setConstraint(Long id, ConstraintDto constraintDto);
+    ConstraintDto setConstraint(Long id, ConstraintDto constraintDto);
 
-    void addProblems(List<Long> problemDtoList, Long id);
+    List<ListingProblemDto> updateOrder(Long problemId, Long id, Integer direction);
 
-    List<ProblemDto> getProblems();
+    List<ListingProblemDto> removeProblem(Long problemId, Long id);
+
+    List<ListingProblemDto> addAllFromList(Long copyId, Long id);
+
+    List<ProblemDto> getAvailableProblems();
 }

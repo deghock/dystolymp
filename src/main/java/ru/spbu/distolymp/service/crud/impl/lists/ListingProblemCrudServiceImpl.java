@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.entity.lists.Listing;
 import ru.spbu.distolymp.entity.lists.ListingProblems;
 import ru.spbu.distolymp.exception.common.TechnicalException;
+import ru.spbu.distolymp.mapper.entity.lists.listing.ListingProblemsMapper;
 import ru.spbu.distolymp.repository.lists.ListingProblemRepository;
 import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
 import ru.spbu.distolymp.service.crud.api.tasks.ProblemCrudService;
@@ -23,6 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ListingProblemCrudServiceImpl implements ListingProblemCrudService {
     private final ListingProblemRepository listingProblemRepository;
+    private final ListingProblemsMapper listingProblemsMapper;
     private final ProblemCrudService problemCrudService;
 
     @Override
@@ -62,6 +64,7 @@ public class ListingProblemCrudServiceImpl implements ListingProblemCrudService 
 
     }
 
+
     @Override
     @Transactional
     public List<ListingProblems> copyListingProblem(List<ListingProblems> copyListingProblem, Listing copyListing , String prefix){
@@ -72,6 +75,8 @@ public class ListingProblemCrudServiceImpl implements ListingProblemCrudService 
             listingProblems.setProblem(problemCrudService.copyProblem(copyListingProblem.get(i).getProblem(), prefix));
             newProblems.add(listingProblems);
         }
-        return  newProblems;
+        return newProblems;
     }
+
+
 }
