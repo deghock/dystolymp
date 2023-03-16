@@ -21,7 +21,6 @@ public interface CountryRepository extends PagingAndSortingRepository<Country, L
 
     List<Country> findAllBy(Sort sort);
 
-    List<Country> findAll();
 
     void deleteAllByIdIn(List<Long> idList);
 
