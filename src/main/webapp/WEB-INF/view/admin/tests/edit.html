@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+
+    <style>
+        textarea {
+            min-height: 2rem;
+        }
+        .tableactions {
+            color: #212529;
+            font-weight: bold;
+        }
+        .tableactions:hover {
+            color: #FF0000;
+            font-weight: bold;
+        }
+        .symbolactions {
+            color: #212529;
+        }
+        .symbolactions:hover {
+            color: #FF0000;
+        }
+        .symbol table td {
+            vertical-align: middle;
+            text-align: center;
+            user-select: none;
+            cursor: pointer;
+        }
+        .symbol table td:hover {
+            background-color: #EAEAEB;
+        }
+        summary {
+            color: #552000;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        summary:hover {
+            color: #FF0000;
+        }
+    </style>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey" th:attr="onload=|onUpdate('${test.imageFileName}', '${test.randomOrder}', '${test.paramFileName}')|"
+      style="min-width: 612px; font-family: sans-serif; font-size: 11pt">
+
+<div th:replace="fragments/menu-staff :: #menustaff"></div>
+
+<p style="text-align: center; margin-top: 1rem; margin-bottom: .5rem">Редактор тестов</p>
+
+<div class="alert alert-success alert-dismissible text-center mx-auto" role="alert"
+     style="width: 60%; padding: .5rem; min-width: 25rem" th:if="${success}">
+    <span th:text="${success}"></span>
+    <button type="button" class="close" data-dismiss="alert" style="padding: .5rem 1rem">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="alert alert-danger alert-dismissible text-center mx-auto" role="alert"
+     style="width: 60%; padding: .5rem; min-width: 25rem" th:if="${error}">
+    <span th:text="${error}"></span>
+    <button type="button" class="close" data-dismiss="alert" style="padding: .5rem 1rem">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<!--/*@thymesVar id="test" type="ru.spbu.distolymp.dto.entity.tasks.TestDto"*/-->
+<form th:action="@{/tests/save-or-edit}" th:object="${test}" method="post" enctype="multipart/form-data"
+      class="needs-validation" novalidate>
+    <div class="infoForm container p-2 text-center" style="width: 60%; padding: 1rem !important; min-width: 38rem">
+        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{status}"/>
+        <input type="hidden" th:field="*{imageFileName}"/>
+        <input type="hidden" th:field="*{testFolder}"/>
+        <input type="hidden" th:field="*{brcFileName}"/>
+        <input type="hidden" th:field="*{paramFileName}"/>
+
+        <div class="form-row text-left align-items-center">
+            <div class="col-3"><label for="prefix" style="width: auto">Префикс</label></div>
+            <div class="col-9 was-validated">
+                <input id="prefix" type="text" class="form-control form-control-sm text-dark" maxlength="255"
+                       th:field="*{prefix}"/>
+            </div>
+        </div>
+
+        <div class="form-row text-left align-items-center">
+            <div class="col-3"><label for="title" style="width: auto">Заголовок</label></div>
+            <div class="col-9 was-validated">
+                <input id="title" type="text" class="form-control form-control-sm text-dark" maxlength="255"
+                       th:field="*{title}" required/>
+                <div class="invalid-feedback">Пожалуйста, введите заголовок теста</div>
+            </div>
+        </div>
+
+        <div class="form-row text-left align-items-center">
+            <div class="col-3"><label for="problemText" style="width: auto">Задание</label></div>
+            <div class="col-9 was-validated">
+                <textarea id="problemText" class="form-control form-control-sm text-dark" maxlength="65535"
+                          th:field="*{problemText}" rows="8" style="width: inherit" required></textarea>
+                <div class="invalid-feedback">Пожалуйста, введите задание теста</div>
+                <details class="symbol">
+                    <summary>Специальные символы</summary>
+                    <table id="specialSymbols" class="table table-bordered table-light table-sm"
+                           style="margin-bottom: .2em">
+                        <tbody>
+                        <tr>
+                            <td id="lt" class="symbolactions" style="border-color: #DEE2E6">&lt;</td>
+                            <td id="gt" class="symbolactions" style="border-color: #DEE2E6">&gt;</td>
+                            <td id="deg" class="symbolactions" style="border-color: #DEE2E6">&deg;</td>
+                            <td id="plusmn" class="symbolactions" style="border-color: #DEE2E6">&plusmn;</td>
+                            <td id="middot" class="symbolactions" style="border-color: #DEE2E6">&middot;</td>
+                            <td id="times" class="symbolactions" style="border-color: #DEE2E6">&times;</td>
+                            <td id="divide" class="symbolactions" style="border-color: #DEE2E6">&divide;</td>
+                            <td id="sup2" class="symbolactions" style="border-color: #DEE2E6">&sup2;</td>
+                            <td id="sup3" class="symbolactions" style="border-color: #DEE2E6">&sup3;</td>
+                            <td id="sup" class="symbolactions" style="border-color: #DEE2E6"><span style="color: #212529">x</span><sup>y</sup></td>
+                            <td id="sub" class="symbolactions" style="border-color: #DEE2E6"><span style="color: #212529">x</span><sub>y</sub></td>
+                            <td id="sqrt" class="symbolactions" style="border-color: #DEE2E6">&radic;</td>
+                            <td id="quot" class="symbolactions" style="border-color: #DEE2E6">&quot;</td>
+                            <td id="prime" class="symbolactions" style="border-color: #DEE2E6">&prime;</td>
+                            <td id="sect" class="symbolactions" style="border-color: #DEE2E6">&sect;</td>
+                            <td id="nbsp" class="symbolactions" style="border-color: #DEE2E6">&#9251;</td>
+                            <td id="bslash" class="symbolactions" style="border-color: #DEE2E6">&#0092;</td>
+                            <td id="bold" class="symbolactions" style="border-color: #DEE2E6"><b>Ж</b></td>
+                            <td id="ital" class="symbolactions" style="border-color: #DEE2E6"><i>К</i></td>
+                            <td id="ulined" class="symbolactions" style="border-color: #DEE2E6"><u>Ч</u></td>
+                            <td id="br" class="symbolactions" style="border-color: #DEE2E6">&ldca;</td>
+                        </tr>
+                        <tr>
+                            <td id="alpha" class="symbolactions" style="border-color: #DEE2E6">&alpha;</td>
+                            <td id="beta" class="symbolactions" style="border-color: #DEE2E6">&beta;</td>
+                            <td id="gamma" class="symbolactions" style="border-color: #DEE2E6">&gamma;</td>
+                            <td id="delta" class="symbolactions" style="border-color: #DEE2E6">&delta;</td>
+                            <td id="epsilon" class="symbolactions" style="border-color: #DEE2E6">&epsilon;</td>
+                            <td id="eta" class="symbolactions" style="border-color: #DEE2E6">&eta;</td>
+                            <td id="theta" class="symbolactions" style="border-color: #DEE2E6">&theta;</td>
+                            <td id="lambda" class="symbolactions" style="border-color: #DEE2E6">&lambda;</td>
+                            <td id="mu" class="symbolactions" style="border-color: #DEE2E6">&mu;</td>
+                            <td id="nu" class="symbolactions" style="border-color: #DEE2E6">&nu;</td>
+                            <td id="xi" class="symbolactions" style="border-color: #DEE2E6">&xi;</td>
+                            <td id="pi" class="symbolactions" style="border-color: #DEE2E6">&pi;</td>
+                            <td id="rho" class="symbolactions" style="border-color: #DEE2E6">&rho;</td>
+                            <td id="sigma" class="symbolactions" style="border-color: #DEE2E6">&sigma;</td>
+                            <td id="tau" class="symbolactions" style="border-color: #DEE2E6">&tau;</td>
+                            <td id="phi" class="symbolactions" style="border-color: #DEE2E6">&phi;</td>
+                            <td id="omega" class="symbolactions" style="border-color: #DEE2E6">&omega;</td>
+                            <td id="cdelta" class="symbolactions" style="border-color: #DEE2E6">&Delta;</td>
+                            <td id="cphi" class="symbolactions" style="border-color: #DEE2E6">&Phi;</td>
+                            <td id="cpsi" class="symbolactions" style="border-color: #DEE2E6">&Psi;</td>
+                            <td id="comega" class="symbolactions" style="border-color: #DEE2E6">&Omega;</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </details>
+            </div>
+        </div>
+
+        <div class="form-row text-left align-items-center">
+            <div class="col-3"><label style="width: auto">Изображение</label></div>
+            <div class="col-9">
+                <div class="form-row mb-1">
+                    <div class="col-12">
+                        <div class="custom-file">
+                            <input type="file" id="image" class="custom-file-input is-valid" th:field="*{image}"
+                                   accept="image/png, image/jpeg, image/gif">
+                            <label class="custom-file-label text-dark" data-browse="Обзор" for="image" style="width: initial">
+                                Файл не выбран
+                            </label>
+                            <div id="imageExtensionError" class="invalid-feedback" style="display: none">
+                                Изображение должно иметь расширение jpg, png или gif
+                            </div>
+                            <div id="imageSizeError" class="invalid-feedback" style="display: none">
+                                Размер изображения не должен превышать 10 Мб
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row align-items-center">
+                    <div class="col-1" style="min-width: 5rem"><label for="width" style="width: auto">Ширина:</label></div>
+                    <div class="col-3 was-validated" style="min-width: 8rem">
+                        <input type="number" min="0" max="65535" class="form-control form-control-sm text-dark"
+                               id="width" th:field="*{width}" required>
+                        <div class="invalid-feedback">Ширина картинки должна быть от 0 до 65535 пикселей</div>
+                    </div>
+                </div>
+                <div class="form-row align-items-center">
+                    <div class="col-1" style="min-width: 5rem"><label for="height" style="width: auto">Высота:</label></div>
+                    <div class="col-3 was-validated" style="min-width: 8rem">
+                        <input type="number" id="height" min="0" max="65535" class="form-control form-control-sm text-dark"
+                               th:field="*{height}" required>
+                        <div class="invalid-feedback">Высота картинки должна быть от 0 до 65535 пикселей</div>
+                    </div>
+                </div>
+                <div id="imageAttr" style="display: none">
+                    <div class="form-row align-items-center">
+                        <div class="col-xl-0 form-check">
+                            <input id="isDelete" type="checkbox" class="form-check-input"
+                                   th:field="*{deleteImage}" autocomplete="off" style="position: inherit">
+                        </div>
+                        <div class="col-9">
+                            <label for="isDelete" class="form-check-label" style="width: auto">Удалить</label>
+                        </div>
+                    </div>
+                    <div class="form-row mb-1">
+                        <div class="col-12">
+                            <a href="#" class="abutton" data-toggle="modal" data-target="#showImage">Просмотр</a>
+                            <div id="showImage" class="modal fade" tabindex="-1" role="dialog"
+                                 aria-labelledby="showImagePopup" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Просмотр загруженного изображения</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body text-center" style="overflow: auto; margin: 1rem; padding: 0">
+                                            <img th:src="@{/data/tests/{imageName}(imageName=${test.testFolder + '/' + test.imageFileName})}"
+                                                 th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
+                                                 alt="Image not found" th:if="${test.width == 0 and test.height != 0}"
+                                                 th:style="'height:' + ${test.height} + 'px'"/>
+                                            <img th:src="@{/data/tests/{imageName}(imageName=${test.testFolder + '/' + test.imageFileName})}"
+                                                 th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
+                                                 alt="Image not found" th:if="${test.height == 0 and test.width != 0 }"
+                                                 th:style="'width:' + ${test.width} + 'px'"/>
+                                            <img th:src="@{/data/tests/{imageName}(imageName=${test.testFolder + '/' + test.imageFileName})}"
+                                                 th:onerror="'this.src=\'' + @{/img/image-not-found.png} + '\';'"
+                                                 alt="Image not found" th:if="${test.width != 0 and test.height != 0}"
+                                                 th:style="'height: ' + ${test.height} + 'px; width: ' + ${test.width} + 'px'"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row text-left align-items-center">
+            <div class="col-3"><label>Параметры</label></div>
+            <div class="col-9">
+                <div class="form-row align-items-center">
+                    <div class="col-xl-0 form-check">
+                        <input id="isShow" type="checkbox" class="form-check-input"
+                               th:field="*{showResult}" autocomplete="off" style="position: inherit"/>
+                    </div>
+                    <div class="col-9">
+                        <label for="isShow" class="form-check-label" style="width: auto">
+                            Показывать результаты пользователю
+                        </label>
+                    </div>
+                </div>
+                <div class="form-row align-items-center" th:attr="onclick=|onUpdate('${test.imageFileName}', '${test.randomOrder}', '${test.paramFileName}')|">
+                    <div class="col-xl-0 form-check">
+                        <input id="randomOrder" type="checkbox" class="form-check-input"
+                               th:field="*{randomOrder}" autocomplete="off" style="position: inherit"/>
+                    </div>
+                    <div class="col-9">
+                        <label for="randomOrder" class="form-check-label" style="width: auto">
+                            Случайный порядок вопросов в тесте
+                        </label>
+                    </div>
+                </div>
+                <div id="questionCount" style="display: none; white-space: nowrap" onclick="countPoints()">
+                    <div class="form-row align-items-center">
+                        <div class="col-auto">
+                            <label for="easyQuestion" style="width: auto">Легких вопросов (2 балла):</label>
+                        </div>
+                        <div class="col-auto form-check">
+                            <select id="easyQuestion" th:field="*{questionsNumber[0]}">
+                                <option th:each="i : ${#numbers.sequence(0, __${test.allQuestionsNumber[0]}__, 1)}"
+                                        th:text="${i}" th:value="${i}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row align-items-center">
+                        <div class="col-auto">
+                            <label for="normalQuestion" style="width: auto">Средних вопросов (4 балла):</label>
+                        </div>
+                        <div class="col-auto form-check">
+                            <select id="normalQuestion" th:field="*{questionsNumber[1]}">
+                                <option th:each="i : ${#numbers.sequence(0, __${test.allQuestionsNumber[1]}__, 1)}"
+                                        th:text="${i}" th:value="${i}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row align-items-center">
+                        <div class="col-auto">
+                            <label for="hardQuestion" style="width: auto">Сложных вопросов (6 баллов):</label>
+                        </div>
+                        <div class="col-auto form-check">
+                            <select id="hardQuestion" th:field="*{questionsNumber[2]}">
+                                <option th:each="i : ${#numbers.sequence(0, __${test.allQuestionsNumber[2]}__, 1)}"
+                                        th:text="${i}" th:value="${i}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row align-items-center">
+                    <div class="col-12 form-check">
+                        <div id="points">Количество баллов в тесте:</div>
+                    </div>
+                </div>
+                <div class="form-row align-items-center">
+                    <div class="col-xl-0 form-check">
+                        <input id="questionSkip" type="checkbox" class="form-check-input"
+                               th:field="*{questionSkip}" autocomplete="off" style="position: inherit"/>
+                    </div>
+                    <div class="col-9">
+                        <label for="questionSkip" class="form-check-label" style="width: auto">
+                            Кнопка "Пропустить"
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row text-left align-items-center">
+            <div class="col-3"><label for="gradePoints" style="width: auto">Количество баллов за весь тест</label></div>
+            <div class="col-9 was-validated">
+                <input id="gradePoints" type="number" step="any" min="0" max="65535" class="form-control form-control-sm text-dark"
+                       th:field="*{points}" required/>
+                <div class="invalid-feedback">Количество баллов за тест должно быть от 0 до 65535</div>
+            </div>
+        </div>
+
+        <div class="form-row text-left align-items-center">
+            <div class="col-3"><label for="minusPoints" style="width: auto">Штраф за неправильный ответ</label></div>
+            <div class="col-9 was-validated">
+                <input id="minusPoints" type="number" step="any" min="0" max="65535" class="form-control form-control-sm text-dark"
+                       th:field="*{minusPoints}" required/>
+                <div class="invalid-feedback">Штрафной балл должен быть от 0 до 65535</div>
+            </div>
+        </div>
+
+        <div class="form-row text-left align-items-center">
+            <div class="col-3"><label for="paramFile" style="width: auto">Файл с тестом</label></div>
+            <div class="col-9">
+                <div class="form-row align-items-center">
+                    <div class="col-12 was-validated">
+                        <input type="file" id="paramFile" class="custom-file-input"
+                               th:field="*{paramFile}" accept=".php">
+                        <label class="custom-file-label text-dark" data-browse="Обзор" for="paramFile"
+                               style="width: initial; margin-left: .3rem; margin-right: .3rem">
+                            Файл не выбран
+                        </label>
+                        <div id="paramExtError" class="invalid-feedback" style="display: none">
+                            Файл с тестом должен иметь расширение php
+                        </div>
+                        <div id="paramSizeError" class="invalid-feedback" style="display: none">
+                            Размер файла с тестом не должен превышать 10 Мб
+                        </div>
+                    </div>
+                </div>
+                <div id="paramFileAttr" class="form-row align-items-center" style="display: none">
+                    <div class="col-12">
+                        <a th:href="@{/data/tests/{paramFileName}(paramFileName=${test.testFolder + '/' + test.paramFileName})}"
+                           th:text="'Скачать файл с тестом'" class="abutton"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row align-items-center">
+            <div class="col-12" style="margin-top: .5rem">
+                <button type="submit" class="btn btn-light border border-dark" style="width: 30%; min-width: 7.5rem" id="submitBtn"
+                        onclick="trimInputs('title', 'problemText', 'minusPoints')">
+                    Сохранить
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="form-row align-items-center" style="margin-top: .5rem; margin-bottom: .5rem">
+    <div class="col-12">
+        <div class="infoForm container p-2 text-center" style="width: 60%; padding: 1rem !important; min-width: 38rem">
+            <div th:if="${test.id == null}" class="form-row align-items-center">
+                <div class="col-12 invalid-feedback" style="display: block; color: #212529; font-size: 11pt">
+                    <strong>Для редактирования вопросов необходимо сохранить тест</strong>
+                </div>
+            </div>
+
+            <div th:if="${test.id != null}" class="form-row text-center align-items-center">
+                <div class="col-12" style="overflow: auto">
+                    <div style="margin-bottom: .5rem">
+                        <a th:href="@{/tests/edit/{testId}/add-question(testId=${test.id})}"
+                           class="btn btn-light" style="display: block">Добавить новый вопрос</a>
+                    </div>
+
+                    <table class="table table-striped table-light table-sm"
+                           style="border-radius: .2rem; margin-bottom: 0"
+                           aria-describedby="Test's questions table">
+                        <thead class="thead-light">
+                        <tr>
+                            <th scope="col" style="border-radius: .2rem 0 0 0">№</th>
+                            <th scope="col">Вопрос</th>
+                            <th scope="col">Тип</th>
+                            <th scope="col">Сложность</th>
+                            <th scope="col" style="border-radius: 0 .2rem 0 0">Действия</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="question, iter : ${test.questionList}">
+                            <th scope="row" th:text="${iter.count}" style="vertical-align: middle"></th>
+                            <td th:utext="${question.text}" style="vertical-align: middle"></td>
+                            <td th:text="${question.type.getName()}" style="vertical-align: middle"></td>
+                            <td th:text="${question.difficulty}" style="vertical-align: middle"></td>
+                            <td style="vertical-align: middle">
+                                <a th:href="@{/tests/edit/{testId}/edit-question/{number}(testId=${test.id}, number=${iter.count})}"
+                                   class="tableactions">редактировать</a>
+                                <a href="#" class="tableactions" data-toggle="modal" data-target=".questionDelete"
+                                   th:attr="data-id=${test.id}, data-number=${iter.count}">удалить</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="questionDeleteModal" class="modal fade questionDelete" tabindex="-1" role="dialog"
+     aria-labelledby="questionDeletePopup" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content" style="max-width: 15rem; margin-right: auto; margin-left: auto">
+            <div class="modal-header" style="padding-bottom: .25rem">
+                <h5 class="modal-title" style="margin: auto">Удалить вопрос?</h5>
+            </div>
+            <div class="modal-footer" style="justify-content: space-between; padding-top: .25rem">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" style="min-width: 6rem">Отмена</button>
+                <a href="#" class="btn btn-success" id="deleteBtn" style="min-width: 6rem">Ок</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: #footer"></div>
+</body>
+
+<script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+<script type="text/javascript">
+    $('#questionDeleteModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var id = button.data('id')
+        var number = button.data('number')
+        var modal = $(this)
+        modal.find('.modal-footer #deleteBtn').attr('href', id + '/deleteQuestion/' + number)
+    })
+
+    function countPoints() {
+        var eqc = document.getElementById('easyQuestion').value
+        var nqc = document.getElementById('normalQuestion').value
+        var hqc = document.getElementById('hardQuestion').value
+        var label = document.getElementById('points')
+
+        var result = 2 * eqc + 4 * nqc + 6 * hqc
+        label.innerHTML = 'Количество баллов в тесте: <b>' + result + '</b>'
+    }
+
+    $('#image').on('change', function() {
+        var imageName = $(this).val().replace(/C:\\fakepath\\/i, '')
+        var sizeErrMsg = document.getElementById('imageSizeError')
+        var extErrMsg = document.getElementById('imageExtensionError')
+        var exts = /(\.jpg|\.jpeg|\.gif|\.png)$/i
+        var isExt = exts.exec(this.files[0].name) != null
+        var isSize = this.files[0].size <= 10485760
+        if (isExt && isSize) {
+            $(this).next('.custom-file-label').html(imageName)
+            sizeErrMsg.style.display = 'none'
+            extErrMsg.style.display = 'none'
+        } else if (!isExt) {
+            $(this).next('.custom-file-label').html('Файл не выбран')
+            $(this).val(null)
+            extErrMsg.style.display = 'block'
+            sizeErrMsg.style.display = 'none'
+        } else if (!isSize) {
+            $(this).next('.custom-file-label').html('Файл не выбран')
+            $(this).val(null)
+            sizeErrMsg.style.display = 'block'
+            extErrMsg.style.display = 'none'
+        }
+    });
+
+    $('#paramFile').on('change', function() {
+        var paramName = $(this).val().replace(/C:\\fakepath\\/i, '')
+        var sizeErrMsg = document.getElementById('paramSizeError')
+        var extErrMsg = document.getElementById('paramExtError')
+        var exts = /(\.php)$/i
+        var isExt = exts.exec(this.files[0].name) != null
+        var isSize = this.files[0].size <= 10485760
+        if (isExt && isSize) {
+            $(this).next('.custom-file-label').html(paramName)
+            sizeErrMsg.style.display = 'none'
+            if (extErrMsg !== null) extErrMsg.style.display = 'none'
+        } else if (!isExt) {
+            $(this).next('.custom-file-label').html('Файл не выбран')
+            $(this).val(null)
+            if (extErrMsg !== null) extErrMsg.style.display = 'block'
+            sizeErrMsg.style.display = 'none'
+        } else if (!isSize) {
+            $(this).next('.custom-file-label').html('Файл не выбран')
+            $(this).val(null)
+            sizeErrMsg.style.display = 'block'
+            if (extErrMsg !== null) extErrMsg.style.display = 'none'
+        }
+    });
+
+    $('#lt, #gt, #deg, #plusmn, #middot, #times, #divide, #sup2, #sup3, #sup, #sub, #sqrt, #quot, #prime, #sect, #nbsp, #bslash, #bold, #ital, #ulined, #br, #alpha, #beta, #gamma, #delta, #epsilon, #eta, #theta, #lambda, #mu, #nu, #xi, #pi, #rho, #sigma, #tau, #phi, #omega, #cdelta, #cphi, #cpsi, #comega')
+        .on('mousedown', function(event) {
+            event.preventDefault();
+            var focusedId = $(':focus').attr('id');
+            var clickedId = $(this).attr('id');
+            var inputIds = ['problemText'];
+            if (inputIds.includes(focusedId)) {
+                var element = document.getElementById(focusedId);
+                var elementValue = element.value;
+                var value = '';
+                switch (clickedId) {
+                    case 'sup':
+                        value = '<sup></sup>';
+                        break;
+                    case 'sub':
+                        value = '<sub></sub>';
+                        break;
+                    case 'sqrt':
+                        value = '&radic;<font style="text-decoration: overline"></font>';
+                        break;
+                    case 'nbsp':
+                        value = '&nbsp;';
+                        break;
+                    case 'bslash':
+                        value = '&#0092;';
+                        break;
+                    case 'bold':
+                        value = '<b></b>';
+                        break;
+                    case 'ital':
+                        value = '<i></i>';
+                        break;
+                    case 'ulined':
+                        value = '<u></u>';
+                        break;
+                    case 'br':
+                        value = '<br>';
+                        break;
+                    case 'cdelta':
+                        value = '&Delta;';
+                        break;
+                    case 'cphi':
+                        value = '&Phi;';
+                        break;
+                    case 'cpsi':
+                        value = '&Psi;';
+                        break;
+                    case 'comega':
+                        value = '&Omega;';
+                        break;
+                    default:
+                        value = '&' + clickedId + ';';
+                        break;
+                }
+                element.value = elementValue + value;
+            }
+        });
+
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                }, false);
+            });
+        }, false);
+    })();
+
+    function trimInputs() {
+        var args = arguments;
+        for (var i = 0; i < args.length; i++) {
+            var inpt = document.getElementById(args[i])
+            inpt.value = inpt.value.replace(/^\s+|\s+$/g,"");
+        }
+    }
+
+    function onUpdate(imageFileName, randomOrder, paramFileName) {
+        if (imageFileName === "null" || imageFileName === "") {
+            document.getElementById('imageAttr').style.display = "none";
+        } else {
+            document.getElementById('imageAttr').style.display = "block";
+        }
+
+        if (paramFileName === "null" || paramFileName === "") {
+            document.getElementById('paramFileAttr').style.display = "none";
+        } else {
+            document.getElementById('paramFileAttr').style.display = "block";
+        }
+
+        if (document.getElementById('randomOrder').checked || randomOrder === 1) {
+            document.getElementById('questionCount').style.display = 'block'
+        } else {
+            document.getElementById('questionCount').style.display = 'none'
+            var eq = document.getElementById('easyQuestion')
+            var nq = document.getElementById('normalQuestion')
+            var hq = document.getElementById('hardQuestion')
+            eq.value = eq.options[eq.options.length - 1].value
+            nq.value = nq.options[nq.options.length - 1].value
+            hq.value = hq.options[hq.options.length - 1].value
+        }
+
+        countPoints()
+    }
+</script>
+</html>

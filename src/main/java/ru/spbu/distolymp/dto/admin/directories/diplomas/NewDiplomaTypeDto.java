@@ -3,8 +3,8 @@ package ru.spbu.distolymp.dto.admin.directories.diplomas;
 import lombok.Data;
 import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
-import ru.spbu.distolymp.validation.admin.directories.diplomas.annotation.ImageMimeType;
-import ru.spbu.distolymp.validation.admin.directories.diplomas.annotation.MultipartFileUploaded;
+import ru.spbu.distolymp.validation.files.annotation.ImageMimeType;
+import ru.spbu.distolymp.validation.files.annotation.MultipartFileUploaded;
 import ru.spbu.distolymp.validation.admin.directories.diplomas.annotation.UniqueDiplomaTypeName;
 
 import javax.validation.constraints.NotNull;
