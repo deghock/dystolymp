@@ -7,6 +7,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import ru.spbu.distolymp.entity.geography.Country;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Daria Usova
@@ -20,6 +21,10 @@ public interface CountryRepository extends PagingAndSortingRepository<Country, L
 
     List<Country> findAllBy(Sort sort);
 
+    List<Country> findAll();
+
     void deleteAllByIdIn(List<Long> idList);
+
+    Optional<Country> findCountryByName(String name);
 
 }

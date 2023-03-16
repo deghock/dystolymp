@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
+    <style>
+        p {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey">
+<div id="page">
+    <h1>Система Интернет-олимпиад СПбГУ</h1>
+
+    <fieldset id="registration" class="fsborder">
+        <legend>
+            <strong>Регистрация участника</strong>
+        </legend>
+        <noscript>
+            <div style="text-align: center; color: red">Для правильной
+                работы необходимо включить Javascript!
+            </div>
+        </noscript>
+        <div style="text-align: center">
+            Поля, отмеченные * , обязательные для заполнения.<br/> Регистрацию
+            проходить из браузера, <strong>не из BARSIC!</strong>
+        </div>
+        <!--/*@thymesVar id="dto" type="ru.spbu.distolymp.dto.registration.UserRegistrationDto"*/-->
+        <form th:action="@{/registration/user}" th:object="${dto}" method="post" accept-charset="utf-8">
+            <div style="width: 80%; margin: 0.5em auto; padding: 0.2em; background-color: #E3AF8B">
+                <fieldset>
+                    <legend>Учебное заведение (официальное место учебы)</legend>
+                    <fieldset>
+                        <legend>Регион РФ/другая страна</legend>
+
+                        <div id="countriesWrapper">
+                            <label for="countries">Страна*:</label>
+                            <select th:field="*{countryId}" id="countries" class="wide" onchange="setCountry(this.value)">
+                                <option th:value="-2">выбрите страну</option>
+                                <option th:each="c : ${countries}"
+                                        th:value="${c.id}" th:text="${c.name}"></option>
+                                <option th:value="0">другая страна...</option>
+                            </select>
+                        </div>
+
+                        <div id="newCountry" style="display: none">
+                            <label for="newCountryInput">Название страны*:</label>
+                            <input th:field="*{newCountryName}" id="newCountryInput" type="text"
+                                   class="wide" value=""/>
+                        </div>
+
+                        <div id="regionsWrapper" style="display: none">
+                            <label for="regions">Регион РФ*:</label>
+                            <select th:field="*{regionId}" class="wide" id="regions" onchange="setRegion(this.value)">
+                                <option th:value="-2">выбрите регион</option>
+                                <option th:each="region : ${regions}"
+                                        th:value="${region.id}"
+                                        th:text="${region.code + '. ' + region.name}"></option>
+                            </select>
+                            (77.Москва, 78.Санкт-Петербург)
+                        </div>
+
+                        <datalist id="town_select" style="display:none">
+                            <select id="town_hidden_select"></select>
+                        </datalist>
+
+                    </fieldset>
+
+                    <div id="towns">
+                        <fieldset>
+                            <legend>Населённый пункт</legend>
+                            <label for="town_input">Населённый пункт*:</label>
+                            <input th:field="*{townName}" id="town_input" list="town_select" type="text" class="wide" disabled/><br/>
+
+                            <br/>- без &quot;город&quot; или &quot;г.&quot; Применяйте сокращения: с. (село), с.п.
+                            (сельское поселение), п. (поселок), хут. (хутор).
+                            <br/>&nbsp;
+                            <br/>После ввода страны, региона (для РФ), населенного пункта и затем выбора класса через
+                            некоторое время далее станет доступен список школ данного населенного пункта.
+                        </fieldset>
+                    </div>
+
+
+                    <!-- <div id="notown">
+                         <div id="class">
+                             <label>Класс*:</label>
+                             <select name="idClass">
+                                 <option value="-2" label="выберите класс"/>
+                             </select>
+
+                         </div>
+
+                         <div id="schools">
+                             <label for="school_id">Учебное заведение*:</label>
+                             <select name="school_id" id="school_id" class="wide">
+                                 <option value="-2" selected="selected">выберите учебное заведение</option>
+                                 <option value="0">другое ...</option>
+                             </select>
+                         </div>
+                     </div>-->
+                </fieldset>
+                <!--
+
+                                <fieldset>
+                                    <legend>Паспортные данные</legend>
+
+                                    <label>Фамилия*:</label>
+                                    <input type="text" class="wide" name="lastName"/><br/>
+
+                                    <label>Имя*:</label>
+                                    <input type="text" class="wide" name="firstName"/><br/>
+
+                                    <label>Отчество*:</label>
+                                    <input type="text" class="wide" name="secondName"/><br/>
+
+                                    <div>
+                                        <label>Пол*:</label>
+                                        <input type="radio" name="sex" value="male"/> Мужской
+                                        <input type="radio" name="sex" value="female"/> Женский
+                                    </div>
+
+                                    <label>Дата рождения*:</label>
+                                    <input type="text" name="birthday"/> (в формате дд.мм.гггг - например, 26.03.1996) <br/>
+
+                                </fieldset>
+
+                                <fieldset>
+                                    <legend>Координаты для связи</legend>
+
+                                    <label>E-mail:</label>
+                                    <input type="text" class="wide" name="mail"/>
+                                    <br/>- на указанный e-mail будут высланы регистрационные данные!
+
+                                    <fieldset>
+                                        <legend>Телефон (с кодом города)*</legend>
+                                        <label>Домашний:</label>
+                                        <input type="text" class="wide" name="homePhone"/>
+
+                                        <label>Мобильный:</label>
+                                        <input type="text" class="wide" name="cellPhone"/>
+
+                                    </fieldset>
+
+                                    <label>Почтовый индекс*:</label>
+                                    <input type="text" class="wide" name="postalCode"/>
+
+                                    <label>Страна*:</label>
+                                    <input type="text" class="wide" id="postal_country"/>
+
+                                    <label>Населённый пункт*:</label>
+                                    <input type="text" class="wide" id="postal_town"/>
+
+                                    <label>Улица*:</label>
+                                    <input type="text" class="wide" name="street"/>
+
+                                    <label>Дом*:</label>
+                                    <input type="text" class="wide" name="building"/>
+
+                                    <label>Квартира:</label>
+                                    <input type="text" class="wide" name="apartment"/>
+                                </fieldset>
+
+
+                                <fieldset>
+                                    <legend>Дополнительная информация</legend>
+                                    <div>
+                                        <label>Я проживаю*:</label>
+                                        <input type="radio" value="village" name="residence"/> в сельской местности
+                                        <input type="radio" value="town" name="residence"/> в городе
+                                    </div>
+                                    <p></p>
+
+
+                                    &lt;!&ndash; info section &ndash;&gt;
+                                    <div>
+                                        <label>Ограничения:</label>
+                                        <input type="checkbox" value="limited" name="ability"/> У меня ограниченные
+                                        возможности здоровья <br/>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;(инвалидность по зрению, слуху или др.)
+                                    </div>
+
+                                    <div>
+                                        <label>Семейное положение:</label>
+                                        <input type="checkbox" value="orphan" name="family"/> Я являюсь сиротой
+                                    </div>
+                                    <p></p>
+
+                                    <div>
+                                        <label>ФИО преподавателя физики*:</label>
+                                        <input type="text" class="wide" name="curator"/>
+                                        - в школе, кружке, репетитора и т.п.
+                                    </div>
+
+                                    <br/>&nbsp;
+                                    <br/>
+
+                                    <div>
+                                        <label for="curatorMail">E-mail преподавателя физики:</label>
+                                        <input type="text" class="wide" name="curatorMail" id="curatorMail"/>
+                                    </div>
+
+                                    <div>
+                                        <label>E-mail учебного заведения:</label>
+                                        <input type="text" class="wide" name="schoolMail"/>
+                                    </div>
+
+                                </fieldset>-->
+                <br/>
+
+                <fieldset>
+                    <legend>
+                        <a th:href="@{/user_agreement}" target="_blank">Пользовательское соглашение</a>
+                        (согласие с правилами участия)
+                    </legend>
+                    <input id="rules" name="rules" type="checkbox" value="accept" onClick="acceptRules(this);">
+                    <label for="rules" class="radio" style="margin-left:20px;margin-top:-16px;width:95%;display:block">
+                        Регистрируясь на сайте Интернет-олимпиады школьников по физике, я
+                        <ul>
+                            <li>
+                                подтверждаю, что введенные мной персональные и прочие данные соответствуют
+                                действительности;
+                            </li>
+                            <li>
+                                соглашаюсь с тем, что ознакомлен с порядком, условиями и требованиями по проведению
+                                олимпиады
+                                в соответствии с Положением и Регламентом олимпиады, в том числе требованием проходить
+                                туры олимпиады текущего учебного года под одним логином;
+                            </li>
+                            <li>
+                                даю <a th:href="@{/user_data_agreement}" target="_blank">согласие на обработку и
+                                передачу моих персональных данных</a>
+                                Организаторами и Региональными Организаторами олимпиады,
+                                <br/> в том числе соглашаюсь на открытую публикацию своих фамилии, имени, отчества, даты
+                                рождения,
+                                класса (параллели) обучения и места учебы (для учителей - места работы),
+                                а также полученных при выполнении заданий результатов и протокола выполнения олимпиадной
+                                работы,
+                                в том числе на открытую публикацию этих данных в сети Интернет;
+                            </li>
+                            <li>
+                                соглашаюсь на получение по электронной почте уведомлений о событиях, связанных с
+                                олимпиадами и конкурсами по физике.
+                            </li>
+                        </ul>
+                        Подтверждаю, что, давая согласие, я действую без принуждения, по собственной воле и в своих
+                        интересах.
+                        <br/><strong>Замечание:</strong> в случае, если участник олимпиады несовершеннолетний, согласие
+                        дает
+                        родитель (законный представитель) участника.
+                    </label>
+                    <div style="text-align:center;margin-top:10px">
+                        <button type="submit" id="button" disabled="disabled">Зарегистрировать</button>
+                    </div>
+                </fieldset>
+
+            </div>
+        </form>
+    </fieldset>
+</div>
+</body>
+<script>
+    const $newCountry = $("#newCountry")
+    const $regions = $("#regionsWrapper")
+    const $townInput = $("#town_input")
+    const $townDataList = $("#town_hidden_select")
+
+    function setCountry(countryId) {
+        const countryName = $( "#countries option:selected" ).text();
+        $newCountry.hide();
+        $regions.hide();
+        disableTownInput("");
+
+        if (countryId === "0") {
+            $newCountry.show();
+            $townInput.prop("disabled", false);
+            $townDataList.html('')
+        } else if (countryName === "Россия") {
+            $regions.show();
+        } else if (countryId === "-2") {
+        } else {
+            $townInput.prop("disabled", false);
+            $townDataList.html('')
+            $.get('towns?countryId=' + countryId).done(
+                function (towns) {
+                    const len = towns.length;
+                    for (let i = 0; i < len; i++) {
+                        $townDataList.append("<option value='" + towns[i] + "'>");
+                    }
+                }
+            )
+        }
+    }
+
+    function setRegion(regionId) {
+        const regionName = $( "#regions option:selected" ).text();
+        $townInput.val("");
+        if (regionName === "-2") {
+            disableTownInput("");
+            return;
+        } else if (regionName === "Санкт-Петербург") {
+            disableTownInput("Санкт-Петербург");
+            return;
+        }
+
+        $townInput.prop("disabled", false);
+        $townDataList.html('');
+        $.get('towns?regionId=' + regionId).done(
+            function (towns) {
+                const len = towns.length;
+                for (let i = 0; i < len; i++) {
+                    $townDataList.append("<option value='" + towns[i] + "'>");
+                }
+            }
+        )
+    }
+
+    function disableTownInput(inputValue) {
+        $townInput.val(inputValue);
+        $townInput.prop("disabled", true);
+    }
+
+    function acceptRules(rules) {
+        const button = document.getElementById('button');
+        button.disabled = !rules.checked;
+    }
+</script>
+</html>

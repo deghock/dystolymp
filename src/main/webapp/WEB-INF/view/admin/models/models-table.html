@@ -1,0 +1,40 @@
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+
+<div id="models-table" style="overflow: auto">
+    <table class="table border center" aria-describedby="title" style="margin-bottom: 0">
+        <tr style="text-align: center">
+            <th id="index" style="vertical-align: middle">№</th>
+            <th id="title" style="vertical-align: middle">Заголовок</th>
+            <th id="status" style="vertical-align: middle">Статус</th>
+            <th id="actions" style="vertical-align: middle">Действия</th>
+        </tr>
+
+        <!--/*@thymesVar id="modelList" type="java.util.List<ru.spbu.distolymp.dto.admin.models.ModelListDto>"*/-->
+        <tr th:each="model, iter : ${modelList}">
+            <td th:text="${iter.index + 1}" style="text-align: center; vertical-align: middle"></td>
+
+            <td th:if="${model.prefix != null}" th:text="${model.prefix} + ':&#13' + ${model.title}"
+                style="white-space: break-spaces; vertical-align: middle; overflow-wrap: anywhere"></td>
+            <td th:unless="${model.prefix != null}" th:text="${model.title}"
+                style="white-space: break-spaces; vertical-align: middle; overflow-wrap: anywhere"></td>
+
+            <td th:text="${model.status}" style="text-align: center; vertical-align: middle"></td>
+
+            <td th:if="${model.status} == 'Архив'" style="text-align: center; vertical-align: middle">
+                <a th:href="@{/models/preview/{id}(id=${model.id})}" class="abutton">просмотр</a>
+                <a th:href="@{/models/unarchive/{id}(id=${model.id})}" class="abutton">разархивировать</a>
+            </td>
+            <td th:unless="${model.status} == 'Архив'"
+                style="text-align: center; vertical-align: middle">
+                <a th:href="@{/models/preview/{id}(id=${model.id})}" class="abutton">просмотр</a>
+                <a th:href="@{/models/edit/{id}(id=${model.id})}" class="abutton">редактировать</a>
+                <a href="#" class="abutton" data-toggle="modal" data-target=".modelCopy"
+                   th:attr="data-id=${model.id}, data-title=${model.title}">копировать</a>
+                <a href="#" class="abutton" data-toggle="modal" data-target=".modelDelete" th:attr="data-id=${model.id}">
+                    удалить</a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</html>

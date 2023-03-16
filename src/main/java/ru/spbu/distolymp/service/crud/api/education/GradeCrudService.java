@@ -23,4 +23,6 @@ public interface GradeCrudService {
 
     void updateGrade(GradeDto gradeDto);
 
+    void updateGrade(GradeListDto gradeDto);
+
 }

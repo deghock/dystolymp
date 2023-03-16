@@ -4,13 +4,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import ru.spbu.distolymp.dto.admin.directories.grades.GradeListDto;
+import ru.spbu.distolymp.dto.entity.education.grade.GradeDto;
 import ru.spbu.distolymp.dto.entity.education.grade.GradeNameDto;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
 import ru.spbu.distolymp.dto.entity.users.staff.StaffLoginDto;
-import ru.spbu.distolymp.dto.entity.education.grade.GradeDto;
 import ru.spbu.distolymp.mapper.admin.directories.lists.grades.GradeListMapper;
-import ru.spbu.distolymp.mapper.entity.education.grade.GradeNameMapper;
 import ru.spbu.distolymp.mapper.entity.education.grade.GradeMapper;
+import ru.spbu.distolymp.mapper.entity.education.grade.GradeNameMapper;
 import ru.spbu.distolymp.repository.education.GradeRepository;
 import ru.spbu.distolymp.service.admin.directories.grades.api.GradeService;
 import ru.spbu.distolymp.service.crud.api.division.DivisionCrudService;
@@ -31,8 +31,7 @@ public class GradeServiceImpl extends GradeCrudServiceImpl implements GradeServi
 
     public GradeServiceImpl(GradeListMapper gradeListMapper, GradeNameMapper gradeNameMapper,
                             GradeMapper gradeMapper, GradeRepository gradeRepository,
-                            DivisionCrudService divisionCrudService, StaffCrudService staffCrudService,
-                            ListingCrudService listingCrudService) {
+                            DivisionCrudService divisionCrudService, StaffCrudService staffCrudService, ListingCrudService listingCrudService) {
         super(gradeListMapper, gradeNameMapper, gradeMapper, gradeRepository, divisionCrudService);
         this.staffCrudService = staffCrudService;
         this.listingCrudService = listingCrudService;
@@ -69,4 +68,14 @@ public class GradeServiceImpl extends GradeCrudServiceImpl implements GradeServi
         modelMap.put("listingList", listingDtoList);
     }
 
+    @Override
+    public void fillShowChangeRegistrationStatus(ModelMap modelMap, String registrationStatus) {
+        List<GradeListDto> grades = getAllGrades();
+        for (GradeListDto grade : grades) {
+            grade.setRegistrationStatus(registrationStatus);
+            updateGrade(grade);
+        }
+
+        modelMap.put("grades", grades);
+    }
 }
