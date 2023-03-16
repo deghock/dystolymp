@@ -39,8 +39,12 @@ public class ListingServiceImpl extends ListingCrudServiceImpl implements Listin
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ListingNameDto> getListingsBy(ListingFilter listingFilter) {
         Specification<Listing> specs = ListingsSpecConverter.toSpecs(listingFilter);
+        if(specs == null){
+            getAllListings();
+        }
         return getListings(specs, SORT_BY_NAME_ASC);
     }
 }
