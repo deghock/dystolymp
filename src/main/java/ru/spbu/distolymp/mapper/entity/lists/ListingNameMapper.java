@@ -1,4 +1,4 @@
-package ru.spbu.distolymp.mapper.entity.lists.listing;
+package ru.spbu.distolymp.mapper.entity.lists;
 
 import org.mapstruct.Mapper;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;

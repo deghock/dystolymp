@@ -9,7 +9,7 @@ import ru.spbu.distolymp.dto.admin.directories.lists.ListingFilter;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
 import ru.spbu.distolymp.entity.lists.Listing;
 import ru.spbu.distolymp.mapper.admin.directories.groups.ConstraintMapper;
-import ru.spbu.distolymp.mapper.entity.lists.listing.ListingNameMapper;
+import ru.spbu.distolymp.mapper.entity.lists.ListingNameMapper;
 import ru.spbu.distolymp.repository.lists.ListingRepository;
 import ru.spbu.distolymp.service.admin.directories.lists.api.ListingService;
 import ru.spbu.distolymp.service.crud.api.division.DivisionCrudService;

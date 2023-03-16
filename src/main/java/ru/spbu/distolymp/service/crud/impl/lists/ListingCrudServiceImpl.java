@@ -18,7 +18,7 @@ import ru.spbu.distolymp.entity.lists.Listing;
 import ru.spbu.distolymp.entity.lists.ListingProblems;
 import ru.spbu.distolymp.exception.crud.lists.ListingCrudServiceException;
 import ru.spbu.distolymp.mapper.admin.directories.groups.ConstraintMapper;
-import ru.spbu.distolymp.mapper.entity.lists.listing.ListingNameMapper;
+import ru.spbu.distolymp.mapper.entity.lists.ListingNameMapper;
 import ru.spbu.distolymp.repository.lists.ListingRepository;
 import ru.spbu.distolymp.service.crud.api.division.DivisionCrudService;
 import ru.spbu.distolymp.service.crud.api.lists.ListingCrudService;
