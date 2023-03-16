@@ -70,12 +70,12 @@ public class ListingController {
 
     @PostMapping("/add_problems_from")
     public String addAllFromList(@Valid Long copyId, Long id){
-        //listingService.addProblems();
+        listingService.addAllFromList(copyId, id);
         return "";
     }
 
     @PostMapping("/copy_list")
-    public String copyList(@RequestParam(value = "id") Long id,@RequestParam(value = "copyId") Long copyId, @RequestParam(value = "prefix") String prefix, @RequestParam(value = "newName") String newName){
+    public String copyList(@RequestParam(value = "copyId") Long copyId, @RequestParam(value = "prefix") String prefix, @RequestParam(value = "newName") String newName){
         listingService.copyList(copyId, newName, prefix);
         return "";
     }
