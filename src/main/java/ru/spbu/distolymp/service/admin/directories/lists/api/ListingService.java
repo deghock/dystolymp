@@ -20,11 +20,13 @@ public interface ListingService {
 
     List<ListingNameDto> getListingsBy(ListingFilter listingFilter);
 
+    //Frontend-часть не реализована
+
     List<ProblemDto> getAvailableProblems();
 
-    void addProblems(List<ProblemDto> problemDtoList, Long id);
+    void addProblems(List<Long> problemIds, Long id);
 
-    void copyList(Long copyId, Long id, String newListingName, String prefix);
+    void copyList(Long copyId, String newListingName, String prefix);
 
     void removeConstraint(Long id);
 

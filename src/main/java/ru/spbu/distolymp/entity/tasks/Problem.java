@@ -42,4 +42,13 @@ public class Problem {
 
     @OneToMany(mappedBy = "problem", cascade = CascadeType.REMOVE)
     private List<Answer> answerList;
+
+    public Problem copyFrom(){
+        Problem problem = new Problem();
+        problem.setAnswerList(answerList);
+        problem.setPrefix(prefix);
+        problem.setStatus(status);
+        problem.setType(type);
+        return problem;
+    }
 }

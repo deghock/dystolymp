@@ -5,11 +5,14 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.spbu.distolymp.entity.lists.Listing;
 import ru.spbu.distolymp.entity.lists.ListingProblems;
 import ru.spbu.distolymp.exception.common.TechnicalException;
 import ru.spbu.distolymp.repository.lists.ListingProblemRepository;
 import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
+import ru.spbu.distolymp.service.crud.api.tasks.ProblemCrudService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ListingProblemCrudServiceImpl implements ListingProblemCrudService {
     private final ListingProblemRepository listingProblemRepository;
+    private final ProblemCrudService problemCrudService;
 
     @Override
     @Transactional
@@ -56,5 +60,18 @@ public class ListingProblemCrudServiceImpl implements ListingProblemCrudService 
             throw new TechnicalException();
         }
 
+    }
+
+    @Override
+    @Transactional
+    public List<ListingProblems> copyListingProblem(List<ListingProblems> copyListingProblem, Listing copyListing , String prefix){
+        List<ListingProblems> newProblems = new ArrayList<>();
+        for(int i = 0; i < copyListing.getProblemList().size(); i++){
+            ListingProblems listingProblems = copyListingProblem.get(i).copyFrom();
+            listingProblems.setListing(copyListing);
+            listingProblems.setProblem(problemCrudService.copyProblem(copyListingProblem.get(i).getProblem(), prefix));
+            newProblems.add(listingProblems);
+        }
+        return  newProblems;
     }
 }

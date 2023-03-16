@@ -42,4 +42,10 @@ public class ListingProblems implements Comparable<ListingProblems>{
         }
         return getOrder().compareTo(problems.getOrder());
     }
+
+    public ListingProblems copyFrom(){
+        ListingProblems listingProblems = new ListingProblems();
+        listingProblems.setOrder(order);
+        return listingProblems;
+    }
 }

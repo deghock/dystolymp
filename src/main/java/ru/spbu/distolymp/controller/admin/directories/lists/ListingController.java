@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.spbu.distolymp.dto.admin.directories.groups.ConstraintDto;
 import ru.spbu.distolymp.dto.admin.directories.lists.ListingFilter;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
-import ru.spbu.distolymp.dto.entity.tasks.ProblemDto;
 import ru.spbu.distolymp.service.admin.directories.lists.api.ListingService;
 
 import javax.validation.Valid;
@@ -64,8 +63,8 @@ public class ListingController {
     }
 
     @PostMapping("/add_problems")
-    public String addProblems(@Valid List<ProblemDto> problemDtoList, Long id){
-        listingService.addProblems(problemDtoList, id);
+    public String addProblems(@Valid List<Long> problemIds, Long id){
+        listingService.addProblems(problemIds, id);
         return "";
     }
 
@@ -77,7 +76,7 @@ public class ListingController {
 
     @PostMapping("/copy_list")
     public String copyList(@RequestParam(value = "id") Long id,@RequestParam(value = "copyId") Long copyId, @RequestParam(value = "prefix") String prefix, @RequestParam(value = "newName") String newName){
-        listingService.copyList(id, copyId, newName, prefix);
+        listingService.copyList(copyId, newName, prefix);
         return "";
     }
 

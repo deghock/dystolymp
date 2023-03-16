@@ -50,19 +50,4 @@ public class ListingServiceImpl extends ListingCrudServiceImpl implements Listin
         return getProblems();
     }
 
-    @Override
-    public void copyList(Long copyId, Long id, String listingName, String prefix) {
-
-    }
-
-    @Override
-    public void updateOrder(Long problemId, Long id, Integer direction) {
-
-    }
-
-    @Override
-    public void addAllFromList(Long copyId, Long id) {
-        
-    }
-
 }

@@ -8,4 +8,5 @@ import java.util.List;
 public interface ProblemCrudService {
     List<ProblemDto> getAvailableProblems();
     Problem getProblemById(Long id);
+    Problem copyProblem(Problem copyProblem, String prefix);
 }

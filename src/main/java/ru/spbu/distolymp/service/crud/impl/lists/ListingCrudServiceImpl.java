@@ -25,6 +25,7 @@ import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
 import ru.spbu.distolymp.service.crud.api.tasks.ProblemCrudService;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -117,21 +118,23 @@ public class ListingCrudServiceImpl implements ListingCrudService {
         }
     }
 
+    @Override
     @Transactional(readOnly = true)
-    protected List<ProblemDto> getProblems(){
+    public List<ProblemDto> getProblems(){
         return problemCrudService.getAvailableProblems();
     }
 
+    @Override
     @Transactional
-    public void addProblems(List<ProblemDto> problemDtoList, Long id){
+    public void addProblems(List<Long> problemDtoList, Long id){
         try{
             Listing listing = getListingByIdOrNull(id);
             List<ListingProblems> problems = listing.getProblemList();
             for(int i = 0; i < problemDtoList.size(); i++){
                 problems.add(new ListingProblems());
-                problems.get(i + problems.size()).setListing(getListingByIdOrNull(id));
-                problems.get(i + problems.size()).setProblem(problemCrudService.getProblemById(problemDtoList.get(i).getId()));
-                problems.get(i + problems.size()).setOrder(i + problems.size() + 1);
+                problems.get(i + problems.size() - 1).setListing(getListingByIdOrNull(id));
+                problems.get(i + problems.size() - 1).setProblem(problemCrudService.getProblemById(problemDtoList.get(i)));
+                problems.get(i + problems.size() - 1).setOrder(i + problems.size() + 1);
             }
             listing.setProblemList(problems);
             listingRepository.save(listing);
@@ -141,8 +144,9 @@ public class ListingCrudServiceImpl implements ListingCrudService {
         }
     }
 
+    @Override
     @Transactional
-    public void setConstraint(Long id, ConstraintDto constraintDto) {
+    public void setConstraint(Long id, ConstraintDto constraintDto){
         try{
             Listing listing = getListingByIdOrNull(id);
             listing.setConstraint(constraintMapper.toEntity(constraintDto));
@@ -153,6 +157,7 @@ public class ListingCrudServiceImpl implements ListingCrudService {
         }
     }
 
+    @Override
     @Transactional
     public void removeConstraint(Long id){
         try{
@@ -165,6 +170,7 @@ public class ListingCrudServiceImpl implements ListingCrudService {
         }
     }
 
+    @Override
     @Transactional
     public void removeProblem(Long id, Long problemListingId){
         try{
@@ -178,6 +184,7 @@ public class ListingCrudServiceImpl implements ListingCrudService {
         }
     }
 
+    @Override
     @Transactional
     public void updateOrder(Long id, Long problemId, Integer direction){
         try{
@@ -211,5 +218,26 @@ public class ListingCrudServiceImpl implements ListingCrudService {
             }
         }
         return listingProblemsList;
+    }
+
+    @Override
+    @Transactional
+    public void copyList(Long copyId, String listingName, String prefix){
+        Listing copyListing = getListingByIdOrNull(copyId);
+        Listing newListing = new Listing();
+        newListing.setName(listingName);
+        newListing.setProblemList(listingProblemCrudService.copyListingProblem(copyListing.getProblemList(), newListing, prefix));
+        listingRepository.save(newListing);
+    }
+
+    @Override
+    @Transactional
+    public void addAllFromList(Long copyId, Long id){
+        List<ListingProblems> copyListing = getListingByIdOrNull(copyId).getProblemList();
+        List<Long> problemIds = new ArrayList<>();
+        for (ListingProblems problems : copyListing) {
+            problemIds.add(problems.getProblem().getId());
+        }
+        addProblems(problemIds, id);
     }
 }
