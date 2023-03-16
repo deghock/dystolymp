@@ -16,6 +16,9 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Maxim Andreev
+ */
 @Log4j
 @Service
 @RequiredArgsConstructor

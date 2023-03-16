@@ -10,4 +10,6 @@ import java.util.List;
  */
 public interface DistrictRepository extends PagingAndSortingRepository<District, Long> {
     List<DistrictNameDto> getDistrictsByTownIdOrderByName(Long id);
+
+    District getDistinctById(Long id);
 }

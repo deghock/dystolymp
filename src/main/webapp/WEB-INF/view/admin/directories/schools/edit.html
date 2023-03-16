@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <style>
+        p {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey">
+
+<div th:replace="fragments/menu-staff :: #menustaff"></div>
+
+<h3>Регистрация нвоого учебного заведения</h3>
+<div style="text-align:center">Поля отмеченые * , обязательные для заполнения</div>
+<form th:action="@{/schools/save-or-edit}" th:object="${school}" method="post">
+    <div class="infoForm">
+        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{divisionId}"/>
+        <fieldset>
+            <legend>Учебное заведение</legend>
+            <div id="countries">
+                <label for="country">Страна:</label>
+                <select id="country" class="wide">
+                    <th:block th:field="*{countryName}" th:each="country, iter : ${countries}">
+                        <option th:value="${country.id}"
+                                th:text="${country.name}"
+                                th:selected="${country.name == details.countryName}">
+                        </option>
+                    </th:block>
+                </select>
+            </div>
+
+            <div id="regions" th:hidden="${details.countryName != 'Россия'}">
+                <label for="region">Регион РФ:</label>
+                <select id="region" class="wide">
+                    <th:block th:field="*{regionName}" th:each="region, iter : ${regions}">
+                        <option th:value="${region.id}"
+                                th:text="${region.code} + '. ' + ${region.name}"
+                                th:selected="${region.name == details.regionName}">
+                        </option>
+                    </th:block>
+                </select>
+            </div>
+
+            <div id="towns">
+                <label for="town">Город:</label>
+                <select th:field="*{townId}" id="town" class="wide">
+                    <th:block th:each="town, iter : ${towns}">
+                        <option th:value="${town.id}" th:text="${town.name}"
+                                th:selected="${town.id == details.townId}">
+                        </option>
+                    </th:block>
+                </select>
+            </div>
+
+            <div>
+                <label for="number">Номер школы:</label>
+                <input type="number" th:field="*{number}" id="number"/>
+                <span th:if="${#fields.hasErrors('number')}" th:errors="*{number}">School number error</span>
+            </div>
+
+            <div>
+                <label for="title">Краткое название:</label>
+                <input type="text" th:field="*{title}" id="title" class="wide"/>
+                <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}">School title error</span>
+            </div>
+
+            <div>
+                <label for="address">Адрес школы:</label>
+                <input type="text" th:field="*{address}" id="address" class="wide"/>
+                <span th:if="${#fields.hasErrors('address')}" th:errors="*{address}">School address error</span>
+            </div>
+
+            <div>
+                <label for="school_type">Тип учебного заведения:</label>
+                <select th:field="*{typeId}" id="school_type" class="wide">
+                    <th:block th:each="schoolType, iter : ${schoolTypes}">
+                        <option th:value="${schoolType.id}" th:text="${schoolType.name}"></option>
+                    </th:block>
+                    <option value="0" selected>Не задан</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="visible">Отображение:</label>
+                <select th:field="*{visible}" id="visible">
+                    <option th:value="true" th:text="показывается"></option>
+                    <option th:value="false" th:text="скрыта"></option>
+                </select>
+            </div>
+
+            <div>
+                <label for="editing">Изменение:</label>
+                <select th:field="*{editing}" id="editing">
+                    <option th:value="true" th:text="открыто"></option>
+                    <option th:value="false" th:text="закрыто"></option>
+                </select>
+            </div>
+
+            <br/>
+        </fieldset>
+    </div>
+    <div style="text-align:center">
+        <button type="submit">Сохранить</button>
+    </div>
+</form>
+
+<br/>
+
+<div th:replace="fragments/footer :: #footer"></div>
+
+<script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
+<script type="text/javascript">
+    $("#country").change(function (){
+        let id = $("#country").val();
+        $("#regions").hide();
+        $("#towns").hide();
+        $("#districts").hide();
+        $("#districts").val = "0";
+        getRegionsByCountryId(id);
+    });
+
+    $("#region").change(function (){
+        let id = $("#region").val();
+        getTownsByRegionId(id);
+        $("#districts").hide();
+        $("#districts").val = "0";
+    });
+
+    $("#town").change(function (){
+        if($("#town").text() == "Санкт-Петербург" && $("#country").val() == 1){
+            $("#districts").show();
+        }else{
+            $("#districts").hide();
+            $("#districts").val = "0";
+        }
+    });
+
+    function getRegionsByCountryId(id) {
+        let full_path = window.location.pathname;
+        let path = full_path.slice(0,full_path.indexOf('/',1)) + "/regions/" + id;
+        $.ajax({
+            type: 'GET',
+            url: path,
+            dataType: 'json',
+            success: function (regions) {
+                let $region = $("#region")
+                $region.html('')
+                let len = regions.length;
+                for (let i = 0; i < len; i++) {
+                    $region.append("<option value='" + regions[i]['id'] + "'>" + regions[i]['code'] + ". " + regions[i]['name'] + "</option>");
+                }
+                if(id === "1"){
+                    $('#regions').show();
+                }
+                getTownsByRegionId(regions[0]['id']);
+            }
+        });
+    }
+
+    function getTownsByRegionId(id) {
+        let full_path = window.location.pathname;
+        let path = full_path.slice(0,full_path.indexOf('/',1)) + "/towns/" + id;
+        $.ajax({
+            type: 'GET',
+            url: path,
+            dataType: 'json',
+            success: function (towns) {
+                let $town = $("#town");
+                $town.html('');
+                let len = towns.length;
+                for (let i = 0; i < len; i++) {
+                    $town.append("<option value='" + towns[i]['id'] + "'>" + towns[i]['name'] + "</option>");
+                }
+                $('#towns').show();
+                if($("#town").text() == "Санкт-Петербург"){
+                    $('#districts').show();
+                }
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

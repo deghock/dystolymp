@@ -7,12 +7,13 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.spbu.distolymp.dto.entity.education.InstituteDto;
-import ru.spbu.distolymp.repository.education.InstituteRepository;
 import ru.spbu.distolymp.service.admin.directories.institutes.api.InstituteService;
 
 import javax.validation.Valid;
 
-
+/**
+ * @author Maxim Andreev
+ */
 @Log4j
 @Controller
 @RequiredArgsConstructor
