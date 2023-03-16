@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode(of = {"id"})
 @Entity
 @Table(name = "list_problems")
-public class ListingProblems implements Comparable<ListingProblems>{
+public class ListingProblems {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,18 +34,4 @@ public class ListingProblems implements Comparable<ListingProblems>{
     @Column(name = "`order`")
     private Integer order;
 
-
-    @Override
-    public int compareTo(ListingProblems problems){
-        if(problems.getOrder() == null || getOrder() == null){
-            return 0;
-        }
-        return getOrder().compareTo(problems.getOrder());
-    }
-
-    public ListingProblems copyFrom(){
-        ListingProblems listingProblems = new ListingProblems();
-        listingProblems.setOrder(order);
-        return listingProblems;
-    }
 }

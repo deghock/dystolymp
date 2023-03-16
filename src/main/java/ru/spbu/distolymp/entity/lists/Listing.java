@@ -57,7 +57,7 @@ public class Listing {
     @OneToMany(mappedBy = "listing")
     private List<UserLogListing> userList;
 
-    @OneToMany(mappedBy = "listing", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "listing")
     private List<ListingProblems> problemList;
 
 }

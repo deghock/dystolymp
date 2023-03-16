@@ -25,9 +25,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DiplomaTypeCrudServiceImpl implements DiplomaTypeCrudService {
 
-    private final DiplomaTypeRepository diplomaTypeRepository;
+    protected final DiplomaTypeRepository diplomaTypeRepository;
     private final DiplomaTypeMapper diplomaTypeMapper;
-    private final DiplomaImageService diplomaImageService;
+    protected final DiplomaImageService diplomaImageService;
 
     @Override
     @Transactional(readOnly = true)

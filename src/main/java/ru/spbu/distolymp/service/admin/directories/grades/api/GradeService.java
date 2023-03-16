@@ -23,6 +23,4 @@ public interface GradeService {
 
     void fillUpdateFailedModelMap(ModelMap modelMap);
 
-    void fillShowChangeRegistrationStatus(ModelMap modelMap, String registrationStatus);
-
 }
