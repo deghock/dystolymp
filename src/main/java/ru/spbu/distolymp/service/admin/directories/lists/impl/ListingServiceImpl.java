@@ -5,6 +5,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
+import ru.spbu.distolymp.dto.admin.directories.groups.ConstraintDto;
 import ru.spbu.distolymp.dto.admin.directories.lists.ListingFilter;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
 import ru.spbu.distolymp.entity.lists.Listing;
@@ -41,11 +42,41 @@ public class ListingServiceImpl extends ListingCrudServiceImpl implements Listin
 
     @Override
     @Transactional(readOnly = true)
-    public List<ListingNameDto> getListingsBy(ListingFilter listingFilter) {
+    public void getListingsBy( ModelMap modelMap, ListingFilter listingFilter) {
         Specification<Listing> specs = ListingsSpecConverter.toSpecs(listingFilter);
         if(specs == null){
             getAllListings();
         }
-        return getListings(specs, SORT_BY_NAME_ASC);
+        modelMap.put("listings", getListings(specs, SORT_BY_NAME_ASC));
+    }
+
+    @Override
+    public void getAvailableProblems(ModelMap modelMap) {
+        modelMap.put("problems", getAvailableProblems());;
+    }
+
+    @Override
+    public void addProblems(List<Long> problemIds, Long id, ModelMap modelMap) {
+        modelMap.put("problems", addProblems(problemIds, id));
+    }
+
+    @Override
+    public void setConstraint(Long id, ConstraintDto constraintDto, ModelMap modelMap) {
+        modelMap.put("constraint", setConstraint(id, constraintDto));
+    }
+
+    @Override
+    public void updateOrder(Long problemId, Long id, Integer direction, ModelMap modelMap) {
+        modelMap.put("problems", updateOrder(id, problemId, direction));
+    }
+
+    @Override
+    public void removeProblem(Long problemId, Long id, ModelMap modelMap) {
+        modelMap.put("problems", removeProblem(id, problemId));
+    }
+
+    @Override
+    public void addAllFromList(Long copyId, Long id, ModelMap modelMap) {
+        modelMap.put("problems", addAllFromList(copyId, id));
     }
 }

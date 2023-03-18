@@ -49,7 +49,7 @@ public class ListingController {
 
     @GetMapping("/filter")
     public String getListings(ListingFilter listingFilter, ModelMap modelMap){
-        modelMap.put("listings", listingService.getListingsBy(listingFilter));
+        listingService.getListingsBy( modelMap, listingFilter);
         return LISTING_SCROLL;
     }
 
@@ -73,7 +73,7 @@ public class ListingController {
 
     @GetMapping("/available_problems")
     public String getAvailableProblems(ModelMap modelMap){
-        modelMap.put("available_problems", listingService.getAvailableProblems());
+        listingService.getAvailableProblems(modelMap);
         return AVAILABLE_PROBLEMS_SCROLL;
     }
 
@@ -85,13 +85,13 @@ public class ListingController {
 
     @PostMapping("/add_problems")
     public String addProblems(ModelMap modelMap, List<Long> problemIds, Long id){
-        modelMap.put("problems", listingService.addProblems(problemIds, id));
+        listingService.addProblems(problemIds, id, modelMap);
         return LISTING_PROBLEM_TABLE;
     }
 
     @PostMapping("/set_constraint")
     public String setConstraint(ModelMap modelMap, ConstraintDto constraintDto, Long id){
-        modelMap.put("constraint", listingService.setConstraint(id, constraintDto));
+        listingService.setConstraint(id, constraintDto, modelMap);
         return CONSTRAINT_TABLE;
     }
 
@@ -104,19 +104,19 @@ public class ListingController {
 
     @PostMapping("/add_problems_from")
     public String addAllFromList(ModelMap modelMap, Long copyId, Long id){
-        modelMap.put("problems", listingService.addAllFromList(copyId, id));
+        listingService.addAllFromList(copyId, id, modelMap);
         return LISTING_PROBLEM_TABLE;
     }
 
     @PostMapping("/remove_problem")
     public String removeProblem(ModelMap modelMap, Long id, Long problemId){
-        modelMap.put("problems", listingService.removeProblem(id, problemId));
+        listingService.removeProblem(id, problemId, modelMap);
         return LISTING_PROBLEM_TABLE;
     }
 
     @PostMapping ("/update_order")
-    String updateOrder(ModelMap modelMap, Long id, Long problemListingId, Integer direction){
-        modelMap.put("problems", listingService.updateOrder(id, problemListingId, direction));
+    String updateOrder(ModelMap modelMap, Long id, Long problemId, Integer direction){
+        listingService.updateOrder(id, problemId, direction, modelMap);
         return  LISTING_PROBLEM_TABLE;
     }
 }
