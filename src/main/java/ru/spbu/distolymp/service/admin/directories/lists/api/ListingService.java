@@ -21,8 +21,6 @@ public interface ListingService {
 
     List<ListingNameDto> getListingsBy(ListingFilter listingFilter);
 
-    //Frontend-часть не реализована
-
     List<ProblemDto> getAvailableProblems();
 
     List<ListingProblemDto> addProblems(List<Long> problemIds, Long id);

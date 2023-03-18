@@ -21,6 +21,7 @@ import ru.spbu.distolymp.mapper.admin.directories.groups.ConstraintMapper;
 import ru.spbu.distolymp.mapper.entity.lists.ListingNameMapper;
 import ru.spbu.distolymp.repository.lists.ListingRepository;
 import ru.spbu.distolymp.service.crud.api.division.DivisionCrudService;
+import ru.spbu.distolymp.service.crud.api.groups.GroupsCrudService;
 import ru.spbu.distolymp.service.crud.api.lists.ListingCrudService;
 import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
 import ru.spbu.distolymp.service.crud.api.tasks.ProblemCrudService;
@@ -43,6 +44,7 @@ public class ListingCrudServiceImpl implements ListingCrudService {
     private final ListingProblemCrudService listingProblemCrudService;
     private final ConstraintMapper constraintMapper;
     private final ProblemCrudService problemCrudService;
+    private final GroupsCrudService groupsCrudService;
 
     @Override
     @Transactional(readOnly = true)
@@ -88,6 +90,7 @@ public class ListingCrudServiceImpl implements ListingCrudService {
     public void deleteListing(Long id) {
         try{
             Listing listing = getListingByIdOrNull(id);
+            groupsCrudService.removeListingFromAllGroupsByListingId(id);
             listingRepository.delete(listing);
         }catch (Exception e){
             log.error("An error occurred while deleting a list", e);

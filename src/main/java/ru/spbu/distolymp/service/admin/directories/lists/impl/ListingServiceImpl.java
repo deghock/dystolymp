@@ -13,6 +13,7 @@ import ru.spbu.distolymp.mapper.entity.lists.ListingNameMapper;
 import ru.spbu.distolymp.repository.lists.ListingRepository;
 import ru.spbu.distolymp.service.admin.directories.lists.api.ListingService;
 import ru.spbu.distolymp.service.crud.api.division.DivisionCrudService;
+import ru.spbu.distolymp.service.crud.api.groups.GroupsCrudService;
 import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
 import ru.spbu.distolymp.service.crud.api.tasks.ProblemCrudService;
 import ru.spbu.distolymp.service.crud.impl.lists.ListingCrudServiceImpl;
@@ -26,9 +27,9 @@ public class ListingServiceImpl extends ListingCrudServiceImpl implements Listin
 
     private static final Sort SORT_BY_NAME_ASC = Sort.by("name").ascending();
 
-    public ListingServiceImpl(ListingRepository listingRepository, ListingNameMapper listingNameMapper,
+    public ListingServiceImpl(ListingRepository listingRepository, ListingNameMapper listingNameMapper, GroupsCrudService groupsCrudService,
                               DivisionCrudService divisionCrudService, ListingProblemCrudService listingProblemCrudService, ConstraintMapper constraintMapper, ProblemCrudService problemCrudService) {
-        super(listingNameMapper, listingRepository, divisionCrudService, listingProblemCrudService, constraintMapper, problemCrudService);
+        super(listingNameMapper, listingRepository, divisionCrudService, listingProblemCrudService, constraintMapper, problemCrudService, groupsCrudService);
     }
 
     @Override
