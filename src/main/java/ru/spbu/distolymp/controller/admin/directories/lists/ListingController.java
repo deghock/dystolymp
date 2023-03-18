@@ -97,8 +97,7 @@ public class ListingController {
 
     @PostMapping("/remove_constraint")
     public String removeConstraint(ModelMap modelMap, Long id){
-        listingService.removeConstraint(id);
-        modelMap.put("constraint", null);
+        listingService.removeConstraint(id, modelMap);
         return CONSTRAINT_TABLE;
     }
 

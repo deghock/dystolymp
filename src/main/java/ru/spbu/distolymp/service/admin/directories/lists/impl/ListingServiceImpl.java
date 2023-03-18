@@ -61,6 +61,12 @@ public class ListingServiceImpl extends ListingCrudServiceImpl implements Listin
     }
 
     @Override
+    public void removeConstraint(Long id, ModelMap modelMap) {
+        removeConstraint(id);
+        modelMap.put("constraint", null);
+    }
+
+    @Override
     public void setConstraint(Long id, ConstraintDto constraintDto, ModelMap modelMap) {
         modelMap.put("constraint", setConstraint(id, constraintDto));
     }

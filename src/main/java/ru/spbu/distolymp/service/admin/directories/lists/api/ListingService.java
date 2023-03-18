@@ -25,7 +25,7 @@ public interface ListingService {
 
     void copyList(Long copyId, String newListingName, String prefix);
 
-    void removeConstraint(Long id);
+    void removeConstraint(Long id, ModelMap modelMap);
 
     void setConstraint(Long id, ConstraintDto constraintDto, ModelMap modelMap);
 
