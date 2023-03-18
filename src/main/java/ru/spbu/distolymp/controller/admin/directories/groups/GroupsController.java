@@ -15,7 +15,7 @@ public class GroupsController {
     private static final String LIST = ROOT + "list";
     private static final String SINGLE_GROUP = ROOT + "group";
     private static final String REDIRECT_SINGLE_GROUP = "redirect:/groups/group/";
-    private static final String LISTING_SCROLL = "";
+    private static final String LISTING_SCROLL = "listing-scroll :: #listing";
 
     @GetMapping("/list")
     public String getGroups(ModelMap modelMap){

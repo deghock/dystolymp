@@ -25,15 +25,10 @@ public class ListingController {
     private static final String LIST = ROOT + "list";
     private static final String REDIRECT_LIST = "redirect:/lists/list";
     private static final String LISTING_SCROLL = ROOT + "listing-scroll :: #listing";
-
-    //TODO: Возможно понадобятся элементы, не до конца понимаю как работает редирект
-    private static final String ADD_FROM_LISTING_SCROLL = ROOT + "listing-from-scroll :: #listing";
-    private static final String LISTING_PROBLEM_TABLE = ROOT + "listing-problem-table :: #listing";
-    private static final String AVAILABLE_PROBLEMS_SCROLL = ROOT + "available-problems-scroll :: #listing";
-    private static final String CONSTRAINT_TABLE = ROOT + "constraint-table :: #listing";
-
-
-    //TODO: Разобраться с вводом данных с фронтэнда
+    private static final String ADD_FROM_LISTING_SCROLL = ROOT + "listing-from-scroll :: #listing-from-scroll";
+    private static final String LISTING_PROBLEM_TABLE = ROOT + "listing-problem-table :: #listing-problem-table";
+    private static final String AVAILABLE_PROBLEMS_SCROLL = ROOT + "available-problems-scroll :: #available-problems-scroll";
+    private static final String CONSTRAINT_TABLE = ROOT + "constraint-table :: #constraint-table";
 
     @GetMapping("/list")
     public String showAllListings(ModelMap modelMap) {
