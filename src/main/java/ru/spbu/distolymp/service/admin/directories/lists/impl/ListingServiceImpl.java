@@ -10,6 +10,7 @@ import ru.spbu.distolymp.dto.admin.directories.lists.ListingFilter;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
 import ru.spbu.distolymp.entity.lists.Listing;
 import ru.spbu.distolymp.mapper.admin.directories.groups.ConstraintMapper;
+import ru.spbu.distolymp.mapper.entity.lists.ListingDetailsMapper;
 import ru.spbu.distolymp.mapper.entity.lists.ListingNameMapper;
 import ru.spbu.distolymp.repository.lists.ListingRepository;
 import ru.spbu.distolymp.service.admin.directories.lists.api.ListingService;
@@ -28,9 +29,9 @@ public class ListingServiceImpl extends ListingCrudServiceImpl implements Listin
 
     private static final Sort SORT_BY_NAME_ASC = Sort.by("name").ascending();
 
-    public ListingServiceImpl(ListingRepository listingRepository, ListingNameMapper listingNameMapper, GroupsCrudService groupsCrudService,
+    public ListingServiceImpl(ListingRepository listingRepository, ListingNameMapper listingNameMapper, ListingDetailsMapper listingDetailsMapper, GroupsCrudService groupsCrudService,
                               DivisionCrudService divisionCrudService, ListingProblemCrudService listingProblemCrudService, ConstraintMapper constraintMapper, ProblemCrudService problemCrudService) {
-        super(listingNameMapper, listingRepository, divisionCrudService, listingProblemCrudService, constraintMapper, problemCrudService, groupsCrudService);
+        super(listingNameMapper, listingRepository, divisionCrudService, listingProblemCrudService, constraintMapper, problemCrudService, groupsCrudService, listingDetailsMapper);
     }
 
     @Override
@@ -84,5 +85,10 @@ public class ListingServiceImpl extends ListingCrudServiceImpl implements Listin
     @Override
     public void addAllFromList(Long copyId, Long id, ModelMap modelMap) {
         modelMap.put("problems", addAllFromList(copyId, id));
+    }
+
+    @Override
+    public void getSingleListing(Long id, ModelMap modelMap) {
+        modelMap.put("problems", getListingById(id));
     }
 }

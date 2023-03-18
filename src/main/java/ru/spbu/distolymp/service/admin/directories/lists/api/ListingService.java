@@ -3,6 +3,7 @@ package ru.spbu.distolymp.service.admin.directories.lists.api;
 import org.springframework.ui.ModelMap;
 import ru.spbu.distolymp.dto.admin.directories.groups.ConstraintDto;
 import ru.spbu.distolymp.dto.admin.directories.lists.ListingFilter;
+import ru.spbu.distolymp.dto.entity.lists.listing.ListingDetailsDto;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public interface ListingService {
 
     void deleteListing(Long id);
 
-    void renameListing(ListingNameDto listingNameDto);
+    void renameListing(ListingDetailsDto listingDetailsDto);
 
     void getListingsBy(ModelMap modelMap, ListingFilter listingFilter);
 
@@ -34,4 +35,6 @@ public interface ListingService {
     void removeProblem(Long problemId, Long id, ModelMap modelMap);
 
     void addAllFromList(Long copyId, Long id, ModelMap modelMap);
+
+    void getSingleListing(Long id, ModelMap modelMap);
 }

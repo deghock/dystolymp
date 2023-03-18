@@ -3,12 +3,10 @@ package ru.spbu.distolymp.controller.admin.directories.lists;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.spbu.distolymp.dto.admin.directories.groups.ConstraintDto;
 import ru.spbu.distolymp.dto.admin.directories.lists.ListingFilter;
+import ru.spbu.distolymp.dto.entity.lists.listing.ListingDetailsDto;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
 import ru.spbu.distolymp.service.admin.directories.lists.api.ListingService;
 
@@ -28,7 +26,8 @@ public class ListingController {
     private static final String ADD_FROM_LISTING_SCROLL = ROOT + "listing-from-scroll :: #listing-from-scroll";
     private static final String LISTING_PROBLEM_TABLE = ROOT + "listing-problem-table :: #listing-problem-table";
     private static final String AVAILABLE_PROBLEMS_SCROLL = ROOT + "available-problems-scroll :: #available-problems-scroll";
-    private static final String CONSTRAINT_TABLE = ROOT + "constraint-table :: #constraint-table";
+    //private static final String CONSTRAINT_TABLE = ROOT + "constraint-table :: #constraint-table";
+    private static final String SINGLE_LISTING = "single-listing :: #single-listing";
 
     @GetMapping("/list")
     public String showAllListings(ModelMap modelMap) {
@@ -40,6 +39,12 @@ public class ListingController {
     public String showAvailableListing(ModelMap modelMap){
         listingService.fillShowAllListingsModelMap(modelMap);
         return ADD_FROM_LISTING_SCROLL;
+    }
+
+    @GetMapping("/list/{id}")
+    public String getSingleListing(@PathVariable("id") Long id, ModelMap modelMap){
+        listingService.getSingleListing(id, modelMap);
+        return SINGLE_LISTING;
     }
 
     @GetMapping("/filter")
@@ -61,8 +66,8 @@ public class ListingController {
     }
 
     @PostMapping("/rename")
-    public String renameListing(@Valid ListingNameDto listingNameDto) {
-        listingService.renameListing(listingNameDto);
+    public String renameListing(@Valid ListingDetailsDto listingDetailsDto) {
+        listingService.renameListing(listingDetailsDto);
         return REDIRECT_LIST;
     }
 
@@ -87,13 +92,13 @@ public class ListingController {
     @PostMapping("/set_constraint")
     public String setConstraint(ModelMap modelMap, ConstraintDto constraintDto, Long id){
         listingService.setConstraint(id, constraintDto, modelMap);
-        return CONSTRAINT_TABLE;
+        return SINGLE_LISTING;
     }
 
     @PostMapping("/remove_constraint")
     public String removeConstraint(ModelMap modelMap, Long id){
         listingService.removeConstraint(id, modelMap);
-        return CONSTRAINT_TABLE;
+        return SINGLE_LISTING;
     }
 
     @PostMapping("/add_problems_from")

@@ -3,6 +3,7 @@ package ru.spbu.distolymp.service.crud.api.lists;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import ru.spbu.distolymp.dto.admin.directories.groups.ConstraintDto;
+import ru.spbu.distolymp.dto.entity.lists.listing.ListingDetailsDto;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingProblemDto;
 import ru.spbu.distolymp.dto.entity.tasks.ProblemDto;
@@ -22,7 +23,7 @@ public interface ListingCrudService {
 
     void deleteListing(Long id);
 
-    void renameListing(ListingNameDto listingNameDto);
+    void renameListing(ListingDetailsDto listingDetailsDto);
 
     List<ListingNameDto> getListings(Specification<Listing> specs, Sort sort);
 
@@ -41,4 +42,6 @@ public interface ListingCrudService {
     List<ListingProblemDto> addAllFromList(Long copyId, Long id);
 
     List<ProblemDto> getAvailableProblems();
+
+    ListingDetailsDto getListingById(Long id);
 }

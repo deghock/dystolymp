@@ -16,6 +16,6 @@ public interface ListingNameMapper {
 
     ListingNameDto toDto(Listing listing);
 
-    Listing toEntity(ListingNameDto listingNameDto);
+    Listing toEntity(ListingNameDto listingDetailsDto);
 
 }
