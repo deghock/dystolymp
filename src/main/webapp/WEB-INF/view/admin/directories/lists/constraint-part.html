@@ -4,6 +4,118 @@
     <meta charset="UTF-8">
 </head>
 <body>
+<div class="tabs__pane" id = "constraint">
+    <div id="access" class="tabs-block">
+        <p class="access-text">
+            Доступ к списку <span>123</span> разрешён с <b>11.03.2005 19:24</b> по <b>13.03.2005
+            19:24</b> в течение <b>11:00</b>
+        </p>
+        <div id="" class="current-tasks-list__wrapper">
+            <b class="set-time-access">Установка времени доступа к списку заданий</b>
+            <div class="set-time-access__wrapper">
+                <div class="start-time__wrapper">
+                    <p>Время начала</p>
+                    <div class="set-start-time__wrapper set-time__block">
+                        <select id="start-day" class="start-day">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                        <select id="start-month" class="start-month">
+                            <option value="Марта">Марта</option>
+                            <option value="Апреля">Апреля</option>
+                            <option value="Мая">Мая</option>
+                            <option value="Июня">Июня</option>
+                        </select>
+                        <select id="start-year" class="start-year">
+                            <option value="2005">2005</option>
+                            <option value="2006">2006</option>
+                            <option value="2007">2007</option>
+                            <option value="2008">2008</option>
+                        </select>
+                        <select id="start-time__hour" class="start-time__hour">
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                        </select>
+                        <p>часов</p>
+                        <select id="start-time__min" class="start-time__min">
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                        </select>
+                        <p>минут</p>
 
+                    </div>
+                </div>
+                <div class="start-time__wrapper">
+                    <p>Время окончания</p>
+                    <div class="set-end-time__wrapper set-time__block">
+                        <select id="end-day" class="end-day">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                        <select id="end-month" class="end-month">
+                            <option value="Марта">Марта</option>
+                            <option value="Апреля">Апреля</option>
+                            <option value="Мая">Мая</option>
+                            <option value="Июня">Июня</option>
+                        </select>
+                        <select id="end-year" class="end-year">
+                            <option value="2005">2005</option>
+                            <option value="2006">2006</option>
+                            <option value="2007">2007</option>
+                            <option value="2008">2008</option>
+                        </select>
+                        <select id="end-time__hour" class="end-time__hour">
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                        </select>
+                        <p>часов</p>
+                        <select id="end-time__min" class="end-time__min">
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                        </select>
+                        <p>минут</p>
+                    </div>
+                </div>
+                <div class="start-time__wrapper duration-tasks__wrapper">
+                    <p>Продолжительность</p>
+                    <div class="duration-tasks__wrapper set-time__block">
+                        <select id="duration-tasks__hour" class="duration-tasks__hour">
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                        </select>
+                        <p>часов</p>
+                        <select id="duration-tasks__min" class="duration-tasks__min">
+                            <option value="0">0</option>
+                            <option value="15">15</option>
+                            <option value="30">30</option>
+                        </select>
+                        <p>минут</p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="access-btns__wrapper">
+                <button id="addTaskButton" onclick="closeOrOpenModal(event)"
+                        class="add-task-button access-task-btn">
+                    Задать время
+                </button>
+                <button id="addTaskButton" onclick="closeOrOpenModal(event)"
+                        class="add-task-button access-task-btn">
+                    Закрыть
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

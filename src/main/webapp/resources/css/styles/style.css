@@ -108,11 +108,9 @@ body {
     display: flex;
 
     padding: 5px 10px;
-    width: 95%;
-    margin: 0 auto;
+    width: 90%;
     background-color: #E3AF8A;
-
-    margin-bottom: 30px;
+    margin: 0 auto 30px;
 }
 
 .task-select {
@@ -287,7 +285,7 @@ body {
     color: #853228;
 }
 
-.fitst-row td {
+.first-row td {
     text-align: center !important;
     color: #000000 !important;
 }
@@ -440,8 +438,7 @@ body {
 }
 
 .copy-toList-btn {
-    margin: 0;
-    margin-right: 10px;
+    margin: 0 10px 0 0;
 }
 
 /* ТАБЫ */

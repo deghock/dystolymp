@@ -59,10 +59,13 @@
             let el = event.target;
             switch (el.id) {
                 case 'addTask':
-                    document.getElementById('addTasksInList').removeAttribute('hidden')
-                    document.getElementById('addTask').setAttribute('hidden', 'true');
-                    document.getElementById('addAllTasks').setAttribute('hidden', 'true');
-                    document.getElementById('copyList').setAttribute('hidden', 'true');
+                        $.get("available_problems").done(async function (fragment){
+                        $('#addTasksInList').replaceWith(fragment);
+                        document.getElementById('addTasksInList').removeAttribute('hidden');
+                        document.getElementById('addTask').setAttribute('hidden', 'true');
+                        document.getElementById('addAllTasks').setAttribute('hidden', 'true');
+                        document.getElementById('copyList').setAttribute('hidden', 'true');
+                    });
                     break;
                 case 'chooseModalAddTasks':
                     // console.log('test')
@@ -79,12 +82,21 @@
                     break;
                     // второй блок
                 case 'addAllTasks':
-                    document.getElementById('allTasksList').removeAttribute('hidden')
-                    document.getElementById('addTask').setAttribute('hidden', 'true');
-                    document.getElementById('addAllTasks').setAttribute('hidden', 'true');
-                    document.getElementById('copyList').setAttribute('hidden', 'true');
+                    $.get('lists_available').done(function (fragment){
+                        $('#allTasksList').replaceWith(fragment);
+                        document.getElementById('allTasksList').removeAttribute('hidden')
+                        document.getElementById('addTask').setAttribute('hidden', 'true');
+                        document.getElementById('addAllTasks').setAttribute('hidden', 'true');
+                        document.getElementById('copyList').setAttribute('hidden', 'true');
+                    });
                     break;
-                case 'addTaskButton':
+                case 'addTaskButtonOpen':
+                    document.getElementById('allTasksList').setAttribute('hidden', 'true')
+                    document.getElementById('addTask').removeAttribute('hidden');
+                    document.getElementById('addAllTasks').removeAttribute('hidden');
+                    document.getElementById('copyList').removeAttribute('hidden');
+                    break;
+                case 'addTaskButtonClose':
                     document.getElementById('allTasksList').setAttribute('hidden', 'true')
                     document.getElementById('addTask').removeAttribute('hidden');
                     document.getElementById('addAllTasks').removeAttribute('hidden');

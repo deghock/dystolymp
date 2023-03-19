@@ -5,6 +5,42 @@
     <title>Title</title>
 </head>
 <body>
+<div id="CopyListTasks" class="current-tasks-list__wrapper copy-tasks-list__wrapper"
+     hidden="true">
+    <p class="add-task__title">Копировать список и все его задания</p>
+    <p class="copy-title__warning">Если имя нового списка будет пустым копирование
+        списка не
+        произойдёт!</p>
+    <div class="copy-task-list__wrapper">
+        <div class="copy-block">
+            <p class="copy-task-list__name">Имя нового списка:</p>
+            <select class="add-task__select" id="add-task__select">
+                <option value="123">Копия 123</option>
+                <option value="test1">Олимпиада 1</option>
+                <option value="test2">Олимпиада 2</option>
+            </select>
 
+        </div>
+        <div class="copy-block">
+            <p class="copy-task-list__name">Добавить к префиксу <br>
+                для копируемых заданий:</p>
+            <select class="add-task__select" id="add-task__select">
+                <option value="Копия">Копия</option>
+                <option value="test1">Олимпиада 1</option>
+                <option value="test2">Олимпиада 2</option>
+            </select>
+        </div>
+    </div>
+    <div class="add-tasks-buttons__wrapper">
+        <button id="CopyBtn" class="add-task-button copy-toList-btn"
+                onclick="closeOrOpenModal(event)">
+            Копировать
+        </button>
+        <button id="CloseCopyBtn" class="add-task-button copy-toList-btn"
+                onclick="closeOrOpenModal(event)">
+            Закрыть
+        </button>
+    </div>
+</div>
 </body>
 </html>

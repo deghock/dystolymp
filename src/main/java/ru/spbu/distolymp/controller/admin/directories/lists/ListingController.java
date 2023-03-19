@@ -23,9 +23,9 @@ public class ListingController {
     private static final String LIST = ROOT + "list";
     private static final String REDIRECT_LIST = "redirect:/lists/list";
     private static final String LISTING_SCROLL = ROOT + "listing-scroll :: #listing";
-    private static final String ADD_FROM_LISTING_SCROLL = ROOT + "listing-from-scroll :: #listing-from-scroll";
-    private static final String AVAILABLE_PROBLEMS_SCROLL = ROOT + "available-problems-scroll :: #available-problems-scroll";
-    //private static final String CONSTRAINT_TABLE = ROOT + "constraint-table :: #constraint-table";
+    private static final String ADD_FROM_LISTING_SCROLL = ROOT + "copy-list-tasks :: #allTasksList";
+    private static final String AVAILABLE_PROBLEMS_SCROLL = ROOT + "add-tasks :: #addTasksInList";
+    private static final String CONSTRAINT_TABLE = ROOT + "constraint-part :: #constraint";
     private static final String SINGLE_LISTING = ROOT + "single-listing :: #single-listing";
 
     @GetMapping("/list")

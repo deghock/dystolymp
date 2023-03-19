@@ -1,9 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles/style.css}">
+    <link rel="stylesheet" th:href="@{/css/styles/reset.css}">
 </head>
 <body>
+    <div id="allTasksList" class="current-tasks-list__wrapper" hidden="true">
+        <p class="add-task__title">Добавить все задания из списка</p>
+        <div class="add-task-list__wrapper">
+            <p class="task-list__name">Список заданий</p>
+            <select class="add-task__select" id="add-task__select">
+                <!--/*@thymesVar id="listings" type="java.util.List<ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto>"*/-->
+                <option th:each="listing : ${listings}"
+                        th:value="${listing.name}" th:text="${listing.name} "
+                        th:attr="data-id=${listing.id}, data-name=${listing.name}">
+                </option>
+            </select>
+        </div>
 
+
+        <div class="access-btns__wrapper">
+            <button id="addTaskButtonOpen" onclick="closeOrOpenModal(event)"
+                    class="add-task-button close-list-button">
+                Выбрать список
+            </button>
+            <button id="addTaskButtonClose" onclick="closeOrOpenModal(event)"
+                    class="add-task-button close-choose-tasks-list">
+                Закрыть
+            </button>
+        </div>
+    </div>
 </body>
 </html>
