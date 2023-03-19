@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles/style.css}">
 </head>
 <body>
-    <select class = "centered" id="listing">
+    <select class="task-select" id="listing">
         <option value="null" selected disabled hidden>Список не выбран</option>
         <option th:each="listing : ${listings}"
                 th:value="${listing.name}" th:text="${listing.name} "

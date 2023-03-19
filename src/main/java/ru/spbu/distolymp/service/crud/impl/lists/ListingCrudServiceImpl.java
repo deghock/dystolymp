@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.dto.admin.directories.groups.ConstraintDto;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingDetailsDto;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
-import ru.spbu.distolymp.dto.entity.lists.listing.ListingProblemDto;
 import ru.spbu.distolymp.dto.entity.tasks.ProblemDto;
 import ru.spbu.distolymp.entity.division.Division;
 import ru.spbu.distolymp.entity.lists.Listing;
@@ -157,7 +156,7 @@ public class ListingCrudServiceImpl implements ListingCrudService {
 
     @Override
     @Transactional
-    public List<ListingProblemDto> addProblems(List<Long> problemDtoList, Long id){
+    public ListingDetailsDto addProblems(List<Long> problemDtoList, Long id){
         try{
             Listing listing = getListingByIdOrNull(id);
             List<ListingProblems> problems = listing.getProblemList();
@@ -169,7 +168,7 @@ public class ListingCrudServiceImpl implements ListingCrudService {
             }
             listing.setProblemList(problems);
             listingRepository.save(listing);
-            return listingDetailsMapper.toDto(listing).getProblemList();
+            return listingDetailsMapper.toDto(listing);
         }catch (DataAccessException e){
             log.error("An error occurred while adding problems to list", e);
             throw e;
@@ -205,13 +204,13 @@ public class ListingCrudServiceImpl implements ListingCrudService {
 
     @Override
     @Transactional
-    public List<ListingProblemDto> removeProblem(Long id, Long problemListingId){
+    public ListingDetailsDto removeProblem(Long id, Long problemListingId){
         try{
             Listing listing = getListingByIdOrNull(id);
             ListingProblems listingProblems = listingProblemCrudService.findByIdOrNull(problemListingId);
             listing.getProblemList().remove(listingProblems);
             listingRepository.save(listing);
-            return listingDetailsMapper.toDto(listing).getProblemList();
+            return listingDetailsMapper.toDto(listing);
         }catch (Exception e){
             log.error("An error occurred while removing problem from list", e);
             throw e;
@@ -220,13 +219,13 @@ public class ListingCrudServiceImpl implements ListingCrudService {
 
     @Override
     @Transactional
-    public List<ListingProblemDto> updateOrder(Long id, Long problemId, Integer direction){
+    public ListingDetailsDto updateOrder(Long id, Long problemId, Integer direction){
         try{
             Listing listing = getListingByIdOrNull(id);
             if(listing != null){
                 listing.setProblemList(updateProblemOrder(listingProblemCrudService.findByIdOrNull(problemId), listing.getProblemList(), direction));
                 listingRepository.save(listing);
-                return listingDetailsMapper.toDto(listing).getProblemList();
+                return listingDetailsMapper.toDto(listing);
             }else{
                 throw new EntityNotFoundException();
             }
@@ -267,7 +266,7 @@ public class ListingCrudServiceImpl implements ListingCrudService {
 
     @Override
     @Transactional
-    public List<ListingProblemDto> addAllFromList(Long copyId, Long id){
+    public ListingDetailsDto addAllFromList(Long copyId, Long id){
         List<ListingProblems> copyListing = getListingByIdOrNull(copyId).getProblemList();
         List<Long> problemIds = new ArrayList<>();
         for (ListingProblems problems : copyListing) {

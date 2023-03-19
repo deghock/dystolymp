@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+</head>
+
+<style>
+    .centered {
+        justify-content: center;
+        display: block;
+        margin: auto;
+    }
+</style>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey">
+    <div th:replace="fragments/menu-staff :: #menustaff"></div>
+
+    <div class="container">
+        <select class = "centered" id="listing" th:replace="admin/directories/lists/listing-scroll :: #listing">
+        </select>
+
+        <div class="centered" style="text-align:center; margin:0.5em;">
+            <button type="button" data-toggle="modal" data-target=".new-listing">
+                Добавить новый список</button>
+            <button type="button" data-toggle="modal" data-target=".rename-listing">
+                Переименовать список </button>
+            <button type="button" data-toggle="modal" data-target=".delete-listing">
+                Удалить список</button>
+        </div>
+
+        <div class="searchForm">
+            <input type="text" id="listing-search" class="wide"/><br/>
+        </div>
+
+        <div style="text-align:center">
+            <button type="submit" id="search-button">Найти</button>
+        </div>
+
+        <div class="modal fade new-listing" id="new-listing-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Добавление нового списка заданий</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!--/*@thymesVar id="listing" type="ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto"*/-->
+                        <form id="new-listing-form" th:object="${listing}"
+                              th:action="@{/lists/add}" method="post">
+                            <div class="form-group">
+                                <label for="new-listing-name">Имя списка заданий</label>
+                                    <input th:field="*{name}" placeholder="Новый список заданий"
+                                        type="text" class="form-control" id="new-listing-name"
+                                        aria-describedby="listingHelp">
+                                    <small id="listingHelp" class="form-text text-muted">Если имя будет пустым, новый
+                                        класс не будет создан.
+                                    </small>
+                                </div>
+                            </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn  btn-light border border-dark" data-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-light border border-dark" form="new-listing-form">Ок
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade rename-listing" id="rename-listing-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Переименовать список</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!--/*@thymesVar id="listing" type="ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto"*/-->
+                        <form id="rename-listing-form" th:object="${listing}"
+                              th:action="@{/lists/rename}" method="post">
+                            <div class="form-group">
+                                <label for="update-listing-name">Имя списка</label>
+                                <input th:field="*{name}" placeholder="Новое имя списка"
+                                       type="text" class="form-control" id="update-listing-name"
+                                       aria-describedby="updateListingHelp">
+                                <small id="updateListingHelp" class="form-text text-muted">Если имя будет пустым, список
+                                    не будет переименован.
+                                </small>
+                                <label>
+                                    <input hidden type="number" th:value="*{id}" th:field="*{id}" id="listing-id">
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn  btn-light border border-dark" data-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-light border border-dark" form="rename-listing-form">Ок
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade delete-listing" id="delete-listing-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Переименовать список</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!--/*@thymesVar id="listing" type="ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto"*/-->
+                        <form id="delete-listing-form" th:object="${listing}"
+                              th:action="@{/lists/delete/{id}(id=*{id})}" method="post">
+                            <div class="form-group">
+                                <label>
+                                    <input hidden type="number" th:value="*{id}" th:field="*{id}" id="delete-listing">
+                                </label>
+                                <button type="button" class="btn  btn-light border border-dark" data-dismiss="modal">Отмена</button>
+                                <button type="submit" class="btn btn-light border border-dark" form="delete-listing-form">Ок</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div th:replace="fragments/footer :: #footer"></div>
+</body>
+
+
+<script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+<script type="text/javascript">
+    $('#new-listing-modal').on('show.bs.modal', function (event) {
+        $('#new-listing-name').val("");
+    });
+
+    $('#listing').on('change', function (event) {
+        var selected = $(this).find(':selected')
+        var id = selected.data('id')
+        var name = selected.data('name')
+        var modal = $('#rename-listing-modal')
+        var del = $('#delete-listing-modal')
+        modal.find('.modal-body #update-listing-name').val(name)
+        modal.find('.modal-body #listing-id').val(id)
+        del.find('.modal-body #delete-listing').val(id)
+    });
+
+    $('#search-button').click(function (event) {
+        var params = encodeQueryData(getParams());
+        var url = "filter?" + params;
+        $.get(url).done(function (fragment) {
+            $('#listing').replaceWith(fragment);
+        })
+    })
+
+    function encodeQueryData(data) {
+        const result = [];
+        for (var key in data) {
+            result.push(key + '=' + data[key]);
+        }
+        return result.join('&');
+    }
+
+    function getParams() {
+        var params = {}
+        params["containsName"] = getName();
+        return params;
+    }
+
+    function getName() {
+        return $('#listing-search').val();
+    }
+
+</script>
+</html>

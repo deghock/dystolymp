@@ -52,43 +52,51 @@ public class ListingServiceImpl extends ListingCrudServiceImpl implements Listin
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void getAvailableProblems(ModelMap modelMap) {
         modelMap.put("problems", getAvailableProblems());;
     }
 
     @Override
+    @Transactional
     public void addProblems(List<Long> problemIds, Long id, ModelMap modelMap) {
-        modelMap.put("problems", addProblems(problemIds, id));
+        modelMap.put("singleListing", addProblems(problemIds, id));
     }
 
     @Override
+    @Transactional
     public void removeConstraint(Long id, ModelMap modelMap) {
         removeConstraint(id);
         modelMap.put("constraint", null);
     }
 
     @Override
+    @Transactional
     public void setConstraint(Long id, ConstraintDto constraintDto, ModelMap modelMap) {
         modelMap.put("constraint", setConstraint(id, constraintDto));
     }
 
     @Override
+    @Transactional
     public void updateOrder(Long problemId, Long id, Integer direction, ModelMap modelMap) {
-        modelMap.put("problems", updateOrder(id, problemId, direction));
+        modelMap.put("singleListing", updateOrder(id, problemId, direction));
     }
 
     @Override
+    @Transactional
     public void removeProblem(Long problemId, Long id, ModelMap modelMap) {
-        modelMap.put("problems", removeProblem(id, problemId));
+        modelMap.put("singleListing", removeProblem(id, problemId));
     }
 
     @Override
+    @Transactional
     public void addAllFromList(Long copyId, Long id, ModelMap modelMap) {
-        modelMap.put("problems", addAllFromList(copyId, id));
+        modelMap.put("singleListing", addAllFromList(copyId, id));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void getSingleListing(Long id, ModelMap modelMap) {
-        modelMap.put("problems", getListingById(id));
+        modelMap.put("singleListing", getListingById(id));
     }
 }

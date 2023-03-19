@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles/style.css}">
+</head>
+<body>
+  <div id="single-listing" hidden>
+    <div class="tasks-manage__wrapper">
+      <button class="task-manage__button" data-toggle="modal" data-target=".rename-listing">Переименовать список</button>
+      <button class="task-manage__button" data-toggle="modal" data-target=".delete-listing">Удалить выбранный список</button>
+    </div>
+
+    <div class="tabs">
+
+      <div class="tabs__nav">
+        <button class="tabs__btn tabs__btn_active">Задания</button>
+        <button class="tabs__btn">Доступ</button>
+      </div>
+
+      <div class="tabs__content">
+        <div class="tabs__pane tabs__pane_show">
+          <div id="tasks" class="tabs-block">
+            <p class="task-edit__text">
+              Задания списка <span>123</span>
+            </p>
+            <div class="task-edit-btn__wrapper">
+
+              <!-- first -->
+              <button class="task-edit-btn" id="addTask" onclick="closeOrOpenModal(event)">Добавить в
+                список задания ...
+              </button>
+              <div id="addTasksInList" hidden="true"
+                   class="current-tasks-list__wrapper current-tasks-in-list__wrapper">
+                <p class="add-task-in-list__title ">Добавить в список задания</p>
+                <div class="add-task-in-list__wrapper">
+                  <p class="add-task-list__name">Задания</p>
+                  <select id="add-task__select" class="add-task__select" size="10" multiple>
+                    <option value="10">4 : 4</option>
+                    <option value="11">4 : 4</option>
+                    <option value="10">Копия 4 : 4</option>
+                    <option value="11">Копия 4 : 4</option>
+                    <option value="7">vm test : vm проверка</option>
+                    <option value="4">Образец апплента : Демонстрационное задание(апплет)
+                    </option>
+                    <option value="5">
+                      Копия Копия vm test : vm проверка <br>
+                    </option>
+                    <option value="">
+                      Копия Копия vm test : vm проверка <br>
+                    </option>
+                    <option value="">
+                      Копия Копия vm test : vm проверка <br>
+                    </option>
+                    <option value="3">Образец теста : Тест</option>
+                    <option value="8">тест2 : тест2</option>
+                    <option value="9">тест3 : тест3</option>
+                    <option value="0">Удалено : Удаленное задание</option>>
+                  </select>
+                </div>
+
+                <div class="add-tasks-buttons__wrapper">
+                  <button id="chooseModalAddTasks" class="add-task-button add-toList-btn"
+                          onclick="closeOrOpenModal(event)">
+                    Выбрать
+                  </button>
+                  <button id="closeModalAddTasks" class="add-task-button add-toList-btn"
+                          onclick="closeOrOpenModal(event)">
+                    Закрыть
+                  </button>
+                </div>
+              </div>
+
+
+              <!-- second -->
+              <button class="task-edit-btn" id="addAllTasks"
+                      onclick="closeOrOpenModal(event)">Добавить
+                все задания из списка
+                ...
+              </button>
+              <div id="allTasksList" class="current-tasks-list__wrapper" hidden="true">
+                <p class="add-task__title">Добавить все задания из списка</p>
+                <div class="add-task-list__wrapper">
+                  <p class="task-list__name">Список заданий</p>
+                  <select class="add-task__select" id="add-task__select">
+                    <option value="123">123</option>
+                    <option value="test1">Олимпиада 1</option>
+                    <option value="test2">Олимпиада 2</option>
+                  </select>
+                </div>
+
+
+                <div class="access-btns__wrapper">
+                  <button id="addTaskButton" onclick="closeOrOpenModal(event)"
+                          class="add-task-button close-list-button">
+                    Выбрать список
+                  </button>
+                  <button id="addTaskButton" onclick="closeOrOpenModal(event)"
+                          class="add-task-button close-choose-tasks-list">
+                    Закрыть
+                  </button>
+                </div>
+
+
+              </div>
+
+
+              <!-- third -->
+              <button class="task-edit-btn" onclick="closeOrOpenModal(event)" id="copyList">Копировать
+                список и все его задания
+                ...
+              </button>
+              <div id="CopyListTasks" class="current-tasks-list__wrapper copy-tasks-list__wrapper"
+                   hidden="true">
+                <p class="add-task__title">Копировать список и все его задания</p>
+                <p class="copy-title__warning">Если имя нового списка будет пустым копирование
+                  списка не
+                  произойдёт!</p>
+                <div class="copy-task-list__wrapper">
+                  <div class="copy-block">
+                    <p class="copy-task-list__name">Имя нового списка:</p>
+                    <select class="add-task__select" id="add-task__select">
+                      <option value="123">Копия 123</option>
+                      <option value="test1">Олимпиада 1</option>
+                      <option value="test2">Олимпиада 2</option>
+                    </select>
+
+                  </div>
+                  <div class="copy-block">
+                    <p class="copy-task-list__name">Добавить к префиксу <br>
+                      для копируемых заданий:</p>
+                    <select class="add-task__select" id="add-task__select">
+                      <option value="Копия">Копия</option>
+                      <option value="test1">Олимпиада 1</option>
+                      <option value="test2">Олимпиада 2</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="add-tasks-buttons__wrapper">
+                  <button id="CopyBtn" class="add-task-button copy-toList-btn"
+                          onclick="closeOrOpenModal(event)">
+                    Копировать
+                  </button>
+                  <button id="CloseCopyBtn" class="add-task-button copy-toList-btn"
+                          onclick="closeOrOpenModal(event)">
+                    Закрыть
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--/*@thymesVar id="singleListing" type="ru.spbu.distolymp.dto.entity.lists.listing.ListingDetailsDto"*/-->
+          <div class="table__wrapper" id="problems-table">
+            <table class="tasks-table">
+              <tbody>
+              <tr class="fitst-row">
+                <td>№</td>
+                <td>Заголовок</td>
+                <td>Cтатус</td>
+                <td>Действия</td>
+              </tr>
+              <tr th:each="listingProblem : ${singleListing.problemList}">
+                <td th:text="${listingProblem.order}"></td>
+                <td th:text="${listingProblem.problem.status}"></td>
+                <td th:text="${listingProblem.problem.title}"></td>
+                <td>
+                  <a></a>
+                  <a></a>
+                  <a></a>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+      <div class="tabs__pane">
+        <div id="access" class="tabs-block">
+          <p class="access-text">
+            Доступ к списку <span>123</span> разрешён с <b>11.03.2005 19:24</b> по <b>13.03.2005
+            19:24</b> в течение <b>11:00</b>
+          </p>
+          <div id="" class="current-tasks-list__wrapper">
+            <b class="set-time-access">Установка времени доступа к списку заданий</b>
+            <div class="set-time-access__wrapper">
+              <div class="start-time__wrapper">
+                <p>Время начала</p>
+                <div class="set-start-time__wrapper set-time__block">
+                  <select id="start-day" class="start-day">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                  </select>
+                  <select id="start-month" class="start-month">
+                    <option value="Марта">Марта</option>
+                    <option value="Апреля">Апреля</option>
+                    <option value="Мая">Мая</option>
+                    <option value="Июня">Июня</option>
+                  </select>
+                  <select id="start-year" class="start-year">
+                    <option value="2005">2005</option>
+                    <option value="2006">2006</option>
+                    <option value="2007">2007</option>
+                    <option value="2008">2008</option>
+                  </select>
+                  <select id="start-time__hour" class="start-time__hour">
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                  </select>
+                  <p>часов</p>
+                  <select id="start-time__min" class="start-time__min">
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                  </select>
+                  <p>минут</p>
+
+                </div>
+              </div>
+              <div class="start-time__wrapper">
+                <p>Время окончания</p>
+                <div class="set-end-time__wrapper set-time__block">
+                  <select id="end-day" class="end-day">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                  </select>
+                  <select id="end-month" class="end-month">
+                    <option value="Марта">Марта</option>
+                    <option value="Апреля">Апреля</option>
+                    <option value="Мая">Мая</option>
+                    <option value="Июня">Июня</option>
+                  </select>
+                  <select id="end-year" class="end-year">
+                    <option value="2005">2005</option>
+                    <option value="2006">2006</option>
+                    <option value="2007">2007</option>
+                    <option value="2008">2008</option>
+                  </select>
+                  <select id="end-time__hour" class="end-time__hour">
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                  </select>
+                  <p>часов</p>
+                  <select id="end-time__min" class="end-time__min">
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                  </select>
+                  <p>минут</p>
+                </div>
+              </div>
+              <div class="start-time__wrapper duration-tasks__wrapper">
+                <p>Продолжительность</p>
+                <div class="duration-tasks__wrapper set-time__block">
+                  <select id="duration-tasks__hour" class="duration-tasks__hour">
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                  </select>
+                  <p>часов</p>
+                  <select id="duration-tasks__min" class="duration-tasks__min">
+                    <option value="0">0</option>
+                    <option value="15">15</option>
+                    <option value="30">30</option>
+                  </select>
+                  <p>минут</p>
+                </div>
+              </div>
+
+            </div>
+            <div class="access-btns__wrapper">
+              <button id="addTaskButton" onclick="closeOrOpenModal(event)"
+                      class="add-task-button access-task-btn">
+                Задать время
+              </button>
+              <button id="addTaskButton" onclick="closeOrOpenModal(event)"
+                      class="add-task-button access-task-btn">
+                Закрыть
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

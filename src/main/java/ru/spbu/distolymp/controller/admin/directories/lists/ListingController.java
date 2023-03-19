@@ -24,10 +24,9 @@ public class ListingController {
     private static final String REDIRECT_LIST = "redirect:/lists/list";
     private static final String LISTING_SCROLL = ROOT + "listing-scroll :: #listing";
     private static final String ADD_FROM_LISTING_SCROLL = ROOT + "listing-from-scroll :: #listing-from-scroll";
-    private static final String LISTING_PROBLEM_TABLE = ROOT + "listing-problem-table :: #listing-problem-table";
     private static final String AVAILABLE_PROBLEMS_SCROLL = ROOT + "available-problems-scroll :: #available-problems-scroll";
     //private static final String CONSTRAINT_TABLE = ROOT + "constraint-table :: #constraint-table";
-    private static final String SINGLE_LISTING = "single-listing :: #single-listing";
+    private static final String SINGLE_LISTING = ROOT + "single-listing :: #single-listing";
 
     @GetMapping("/list")
     public String showAllListings(ModelMap modelMap) {
@@ -86,7 +85,7 @@ public class ListingController {
     @PostMapping("/add_problems")
     public String addProblems(ModelMap modelMap, List<Long> problemIds, Long id){
         listingService.addProblems(problemIds, id, modelMap);
-        return LISTING_PROBLEM_TABLE;
+        return SINGLE_LISTING;
     }
 
     @PostMapping("/set_constraint")
@@ -104,18 +103,18 @@ public class ListingController {
     @PostMapping("/add_problems_from")
     public String addAllFromList(ModelMap modelMap, Long copyId, Long id){
         listingService.addAllFromList(copyId, id, modelMap);
-        return LISTING_PROBLEM_TABLE;
+        return SINGLE_LISTING;
     }
 
-    @PostMapping("/remove_problem")
-    public String removeProblem(ModelMap modelMap, Long id, Long problemId){
+    @GetMapping("/remove_problem")
+    public String removeProblem(ModelMap modelMap, @RequestParam(value = "id")Long id, @RequestParam(value = "problemId") Long problemId){
         listingService.removeProblem(id, problemId, modelMap);
-        return LISTING_PROBLEM_TABLE;
+        return SINGLE_LISTING;
     }
 
-    @PostMapping ("/update_order")
+    @GetMapping ("/update_order")
     String updateOrder(ModelMap modelMap, Long id, Long problemId, Integer direction){
         listingService.updateOrder(id, problemId, direction, modelMap);
-        return  LISTING_PROBLEM_TABLE;
+        return SINGLE_LISTING;
     }
 }

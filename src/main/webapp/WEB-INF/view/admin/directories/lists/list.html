@@ -2,192 +2,318 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
+
 <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Система интернет-олимпиад СПбГУ</title>
-
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles/reset.css}">
+    <link rel="stylesheet" th:href="@{/css/styles/style.css}">
 </head>
 
-<style>
-    .centered {
-        justify-content: center;
-        display: block;
-        margin: auto;
-    }
-</style>
-
-<div th:replace="fragments/header :: #header"></div>
-
-<body class="bgGrey">
-    <div th:replace="fragments/menu-staff :: #menustaff"></div>
-
-    <div class="container">
-        <select class = "centered" id="listing" th:replace="admin/directories/lists/listing-scroll :: #listing">
-
-        </select>
-
-        <div class="centered" style="text-align:center; margin:0.5em;">
-            <button type="button" data-toggle="modal" data-target=".new-listing">
-                Добавить новый список</button>
-            <button type="button" data-toggle="modal" data-target=".rename-listing">
-                Переименовать список </button>
-            <button type="button" data-toggle="modal" data-target=".delete-listing">
-                Удалить список</button>
-        </div>
-
-        <div class="searchForm">
-            <input type="text" id="listing-search" class="wide"/><br/>
-        </div>
-
-        <div style="text-align:center">
-            <button type="submit" id="search-button">Найти</button>
-        </div>
-
-        <div class="modal fade new-listing" id="new-listing-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Добавление нового списка заданий</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <!--/*@thymesVar id="listing" type="ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto"*/-->
-                        <form id="new-listing-form" th:object="${listing}"
-                              th:action="@{/lists/add}" method="post">
-                            <div class="form-group">
-                                <label for="new-listing-name">Имя списка заданий</label>
-                                    <input th:field="*{name}" placeholder="Новый список заданий"
-                                        type="text" class="form-control" id="new-listing-name"
-                                        aria-describedby="listingHelp">
-                                    <small id="listingHelp" class="form-text text-muted">Если имя будет пустым, новый
-                                        класс не будет создан.
-                                    </small>
-                                </div>
-                            </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn  btn-light border border-dark" data-dismiss="modal">Отмена</button>
-                        <button type="submit" class="btn btn-light border border-dark" form="new-listing-form">Ок
-                        </button>
-                    </div>
-                </div>
+<body>
+    <div>
+        <main class="main">
+            <div th:replace="fragments/header :: #header"></div>
+            <div th:replace="fragments/menu-staff :: #menustaff"></div>
+            <div class="current-page">
+                <p class="current-page__text">
+                    Списки заданий
+                </p>
+                <p class="current-page__text-desc" style="color: #2F0803">
+                    Списки, автоматически назначаемые группами при регистрации
+                </p>
             </div>
-        </div>
-
-        <div class="modal fade rename-listing" id="rename-listing-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Переименовать список</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <!--/*@thymesVar id="listing" type="ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto"*/-->
-                        <form id="rename-listing-form" th:object="${listing}"
-                              th:action="@{/lists/rename}" method="post">
-                            <div class="form-group">
-                                <label for="update-listing-name">Имя списка</label>
-                                <input th:field="*{name}" placeholder="Новое имя списка"
-                                       type="text" class="form-control" id="update-listing-name"
-                                       aria-describedby="updateListingHelp">
-                                <small id="updateListingHelp" class="form-text text-muted">Если имя будет пустым, список
-                                    не будет переименован.
-                                </small>
-                                <label>
-                                    <input hidden type="number" th:value="*{id}" th:field="*{id}" id="listing-id">
-                                </label>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn  btn-light border border-dark" data-dismiss="modal">Отмена</button>
-                        <button type="submit" class="btn btn-light border border-dark" form="rename-listing-form">Ок
-                        </button>
-                    </div>
-                </div>
+            <div class="task-list__wrapper">
+                <p class="task-list__name">Список</p>
+                <select id="listing" th:replace="admin/directories/lists/listing-scroll :: #listing"></select>
             </div>
-        </div>
-
-        <div class="modal fade delete-listing" id="delete-listing-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Переименовать список</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <!--/*@thymesVar id="listing" type="ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto"*/-->
-                        <form id="delete-listing-form" th:object="${listing}"
-                              th:action="@{/lists/delete/{id}(id=*{id})}" method="post">
-                            <div class="form-group">
-                                <label>
-                                    <input hidden type="number" th:value="*{id}" th:field="*{id}" id="delete-listing">
-                                </label>
-                                <button type="button" class="btn  btn-light border border-dark" data-dismiss="modal">Отмена</button>
-                                <button type="submit" class="btn btn-light border border-dark" form="delete-listing-form">Ок</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+            <div class="task-list__wrapper">
+                <p class="task-list__name">Найти список</p>
+                <input id="listing-search" class="search-list-input" type="search" placeholder="Введите название">
+                <button class="search-list" id = "search-button">Найти</button>
             </div>
-        </div>
 
+
+            <div class="tasks-manage__wrapper">
+                <button class="task-manage__button" data-toggle="modal" data-target=".new-listing">Создать новый список</button>
+                <div></div>
+            </div>
+
+            <div id="single-listing">
+            </div>
+        </main>
+
+        <footer class="footer"></footer>
     </div>
-    <div th:replace="fragments/footer :: #footer"></div>
+
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" >
+        // Modal
+        const closeOrOpenModal = function (event) {
+            let el = event.target;
+            switch (el.id) {
+                case 'addTask':
+                    document.getElementById('addTasksInList').removeAttribute('hidden')
+                    document.getElementById('addTask').setAttribute('hidden', 'true');
+                    document.getElementById('addAllTasks').setAttribute('hidden', 'true');
+                    document.getElementById('copyList').setAttribute('hidden', 'true');
+                    break;
+                case 'chooseModalAddTasks':
+                    // console.log('test')
+                    document.getElementById('addTasksInList').setAttribute('hidden', 'true')
+                    document.getElementById('addTask').removeAttribute('hidden');
+                    document.getElementById('addAllTasks').removeAttribute('hidden');
+                    document.getElementById('copyList').removeAttribute('hidden');
+                    break;
+                case 'closeModalAddTasks':
+                    document.getElementById('addTasksInList').setAttribute('hidden', 'true')
+                    document.getElementById('addTask').removeAttribute('hidden');
+                    document.getElementById('addAllTasks').removeAttribute('hidden');
+                    document.getElementById('copyList').removeAttribute('hidden');
+                    break;
+                    // второй блок
+                case 'addAllTasks':
+                    document.getElementById('allTasksList').removeAttribute('hidden')
+                    document.getElementById('addTask').setAttribute('hidden', 'true');
+                    document.getElementById('addAllTasks').setAttribute('hidden', 'true');
+                    document.getElementById('copyList').setAttribute('hidden', 'true');
+                    break;
+                case 'addTaskButton':
+                    document.getElementById('allTasksList').setAttribute('hidden', 'true')
+                    document.getElementById('addTask').removeAttribute('hidden');
+                    document.getElementById('addAllTasks').removeAttribute('hidden');
+                    document.getElementById('copyList').removeAttribute('hidden');
+                    break;
+                    // третий блок
+                case 'copyList':
+                    document.getElementById('CopyListTasks').removeAttribute('hidden')
+                    document.getElementById('addTask').setAttribute('hidden', 'true');
+                    document.getElementById('addAllTasks').setAttribute('hidden', 'true');
+                    document.getElementById('copyList').setAttribute('hidden', 'true');
+                    break;
+                case 'CopyBtn':
+                    document.getElementById('CopyListTasks').setAttribute('hidden', 'true')
+                    document.getElementById('addTask').removeAttribute('hidden');
+                    document.getElementById('addAllTasks').removeAttribute('hidden');
+                    document.getElementById('copyList').removeAttribute('hidden');
+                    break;
+                case 'CloseCopyBtn':
+                    document.getElementById('CopyListTasks').setAttribute('hidden', 'true')
+                    document.getElementById('addTask').removeAttribute('hidden');
+                    document.getElementById('addAllTasks').removeAttribute('hidden');
+                    document.getElementById('copyList').removeAttribute('hidden');
+                    break;
+            }
+        }
+    </script>
+    <script>
+        // Tabs
+        class ItcTabs {
+            constructor(target, config) {
+                const defaultConfig = {};
+                this._config = Object.assign(defaultConfig, config);
+                this._elTabs = typeof target === 'string' ? document.querySelector(target) : target;
+                this._elButtons = this._elTabs.querySelectorAll('.tabs__btn');
+                this._elPanes = this._elTabs.querySelectorAll('.tabs__pane');
+                this._eventShow = new Event('tab.itc.change');
+                this._init();
+                this._events();
+            }
+            _init() {
+                this._elTabs.setAttribute('role', 'tablist');
+                this._elButtons.forEach((el, index) => {
+                    el.dataset.index = index;
+                    el.setAttribute('role', 'tab');
+                    this._elPanes[index].setAttribute('role', 'tabpanel');
+                });
+            }
+            show(elLinkTarget) {
+                const elPaneTarget = this._elPanes[elLinkTarget.dataset.index];
+                const elLinkActive = this._elTabs.querySelector('.tabs__btn_active');
+                const elPaneShow = this._elTabs.querySelector('.tabs__pane_show');
+                if (elLinkTarget === elLinkActive) {
+                    return;
+                }
+                elLinkActive ? elLinkActive.classList.remove('tabs__btn_active') : null;
+                elPaneShow ? elPaneShow.classList.remove('tabs__pane_show') : null;
+                elLinkTarget.classList.add('tabs__btn_active');
+                elPaneTarget.classList.add('tabs__pane_show');
+                this._elTabs.dispatchEvent(this._eventShow);
+                elLinkTarget.focus();
+            }
+            showByIndex(index) {
+                const elLinkTarget = this._elButtons[index];
+                elLinkTarget ? this.show(elLinkTarget) : null;
+            };
+            _events() {
+                this._elTabs.addEventListener('click', (e) => {
+                    const target = e.target.closest('.tabs__btn');
+                    if (target) {
+                        e.preventDefault();
+                        this.show(target);
+                    }
+                });
+            }
+        }
+
+        // initialization .tabs
+    </script>
+
+    <script type="text/javascript">
+        $('#new-listing-modal').on('show.bs.modal', function (event) {
+            $('#new-listing-name').val("");
+        });
+        $('#listing').on('change', async function (event) {
+            var selected = $(this).find(':selected')
+            var id = selected.data('id')
+            var name = selected.data('name')
+
+            if (name != null) {
+                $.get("list/" + id).done(async function(fragment) {
+                    $('#single-listing').replaceWith(fragment);
+                    $('#single-listing').removeAttr('hidden');
+                    new ItcTabs('.tabs');
+                })
+                console.log('eval');
+            } else {
+                document.getElementById("single-listing").setAttribute('hidden', 'true');
+            }
+
+            var modal = $('#rename-listing-modal');
+            var del = $('#delete-listing-modal');
+            modal.find('.modal-body #update-listing-name').val(name);
+            modal.find('.modal-body #listing-id').val(id);
+            del.find('.modal-body #delete-listing').val(id);
+        });
+
+        $('#search-button').click(function (event) {
+            var params = encodeQueryData(getParams());
+            var url = "filter?" + params;
+            $.get(url).done(function (fragment) {
+                $('#listing').replaceWith(fragment);
+            })
+        })
+
+        function encodeQueryData(data) {
+            const result = [];
+            for (var key in data) {
+                result.push(key + '=' + data[key]);
+            }
+            return result.join('&');
+        }
+
+        function getParams() {
+            var params = {}
+            params["containsName"] = getName();
+            return params;
+        }
+
+        function getName() {
+            return $('#listing-search').val();
+        }
+
+    </script>
+
+    <div class="modal fade new-listing" id="new-listing-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Добавление нового списка заданий</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!--/*@thymesVar id="listing" type="ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto"*/-->
+                    <form id="new-listing-form" th:object="${listing}"
+                          th:action="@{/lists/add}" method="post">
+                        <div class="form-group">
+                            <label for="new-listing-name">Имя списка заданий</label>
+                            <input th:field="*{name}" placeholder="Новый список заданий"
+                                   type="text" class="form-control" id="new-listing-name"
+                                   aria-describedby="listingHelp">
+                            <small id="listingHelp" class="form-text text-muted">Если имя будет пустым, новый
+                                класс не будет создан.
+                            </small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-light border border-dark" form="new-listing-form">Ок
+                    <button type="button" class="btn  btn-light border border-dark" data-dismiss="modal">Отмена</button>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade rename-listing" id="rename-listing-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Переименовать список</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!--/*@thymesVar id="listing" type="ru.spbu.distolymp.dto.entity.lists.listing.ListingDetailsDto"*/-->
+                    <form id="rename-listing-form" th:object="${listing}"
+                          th:action="@{/lists/rename}" method="post">
+                        <div class="form-group">
+                            <label for="update-listing-name">Имя списка</label>
+                            <input th:field="*{name}" placeholder="Новое имя списка"
+                                   type="text" class="form-control" id="update-listing-name"
+                                   aria-describedby="updateListingHelp">
+                            <small id="updateListingHelp" class="form-text text-muted">Если имя будет пустым, список
+                                не будет переименован.
+                            </small>
+                            <label>
+                                <input hidden type="number" th:value="*{id}" th:field="*{id}" id="listing-id">
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-light border border-dark" form="rename-listing-form">Ок
+                    <button type="button" class="btn  btn-light border border-dark" data-dismiss="modal">Отмена</button>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade delete-listing" id="delete-listing-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Удалить список</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!--/*@thymesVar id="listing" type="ru.spbu.distolymp.dto.entity.lists.listing.ListingDetailsDto"*/-->
+                    <form id="delete-listing-form" th:object="${listing}"
+                          th:action="@{/lists/delete/{id}(id=*{id})}" method="post">
+                        <div class="form-group">
+                            <label>
+                                <input hidden type="number" th:value="*{id}" th:field="*{id}" id="delete-listing">
+                            </label>
+                            <button type="submit" class="btn btn-light border border-dark" form="delete-listing-form">Ок</button>
+                            <button type="button" class="btn  btn-light border border-dark" data-dismiss="modal">Отмена</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
-
-<script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
-<script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
-<script type="text/javascript">
-    $('#new-listing-modal').on('show.bs.modal', function (event) {
-        $('#new-listing-name').val("");
-    });
-
-    $('#listing').on('change', function (event) {
-        var selected = $(this).find(':selected')
-        var id = selected.data('id')
-        var name = selected.data('name')
-        var modal = $('#rename-listing-modal')
-        var del = $('#delete-listing-modal')
-        modal.find('.modal-body #update-listing-name').val(name)
-        modal.find('.modal-body #listing-id').val(id)
-        del.find('.modal-body #delete-listing').val(id)
-    });
-
-    $('#search-button').click(function (event) {
-        var params = encodeQueryData(getParams());
-        var url = "filter?" + params;
-        $.get(url).done(function (fragment) {
-            $('#listing').replaceWith(fragment);
-        })
-    })
-
-    function encodeQueryData(data) {
-        const result = [];
-        for (var key in data) {
-            result.push(key + '=' + data[key]);
-        }
-        return result.join('&');
-    }
-
-    function getParams() {
-        var params = {}
-        params["containsName"] = getName();
-        return params;
-    }
-
-    function getName() {
-        return $('#listing-search').val();
-    }
-
-</script>
 </html>
