@@ -11,7 +11,7 @@ import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
 import ru.spbu.distolymp.service.admin.directories.lists.api.ListingService;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.util.Arrays;
 
 @Controller
 @RequiredArgsConstructor
@@ -83,21 +83,21 @@ public class ListingController {
     }
 
     @PostMapping("/add_problems")
-    public String addProblems(ModelMap modelMap, List<Long> problemIds, Long id){
-        listingService.addProblems(problemIds, id, modelMap);
+    public String addProblems(ModelMap modelMap, @RequestParam(value = "problemIds") Long[] problemIds, Long id){
+        listingService.addProblems(Arrays.asList(problemIds), id, modelMap);
         return SINGLE_LISTING;
     }
 
     @PostMapping("/set_constraint")
     public String setConstraint(ModelMap modelMap, ConstraintDto constraintDto, Long id){
         listingService.setConstraint(id, constraintDto, modelMap);
-        return SINGLE_LISTING;
+        return CONSTRAINT_TABLE;
     }
 
     @PostMapping("/remove_constraint")
     public String removeConstraint(ModelMap modelMap, Long id){
         listingService.removeConstraint(id, modelMap);
-        return SINGLE_LISTING;
+        return CONSTRAINT_TABLE;
     }
 
     @PostMapping("/add_problems_from")
@@ -108,13 +108,13 @@ public class ListingController {
 
     @GetMapping("/remove_problem")
     public String removeProblem(ModelMap modelMap, @RequestParam(value = "id")Long id, @RequestParam(value = "problemId") Long problemId){
-        listingService.removeProblem(id, problemId, modelMap);
+        listingService.removeProblem(problemId, id, modelMap);
         return SINGLE_LISTING;
     }
 
     @GetMapping ("/update_order")
     String updateOrder(ModelMap modelMap, Long id, Long problemId, Integer direction){
-        listingService.updateOrder(id, problemId, direction, modelMap);
+        listingService.updateOrder(problemId, id, direction, modelMap);
         return SINGLE_LISTING;
     }
 }

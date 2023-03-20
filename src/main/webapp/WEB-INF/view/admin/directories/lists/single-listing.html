@@ -61,12 +61,26 @@
               </tr>
               <tr th:each="listingProblem : ${singleListing.problemList}">
                 <td th:text="${listingProblem.order}"></td>
-                <td th:text="${listingProblem.problem.status}"></td>
                 <td th:text="${listingProblem.problem.title}"></td>
-                <td>
-                  <a></a>
-                  <a></a>
-                  <a></a>
+                <td th:switch="${listingProblem.problem.status}">
+                  <a th:case="2">Опубликована</a>
+                  <a th:case="1">Новая</a>
+                  <a th:case="0">Удалена</a>
+                </td>
+                <td th:switch="${listingProblem.order}">
+                  <div th:case="1">
+                    <a th:href="@{/lists/update_order(id=${singleListing.id}, problemId=${listingProblem.id}, direction = 1)}">Вниз</a>
+                    <button th:onclick="|deleteProblem(${singleListing.id}, ${listingProblem.id})|">Удалить</button>
+                  </div>
+                  <div th:case="${singleListing.problemList.size()}">
+                    <a th:href="@{/lists/update_order(id=${singleListing.id}, problemId=${listingProblem.id}, direction = 1)}">Вверх</a>
+                    <a th:href="@{/lists/remove_problem(id=${singleListing.id}, problemId=${listingProblem.id})}">Удалить</a>
+                  </div>
+                  <div th:case="*">
+                    <a th:href="@{/lists/update_order(id=${singleListing.id}, problemId=${listingProblem.id}, direction = 1)}">Вверх</a>
+                    <a th:href="@{/lists/update_order(id=${singleListing.id}, problemId=${listingProblem.id}, direction = 1)}">Вниз</a>
+                    <a th:href="@{/lists/remove_problem(id=${singleListing.id}, problemId=${listingProblem.id})}">Удалить</a>
+                  </div>
                 </td>
               </tr>
               </tbody>
@@ -78,5 +92,18 @@
       <div th:replace="admin/directories/lists/constraint-part :: #constraint" id="constraint"></div>
     </div>
   </div>
+  <script th:inline="javascript">
+    $(function deleteProblem(id, problemId){
+      $.get("remove_problem?" + 'id=' + id + '&' + 'problemId=' +problemId).done(function (fragment){
+        $('single-listing').replaceWith(fragment);
+      });
+    })
+
+    $(function updateProblem(id, problemId, direction){
+      $.get("remove_problem?" + 'id=' + id + '&' + 'problemId=' +problemId + '&' + 'direction=' + direction).done(function (fragment){
+        $('single-listing').replaceWith(fragment);
+      });
+    });
+  </script>
 </body>
 </html>

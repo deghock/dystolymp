@@ -146,7 +146,9 @@ public class ListingCrudServiceImpl implements ListingCrudService {
     @Transactional(readOnly = true)
     public ListingDetailsDto getListingById(Long id) {
         try{
-            return listingDetailsMapper.toDto(listingRepository.findFirstById(id));
+            Listing listing = listingRepository.findFirstById(id);
+            listing.getProblemList().sort(ListingProblems::compareTo);
+            return listingDetailsMapper.toDto(listing);
 
         }catch (DataException e){
             log.error("An error occurred while loading a single listing", e);
@@ -209,6 +211,9 @@ public class ListingCrudServiceImpl implements ListingCrudService {
             Listing listing = getListingByIdOrNull(id);
             ListingProblems listingProblems = listingProblemCrudService.findByIdOrNull(problemListingId);
             listing.getProblemList().remove(listingProblems);
+            listing.getProblemList().sort(ListingProblems::compareTo);
+            for (int i = 0; i < listing.getProblemList().size(); i++)
+                listing.getProblemList().get(i).setOrder(i + 1);
             listingRepository.save(listing);
             return listingDetailsMapper.toDto(listing);
         }catch (Exception e){

@@ -53,7 +53,7 @@
 
     <script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
     <script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
-    <script type="text/javascript" >
+    <script type="text/javascript">
         // Modal
         const closeOrOpenModal = function (event) {
             let el = event.target;
@@ -124,7 +124,7 @@
             }
         }
     </script>
-    <script>
+    <script type="text/javascript">
         // Tabs
         class ItcTabs {
             constructor(target, config) {
@@ -316,8 +316,10 @@
                             <label>
                                 <input hidden type="number" th:value="*{id}" th:field="*{id}" id="delete-listing">
                             </label>
-                            <button type="submit" class="btn btn-light border border-dark" form="delete-listing-form">Ок</button>
-                            <button type="button" class="btn  btn-light border border-dark" data-dismiss="modal">Отмена</button>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-light border border-dark" form="delete-listing-form">Ок</button>
+                                <button type="button" class="btn  btn-light border border-dark" data-dismiss="modal">Отмена</button>
+                            </div>
                         </div>
                     </form>
                 </div>
