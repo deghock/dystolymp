@@ -175,6 +175,25 @@
         }
     </script>
 
+    <script th:inline="javascript">
+        function deleteProblem(event){
+            const id = event.target.getAttribute('id');
+            const problemId = event.target.getAttribute('problemId');
+            $.get("remove_problem?" + 'id=' + id + '&' + 'problemId=' +problemId).done(function (fragment){
+                $('single-listing').replaceWith(fragment);
+            });
+        }
+
+        function updateProblem(event){
+            const direction = event.target.getAttribute('id');
+            const id = event.target.getAttribute('id');
+            const problemId = event.target.getAttribute('problemId');
+            $.get("remove_problem?" + 'id=' + id + '&' + 'problemId=' +problemId + '&' + 'direction=' + direction).done(function (fragment){
+                $('single-listing').replaceWith(fragment);
+            });
+        }
+    </script>
+
     <script type="text/javascript">
         $('#new-listing-modal').on('show.bs.modal', function (event) {
             $('#new-listing-name').val("");

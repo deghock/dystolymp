@@ -69,41 +69,27 @@
                 </td>
                 <td th:switch="${listingProblem.order}">
                   <div th:case="1">
-                    <a th:href="@{/lists/update_order(id=${singleListing.id}, problemId=${listingProblem.id}, direction = 1)}">Вниз</a>
-                    <button th:onclick="|deleteProblem(${singleListing.id}, ${listingProblem.id})|">Удалить</button>
+                    <p onclick="updateProblem(event)" th:attr="problemId=${listingProblem.id}, id=${singleListing.id}, direction=0">Вниз</p>
+                    <p th:attr="problemId=${listingProblem.id}, id=${singleListing.id}" onclick="deleteProblem(event)">Удалить</p>
                   </div>
                   <div th:case="${singleListing.problemList.size()}">
-                    <a th:href="@{/lists/update_order(id=${singleListing.id}, problemId=${listingProblem.id}, direction = 1)}">Вверх</a>
-                    <a th:href="@{/lists/remove_problem(id=${singleListing.id}, problemId=${listingProblem.id})}">Удалить</a>
+                    <p th:attr="problemId=${listingProblem.id}, id=${singleListing.id}, direction=1" onclick="updateProblem(event)">Вверх</p>
+                    <p th:attr="problemId=${listingProblem.id}, id=${singleListing.id}" onclick="deleteProblem(event)">Удалить</p>
                   </div>
                   <div th:case="*">
-                    <a th:href="@{/lists/update_order(id=${singleListing.id}, problemId=${listingProblem.id}, direction = 1)}">Вверх</a>
-                    <a th:href="@{/lists/update_order(id=${singleListing.id}, problemId=${listingProblem.id}, direction = 1)}">Вниз</a>
-                    <a th:href="@{/lists/remove_problem(id=${singleListing.id}, problemId=${listingProblem.id})}">Удалить</a>
+                    <p th:attr="problemId=${listingProblem.id}, id=${singleListing.id}, direction=1" onclick="updateProblem(event)">Вверх</p>
+                    <p th:attr="problemId=${listingProblem.id}, id=${singleListing.id}, direction=1" onclick="updateProblem(event)">Вниз</p>
+                    <p th:attr="problemId=${listingProblem.id}, id=${singleListing.id}" onclick="deleteProblem(event)">Удалить</p>
                   </div>
                 </td>
               </tr>
               </tbody>
             </table>
           </div>
-
         </div>
       </div>
       <div th:replace="admin/directories/lists/constraint-part :: #constraint" id="constraint"></div>
     </div>
   </div>
-  <script th:inline="javascript">
-    $(function deleteProblem(id, problemId){
-      $.get("remove_problem?" + 'id=' + id + '&' + 'problemId=' +problemId).done(function (fragment){
-        $('single-listing').replaceWith(fragment);
-      });
-    })
-
-    $(function updateProblem(id, problemId, direction){
-      $.get("remove_problem?" + 'id=' + id + '&' + 'problemId=' +problemId + '&' + 'direction=' + direction).done(function (fragment){
-        $('single-listing').replaceWith(fragment);
-      });
-    });
-  </script>
 </body>
 </html>

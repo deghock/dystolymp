@@ -215,7 +215,7 @@ public class ListingCrudServiceImpl implements ListingCrudService {
             for (int i = 0; i < listing.getProblemList().size(); i++)
                 listing.getProblemList().get(i).setOrder(i + 1);
             listingRepository.save(listing);
-            return listingDetailsMapper.toDto(listing);
+            return listingDetailsMapper.toDto(getListingByIdOrNull(id));
         }catch (Exception e){
             log.error("An error occurred while removing problem from list", e);
             throw e;
