@@ -69,10 +69,21 @@
                     break;
                 case 'chooseModalAddTasks':
                     // console.log('test')
-                    document.getElementById('addTasksInList').setAttribute('hidden', 'true')
-                    document.getElementById('addTask').removeAttribute('hidden');
-                    document.getElementById('addAllTasks').removeAttribute('hidden');
-                    document.getElementById('copyList').removeAttribute('hidden');
+                    var options = document.getElementById('add-task__select').options;
+                    var reqArr = "";
+                    var listingId = document.getElementById('single-listing').getAttribute('data-id');
+                    for(let i = 0; i < options.length; i++){
+                        if(options[i].selected){
+                            reqArr += 'problemIds=' + options[i].getAttribute('data-id') + "&";
+                        }
+                    }
+                    $.get('add_problems?' + reqArr + "id=" + listingId).done(function (fragment){
+                        $('#problems-table').replaceWith(fragment).removeAttr('hidden');
+                        document.getElementById('addTasksInList').setAttribute('hidden', 'true')
+                        document.getElementById('addTask').removeAttribute('hidden');
+                        document.getElementById('addAllTasks').removeAttribute('hidden');
+                        document.getElementById('copyList').removeAttribute('hidden');
+                    });
                     break;
                 case 'closeModalAddTasks':
                     document.getElementById('addTasksInList').setAttribute('hidden', 'true')
@@ -91,10 +102,16 @@
                     });
                     break;
                 case 'addTaskButtonOpen':
-                    document.getElementById('allTasksList').setAttribute('hidden', 'true')
-                    document.getElementById('addTask').removeAttribute('hidden');
-                    document.getElementById('addAllTasks').removeAttribute('hidden');
-                    document.getElementById('copyList').removeAttribute('hidden');
+                    var select = document.getElementById('add-task-from-list__select');
+                    var listingId = document.getElementById('single-listing').getAttribute('data-id');
+                    var reqArr = 'copyId=' + select.options[select.selectedIndex].getAttribute('data-id') + "&";
+                    $.get('add_problems_from?' + reqArr + 'id=' + listingId).done(function (fragment){
+                        $("#problems-table").replaceWith(fragment).removeAttr('hidden');
+                        document.getElementById('allTasksList').setAttribute('hidden', 'true')
+                        document.getElementById('addTask').removeAttribute('hidden');
+                        document.getElementById('addAllTasks').removeAttribute('hidden');
+                        document.getElementById('copyList').removeAttribute('hidden');
+                    });
                     break;
                 case 'addTaskButtonClose':
                     document.getElementById('allTasksList').setAttribute('hidden', 'true')
@@ -175,21 +192,21 @@
         }
     </script>
 
-    <script th:inline="javascript">
+    <script type="text/javascript">
         function deleteProblem(event){
-            const id = event.target.getAttribute('id');
+            const id = document.getElementById('single-listing').getAttribute('data-id');
             const problemId = event.target.getAttribute('problemId');
-            $.get("remove_problem?" + 'id=' + id + '&' + 'problemId=' +problemId).done(function (fragment){
-                $('single-listing').replaceWith(fragment);
+            $.get("remove_problem?" + 'id=' + id + '&' + 'problemId='  +problemId).done(function (fragment){
+                $('#problems-table').replaceWith(fragment).removeAttr('hidden');
             });
         }
 
         function updateProblem(event){
-            const direction = event.target.getAttribute('id');
-            const id = event.target.getAttribute('id');
+            const direction = parseInt(event.target.getAttribute('direction'));
+            const id = document.getElementById('single-listing').getAttribute('data-id');
             const problemId = event.target.getAttribute('problemId');
-            $.get("remove_problem?" + 'id=' + id + '&' + 'problemId=' +problemId + '&' + 'direction=' + direction).done(function (fragment){
-                $('single-listing').replaceWith(fragment);
+            $.get("update_order?" + 'id=' + id + '&' + 'problemId=' +problemId + '&' + 'direction=' + direction).done(function (fragment){
+                $('#problems-table').replaceWith(fragment).removeAttr('hidden');
             });
         }
     </script>
@@ -198,6 +215,7 @@
         $('#new-listing-modal').on('show.bs.modal', function (event) {
             $('#new-listing-name').val("");
         });
+
         $('#listing').on('change', async function (event) {
             var selected = $(this).find(':selected')
             var id = selected.data('id')
@@ -292,7 +310,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!--/*@thymesVar id="listing" type="ru.spbu.distolymp.dto.entity.lists.listing.ListingDetailsDto"*/-->
+                    <!--/*@thymesVar id="listing" type="ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto"*/-->
                     <form id="rename-listing-form" th:object="${listing}"
                           th:action="@{/lists/rename}" method="post">
                         <div class="form-group">

@@ -6,7 +6,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import ru.spbu.distolymp.dto.admin.directories.groups.ConstraintDto;
 import ru.spbu.distolymp.dto.admin.directories.lists.ListingFilter;
-import ru.spbu.distolymp.dto.entity.lists.listing.ListingDetailsDto;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
 import ru.spbu.distolymp.service.admin.directories.lists.api.ListingService;
 
@@ -27,6 +26,7 @@ public class ListingController {
     private static final String AVAILABLE_PROBLEMS_SCROLL = ROOT + "add-tasks :: #addTasksInList";
     private static final String CONSTRAINT_TABLE = ROOT + "constraint-part :: #constraint";
     private static final String SINGLE_LISTING = ROOT + "single-listing :: #single-listing";
+    private static final String PROBLEMS_TABLE = ROOT + "problems-table :: #problems-table";
 
     @GetMapping("/list")
     public String showAllListings(ModelMap modelMap) {
@@ -48,7 +48,7 @@ public class ListingController {
 
     @GetMapping("/filter")
     public String getListings(ListingFilter listingFilter, ModelMap modelMap){
-        listingService.getListingsBy( modelMap, listingFilter);
+        listingService.getListingsBy(modelMap, listingFilter);
         return LISTING_SCROLL;
     }
 
@@ -64,9 +64,11 @@ public class ListingController {
         return REDIRECT_LIST;
     }
 
+
+    //TODO: Надо бы заменить здесь форму на метод, чтобы можно было менять фрагмент а не обновлять всю страницу. Или можно в целом и не менять
     @PostMapping("/rename")
-    public String renameListing(@Valid ListingDetailsDto listingDetailsDto) {
-        listingService.renameListing(listingDetailsDto);
+    public String renameListing(@Valid ListingNameDto listingNameDto, ModelMap modelMap) {
+        listingService.renameListing(modelMap, listingNameDto);
         return REDIRECT_LIST;
     }
 
@@ -76,16 +78,16 @@ public class ListingController {
         return AVAILABLE_PROBLEMS_SCROLL;
     }
 
-    @PostMapping("/copy_list")
-    public String copyList(Long copyId, String prefix, String newName){
+    @GetMapping("/copy_list")
+    public String copyList(@RequestParam(value = "copyId") Long copyId, @RequestParam(value = "prefix") String prefix, @RequestParam(value="newName") String newName){
         listingService.copyList(copyId, newName, prefix);
         return REDIRECT_LIST;
     }
 
-    @PostMapping("/add_problems")
+    @GetMapping("/add_problems")
     public String addProblems(ModelMap modelMap, @RequestParam(value = "problemIds") Long[] problemIds, Long id){
         listingService.addProblems(Arrays.asList(problemIds), id, modelMap);
-        return SINGLE_LISTING;
+        return PROBLEMS_TABLE;
     }
 
     @PostMapping("/set_constraint")
@@ -100,21 +102,21 @@ public class ListingController {
         return CONSTRAINT_TABLE;
     }
 
-    @PostMapping("/add_problems_from")
-    public String addAllFromList(ModelMap modelMap, Long copyId, Long id){
+    @GetMapping("/add_problems_from")
+    public String addAllFromList(ModelMap modelMap,@RequestParam(value = "copyId") Long copyId, @RequestParam(value = "id") Long id){
         listingService.addAllFromList(copyId, id, modelMap);
-        return SINGLE_LISTING;
+        return PROBLEMS_TABLE;
     }
 
     @GetMapping("/remove_problem")
     public String removeProblem(ModelMap modelMap, @RequestParam(value = "id")Long id, @RequestParam(value = "problemId") Long problemId){
         listingService.removeProblem(problemId, id, modelMap);
-        return SINGLE_LISTING;
+        return PROBLEMS_TABLE;
     }
 
     @GetMapping ("/update_order")
-    String updateOrder(ModelMap modelMap, Long id, Long problemId, Integer direction){
+    String updateOrder(ModelMap modelMap, @RequestParam(value = "id") Long id, @RequestParam(value = "problemId") Long problemId, @RequestParam(value = "direction")Integer direction){
         listingService.updateOrder(problemId, id, direction, modelMap);
-        return SINGLE_LISTING;
+        return PROBLEMS_TABLE;
     }
 }

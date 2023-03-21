@@ -9,7 +9,7 @@
     <link rel="stylesheet" th:href="@{/css/styles/reset.css}">
 </head>
 <body>
-  <div id="single-listing" hidden>
+  <div class="tabs__content" id="single-listing" hidden th:attr="data-id=${singleListing.id}">
     <div class="tasks-manage__wrapper">
       <button class="task-manage__button" data-toggle="modal" data-target=".rename-listing">Переименовать список</button>
       <button class="task-manage__button" data-toggle="modal" data-target=".delete-listing">Удалить выбранный список</button>
@@ -25,7 +25,7 @@
         <div class="tabs__pane tabs__pane_show">
           <div id="tasks" class="tabs-block">
             <p class="task-edit__text">
-              Задания списка <span>123</span>
+              Задания списка <span th:text="${singleListing.name}"></span>
             </p>
             <div class="task-edit-btn__wrapper">
               <!-- first -->
@@ -49,42 +49,7 @@
               <div id="CopyListTasks" th:replace="admin/directories/lists/copy-list :: #CopyListTasks"></div>
             </div>
           </div>
-          <!--/*@thymesVar id="singleListing" type="ru.spbu.distolymp.dto.entity.lists.listing.ListingDetailsDto"*/-->
-          <div class="table__wrapper" id="problems-table">
-            <table class="tasks-table">
-              <tbody>
-              <tr class="first-row">
-                <td>№</td>
-                <td>Заголовок</td>
-                <td>Cтатус</td>
-                <td>Действия</td>
-              </tr>
-              <tr th:each="listingProblem : ${singleListing.problemList}">
-                <td th:text="${listingProblem.order}"></td>
-                <td th:text="${listingProblem.problem.title}"></td>
-                <td th:switch="${listingProblem.problem.status}">
-                  <a th:case="2">Опубликована</a>
-                  <a th:case="1">Новая</a>
-                  <a th:case="0">Удалена</a>
-                </td>
-                <td th:switch="${listingProblem.order}">
-                  <div th:case="1">
-                    <p onclick="updateProblem(event)" th:attr="problemId=${listingProblem.id}, id=${singleListing.id}, direction=0">Вниз</p>
-                    <p th:attr="problemId=${listingProblem.id}, id=${singleListing.id}" onclick="deleteProblem(event)">Удалить</p>
-                  </div>
-                  <div th:case="${singleListing.problemList.size()}">
-                    <p th:attr="problemId=${listingProblem.id}, id=${singleListing.id}, direction=1" onclick="updateProblem(event)">Вверх</p>
-                    <p th:attr="problemId=${listingProblem.id}, id=${singleListing.id}" onclick="deleteProblem(event)">Удалить</p>
-                  </div>
-                  <div th:case="*">
-                    <p th:attr="problemId=${listingProblem.id}, id=${singleListing.id}, direction=1" onclick="updateProblem(event)">Вверх</p>
-                    <p th:attr="problemId=${listingProblem.id}, id=${singleListing.id}, direction=1" onclick="updateProblem(event)">Вниз</p>
-                    <p th:attr="problemId=${listingProblem.id}, id=${singleListing.id}" onclick="deleteProblem(event)">Удалить</p>
-                  </div>
-                </td>
-              </tr>
-              </tbody>
-            </table>
+          <div class="table__wrapper" id="problems-table" th:replace="admin/directories/lists/problems-table :: #problems-table">
           </div>
         </div>
       </div>

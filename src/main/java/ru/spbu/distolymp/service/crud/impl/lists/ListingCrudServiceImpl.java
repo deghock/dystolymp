@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.dto.admin.directories.groups.ConstraintDto;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingDetailsDto;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
+import ru.spbu.distolymp.dto.entity.lists.listing.ListingProblemDto;
 import ru.spbu.distolymp.dto.entity.tasks.ProblemDto;
 import ru.spbu.distolymp.entity.division.Division;
 import ru.spbu.distolymp.entity.lists.Listing;
@@ -113,14 +114,16 @@ public class ListingCrudServiceImpl implements ListingCrudService {
 
     @Override
     @Transactional
-    public void renameListing(ListingDetailsDto listingDetailsDto) {
+    public ListingNameDto renameListing(ListingNameDto listingDetailsDto) {
         try{
             Long id = listingDetailsDto.getId();
             Listing listing = getListingByIdOrNull(id);
             listing.setName(listingDetailsDto.getName());
             listingRepository.save(listing);
+            return listingNameMapper.toDto(listing);
         }catch (Exception e){
             log.error("An error occurred while renaming a list", e);
+            throw e;
         }
     }
 
@@ -156,21 +159,31 @@ public class ListingCrudServiceImpl implements ListingCrudService {
         }
     }
 
+
+    //TODO:Возможно этот метод стоит перенести в ListingProblemCrudService и возможно кто-то решит это переписать перед релизом
     @Override
     @Transactional
-    public ListingDetailsDto addProblems(List<Long> problemDtoList, Long id){
+    public List<ListingProblemDto> addProblems(List<Long> problemDtoList, Long id){
         try{
             Listing listing = getListingByIdOrNull(id);
             List<ListingProblems> problems = listing.getProblemList();
+            int problemsSize = problems.size();
+            int decrement = 0;
             for(int i = 0; i < problemDtoList.size(); i++){
-                problems.add(new ListingProblems());
-                problems.get(i + problems.size() - 1).setListing(getListingByIdOrNull(id));
-                problems.get(i + problems.size() - 1).setProblem(problemCrudService.getProblemById(problemDtoList.get(i)));
-                problems.get(i + problems.size() - 1).setOrder(i + problems.size() + 1);
+                int finalI = i;
+                if(problems.stream().noneMatch(o -> problemDtoList.get(finalI).equals(o.getProblem().getId()))){
+                    problems.add(new ListingProblems());
+                    problems.get(i + problemsSize - decrement).setListing(getListingByIdOrNull(id));
+                    problems.get(i + problemsSize - decrement).setProblem(problemCrudService.getProblemById(problemDtoList.get(i)));
+                    problems.get(i + problemsSize - decrement).setOrder(i + problemsSize + 1 - decrement);
+                }else{
+                    decrement++;
+                }
             }
+            problems.sort(ListingProblems::compareTo);
             listing.setProblemList(problems);
             listingRepository.save(listing);
-            return listingDetailsMapper.toDto(listing);
+            return listingDetailsMapper.toDto(listing).getProblemList();
         }catch (DataAccessException e){
             log.error("An error occurred while adding problems to list", e);
             throw e;
@@ -204,9 +217,10 @@ public class ListingCrudServiceImpl implements ListingCrudService {
         }
     }
 
+    //TODO:Возможно этот метод стоит перенести в ListingProblemCrudService
     @Override
     @Transactional
-    public ListingDetailsDto removeProblem(Long id, Long problemListingId){
+    public List<ListingProblemDto> removeProblem(Long id, Long problemListingId){
         try{
             Listing listing = getListingByIdOrNull(id);
             ListingProblems listingProblems = listingProblemCrudService.findByIdOrNull(problemListingId);
@@ -215,22 +229,23 @@ public class ListingCrudServiceImpl implements ListingCrudService {
             for (int i = 0; i < listing.getProblemList().size(); i++)
                 listing.getProblemList().get(i).setOrder(i + 1);
             listingRepository.save(listing);
-            return listingDetailsMapper.toDto(getListingByIdOrNull(id));
+            return listingDetailsMapper.toDto(listing).getProblemList();
         }catch (Exception e){
             log.error("An error occurred while removing problem from list", e);
             throw e;
         }
     }
 
+    //TODO:Возможно этот метод стоит перенести в ListingProblemCrudService. Вот этот врядли. Удобнее работать с ордером отсюда как мне кажется
     @Override
     @Transactional
-    public ListingDetailsDto updateOrder(Long id, Long problemId, Integer direction){
+    public List<ListingProblemDto> updateOrder(Long id, Long problemId, Integer direction){
         try{
             Listing listing = getListingByIdOrNull(id);
             if(listing != null){
                 listing.setProblemList(updateProblemOrder(listingProblemCrudService.findByIdOrNull(problemId), listing.getProblemList(), direction));
                 listingRepository.save(listing);
-                return listingDetailsMapper.toDto(listing);
+                return listingDetailsMapper.toDto(listing).getProblemList();
             }else{
                 throw new EntityNotFoundException();
             }
@@ -243,19 +258,19 @@ public class ListingCrudServiceImpl implements ListingCrudService {
     private List<ListingProblems> updateProblemOrder(ListingProblems listingProblems, List<ListingProblems> listingProblemsList, Integer direction){
         listingProblemsList.sort(ListingProblems::compareTo);
         int index = listingProblemsList.indexOf(listingProblems);
-        if(index != -1)
-        {
-            if(direction == 1){
-                if(index != 0){
-                    listingProblemsList.get(index).setOrder(listingProblemsList.get(index).getOrder() - 1);
-                    listingProblemsList.get(index - 1).setOrder(listingProblemsList.get(index).getOrder() + 1);
-                }
+        System.out.println(index);
+        System.out.println(listingProblemsList.get(index).getOrder());
+        System.out.println(direction);
+        if(direction == 1){
+            if(index != 0){
+                listingProblemsList.get(index).setOrder(listingProblemsList.get(index).getOrder() - 1);
+                listingProblemsList.get(index - 1).setOrder(listingProblemsList.get(index - 1).getOrder() + 1);
             }
-            else if(index != listingProblemsList.size() - 1){
-                listingProblemsList.get(index).setOrder(listingProblemsList.get(index).getOrder() + 1);
-                listingProblemsList.get(index - 1).setOrder(listingProblemsList.get(index).getOrder() - 1);
-            }
+        } else if(index != listingProblemsList.size() - 1){
+            listingProblemsList.get(index).setOrder(listingProblemsList.get(index).getOrder() + 1);
+            listingProblemsList.get(index + 1).setOrder(listingProblemsList.get(index + 1).getOrder() - 1);
         }
+        listingProblemsList.sort(ListingProblems::compareTo);
         return listingProblemsList;
     }
 
@@ -271,7 +286,7 @@ public class ListingCrudServiceImpl implements ListingCrudService {
 
     @Override
     @Transactional
-    public ListingDetailsDto addAllFromList(Long copyId, Long id){
+    public List<ListingProblemDto> addAllFromList(Long copyId, Long id){
         List<ListingProblems> copyListing = getListingByIdOrNull(copyId).getProblemList();
         List<Long> problemIds = new ArrayList<>();
         for (ListingProblems problems : copyListing) {

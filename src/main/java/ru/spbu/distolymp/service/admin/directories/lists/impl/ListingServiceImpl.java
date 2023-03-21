@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import ru.spbu.distolymp.dto.admin.directories.groups.ConstraintDto;
 import ru.spbu.distolymp.dto.admin.directories.lists.ListingFilter;
+import ru.spbu.distolymp.dto.entity.lists.listing.ListingDetailsDto;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
 import ru.spbu.distolymp.entity.lists.Listing;
 import ru.spbu.distolymp.mapper.admin.directories.groups.ConstraintMapper;
@@ -42,8 +43,14 @@ public class ListingServiceImpl extends ListingCrudServiceImpl implements Listin
     }
 
     @Override
+    public void renameListing(ModelMap modelMap, ListingNameDto listingNameDto) {
+
+        modelMap.put("singleListing", renameListing(listingNameDto));
+    }
+
+    @Override
     @Transactional(readOnly = true)
-    public void getListingsBy( ModelMap modelMap, ListingFilter listingFilter) {
+    public void getListingsBy(ModelMap modelMap, ListingFilter listingFilter) {
         Specification<Listing> specs = ListingsSpecConverter.toSpecs(listingFilter);
         if(specs == null){
             getAllListings();
@@ -60,43 +67,51 @@ public class ListingServiceImpl extends ListingCrudServiceImpl implements Listin
     @Override
     @Transactional
     public void addProblems(List<Long> problemIds, Long id, ModelMap modelMap) {
-        modelMap.put("singleListing", addProblems(problemIds, id));
+        modelMap.put("problemList", addProblems(problemIds, id));
     }
 
     @Override
     @Transactional
     public void removeConstraint(Long id, ModelMap modelMap) {
         removeConstraint(id);
+        modelMap.remove("constraint");
         modelMap.put("constraint", null);
     }
 
     @Override
     @Transactional
     public void setConstraint(Long id, ConstraintDto constraintDto, ModelMap modelMap) {
+        modelMap.remove("constraint");
         modelMap.put("constraint", setConstraint(id, constraintDto));
     }
 
     @Override
     @Transactional
     public void updateOrder(Long problemId, Long id, Integer direction, ModelMap modelMap) {
-        modelMap.put("singleListing", updateOrder(id, problemId, direction));
+        modelMap.remove("problemList");
+        modelMap.put("problemList", updateOrder(id, problemId, direction));
     }
 
     @Override
     @Transactional
     public void removeProblem(Long problemId, Long id, ModelMap modelMap) {
-        modelMap.put("singleListing", removeProblem(id, problemId));
+        modelMap.remove("problemList");
+        modelMap.put("problemList", removeProblem(id, problemId));
     }
 
     @Override
     @Transactional
     public void addAllFromList(Long copyId, Long id, ModelMap modelMap) {
-        modelMap.put("singleListing", addAllFromList(copyId, id));
+        modelMap.remove("problemList");
+        modelMap.put("problemList", addAllFromList(copyId, id));
     }
 
     @Override
     @Transactional(readOnly = true)
     public void getSingleListing(Long id, ModelMap modelMap) {
-        modelMap.put("singleListing", getListingById(id));
+        modelMap.remove("singleListing");
+        ListingDetailsDto listingDetailsDto = getListingById(id);
+        modelMap.put("singleListing", listingDetailsDto);
+        modelMap.put("problemList", listingDetailsDto.getProblemList());
     }
 }

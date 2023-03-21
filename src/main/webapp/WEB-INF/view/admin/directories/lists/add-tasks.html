@@ -17,7 +17,7 @@
             <select id="add-task__select" class="add-task__select" size="10" multiple>
                 <!--/*@thymesVar id="problems" type="java.util.List<ru.spbu.distolymp.dto.entity.tasks.ProblemDto>"*/-->
                 <option th:each = "problem : ${problems}"
-                    th:value = "${problem.title}" th:text="${problem.title}" th:attr="data-id = ${problem.id}">
+                    th:value = "${problem.title}" th:text="${problem.title}" th:attr="data-id=${problem.id}">
                 </option>
             </select>
         </div>
