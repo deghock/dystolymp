@@ -11,4 +11,5 @@ import java.util.List;
  */
 public interface ModelRepository extends PagingAndSortingRepository<Model, Long>, JpaSpecificationExecutor<Model> {
     List<Model> findByType(Integer type, Sort sort);
+    Model findFirstById(Long id);
 }

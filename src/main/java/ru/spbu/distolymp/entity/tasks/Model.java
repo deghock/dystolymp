@@ -4,7 +4,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 /**
@@ -66,5 +68,29 @@ public class Model extends Problem {
     @Type(type = "text")
     @Column(name = "notes")
     private String notes;
+
+
+    public Model copyFromProblem(Problem problem){
+        Model newModel = new Model();
+        newModel.setAnswerList(problem.getAnswerList());
+        newModel.setBarsicFileName(barsicFileName);
+        newModel.setComment(comment);
+        newModel.setHeight(height);
+        newModel.setImageFileName(imageFileName);
+        newModel.setMinPoints(minPoints);
+        newModel.setMinusPoints(minusPoints);
+        newModel.setMaxPoints(maxPoints);
+        newModel.setNotes(notes);
+        newModel.setPrefix(problem.getPrefix());
+        newModel.setGradePoints(gradePoints);
+        newModel.setStatus(problem.getStatus());
+        newModel.setVariables(variables);
+        newModel.setTitle(problem.getTitle());
+        newModel.setType(problem.getType());
+        newModel.setWidth(width);
+        newModel.setProblemForm(problemForm);
+        newModel.setProblemText(problemText);
+        return newModel;
+    }
 
 }

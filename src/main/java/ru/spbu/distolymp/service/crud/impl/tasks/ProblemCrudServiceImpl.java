@@ -10,7 +10,10 @@ import ru.spbu.distolymp.dto.entity.tasks.ProblemDto;
 import ru.spbu.distolymp.entity.tasks.Problem;
 import ru.spbu.distolymp.mapper.entity.tasks.api.ProblemMapper;
 import ru.spbu.distolymp.repository.tasks.ProblemRepository;
+import ru.spbu.distolymp.service.crud.api.tasks.ModelCrudService;
 import ru.spbu.distolymp.service.crud.api.tasks.ProblemCrudService;
+import ru.spbu.distolymp.service.crud.api.tasks.TaskCrudService;
+import ru.spbu.distolymp.service.crud.api.tasks.TestCrudService;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -21,6 +24,9 @@ import java.util.List;
 public class ProblemCrudServiceImpl implements ProblemCrudService {
     private final ProblemRepository problemRepository;
     private final ProblemMapper problemMapper;
+    private final TaskCrudService taskCrudService;
+    private final ModelCrudService modelCrudService;
+    private final TestCrudService testCrudService;
 
     @Override
     @Transactional(readOnly = true)
@@ -44,15 +50,20 @@ public class ProblemCrudServiceImpl implements ProblemCrudService {
     @Transactional
     public Problem copyProblem(Problem copyProblem, String prefix) {
         try{
-            Problem newProblem = copyProblem.copyFrom();
-            newProblem.setTitle(prefix + " " + copyProblem.getTitle());
-            problemRepository.save(newProblem);
-            return newProblem;
+            copyProblem.setTitle(prefix + ' ' + copyProblem.getTitle());
+            switch (copyProblem.getType()){
+                case 1:
+                    return modelCrudService.copyFromProblem(copyProblem.getId(), copyProblem);
+                case 2:
+                    return testCrudService.copyFromProblem(copyProblem.getId(), copyProblem);
+                case 3:
+                    return taskCrudService.copyFromProblem(copyProblem.getId(), copyProblem);
+            }
         }catch (DataException | EntityNotFoundException e){
             log.error("An error occurred while copying problem ", e);
             throw e;
         }
+        return null;
     }
-
 
 }

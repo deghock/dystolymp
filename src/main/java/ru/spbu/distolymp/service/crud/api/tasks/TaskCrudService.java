@@ -4,6 +4,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import ru.spbu.distolymp.dto.admin.tasks.TaskListDto;
+import ru.spbu.distolymp.entity.tasks.Problem;
 import ru.spbu.distolymp.entity.tasks.Task;
 import java.util.List;
 import java.util.Optional;
@@ -21,4 +22,5 @@ public interface TaskCrudService {
     void saveOrUpdate(Task task, byte[] image, String oldImage, boolean deleteImage);
     Optional<Task> getTaskById(Long id);
     void deleteTaskById(Long id);
+    Problem copyFromProblem(Long copyId, Problem problem);
 }

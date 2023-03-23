@@ -281,6 +281,7 @@ public class ListingCrudServiceImpl implements ListingCrudService {
         Listing newListing = new Listing();
         newListing.setName(listingName);
         newListing.setProblemList(listingProblemCrudService.copyListingProblem(copyListing.getProblemList(), newListing, prefix));
+        newListing.setDivision(divisionCrudService.getAnyDivision());
         listingRepository.save(newListing);
     }
 

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.common.files.FileService;
 import ru.spbu.distolymp.dto.admin.tests.TestListDto;
+import ru.spbu.distolymp.entity.tasks.Problem;
 import ru.spbu.distolymp.entity.tasks.Test;
 import ru.spbu.distolymp.exception.common.TechnicalException;
 import ru.spbu.distolymp.mapper.admin.tests.api.TestListMapper;
@@ -18,6 +20,7 @@ import ru.spbu.distolymp.mapper.entity.tasks.api.TestMapper;
 import ru.spbu.distolymp.repository.tasks.TestRepository;
 import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
 import ru.spbu.distolymp.service.crud.api.tasks.TestCrudService;
+
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +32,7 @@ import java.util.Optional;
  */
 @Log4j
 @Service
+@Primary
 @RequiredArgsConstructor
 public class TestCrudServiceImpl implements TestCrudService {
     private final TestRepository testRepository;
@@ -110,6 +114,19 @@ public class TestCrudServiceImpl implements TestCrudService {
             testRepository.delete(test);
         } catch (DataAccessException | EntityNotFoundException e) {
             log.error("An error occurred while deleting a test with id=" + id, e);
+            throw new TechnicalException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public Problem copyFromProblem(Long copyId, Problem problem) {
+        try{
+            Test copyModel = testRepository.findFirstById(copyId).copyFromProblem(problem);
+            testRepository.save(copyModel);
+            return copyModel;
+        }catch (Exception e){
+            log.error(e);
             throw new TechnicalException();
         }
     }

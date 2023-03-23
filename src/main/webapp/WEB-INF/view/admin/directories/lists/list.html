@@ -16,40 +16,36 @@
 </head>
 
 <body>
-    <div>
-        <main class="main">
-            <div th:replace="fragments/header :: #header"></div>
-            <div th:replace="fragments/menu-staff :: #menustaff"></div>
-            <div class="current-page">
-                <p class="current-page__text">
-                    Списки заданий
-                </p>
-                <p class="current-page__text-desc" style="color: #2F0803">
-                    Списки, автоматически назначаемые группами при регистрации
-                </p>
-            </div>
-            <div class="task-list__wrapper">
-                <p class="task-list__name">Список</p>
-                <select id="listing" th:replace="admin/directories/lists/listing-scroll :: #listing"></select>
-            </div>
-            <div class="task-list__wrapper">
-                <p class="task-list__name">Найти список</p>
-                <input id="listing-search" class="search-list-input" type="search" placeholder="Введите название">
-                <button class="search-list" id = "search-button">Найти</button>
-            </div>
+    <main class="main">
+        <div class="container">
+        <div th:replace="fragments/header :: #header"></div>
+        <div th:replace="fragments/menu-staff :: #menustaff"></div>
+        <div class="current-page">
+            <p class="current-page__text">
+                Списки заданий
+            </p>
+            <p class="current-page__text-desc" style="color: #2F0803">
+                Списки, автоматически назначаемые группами при регистрации
+            </p>
+        </div>
+        <div class="task-list__wrapper">
+            <p class="task-list__name">Список</p>
+            <select id="listing" th:replace="admin/directories/lists/listing-scroll :: #listing"></select>
+        </div>
+        <div class="task-list__wrapper">
+            <p class="task-list__name">Найти список</p>
+            <input id="listing-search" class="search-list-input" type="search" placeholder="Введите название">
+            <button class="search-list" id = "search-button">Найти</button>
+        </div>
 
-
-            <div class="tasks-manage__wrapper">
-                <button class="task-manage__button" data-toggle="modal" data-target=".new-listing">Создать новый список</button>
-                <div></div>
-            </div>
-
-            <div id="single-listing">
-            </div>
-        </main>
-
+        <div class="tasks-manage__wrapper">
+            <button class="task-manage__button" data-toggle="modal" data-target=".new-listing">Создать новый список</button>
+            <div></div>
+        </div>
+        <div id="single-listing"></div>
         <footer class="footer"></footer>
-    </div>
+        </div>
+    </main>
 
     <script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
     <script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
@@ -127,10 +123,15 @@
                     document.getElementById('copyList').setAttribute('hidden', 'true');
                     break;
                 case 'CopyBtn':
+                    var copyTaskPrefix = document.getElementById('enterListNamePrefix').value;
+                    var copyListName = document.getElementById('enterListName').value;
+                    var listingId = document.getElementById('single-listing').getAttribute('data-id');
+                    $.get("copy_list?" + 'prefix=' + copyTaskPrefix + '&copyId=' + listingId +'&newName=' + copyListName);
                     document.getElementById('CopyListTasks').setAttribute('hidden', 'true')
                     document.getElementById('addTask').removeAttribute('hidden');
                     document.getElementById('addAllTasks').removeAttribute('hidden');
                     document.getElementById('copyList').removeAttribute('hidden');
+
                     break;
                 case 'CloseCopyBtn':
                     document.getElementById('CopyListTasks').setAttribute('hidden', 'true')

@@ -1,7 +1,7 @@
 package ru.spbu.distolymp.service.crud.impl.lists;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,10 +20,14 @@ import java.util.List;
  */
 @Log4j
 @Service
-@RequiredArgsConstructor
 public class ListingProblemCrudServiceImpl implements ListingProblemCrudService {
     private final ListingProblemRepository listingProblemRepository;
     private final ProblemCrudService problemCrudService;
+
+    public ListingProblemCrudServiceImpl(ListingProblemRepository listingProblemRepository, @Lazy ProblemCrudService problemCrudService) {
+        this.listingProblemRepository = listingProblemRepository;
+        this.problemCrudService = problemCrudService;
+    }
 
     @Override
     @Transactional
@@ -67,11 +71,10 @@ public class ListingProblemCrudServiceImpl implements ListingProblemCrudService 
     @Transactional
     public List<ListingProblems> copyListingProblem(List<ListingProblems> copyListingProblem, Listing copyListing , String prefix){
         List<ListingProblems> newProblems = new ArrayList<>();
-        for(int i = 0; i < copyListing.getProblemList().size(); i++){
-            ListingProblems listingProblems = copyListingProblem.get(i).copyFrom();
-            listingProblems.setListing(copyListing);
-            listingProblems.setProblem(problemCrudService.copyProblem(copyListingProblem.get(i).getProblem(), prefix));
-            newProblems.add(listingProblems);
+        for(int i = 0; i < copyListingProblem.size(); i++){
+            newProblems.add(copyListingProblem.get(i).copyFrom());
+            newProblems.get(i).setListing(copyListing);
+            newProblems.get(i).setProblem(problemCrudService.copyProblem(copyListingProblem.get(i).getProblem(), prefix));
         }
         return newProblems;
     }

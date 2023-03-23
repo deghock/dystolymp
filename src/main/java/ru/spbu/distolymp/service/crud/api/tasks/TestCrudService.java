@@ -3,7 +3,9 @@ package ru.spbu.distolymp.service.crud.api.tasks;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import ru.spbu.distolymp.dto.admin.tests.TestListDto;
+import ru.spbu.distolymp.entity.tasks.Problem;
 import ru.spbu.distolymp.entity.tasks.Test;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,4 +19,5 @@ public interface TestCrudService {
     Optional<Test> getTestById(Long id);
     void saveOrUpdate(Test test, Map<String, byte[]> fileWithNames);
     void deleteTestById(Long id);
+    Problem copyFromProblem(Long copyId, Problem problem);
 }
