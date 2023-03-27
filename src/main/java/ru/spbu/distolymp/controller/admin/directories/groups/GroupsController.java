@@ -14,8 +14,8 @@ public class GroupsController {
     private static final String ROOT = "admin/directories/groups/";
     private static final String LIST = ROOT + "list";
     private static final String SINGLE_GROUP = ROOT + "group";
-    private static final String REDIRECT_SINGLE_GROUP = "redirect:/groups/group/";
-    private static final String LISTING_SCROLL = "listing-scroll :: #listing";
+    private static final String REDIRECT = "redirect:/groups/list";
+    private static final String REDIRECT_SINGLE_GROUP = "redirect:/groups/group";
 
     @GetMapping("/list")
     public String getGroups(ModelMap modelMap){
@@ -29,15 +29,9 @@ public class GroupsController {
         return SINGLE_GROUP;
     }
 
-    @GetMapping
-    public String getAvailableListing(ModelMap modelMap){
-        groupsService.getAvailableListings(modelMap);
-        return LISTING_SCROLL;
-    }
-
     @PostMapping("/set_listing")
     public String setListing(@RequestParam(value = "id") Long id, @RequestParam(value = "listingId") Long listingId){
         groupsService.setListing(id, listingId);
-        return REDIRECT_SINGLE_GROUP + id;
+        return REDIRECT_SINGLE_GROUP;
     }
 }

@@ -1,10 +1,150 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles/reset.css}">
+    <link rel="stylesheet" th:href="@{/css/styles/style.css}">
+    <link rel="stylesheet" th:href="@{/css/styles/separateGroup.css}">
 </head>
 <body>
+<div class="container">
+    <!--/*@thymesVar id="singleGroup" type="ru.spbu.distolymp.dto.admin.directories.groups.GroupDetailsDto"*/-->
+    <main class="main">
+        <div th:replace="fragments/header :: #header"></div>
+        <div th:replace="fragments/menu-staff :: #menustaff"></div>
 
+        <div class="group-state-text__wrapper">
+            <div id="showGroupState" class="group-state__text">
+                <p>Группе <span>Группа 1</span></p>
+            </div>
+        </div>
+
+
+        <div class="separate-group__tabs">
+
+            <div id="tabsNavGroup" class="tabs__nav">
+                <button class="tabs__btn">Пользователи</button>
+                <button class="tabs__btn tabs__btn_active">Список</button>
+                <button class="tabs__btn">Доступ</button>
+                <button class="tabs__btn">Информация</button>
+            </div>
+
+            <div class="tabs__content">
+                <div class="tabs__pane tabs__pane_show" th:switch="${singleGroup.listingDetailsDto}">
+                    <div th:case="null" class="group-state__text">
+                        <p class="show-group-state">Группе <span th:text="${singleGroup.name}"></span> не назначен список</p>
+
+                    </div>
+
+                    <div th:case="*" class="group-state__text">
+                        <p class="show-group-state">Группе <span th:text="${singleGroup.name}"></span> назначен список <span th:text="${singleGroup.listingDetailsDto.name}"></span></p>
+                    </div>
+                </div>
+                <div class="change-btn__wrapper" th:switch="${singleGroup.listingDetailsDto}">
+                    <div th:case="null" id="changeBtn" class="change-btn" onclick="closeOrOpenModalGroup(event)" th:text="Назначить">
+                    </div>
+
+                    <div th:case="*" id="changeBtn" class="change-btn" onclick="closeOrOpenModalGroup(event)" th:text="Сменить">
+                    </div>
+                </div>
+
+
+                <div id="sepGroupModal" hidden="true" class="sep-group-modal__wrap">
+                    <div id="groupListWrap" class="add-task-list__wrapper group-list__wrap">
+                        <p class="group-list__name">Список:</p>
+                        <select id="listing">
+                            <option value="123">123</option>
+                            <option value="123">Олимпиада 1</option>
+                            <option value="123">Олимпиада 2</option>
+                        </select>
+                    </div>
+                    <button id="assignGroupBtn" class="assign-list__group" onclick="closeOrOpenModalGroup(event)">
+                        Назначить
+                    </button>
+                </div>
+
+
+                <div id="groupTab" class="group-content__wrapper">
+                    <p class="group-content-wrap__title">
+                        123
+                    </p>
+
+                    <div class="group-table__wrap">
+                        <table class="sep-group-table">
+                            <tbody>
+                            <tr>
+                                <td>№</td>
+                                <td>Заголовок</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>Копия <br>4</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>4 <br>4</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>4 <br>4</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+<!--            <div class="tabs__pane">-->
+
+<!--            </div>-->
+<!--            <div class="tabs__pane">-->
+
+<!--            </div>-->
+<!--            <div class="tabs__pane">-->
+
+<!--            </div>-->
+        </div>
+
+
+    </main>
+    <footer class="footer">
+
+    </footer>
+</div>
+<script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+<script type="text/javascript">
+    const closeOrOpenModalGroup = function (event) {
+        let el = event.target;
+        switch (el.id) {
+            case 'changeBtn':
+                $.get("/lists/list").done(function (fragment){
+                    $("#listing").replaceWith(fragment);
+                    document.getElementById('sepGroupModal').removeAttribute('hidden');
+                    document.getElementById('showGroupState').setAttribute('hidden', 'true');
+                    document.getElementById('changeBtn').setAttribute('hidden', 'true');
+                    document.getElementById('tabsNavGroup').setAttribute('hidden', 'true');
+                });
+                break;
+            case 'assignGroupBtn':
+                document.getElementById('sepGroupModal').setAttribute('hidden', 'true');
+                document.getElementById('showGroupState').removeAttribute('hidden');
+                document.getElementById('changeBtn').removeAttribute('hidden');
+                document.getElementById('tabsNavGroup').removeAttribute('hidden');
+                break;
+        }
+    }
+</script>
 </body>
 </html>
