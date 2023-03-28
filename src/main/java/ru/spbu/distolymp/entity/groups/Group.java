@@ -39,9 +39,7 @@ public class Group {
     @Column(name = "name")
     private String name;
 
-
-    //TODO: Эти ENUM или объявлены неправильно, или предусмотрена другая ДБ, или работают максимально неочевидно и нуждаются в доках. Поэтому я их отключаю, тот кто будет работать с группами удачи!)
-
+    
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "`accessible`", columnDefinition = "ENUM('yes', 'no')", nullable = false)
