@@ -72,6 +72,8 @@ public class ListingController {
         return REDIRECT_LIST;
     }
 
+
+    //Этот метод здесь, т.к. отдельного сервиса + контроллера под проблемы нет
     @GetMapping("/available_problems")
     public String getAvailableProblems(ModelMap modelMap){
         listingService.getAvailableProblems(modelMap);

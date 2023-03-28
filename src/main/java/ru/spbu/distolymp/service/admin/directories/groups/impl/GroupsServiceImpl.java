@@ -31,11 +31,13 @@ public class GroupsServiceImpl extends GroupsCrudServiceImpl implements GroupsSe
     }
 
     @Override
-    public void setListing(Long id, Long listingId) {
-        setListing(id, listingId);
+    @Transactional
+    public void setListing(Long id, Long listingId, ModelMap modelMap) {
+        modelMap.put("singleGroup", setListing(id, listingId));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void getAvailableListings(ModelMap modelMap) {
         modelMap.put("listings", getAllListings());
     }

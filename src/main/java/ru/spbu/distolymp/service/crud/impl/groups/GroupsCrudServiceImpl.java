@@ -11,6 +11,7 @@ import ru.spbu.distolymp.dto.admin.directories.groups.GroupNameDto;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
 import ru.spbu.distolymp.entity.groups.Group;
 import ru.spbu.distolymp.entity.lists.Listing;
+import ru.spbu.distolymp.entity.lists.ListingProblems;
 import ru.spbu.distolymp.mapper.entity.groups.GroupDetailsMapper;
 import ru.spbu.distolymp.mapper.entity.groups.GroupNameMapper;
 import ru.spbu.distolymp.repository.groups.GroupRepository;
@@ -44,7 +45,11 @@ public class GroupsCrudServiceImpl implements GroupsCrudService{
     @Transactional(readOnly = true)
     public GroupDetailsDto getSingleGroupById(Long id) {
         try {
-            return groupDetailsMapper.toDto(groupRepository.findFirstById(id));
+            Group group = groupRepository.findFirstById(id);
+            if(group.getListing() != null){
+                group.getListing().getProblemList().sort(ListingProblems::compareTo);
+            }
+            return groupDetailsMapper.toDto(group);
         }catch (DataException e){
             log.error("An error occurred while getting group", e);
             throw e;
@@ -64,19 +69,26 @@ public class GroupsCrudServiceImpl implements GroupsCrudService{
 
     @Override
     @Transactional
-    public void setListing(Long id, Long listingId) {
+    public GroupDetailsDto setListing(Long id, Long listingId) {
         try{
             Listing listing = listingCrudService.getListingByIdOrNull(listingId);
-            Group group = groupRepository.findFirstById(id);
-            group.setListing(listing);
-            groupRepository.save(group);
-        }catch (DataException e){
+            if(listing != null){
+                Group group = groupRepository.findFirstById(id);
+                if(group != null){
+                    group.setListing(listing);
+                    groupRepository.save(group);
+                    return groupDetailsMapper.toDto(group);
+                }
+            }
+        }catch (Exception e){
             log.error("An error occurred while setting a list for group", e);
+            throw e;
         }
+        return null;
     }
 
     @Override
-    @Transactional()
+    @Transactional
     public void removeListingFromAllGroupsByListingId(Long listingId){
         try{
             List<Group> groups = groupRepository.findAllByListingId(listingId);
@@ -85,7 +97,7 @@ public class GroupsCrudServiceImpl implements GroupsCrudService{
             }
             groupRepository.saveAll(groups);
         }catch (Exception e){
-            log.error("An error occurred while removing listing from all connected groups");
+            log.error("An error occurred while removing listing from all connected groups", e);
             throw e;
         }
     }

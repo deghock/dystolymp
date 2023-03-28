@@ -59,5 +59,4 @@ public class Listing {
 
     @OneToMany(mappedBy = "listing", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<ListingProblems> problemList;
-
 }

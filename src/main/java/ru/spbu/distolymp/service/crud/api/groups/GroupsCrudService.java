@@ -10,6 +10,6 @@ public interface GroupsCrudService {
     List<GroupNameDto> getAllGroups();
     GroupDetailsDto getSingleGroupById(Long id);
     List<ListingNameDto> getAllListings();
-    void setListing(Long id, Long listingId);
+    GroupDetailsDto setListing(Long id, Long listingId);
     void removeListingFromAllGroupsByListingId(Long listingId);
 }

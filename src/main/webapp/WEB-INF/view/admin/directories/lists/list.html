@@ -223,7 +223,8 @@
 
             if (name != null) {
                 $.get("list/" + id).done(async function(fragment) {
-                    $('#single-listing').replaceWith(fragment).remove('hidden');
+                    $('#single-listing').replaceWith(fragment);
+                    $('#single-listing').removeAttr('hidden');
                     new ItcTabs('.tabs');
                 })
                 console.log('eval');

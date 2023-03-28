@@ -7,5 +7,5 @@ import ru.spbu.distolymp.dto.entity.lists.listing.ListingDetailsDto;
 public class GroupDetailsDto {
     private Long id;
     private String name;
-    private ListingDetailsDto listingDetailsDto;
+    private ListingDetailsDto listing;
 }
