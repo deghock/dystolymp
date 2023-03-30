@@ -120,8 +120,11 @@
                 case 'assignGroupBtn':
                     var groupId = document.getElementById('showGroupState').getAttribute('group-id');
                     var listingId = document.getElementById('listing').options[document.getElementById('listing').selectedIndex].getAttribute('data-id');
-                    $.get('set_listing?' + 'id=' + groupId + '&listingId=' + listingId).done(function (fragment){
-                      document.replaceWith(fragment);
+                    var url = 'set_listing?' + 'id=' + groupId + '&listingId=' + listingId;
+                    $.get(url).done(function (fragment){
+                      document.open();
+                      document.write(fragment);
+                      document.close();
                     });
                     break;
             }

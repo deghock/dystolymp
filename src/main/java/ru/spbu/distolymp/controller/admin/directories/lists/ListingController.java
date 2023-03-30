@@ -24,7 +24,7 @@ public class ListingController {
     private static final String LISTING_SCROLL = ROOT + "listing-scroll :: #listing";
     private static final String ADD_FROM_LISTING_SCROLL = ROOT + "copy-list-tasks :: #allTasksList";
     private static final String AVAILABLE_PROBLEMS_SCROLL = ROOT + "add-tasks :: #addTasksInList";
-    private static final String CONSTRAINT_TABLE = ROOT + "constraint-part :: #constraint";
+    private static final String CONSTRAINT_TABLE = ROOT + "constraint-part :: #access";
     private static final String SINGLE_LISTING = ROOT + "single-listing :: #single-listing";
     private static final String PROBLEMS_TABLE = ROOT + "problems-table :: #problems-table";
 
@@ -94,12 +94,15 @@ public class ListingController {
 
     @PostMapping("/set_constraint")
     public String setConstraint(ModelMap modelMap, ConstraintDto constraintDto, Long id){
+        System.out.println(constraintDto.getStartDateTime());
+        System.out.println(constraintDto.getEndDateTime());
+        System.out.println(constraintDto.getDuration());
         listingService.setConstraint(id, constraintDto, modelMap);
         return CONSTRAINT_TABLE;
     }
 
-    @PostMapping("/remove_constraint")
-    public String removeConstraint(ModelMap modelMap, Long id){
+    @GetMapping("/remove_constraint")
+    public String removeConstraint(ModelMap modelMap, @RequestParam Long id){
         listingService.removeConstraint(id, modelMap);
         return CONSTRAINT_TABLE;
     }

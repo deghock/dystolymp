@@ -125,12 +125,16 @@
                     var copyTaskPrefix = document.getElementById('enterListNamePrefix').value;
                     var copyListName = document.getElementById('enterListName').value;
                     var listingId = document.getElementById('single-listing').getAttribute('data-id');
-                    $.get("copy_list?" + 'prefix=' + copyTaskPrefix + '&copyId=' + listingId +'&newName=' + copyListName);
+                    var url = "copy_list?" + 'prefix=' + copyTaskPrefix + '&copyId=' + listingId +'&newName=' + copyListName;
+                    $.get(url).done(function (fragment){
+                        document.open();
+                        document.write(fragment);
+                        document.close();
+                    });
                     document.getElementById('CopyListTasks').setAttribute('hidden', 'true')
                     document.getElementById('addTask').removeAttribute('hidden');
                     document.getElementById('addAllTasks').removeAttribute('hidden');
                     document.getElementById('copyList').removeAttribute('hidden');
-
                     break;
                 case 'CloseCopyBtn':
                     document.getElementById('CopyListTasks').setAttribute('hidden', 'true')
@@ -138,6 +142,67 @@
                     document.getElementById('addAllTasks').removeAttribute('hidden');
                     document.getElementById('copyList').removeAttribute('hidden');
                     break;
+                case 'setConstraintBtn':
+                    document.getElementById('constraint-add').removeAttribute('hidden');
+                    document.getElementById('constraint-manage').setAttribute('hidden','true');
+                    break;
+                case 'removeConstraintBtn':
+                    $.get('remove_constraint?id=' + document.getElementById('single-listing').getAttribute('data-id')).done(function (fragment){
+                        $('#access').replaceWith(fragment);
+                        new ItcTabs('.tabs');
+                        document.getElementById('constraint').removeAttribute('hidden');
+                        document.getElementById('constraint-add').setAttribute('hidden','true');
+                        document.getElementById('constraint-manage').removeAttribute('hidden');
+                    });
+                    break;
+                case 'closeConstraintButton':
+                    document.getElementById('constraint-add').setAttribute('hidden','true');
+                    document.getElementById('constraint-manage').removeAttribute('hidden');
+                    break;
+                case 'addConstraintButton':
+                    var startDay = document.getElementById('start-day');
+                    var startMonth = document.getElementById('start-month');
+                    var startYear = document.getElementById('start-year');
+                    var startHour = document.getElementById('start-time__hour');
+                    var startMinute = document.getElementById('start-time__min');
+                    var endDay = document.getElementById('end-day');
+                    var endMonth = document.getElementById('end-month');
+                    var endYear = document.getElementById('end-year');
+                    var endHour = document.getElementById('end-time__hour');
+                    var endMinute = document.getElementById('end-time__min');
+                    var durationHour = document.getElementById('duration-tasks__hour');
+                    var durationMinutes = document.getElementById('duration-tasks__min');
+                    var startDate = new Date();
+                    console.log(parseInt(startDay.options[startDay.selectedIndex].value));
+                    startDate.setDate(startDay.options[startDay.selectedIndex].value);
+                    startDate.setMonth(startMonth.options[startMonth.selectedIndex].value);
+                    startDate.setFullYear(startYear.options[startYear.selectedIndex].value);
+                    startDate.setHours(startHour.options[startHour.selectedIndex].value);
+                    startDate.setMinutes(startMinute.options[startMinute.selectedIndex].value);
+
+
+                    var endDate = new Date();
+                    endDate.setDate(endDay.options[endDay.selectedIndex].value);
+                    endDate.setMonth(endMonth.options[endMonth.selectedIndex].value);
+                    endDate.setFullYear(endYear.options[endYear.selectedIndex].value);
+                    endDate.setHours(endHour.options[endHour.selectedIndex].value);
+                    endDate.setMinutes(endMinute.options[endMinute.selectedIndex].value);
+                    var duration = new Date();
+                    duration.setHours(durationHour.options[durationHour.selectedIndex].value);
+                    duration.setMinutes(durationMinutes.options[durationMinutes.selectedIndex].value);
+                    var data = {
+                            'startDateTime' : startDate.toString(),
+                            'endDateTime' : endDate.toString(),
+                            'id' : document.getElementById('single-listing').getAttribute('data-id'),
+                            'duration' : duration.toString(),
+                    };
+                    $.post('set_constraint', data).done(function (fragment){
+                        $('#constraint').replaceWith(fragment).removeAttr('hidden');
+                        document.getElementById('constraint').removeAttribute('hidden');
+                        document.getElementById('constraint-add').setAttribute('hidden','true');
+                        document.getElementById('constraint-manage').removeAttribute('hidden');
+                    });
+
             }
         }
     </script>

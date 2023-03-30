@@ -1,16 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles/reset.css}">
+    <link rel="stylesheet" th:href="@{/css/styles/style.css}">
 </head>
+
 <body>
-<div class="tabs__pane" id = "constraint">
+<!--/*@thymesVar id="constraint" type="ru.spbu.distolymp.dto.admin.directories.groups.ConstraintDto"*/-->
     <div id="access" class="tabs-block">
-        <p class="access-text">
-            Доступ к списку <span>123</span> разрешён с <b>11.03.2005 19:24</b> по <b>13.03.2005
-            19:24</b> в течение <b>11:00</b>
-        </p>
-        <div id="" class="current-tasks-list__wrapper">
+        <div th:switch="${constraint}">
+            <p  class="access-text" th:case="null">Для списка не установлено ограничений</p>
+            <p class="access-text" th:case="*">
+                Доступ к списку разрешён с <b th:text="${#dates.format(constraint.startDateTime, 'dd-MM-yyyy HH:mm')}">
+            </b> по
+                <b th:text="${#dates.format(constraint.endDateTime, 'dd-MM-yyyy HH:mm')}"></b>
+                в течение
+                <b th:text="${#dates.format(constraint.duration, 'HH:mm')}"></b>
+            </p>
+        </div>
+        <div class="task-edit-btn__wrapper" id="constraint-manage">
+            <!-- first -->
+            <button class="task-edit-btn" id="setConstraintBtn" onclick="closeOrOpenModal(event)">Установить время для списка ...
+            </button>
+            <!-- second -->
+            <button class="task-edit-btn" id="removeConstraintBtn"
+                    onclick="closeOrOpenModal(event)">Снять ограничения по времени
+                ...
+            </button>
+        </div>
+        <div id="constraint-add" class="current-tasks-list__wrapper" hidden>
             <b class="set-time-access">Установка времени доступа к списку заданий</b>
             <div class="set-time-access__wrapper">
                 <div class="start-time__wrapper">
@@ -23,10 +49,10 @@
                             <option value="4">4</option>
                         </select>
                         <select id="start-month" class="start-month">
-                            <option value="Марта">Марта</option>
-                            <option value="Апреля">Апреля</option>
-                            <option value="Мая">Мая</option>
-                            <option value="Июня">Июня</option>
+                            <option value="3">Марта</option>
+                            <option value="4">Апреля</option>
+                            <option value="5">Мая</option>
+                            <option value="6">Июня</option>
                         </select>
                         <select id="start-year" class="start-year">
                             <option value="2005">2005</option>
@@ -59,10 +85,10 @@
                             <option value="4">4</option>
                         </select>
                         <select id="end-month" class="end-month">
-                            <option value="Марта">Марта</option>
-                            <option value="Апреля">Апреля</option>
-                            <option value="Мая">Мая</option>
-                            <option value="Июня">Июня</option>
+                            <option value="3">Марта</option>
+                            <option value="4">Апреля</option>
+                            <option value="5">Мая</option>
+                            <option value="6">Июня</option>
                         </select>
                         <select id="end-year" class="end-year">
                             <option value="2005">2005</option>
@@ -105,17 +131,16 @@
 
             </div>
             <div class="access-btns__wrapper">
-                <button id="addTaskButton" onclick="closeOrOpenModal(event)"
+                <button id="addConstraintButton" onclick="closeOrOpenModal(event)"
                         class="add-task-button access-task-btn">
                     Задать время
                 </button>
-                <button id="addTaskButton" onclick="closeOrOpenModal(event)"
+                <button id="closeConstraintButton" onclick="closeOrOpenModal(event)"
                         class="add-task-button access-task-btn">
                     Закрыть
                 </button>
             </div>
         </div>
     </div>
-</div>
 </body>
 </html>

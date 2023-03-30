@@ -6,7 +6,7 @@ import java.util.Date;
 @Data
 public class ConstraintDto {
     private Long id;
-    private Date startDataTime;
-    private Date endDataTime;
+    private Date startDateTime;
+    private Date endDateTime;
     private Date duration;
 }
