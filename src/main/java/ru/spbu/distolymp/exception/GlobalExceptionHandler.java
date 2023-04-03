@@ -26,9 +26,9 @@ public class GlobalExceptionHandler {
         return "exception/404";
     }
 
-    @ExceptionHandler(Exception.class)
-    public String handleOtherExceptions(Exception e) {
-        log.error(e);
-        return "exception/other";
-    }
+//    @ExceptionHandler(Exception.class)
+//    public String handleOtherExceptions(Exception e) {
+//        log.error(e);
+//        return "exception/other";
+//    }
 }
