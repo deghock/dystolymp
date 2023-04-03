@@ -4,12 +4,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
+import ru.spbu.distolymp.entity.division.Category;
+import ru.spbu.distolymp.entity.division.Division;
+import ru.spbu.distolymp.entity.education.Grade;
 import ru.spbu.distolymp.entity.education.School;
 import ru.spbu.distolymp.entity.enumeration.Accessible;
 import ru.spbu.distolymp.entity.enumeration.ShowStat;
-import ru.spbu.distolymp.entity.division.Category;
-import ru.spbu.distolymp.entity.education.Grade;
-import ru.spbu.distolymp.entity.division.Division;
 import ru.spbu.distolymp.entity.lists.Listing;
 import ru.spbu.distolymp.entity.users.Staff;
 import ru.spbu.distolymp.entity.users.User;
@@ -39,15 +39,18 @@ public class Group {
     @Column(name = "name")
     private String name;
 
+    
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "accessible", columnDefinition = "ENUM('yes', 'no')", nullable = false)
-    private Accessible accessible;
+    @Column(name = "`accessible`", columnDefinition = "ENUM('yes', 'no')", nullable = false)
+    private Accessible accessible = Accessible.yes;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "show_stat", columnDefinition = "ENUM('yes', 'no')", nullable = false)
-    private ShowStat showStat;
+    private ShowStat showStat = ShowStat.no;
+
+
 
     @Column(name = "priority")
     private Integer priority;

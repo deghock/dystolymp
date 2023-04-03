@@ -45,7 +45,7 @@ public class Listing {
     @JoinColumn(name = "id_division", referencedColumnName = "id_division")
     private Division division;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "id_constraint", referencedColumnName = "id_constraint")
     private Constraint constraint;
 
@@ -57,7 +57,6 @@ public class Listing {
     @OneToMany(mappedBy = "listing")
     private List<UserLogListing> userList;
 
-    @OneToMany(mappedBy = "listing")
+    @OneToMany(mappedBy = "listing", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<ListingProblems> problemList;
-
 }

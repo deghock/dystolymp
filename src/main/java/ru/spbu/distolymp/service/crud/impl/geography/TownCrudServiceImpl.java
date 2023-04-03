@@ -2,6 +2,12 @@ package ru.spbu.distolymp.service.crud.impl.geography;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.spbu.distolymp.entity.geography.Town;
+import ru.spbu.distolymp.repository.geography.TownRepository;
+import ru.spbu.distolymp.service.crud.api.geography.TownCrudService;
+import javax.persistence.EntityNotFoundException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,7 +34,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @author Vladislav Konovalov
+ * @author Vladislav Konovalov, Maxim Andreev
  */
 @Log4j
 @Service
@@ -36,10 +42,19 @@ import java.util.stream.Collectors;
 public class TownCrudServiceImpl implements TownCrudService {
 
     private final TownRepository townRepository;
+   
     private final TownDetailsMapper townDetailsMapper;
     private final CountryCrudService countryCrudService;
     private final RegionCrudService regionCrudService;
 
+    @Override
+    @Transactional(readOnly = true)
+    public Town getTownById(Long id) {
+        if (id == null) return null;
+        return townRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Town with id=" + id + " was not found"));
+    }
+    
     @Override
     @Transactional(readOnly = true)
     public List<TownDto> getTowns(Sort sort) {

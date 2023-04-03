@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @author Maxim Andreev
+ */
 @Log4j
 @Service
 public class InstituteServiceImpl extends InstituteCrudServiceImpl implements InstituteService {

@@ -4,6 +4,9 @@ import ru.spbu.distolymp.dto.entity.education.InstituteDto;
 
 import java.util.List;
 
+/**
+ * @author Maxim Andreev
+ */
 public interface InstituteCrudService {
 
     List<InstituteDto> getAllInstitutes();

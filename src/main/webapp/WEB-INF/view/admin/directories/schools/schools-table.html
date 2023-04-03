@@ -1,0 +1,30 @@
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+
+<div id="schools-table">
+    <form th:action="@{/schools/delete}" method="post" id="schools">
+        <table class="border" style="margin:0.5em auto">
+            <tr>
+                <th>№</th>
+                <th>
+                    <input type="checkbox" onclick="checkAll(this.checked);" />
+                </th>
+                <th>Номер</th>
+                <th>Название</th>
+            </tr>
+            <tr th:each="school, iter : ${schools}">
+                <td th:text="${iter.index + 1}"></td>
+                <td>
+                    <input type="checkbox" name="ids" th:value="${school.id}"/>
+                </td>
+                <td>
+                    <a th:href="@{/schools/details/{id}(id=${school.id})}" th:text="${school.number}" class="stealth"></a>
+                </td>
+                <td>
+                    <a th:href="@{/schools/details/{id}(id=${school.id})}" th:text="${school.title}" class="stealth"></a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+</html>

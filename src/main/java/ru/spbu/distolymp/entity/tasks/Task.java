@@ -4,7 +4,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 /**
@@ -69,5 +71,31 @@ public class Task extends Problem {
     @Type(type = "text")
     @Column(name = "notes")
     private String notes;
+
+    @Override
+    public Task copyFromProblem(Problem problem){
+        Task newTask = new Task();
+        newTask.setAnswerList(problem.getAnswerList());
+        newTask.setComment(comment);
+        newTask.setHeight(height);
+        newTask.setImageFileName(imageFileName);
+        newTask.setMinPoints(minPoints);
+        newTask.setMinusPoints(minusPoints);
+        newTask.setNotes(notes);
+        newTask.setPrefix(getPrefix());
+        newTask.setStatus(getStatus());
+        newTask.setTitle(problem.getTitle());
+        newTask.setType(problem.getType());
+        newTask.setWidth(width);
+        newTask.setAnswerNote(answerNote);
+        newTask.setCorrectAnswer(correctAnswer);
+        newTask.setGradePoints(gradePoints);
+        newTask.setMaxPoints(maxPoints);
+        newTask.setVariables(variables);
+        newTask.setSolution(solution);
+        newTask.setSolutionLink(solutionLink);
+        newTask.setAnswerNote(answerNote);
+        return newTask;
+    }
 
 }

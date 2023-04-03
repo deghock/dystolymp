@@ -4,6 +4,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import ru.spbu.distolymp.entity.tasks.Test;
+
 import java.util.List;
 
 /**
@@ -11,4 +12,5 @@ import java.util.List;
  */
 public interface TestRepository extends PagingAndSortingRepository<Test, Long>, JpaSpecificationExecutor<Test> {
     List<Test> findByType(Integer type, Sort sort);
+    Test findFirstById(Long id);
 }

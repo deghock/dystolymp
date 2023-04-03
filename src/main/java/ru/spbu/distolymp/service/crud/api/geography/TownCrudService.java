@@ -11,9 +11,10 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @author Vladislav Konovalov
+ * @author Vladislav Konovalov, Maxim Andreev
  */
 public interface TownCrudService {
+    Town getTownById(Long id);
     List<TownDto> getTowns(Sort sort);
     List<TownDto> getTowns(Pageable pageable);
     TownDetailsDto getTownDetailsById(Long id);

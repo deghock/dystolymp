@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles/reset.css}">
+    <link rel="stylesheet" th:href="@{/css/styles/style.css}">
+</head>
+
+<body>
+<!--/*@thymesVar id="constraint" type="ru.spbu.distolymp.dto.admin.directories.groups.ConstraintDto"*/-->
+    <div id="access" class="tabs-block">
+        <div th:switch="${constraint}">
+            <p  class="access-text" th:case="null">Для списка не установлено ограничений</p>
+            <p class="access-text" th:case="*">
+                Доступ к списку разрешён с <b th:text="${#dates.format(constraint.startDateTime, 'dd-MM-yyyy HH:mm')}">
+            </b> по
+                <b th:text="${#dates.format(constraint.endDateTime, 'dd-MM-yyyy HH:mm')}"></b>
+                в течение
+                <b th:text="${#dates.format(constraint.duration, 'HH:mm')}"></b>
+            </p>
+        </div>
+        <div class="task-edit-btn__wrapper" id="constraint-manage">
+            <!-- first -->
+            <button class="task-edit-btn" id="setConstraintBtn" onclick="closeOrOpenModal(event)">Установить время для списка ...
+            </button>
+            <!-- second -->
+            <button class="task-edit-btn" id="removeConstraintBtn"
+                    onclick="closeOrOpenModal(event)">Снять ограничения по времени
+                ...
+            </button>
+        </div>
+        <div id="constraint-add" class="current-tasks-list__wrapper" hidden>
+            <b class="set-time-access">Установка времени доступа к списку заданий</b>
+            <div class="set-time-access__wrapper">
+                <div class="start-time__wrapper">
+                    <p>Время начала</p>
+                    <div class="set-start-time__wrapper set-time__block">
+                        <select id="start-day" class="start-day">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                        <select id="start-month" class="start-month">
+                            <option value="3">Марта</option>
+                            <option value="4">Апреля</option>
+                            <option value="5">Мая</option>
+                            <option value="6">Июня</option>
+                        </select>
+                        <select id="start-year" class="start-year">
+                            <option value="2005">2005</option>
+                            <option value="2006">2006</option>
+                            <option value="2007">2007</option>
+                            <option value="2008">2008</option>
+                        </select>
+                        <select id="start-time__hour" class="start-time__hour">
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                        </select>
+                        <p>часов</p>
+                        <select id="start-time__min" class="start-time__min">
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                        </select>
+                        <p>минут</p>
+
+                    </div>
+                </div>
+                <div class="start-time__wrapper">
+                    <p>Время окончания</p>
+                    <div class="set-end-time__wrapper set-time__block">
+                        <select id="end-day" class="end-day">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                        <select id="end-month" class="end-month">
+                            <option value="3">Марта</option>
+                            <option value="4">Апреля</option>
+                            <option value="5">Мая</option>
+                            <option value="6">Июня</option>
+                        </select>
+                        <select id="end-year" class="end-year">
+                            <option value="2005">2005</option>
+                            <option value="2006">2006</option>
+                            <option value="2007">2007</option>
+                            <option value="2008">2008</option>
+                        </select>
+                        <select id="end-time__hour" class="end-time__hour">
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                        </select>
+                        <p>часов</p>
+                        <select id="end-time__min" class="end-time__min">
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                        </select>
+                        <p>минут</p>
+                    </div>
+                </div>
+                <div class="start-time__wrapper duration-tasks__wrapper">
+                    <p>Продолжительность</p>
+                    <div class="duration-tasks__wrapper set-time__block">
+                        <select id="duration-tasks__hour" class="duration-tasks__hour">
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                        </select>
+                        <p>часов</p>
+                        <select id="duration-tasks__min" class="duration-tasks__min">
+                            <option value="0">0</option>
+                            <option value="15">15</option>
+                            <option value="30">30</option>
+                        </select>
+                        <p>минут</p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="access-btns__wrapper">
+                <button id="addConstraintButton" onclick="closeOrOpenModal(event)"
+                        class="add-task-button access-task-btn">
+                    Задать время
+                </button>
+                <button id="closeConstraintButton" onclick="closeOrOpenModal(event)"
+                        class="add-task-button access-task-btn">
+                    Закрыть
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -17,6 +17,7 @@ import java.util.Optional;
 public interface RegionRepository extends PagingAndSortingRepository<Region, Long>, JpaSpecificationExecutor<Region> {
     List<Region> findByCountryIdAndVisibleOrderByCode(Long id, Visible visible);
     List<RegionNameCodeDto> findRegionsByCountryIdOrderByCode(Long countryId);
+    RegionNameCodeDto getRegionNameCodeDtoById(Long id);
     Region findTop1ByOrderByCode();
     List<Region> findRegionsByCountryId(Long countryId);
     Optional<Region> findById(Long id);

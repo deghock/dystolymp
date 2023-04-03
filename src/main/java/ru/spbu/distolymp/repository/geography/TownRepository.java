@@ -14,11 +14,13 @@ import java.util.Optional;
 /**
  * @author Daria Usova, Vladislav Konovalov
  */
+
 public interface TownRepository extends PagingAndSortingRepository<Town, Long>, JpaSpecificationExecutor<Town> {
     Optional<Town> findFirstByRegionIdAndNameIgnoreCase(Long id, String name);
-
     List<Town> findByRegionIdAndVisible(Long regionId, Visible visible);
     List<TownNameDto> getTownsByRegionIdOrderByName(Long id);
+    TownNameDto getTownNameDtoById(Long id);
+    Town getTownById(Long id);
     List<Town> getTownsByRegionIdAndVisibleOrderByName(Long id, Visible visible);
     List<Town> findAllBy(Pageable pageable);
     List<Town> findAllBy(Sort sort);

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles/style.css}">
+    <link rel="stylesheet" th:href="@{/css/styles/reset.css}">
+</head>
+<body>
+  <div id="problems-table" class="table__wrapper">
+    <table class="tasks-table">
+      <tbody>
+      <tr class="first-row">
+        <td>№</td>
+        <td>Заголовок</td>
+        <td>Cтатус</td>
+        <td>Действия</td>
+      </tr>
+      <!--/*@thymesVar id="problemList" type="java.util.List<ru.spbu.distolymp.dto.entity.lists.listing.ListingProblemDto>"*/-->
+      <tr th:each="listingProblem : ${problemList}">
+        <td th:text="${listingProblem.order}"></td>
+        <td th:text="${listingProblem.problem.title}"></td>
+        <td th:switch="${listingProblem.problem.status}">
+          <a th:case="2">Опубликована</a>
+          <a th:case="1">Новая</a>
+          <a th:case="0">Удалена</a>
+        </td>
+        <td th:switch="${listingProblem.order}">
+          <div th:case="1">
+            <p onclick="updateProblem(event)" th:attr="problemId=${listingProblem.id}, direction=0">Вниз</p>
+            <p th:attr="problemId=${listingProblem.id}" onclick="deleteProblem(event)">Удалить</p>
+          </div>
+          <div th:case="${problemList.size()}">
+            <p th:attr="problemId=${listingProblem.id}, direction=1" onclick="updateProblem(event)">Вверх</p>
+            <p th:attr="problemId=${listingProblem.id}" onclick="deleteProblem(event)">Удалить</p>
+          </div>
+          <div th:case="*">
+            <p th:attr="problemId=${listingProblem.id}, direction=1" onclick="updateProblem(event)">Вверх</p>
+            <p th:attr="problemId=${listingProblem.id}, direction=0" onclick="updateProblem(event)">Вниз</p>
+            <p th:attr="problemId=${listingProblem.id}" onclick="deleteProblem(event)">Удалить</p>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

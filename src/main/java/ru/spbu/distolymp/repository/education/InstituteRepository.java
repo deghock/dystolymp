@@ -8,6 +8,9 @@ import ru.spbu.distolymp.entity.education.Institute;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author Maxim Andreev
+ */
 public interface InstituteRepository extends CrudRepository<Institute, Long> {
 
     List<Institute> findAllByOrderByOrder();

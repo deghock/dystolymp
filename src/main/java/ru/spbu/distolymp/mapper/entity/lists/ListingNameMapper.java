@@ -1,4 +1,4 @@
-package ru.spbu.distolymp.mapper.entity.lists.listing;
+package ru.spbu.distolymp.mapper.entity.lists;
 
 import org.mapstruct.Mapper;
 import ru.spbu.distolymp.dto.entity.lists.listing.ListingNameDto;
@@ -16,6 +16,6 @@ public interface ListingNameMapper {
 
     ListingNameDto toDto(Listing listing);
 
-    Listing toEntity(ListingNameDto listingNameDto);
+    Listing toEntity(ListingNameDto listingDetailsDto);
 
 }

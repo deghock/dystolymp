@@ -1,0 +1,140 @@
+.select-page__wrapper {
+    margin-bottom: 20px;
+}
+
+.page-title {
+    margin: 30px 0;
+    text-align: center;
+}
+
+.search-group__wrapper {
+    position: relative;
+
+    border: 1px solid #333;
+    padding: 30px 50px;
+    margin: 0 20px 10px;
+}
+
+.search-group__text {
+    position: absolute;
+    left: 26px;
+    top: -11px;
+    background-color: #EDE5E2;
+    padding: 0 5px;
+}
+
+.selection-points__wrapper {
+    display: flex;
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.selection-points__wrapper input {
+    display: block;
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto 5px;
+    border: 1px solid #000;
+    padding: 0 5px;
+    height: 23px;
+    position: absolute;
+    left: calc(50% - 250px);
+}
+
+.selection-points__wrapper select {
+    display: block;
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto 5px;
+    border: 1px solid #000;
+    left: calc(50% - 250px);
+
+    height: 23px;
+    position: absolute;
+}
+
+#selectClass {
+    max-width: 200px;
+    width: 100%;
+}
+
+#selectPage {
+    max-width: 100px;
+    width: 100%;
+}
+
+#showHidden {
+    left: 1%;
+}
+
+.selection-points-button__wrapper {
+    display: flex;
+}
+
+.search-group__button {
+    padding: 5px 10px;
+    margin: 0 auto 5px;
+    border: 1px solid #000;
+}
+
+/*table*/
+table.group {
+    border-collapse: collapse;
+    border-spacing: 0;
+    height: auto;
+    margin: 0 auto;
+}
+
+table.group, table.group td, table.group th {
+    border: 1px solid #595959;
+}
+
+table.group td, table.group th {
+    padding: 3px;
+    width: 30px;
+    height: 35px;
+    position: relative;
+}
+
+table.group th {
+    background: #347c99;
+    color: #fff;
+    font-weight: normal;
+}
+
+table.group tr:nth-child(1) {
+    background-color: #E3AF8A;
+}
+
+table.group td span {
+    font-weight: 600;
+}
+
+table.group td input {
+    width: 17px;
+    height: 17px;
+    margin: auto;
+    position: absolute;
+    top: calc(50% - 7.5px) ;
+    left: calc(50% - 7.5px) ;
+}
+
+.group-table__wrapper {
+    display: flex;
+}
+
+.group-buttons-control__wrapper {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+}
+
+.control-btn {
+    background-color: #E3AF8A;
+    font-weight: 600;
+    padding: 5px 0;
+    margin: 5px auto;
+
+    max-width: 550px;
+    width: 100%;
+}

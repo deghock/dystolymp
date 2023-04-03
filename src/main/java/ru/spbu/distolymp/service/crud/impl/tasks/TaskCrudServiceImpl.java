@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.spbu.distolymp.common.files.FileService;
 import ru.spbu.distolymp.dto.admin.tasks.TaskListDto;
+import ru.spbu.distolymp.entity.tasks.Problem;
 import ru.spbu.distolymp.entity.tasks.Task;
 import ru.spbu.distolymp.exception.common.TechnicalException;
 import ru.spbu.distolymp.mapper.admin.tasks.api.TaskListMapper;
@@ -19,6 +21,7 @@ import ru.spbu.distolymp.mapper.entity.tasks.api.TaskMapper;
 import ru.spbu.distolymp.repository.tasks.TaskRepository;
 import ru.spbu.distolymp.service.crud.api.lists.ListingProblemCrudService;
 import ru.spbu.distolymp.service.crud.api.tasks.TaskCrudService;
+
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +32,7 @@ import java.util.Optional;
  */
 @Log4j
 @Service
+@Primary
 @RequiredArgsConstructor
 public class TaskCrudServiceImpl implements TaskCrudService {
     private static final String SAVE_OR_UPDATE_PARAM = "An error occurred while saving or updating a task";
@@ -147,10 +151,23 @@ public class TaskCrudServiceImpl implements TaskCrudService {
     public void deleteTaskById(Long id) {
         try {
             Task task = taskRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-            if (task.getStatus() == 2) listingProblemCrudService.deleteByProblemId(id);
+            listingProblemCrudService.deleteByProblemId(id);
             taskRepository.delete(task);
         } catch (DataAccessException | EntityNotFoundException e) {
             log.error("An error occurred while deleting a task with id=" + id, e);
+            throw new TechnicalException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public Problem copyFromProblem(Long copyId, Problem problem) {
+        try{
+            Task copyModel = taskRepository.findFirstById(copyId).copyFromProblem(problem);
+            taskRepository.save(copyModel);
+            return copyModel;
+        }catch (DataAccessException e){
+            log.error(e);
             throw new TechnicalException();
         }
     }

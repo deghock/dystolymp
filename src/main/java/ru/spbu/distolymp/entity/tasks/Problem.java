@@ -2,8 +2,9 @@ package ru.spbu.distolymp.entity.tasks;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import ru.spbu.distolymp.entity.converter.LongToIntConverter;
 import ru.spbu.distolymp.entity.answers.Answer;
+import ru.spbu.distolymp.entity.converter.LongToIntConverter;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -40,7 +41,10 @@ public class Problem {
     @Column(name = "problemstatus")
     private Integer status;
 
-    @OneToMany(mappedBy = "problem", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Answer> answerList;
 
+    public Problem copyFromProblem(Problem newProblem){
+        return null;
+    }
 }

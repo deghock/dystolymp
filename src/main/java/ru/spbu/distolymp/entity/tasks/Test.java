@@ -3,11 +3,16 @@ package ru.spbu.distolymp.entity.tasks;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Type;
+import ru.spbu.distolymp.entity.answers.Answer;
 import ru.spbu.distolymp.entity.converter.BooleanToIntegerConverter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 
 /**
  * @author Vladislav Konovalov
@@ -70,4 +75,27 @@ public class Test extends Problem {
     @Column(name = "notes")
     private String notes;
 
+    @Override
+    public Test copyFromProblem(Problem problem){
+        Test newTest = new Test();
+        newTest.setAnswerList(new ArrayList<Answer>());
+        newTest.setBrcFileName(brcFileName);
+        newTest.setComment(comment);
+        newTest.setHeight(height);
+        newTest.setImageFileName(imageFileName);
+        newTest.setInfoLink(infoLink);
+        newTest.setMinPoints(minPoints);
+        newTest.setMinusPoints(minusPoints);
+        newTest.setNotes(notes);
+        newTest.setParFileName(parFileName);
+        newTest.setPoints(points);
+        newTest.setPrefix(getPrefix());
+        newTest.setShowResult(showResult);
+        newTest.setStatus(getStatus());
+        newTest.setTestFolder(testFolder);
+        newTest.setTitle(problem.getTitle());
+        newTest.setType(problem.getType());
+        newTest.setWidth(width);
+        return newTest;
+    }
 }

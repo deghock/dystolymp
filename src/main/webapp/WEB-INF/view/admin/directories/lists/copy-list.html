@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div id="CopyListTasks" class="current-tasks-list__wrapper copy-tasks-list__wrapper"
+         hidden="true">
+        <p class="add-task__title">Копировать список и все его задания</p>
+        <p class="copy-title__warning">Если имя нового списка будет пустым копирование
+            списка не
+            произойдёт!</p>
+        <div class="copy-task-list__wrapper">
+            <div class="copy-block">
+                <p class="copy-task-list__name">Имя нового списка:</p>
+                <input type="text" id="enterListName" class="copy-task__input"
+                       placeholder="Введите имя">
+
+            </div>
+            <div class="copy-block">
+                <p class="copy-task-list__name">Добавить к префиксу <br>
+                    для копируемых заданий:</p>
+                <input type="text" id="enterListNamePrefix" class="copy-task__input"
+                       placeholder="Префикс">
+            </div>
+        </div>
+        <div class="add-tasks-buttons__wrapper">
+            <button id="CopyBtn" class="add-task-button copy-toList-btn"
+                    onclick="closeOrOpenModal(event)">
+                Копировать
+            </button>
+            <button id="CloseCopyBtn" class="add-task-button copy-toList-btn"
+                    onclick="closeOrOpenModal(event)">
+                Закрыть
+            </button>
+        </div>
+    </div>
+</body>
+</html>

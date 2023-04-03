@@ -15,11 +15,12 @@ import java.util.Optional;
 public interface CountryRepository extends PagingAndSortingRepository<Country, Long>,
         JpaSpecificationExecutor<Country> {
 
+    List<Country> findAll();
+
     List<Country> findAllBy(Pageable pageable);
 
     List<Country> findAllBy(Sort sort);
 
-    List<Country> findAll();
 
     void deleteAllByIdIn(List<Long> idList);
 

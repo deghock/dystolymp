@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles/reset.css}">
+    <link rel="stylesheet" th:href="@{/css/styles/style.css}">
+    <link rel="stylesheet" th:href="@{/css/styles/separateGroup.css}">
+</head>
+<body>
+    <div class="container">
+        <!--/*@thymesVar id="singleGroup" type="ru.spbu.distolymp.dto.admin.directories.groups.GroupDetailsDto"*/-->
+        <main class="main">
+            <div th:replace="fragments/header :: #header"></div>
+            <div th:replace="fragments/menu-staff :: #menustaff"></div>
+
+            <div class="group-state-text__wrapper">
+                <div id="showGroupState" class="group-state__text" th:attr="group-id=${singleGroup.id}">
+                    <p>Группа <span th:text="${singleGroup.name}"></span></p>
+                </div>
+            </div>
+
+
+            <div class="separate-group__tabs">
+
+                <div id="tabsNavGroup" class="tabs__nav">
+                    <button class="tabs__btn">Пользователи</button>
+                    <button class="tabs__btn tabs__btn_active">Список</button>
+                    <button class="tabs__btn">Доступ</button>
+                    <button class="tabs__btn">Информация</button>
+                </div>
+
+                <div class="tabs__content">
+                    <div class="tabs__pane tabs__pane_show" th:switch="${singleGroup.listing}" id="groupListingInfo">
+                        <div th:case="null" class="group-state__text">
+                            <p class="show-group-state">Группе <span th:text="${singleGroup.name}"></span> не назначен список</p>
+
+                        </div>
+
+                        <div th:case="*" class="group-state__text">
+                            <p class="show-group-state">Группе <span th:text="${singleGroup.name}"></span> назначен список <span th:text="${singleGroup.listing.name}"></span></p>
+                        </div>
+                    </div>
+
+
+                    <div class="change-btn__wrapper">
+                        <button id="changeBtn" class="change-btn" onclick="closeOrOpenModalGroup(event)">
+                            <div th:switch="${singleGroup.listing}">
+                                <p th:case="null"  th:text="Назначить"></p>
+                                <p th:case="*" th:text="Сменить"></p>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div id="sepGroupModal" hidden="true" class="sep-group-modal__wrap">
+                        <div id="groupListWrap" class="add-task-list__wrapper group-list__wrap">
+                            <p class="group-list__name">Список:</p>
+                            <select class="task-select" id="listing" hidden="true"></select>
+                        </div>
+                        <button id="assignGroupBtn" class="assign-list__group" onclick="closeOrOpenModalGroup(event)">
+                            Назначить
+                        </button>
+                    </div>
+
+                    <div th:switch="${singleGroup.listing}">
+                        <div th:case="null"></div>
+                        <div id="groupTab" class="group-content__wrapper" th:case="*">
+                            <p class="group-content-wrap__title" th:text="${singleGroup.listing.name}">
+                            </p>
+                            <div class="group-table__wrap" th:switch="${singleGroup.listing.problemList.size()}">
+                                <div th:case="0"></div>
+                                <table class="sep-group-table" th:case="*">
+                                    <tbody>
+                                    <tr>
+                                        <td>№</td>
+                                        <td>Заголовок</td>
+                                    </tr>
+                                    <tr th:each="problem : ${singleGroup.listing.problemList}">
+                                        <td th:text="${problem.order}"></td>
+                                        <td th:text="${problem.problem.title}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </main>
+        <footer class="footer">
+
+        </footer>
+    </div>
+
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+    <script type="text/javascript">
+        const closeOrOpenModalGroup = function (event) {
+            let el = event.target;
+            switch (el.id) {
+                case 'changeBtn':
+                    $.get("available_listings").done(function (fragment){
+                        $("#listing").replaceWith(fragment).removeAttr('hidden');
+                        document.getElementById('sepGroupModal').removeAttribute('hidden');
+                        document.getElementById('groupListingInfo').setAttribute('hidden', 'true');
+                        document.getElementById('changeBtn').setAttribute('hidden', 'true');
+                        document.getElementById('tabsNavGroup').setAttribute('hidden', 'true');
+                    });
+                    break;
+                case 'assignGroupBtn':
+                    var groupId = document.getElementById('showGroupState').getAttribute('group-id');
+                    var listingId = document.getElementById('listing').options[document.getElementById('listing').selectedIndex].getAttribute('data-id');
+                    var url = 'set_listing?' + 'id=' + groupId + '&listingId=' + listingId;
+                    $.get(url).done(function (fragment){
+                      document.open();
+                      document.write(fragment);
+                      document.close();
+                    });
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>

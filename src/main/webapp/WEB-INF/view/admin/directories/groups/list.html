@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles/reset.css}">
+    <link rel="stylesheet" th:href="@{/css/styles/style.css}">
+    <link rel="stylesheet" th:href="@{/css/styles/groups.css}">
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="fragments/header :: #header"></div>
+        <div th:replace="fragments/menu-staff :: #menustaff"></div>
+            <div class="page-title__wrapper">
+                <p class="page-title">
+                    Группы
+                </p>
+            </div>
+            <div class="search-group__wrapper">
+                <p class="search-group__text">
+                    Посик группы
+                </p>
+
+                <div class="selection-points__wrapper">
+                    <p class="selection-name">Группа:</p>
+                    <input type="text" placeholder="Введите название группы">
+                </div>
+
+                <div class="selection-points__wrapper">
+                    <p class="selection-name">Категория:</p>
+                    <select id="selectCategory">
+                        <option value="любая">любая</option>
+                        <option value="любая">любая</option>
+                        <option value="любая">любая</option>
+                    </select>
+                </div>
+
+                <div class="selection-points__wrapper">
+                    <p class="selection-name">Класс:</p>
+                    <select id="selectClass">
+                        <option value="любой">любой</option>
+                        <option value="любой">любой</option>
+                        <option value="любой">любой</option>
+                    </select>
+                </div>
+
+                <div class="selection-points__wrapper">
+                    <p class="selection-name">Список:</p>
+                    <select id="selectList">
+                        <option value="любой">любой</option>
+                        <option value="любой">любой</option>
+                        <option value="любой">любой</option>
+                    </select>
+                </div>
+
+                <div class="selection-points__wrapper">
+                    <p class="selection-name">Преподаватель:</p>
+                    <select id="selectTeacher">
+                        <option value="любой">любой</option>
+                        <option value="любой">любой</option>
+                        <option value="любой">любой</option>
+                    </select>
+                </div>
+
+                <div class="selection-points__wrapper">
+                    <p class="selection-name">Страна:</p>
+                    <select id="selectCountry">
+                        <option value="любая">любая</option>
+                        <option value="любая">любая</option>
+                        <option value="любая">любая</option>
+                    </select>
+                </div>
+
+                <div class="selection-points__wrapper">
+                    <p class="selection-name">На странице:</p>
+                    <select id="selectPage">
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                    </select>
+                </div>
+
+                <div class="selection-points__wrapper">
+                    <p class="selection-name">Показать скрытые:</p>
+                    <input id="showHidden" type="checkbox">
+                </div>
+
+                <div class="selection-points-button__wrapper">
+                    <button class="search-group__button">Найти</button>
+                </div>
+
+
+            </div>
+            <div class="group-table__wrapper">
+                <table class="group">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <span>
+                                №
+                            </span>
+                        </td>
+                        <td>
+                            <input type="checkbox">
+                        </td>
+                        <td>
+                            <span>
+                                Группа
+                            </span>
+                        </td>
+                    </tr>
+                    <!--/*@thymesVar id="groups" type="java.util.List<ru.spbu.distolymp.dto.admin.directories.groups.GroupNameDto>"*/-->
+                    <tr th:each="group : ${groups}">>
+                        <td th:text="${groups.indexOf(group) + 1}"></td>
+                        <td>
+                            <input type="checkbox">
+                        </td>
+                        <td>
+                            <a th:href="@{group/{id}(id=${group.id})}" th:text="${group.name}"></a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="group-buttons-control__wrapper">
+                <button class="control-btn">Зарегистрировать новую группу...</button>
+                <button class="control-btn">Показать результаты для списка...</button>
+                <button class="control-btn">Показать информацию о пользователях..</button>
+                <button class="control-btn">Назначить список выбранным группам...</button>
+                <button class="control-btn">Назначить преподавателя выбранным группам...</button>
+                <button class="control-btn">Отменить преподавание в выбранных группах...</button>
+                <button class="control-btn">Назначить приоритет выбранным группам...</button>
+                <button class="control-btn">Назначить видимость выбранным группам...</button>
+                <button class="control-btn">Назначить категорию выбранным группам...</button>
+                <button class="control-btn">Удалить выбранные группы...</button>
+                <button class="control-btn">E-mail пользователей из выбранных групп...</button>
+            </div>
+        </main>
+        <footer class="footer">
+
+        </footer>
+    </div>
+</body>
+</html>

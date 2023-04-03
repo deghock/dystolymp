@@ -1,0 +1,122 @@
+.tabs__btn {
+    background-color: #EDE5E2;
+}
+
+.show-group-state {
+    margin: 20px 0 0 0;
+}
+
+.group-state__text span {
+    color: red;
+}
+
+.group-state-text__wrapper {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.group-state__text {
+    text-align: center;
+    margin: 10px 0 20px;
+}
+
+.change-btn__wrapper {
+    display: flex;
+}
+
+.tabs__btn {
+    padding: 5px 70px;
+}
+
+.change-btn {
+    max-width: 500px;
+    width: 100%;
+    background-color: #E3AF8A;
+    padding: 5px 0;
+    margin: 5px auto 10px;
+
+    text-align: center;
+    font-weight: 600;
+}
+
+.group-content__wrapper {
+    border: 1px solid #8f8f8f;
+    width: 95%;
+    margin: 0 auto;
+    padding: 1.04vw 0.35vw;
+
+    z-index: 2;
+
+    position: relative;
+}
+
+.group-content-wrap__title {
+    position: absolute;
+    left: 26px;
+    top: -11px;
+    background-color: #EDE5E2;
+    padding: 0 5px;
+}
+
+.group-table__wrap {
+    display: flex;
+    justify-content: center;
+}
+
+.add-task-list__wrapper {
+    width: 80%;
+}
+
+table.sep-group-table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    height: auto;
+}
+
+table.sep-group-table, table.sep-group-table td, table.sep-group-table th {
+    border: 1px solid #595959;
+}
+
+table.sep-group-table td, table.sep-group-table th {
+    padding: 3px;
+    width: 30px;
+    height: 35px;
+}
+
+.sep-group-table tr:first-child {
+    background-color: #E3AF8A;
+    font-weight: 600;
+}
+
+table.sep-group-table th {
+    background: #347c99;
+    color: #fff;
+    font-weight: normal;
+}
+
+#assign-list__input {
+    cursor: pointer;
+    margin-left: auto;
+    max-width: 890px;
+    width: 100%;
+    padding: 0 5px;
+}
+
+.sep-group-modal__wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.assign-list__group {
+    display: block;
+    max-width: 100px;
+    width: 100%;
+    margin: 5px 0 10px;
+    padding: 5px;
+    border: 1px solid #000;
+}
+
+[hidden] {
+    display: none;
+}
