@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <style>
+        p {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey">
+
+<div th:replace="fragments/menu-staff :: #menustaff"></div>
+
+<h3>
+    Регион
+    <a href="/dev/regions/detail/id/0/" class="stealth">
+        <strong></strong>
+    </a>
+</h3>
+
+<!--/*@thymesVar id="country" type="ru.spbu.distolymp.dto.entity.geography.country.CountryDto"*/-->
+<form th:action="@{/regions/save-or-edit}" th:object="${region}" method="post">
+    <div class="infoForm">
+        <input type="hidden" th:field="*{id}"/>
+        <fieldset>
+            <legend>Регион</legend>
+            <label for="country">Страна:</label>
+            <select th:field="*{country.id}" id="country" autocomplete="off">
+                <option th:each="country : ${countries}"
+                        th:value="${country.id}" th:text="${country.name}"></option>
+            </select>
+            <br/>
+
+            <label for="code">Код:</label>
+            <input type="text" class="wide" th:field="*{code}" id="code"/>
+            <br/>
+
+            <label for="name">Регион:</label>
+            <input type="text" class="wide" th:field="*{name}" id="name"/>
+            <br/>
+
+            <label for="visible">Отображение:</label>
+            <select th:field="*{visible}" id="visible">
+                <option th:value="true" th:text="показывается"></option>
+                <option th:value="false" th:text="скрыта"></option>
+            </select>
+            <br/>
+
+            <label for="editing">Добавление городов:</label>
+            <select name="editing" id="editing">
+                <option value="0" >закрыто</option>
+                <option value="1" selected="selected">открыто</option>
+            </select>
+        </fieldset>
+    </div>
+    <div style="text-align:center">
+        <button type="submit">Сохранить</button>
+    </div>
+</form>
+
+<br/>
+
+<div th:replace="fragments/footer :: #footer"></div>
+</body>
+
+</html>

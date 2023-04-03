@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Система интернет-олимпиад СПбГУ</title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <style>
+        p {
+            text-align: center;
+        }
+
+        .center {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        legend {
+            display: block;
+            width: auto;
+            padding: 0 5px;
+            margin-bottom: 0;
+            font-size: inherit;
+            line-height: inherit;
+            border-bottom: none;
+        }
+
+        fieldset {
+            border: 2px groove white;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<div th:replace="fragments/header :: #header"></div>
+
+<body class="bgGrey">
+
+<div th:replace="fragments/menu-staff :: #menustaff"></div>
+
+<p id="title">Регионы</p>
+
+<div class="container">
+    <div class="alert alert-danger col-6 ml-auto mr-auto" role="alert" th:text="${error}" th:if="${error}"></div>
+
+    <fieldset>
+        <legend>Поиск регионов</legend>
+        <div class="searchForm">
+            <label for="region-name">Регион:</label>
+            <input type="text" id="region-name" class="wide"/><br/>
+
+            <label for="country_id">Страна:</label>
+            <select name="country_id" id="country_id" class="wide">
+                <option value="1" selected="selected">Россия</option>
+            </select>
+
+            <div class="input-group" id="region" style="align-items: center">
+                <label for="region_id">Федеральный округ:</label>
+                <select name="region_id" id="region_id" class="wide">
+                    <option value="-1" selected="selected">любой</option>
+                    <option value="10,11,13,16,20,26,33,37,39,43,51,57,63,65,67,70,83,2">Центральный федеральный округ</option>
+                    <option value="3,17,21,23,25,28,62,78,34,64,8,14,56">Южный федеральный округ</option>
+                    <option value="29,32,7,15,24,38,44,47,55,1,45">Северо-западный федеральный округ</option>
+                    <option value="81,27,54,74,6,40,60,18,80">Дальневосточный федеральный округ</option>
+                    <option value="4,12,69,75,5,19,35,22,30,48,49,68">Сибирский федеральный округ</option>
+                    <option value="36,61,71,77,76,82">Уральский федеральный округ</option>
+                    <option value="9,41,42,66,72,79,53,31,46,50,52,58,59,73">Приволжский федеральный округ</option>
+                </select>
+            </div>
+
+            <label for="limit">На странице:</label>
+            <select name="limit" id="limit">
+                <option value="10">10</option>
+                <option value="20" selected="selected">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="0">все</option>
+            </select>
+
+        </div>
+
+        <div style="text-align:center">
+            <button type="submit" id="search-button">Найти</button>
+        </div>
+    </fieldset>
+
+    <br/>
+
+    <div id="regions-table" th:replace="admin/directories/regions/regions-table :: #regions-table"></div>
+
+    <ul class="actions">
+        <li>
+            <a th:href="@{/regions/add}" class="abutton">Зарегистрировать новый регион</a>
+        </li>
+        <li>
+            <a href="#" onclick="return delRegions()" class="abutton">Удалить выбранные регионы</a>
+        </li>
+    </ul>
+</div>
+
+<div th:replace="fragments/footer :: #footer"></div>
+</body>
+
+<script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+<script type="text/javascript">
+    $("#region-name").on("keyup", function (event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            document.getElementById("search-button").click();
+        }
+    })
+
+    $("#search-button").click(function () {
+        getRegions();
+    })
+
+    function getRegions() {
+        var params = encodeQueryData(getParams());
+        var url = "filter?" + params;
+        $.get(url).done(function (fragment) {
+            $("#regions-table").replaceWith(fragment);
+        });
+    }
+
+    function encodeQueryData(data) {
+        const result = [];
+        for (var key in data) {
+            result.push(key + '=' + data[key]);
+        }
+        return result.join('&');
+    }
+
+    function getParams() {
+        var params = {}
+        params["resultSize"] = getResultSize();
+        params["containsName"] = getName();
+        return params;
+    }
+
+    function getResultSize() {
+        return $("#limit").val();
+    }
+
+    function getName() {
+        return $("#region-name").val();
+    }
+
+    function getCountry() {
+        var name = document.getElementById('country').options[document.getElementById('country').selectedIndex].text;
+        if (name === 'любая')
+            name = '';
+        return name;
+    }
+
+    function checkAll(check) {
+        var regions = document.getElementById("regions");
+        var ids = regions["ids"];
+        if (ids.name != undefined) {
+            ids = [ids];
+        }
+
+        for (var i = 0; i < ids.length; ++i) {
+            ids[i].checked = check;
+        }
+    }
+
+    function areSure() {
+        return window.confirm("Вы уверены?");
+    }
+
+    function delRegions() {
+        var places = document.getElementById("regions");
+        var flag = false;
+        places.elements["ids"].forEach(function (item) {
+            if (item.checked) {
+                flag = true;
+            }
+        });
+        if (flag && areSure()) {
+            places.submit();
+        }
+        return false;
+    }
+</script>
+
+</html>
