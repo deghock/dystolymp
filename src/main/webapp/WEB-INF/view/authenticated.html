@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Spring Security authentication</title>
+</head>
+<body>
+  <h2>Spring Security authentication</h2>
+  Your username is: <div th:text="${staffDetails.getUsername()}"/><br>
+  Your level is: <div th:text="${staffDetails.getStaff().getLevel()}"/><br>
+<!--  <div sec:authorize="hasRole('ADMIN')">-->
+<!--    You provided Admin authentication credentials!-->
+<!--  </div>-->
+<!--  <div sec:authorize="hasRole('USER')">-->
+<!--    You provided User authentication credentials!-->
+<!--  </div>-->
+  <br><br>
+  <a th:href="@{/menu/staff}"/>Access system</a><br/>
+  <a th:href="@{/logout}"/>Logout</a>
+</body>
+</html>

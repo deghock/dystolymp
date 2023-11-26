@@ -64,4 +64,19 @@ public class Staff {
                                      inverseJoinColumns = @JoinColumn(name = "id_list"))
     private List<Listing> listingList;
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public char getLevel() {
+        return level;
+    }
 }
